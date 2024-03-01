@@ -2,8 +2,19 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+.top-row {
+    border: solid 0px #ff0000;
+    height: 100px !important;
+}
+
+.logo-header {
+    border: solid 0px #ff0000;
+    width: 150px !important;
+}
+
 .navbar-dark {
-    background-color: #ffff00 !important;
+    border: solid 0px #ff0000 !important;
+    margin-bottom: 10px !important;
 }
 
 a, .btn-link {
