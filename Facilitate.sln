@@ -5,10 +5,6 @@ VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Admin", "Admin\Admin.csproj", "{788720F6-EEBF-4E15-8899-0DBEB72056FD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Libraries", "Libraries\Libraries.csproj", "{12EE4D49-730B-4257-B072-4FEF163EC450}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebServices", "WebServices\WebServices.csproj", "{634688F5-BD5B-4902-81B0-ACD2BE72D5DF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,14 +15,6 @@ Global
 		{788720F6-EEBF-4E15-8899-0DBEB72056FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{788720F6-EEBF-4E15-8899-0DBEB72056FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{788720F6-EEBF-4E15-8899-0DBEB72056FD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{12EE4D49-730B-4257-B072-4FEF163EC450}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{12EE4D49-730B-4257-B072-4FEF163EC450}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{12EE4D49-730B-4257-B072-4FEF163EC450}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{12EE4D49-730B-4257-B072-4FEF163EC450}.Release|Any CPU.Build.0 = Release|Any CPU
-		{634688F5-BD5B-4902-81B0-ACD2BE72D5DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{634688F5-BD5B-4902-81B0-ACD2BE72D5DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{634688F5-BD5B-4902-81B0-ACD2BE72D5DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{634688F5-BD5B-4902-81B0-ACD2BE72D5DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
