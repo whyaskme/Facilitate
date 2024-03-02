@@ -10,16 +10,16 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
+//using System.Web.UI;
+//using System.Web.UI.HtmlControls;
+//using System.Web.UI.WebControls;
 using System.Xml;
-
+using Microsoft.AspNetCore.Http;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Core;
 
-namespace Facilitate.Models
+namespace Facilitate.Libraries.Models
 {
     public class Utils
     {
@@ -40,7 +40,7 @@ namespace Facilitate.Models
                 _mongoDatabase = _mongoClient.GetDatabase(ConfigurationManager.AppSettings["MongoDbName"]);
             }
 
-            cookieDomain = HttpContext.Current.Request.ServerVariables["SERVER_NAME"];
+            //cookieDomain = HttpContext.Current.Request.ServerVariables["SERVER_NAME"];
 
             //_mongoSourceDataCollection;
 
@@ -289,7 +289,8 @@ namespace Facilitate.Models
 
         public string GenerateRandomPassword(int length, int numberOfNonAlphanumericCharacters)
         {
-            return System.Web.Security.Membership.GeneratePassword(length, numberOfNonAlphanumericCharacters).ToString();
+            //return System.Web.Security.Membership.GeneratePassword(length, numberOfNonAlphanumericCharacters).ToString();
+            return null;
         }
 
         public string GeoLocationByUserIp(string userIp)
@@ -389,18 +390,19 @@ namespace Facilitate.Models
 
         public void CreateCookie(string cookieName, string cookieValue, DateTime cookieExpires)
         {
-            var myCookie = new HttpCookie(cookieName) { Value = cookieValue, Expires = cookieExpires };
+            //var myCookie = new HttpCookie(cookieName) { Value = cookieValue, Expires = cookieExpires };
 
-            myCookie.Domain = cookieDomain;
+            //myCookie.Domain = cookieDomain;
 
-            HttpContext.Current.Response.Cookies.Add(myCookie);
+            //HttpContext.Current.Response.Cookies.Add(myCookie);
         }
 
         public string ReadCookie(string cookieName)
         {
-            var myCookie = HttpContext.Current.Request.Cookies[cookieName];
-            Debug.Assert(condition: myCookie != null, message: "myCookie != null");
-            return myCookie.Value;
+            //var myCookie = HttpContext.Current.Request.Cookies[cookieName];
+            //Debug.Assert(condition: myCookie != null, message: "myCookie != null");
+            //return myCookie.Value;
+            return null;
         }
 
         public void UpdateCookie()
@@ -409,7 +411,7 @@ namespace Facilitate.Models
 
         public void DeleteCookie(string cookieName)
         {
-            HttpContext.Current.Response.Cookies.Remove(cookieName);
+            //HttpContext.Current.Response.Cookies.Remove(cookieName);
         }
 
         #endregion

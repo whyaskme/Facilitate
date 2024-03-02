@@ -14,7 +14,7 @@ using System.Xml;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Core;
-namespace Facilitate.Models
+namespace Facilitate.Libraries.Models
 {
     public class NameStreet
     {

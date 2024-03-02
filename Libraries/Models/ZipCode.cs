@@ -12,7 +12,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 //using MongoDB.Driver.Builders;
 
-namespace Facilitate.Models
+namespace Facilitate.Libraries.Models
 {
     /// <summary>
     /// 

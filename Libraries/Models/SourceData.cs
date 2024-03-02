@@ -2,7 +2,7 @@
 
 using MongoDB.Bson;
 
-namespace Facilitate.Models
+namespace Facilitate.Libraries.Models
 {
     public class SourceData : Base
     {

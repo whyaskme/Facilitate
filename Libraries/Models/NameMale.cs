@@ -13,7 +13,7 @@ using MongoDB;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace Facilitate.Models
+namespace Facilitate.Libraries.Models
 {
     public class NameMale
     {

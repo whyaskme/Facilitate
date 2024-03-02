@@ -5,7 +5,7 @@ using System.IO;
 
 using System.Security.Cryptography;
 
-namespace Facilitate.Models
+namespace Facilitate.Libraries.Models
 {
     public class Security
     {
