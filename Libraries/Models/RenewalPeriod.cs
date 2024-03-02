@@ -17,7 +17,7 @@ namespace Facilitate.Libraries.Models
             _id = ObjectId.GenerateNewId();
             _t = "RenewalPeriod";
 
-            Name = "";
+            Name = string.Empty;
             Period = 0;
             DiscountPercent = 0.00;
             Amount = 0.00;

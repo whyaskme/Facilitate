@@ -15,7 +15,7 @@ namespace Facilitate.Libraries.Models
         {
             _t = "County";
 
-            State = "";
+            State = string.Empty;
             StateId = ObjectId.Empty;
             TimeZoneId = ObjectId.Empty;
 

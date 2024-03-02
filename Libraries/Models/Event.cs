@@ -15,7 +15,7 @@ namespace Facilitate.Libraries.Models
         {
             _t = "Event";
 
-            Name = "";
+            Name = string.Empty;
             TypeId = 0;
             DateTime = DateTime.UtcNow;
 

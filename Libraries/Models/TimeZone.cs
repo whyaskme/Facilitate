@@ -21,7 +21,7 @@ namespace Facilitate.Libraries.Models
         {
             _t = "TimeZone";
 
-            Region = "";
+            Region = string.Empty;
         }
         public string Region { get; set; }
     }

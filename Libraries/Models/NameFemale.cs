@@ -21,7 +21,7 @@ namespace Facilitate.Libraries.Models
         {
             _id = ObjectId.GenerateNewId();
             _t = "NameFemale";
-            Name = "";
+            Name = string.Empty;
         }
         public ObjectId _id { get; set; }
         public string _t { get; set; }

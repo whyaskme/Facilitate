@@ -18,12 +18,12 @@ namespace Facilitate.Libraries.Models
             isHtml = true;
             Date = DateTime.UtcNow;
             UserId = ObjectId.Empty;
-            FromEmail = "";
-            FromName = "";
-            Subject = "";
-            Body = "";
-            ToEmail = "";
-            ToName = "";
+            FromEmail = string.Empty;
+            FromName = string.Empty;
+            Subject = string.Empty;
+            Body = string.Empty;
+            ToEmail = string.Empty;
+            ToName = string.Empty;
             Location = new Location(ObjectId.Empty, ObjectId.Empty, "", 0.00, 0.00);
 
             Status = Constants.Messaging.Status.None;

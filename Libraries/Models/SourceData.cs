@@ -11,18 +11,18 @@ namespace Facilitate.Libraries.Models
             _t = "SourceData";
 
             Zip = 00000;
-            City = "";
+            City = string.Empty;
             CityId = ObjectId.Empty;
-            StateAbbr = "";
+            StateAbbr = string.Empty;
             StateId = ObjectId.Empty;
-            County = "";
+            County = string.Empty;
             CountyId = ObjectId.Empty;
-            TimeZone = "";
+            TimeZone = string.Empty;
             TimeZoneId = ObjectId.Empty;
-            AreaCodes = "";
+            AreaCodes = string.Empty;
             Latitude = 00.00;
             Longitude = 00.00;
-            Country = "";
+            Country = string.Empty;
             CountryId = ObjectId.Empty;
             EstimatedPopulation = 0;
         }

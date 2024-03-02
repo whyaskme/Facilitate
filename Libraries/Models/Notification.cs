@@ -17,12 +17,12 @@ namespace Facilitate.Libraries.Models
             _t = "Notification";
 
             UserId = ObjectId.Empty;
-            Name = "";
+            Name = string.Empty;
             DateTime = DateTime.UtcNow;
-            PackageName = "";
-            NotificationTicker = "";
-            NotificationTitle = "";
-            NotificationText = "";
+            PackageName = string.Empty;
+            NotificationTicker = string.Empty;
+            NotificationTitle = string.Empty;
+            NotificationText = string.Empty;
 
             Location = new Location(UserId, ObjectId.Empty, "", latitude, longitude);
         }

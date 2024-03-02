@@ -23,7 +23,7 @@ namespace Facilitate.Libraries.Models
 {
     public class Utils
     {
-        string cookieDomain = "";
+        string cookieDomain = string.Empty;
         public Utils()
         {
             bool _useLocalHostDB = Convert.ToBoolean(ConfigurationManager.AppSettings["UseLocalHost"]);
@@ -147,7 +147,7 @@ namespace Facilitate.Libraries.Models
                     _randomNumber = _random.Next(1, 9999);
                     _randomUser.Contact.Address.Address1 = _randomNumber + " " + _streetName.Name;
                 }
-                _randomUser.Contact.Address.Address2 = "";
+                _randomUser.Contact.Address.Address2 = string.Empty;
 
                 _randomUser.Contact.Address.CountryId = Constants.DefaultCountryId;
 
@@ -720,8 +720,8 @@ namespace Facilitate.Libraries.Models
         {
             var stateId = ObjectId.Empty;
             var stateTimeZoneId = ObjectId.Empty;
-            var stateName = "";
-            var stateAbbr = "";
+            var stateName = string.Empty;
+            var stateAbbr = string.Empty;
 
             try
             {
@@ -913,7 +913,7 @@ namespace Facilitate.Libraries.Models
                     // Handle Countries from SourceData
                     //var _countries = _mongoCountryCollection.Find<Country>(s => s.Name == _source.Country).ToListAsync<Country>().Result;
                     //{
-                    //    //var _countryName = "";
+                    //    //var _countryName = string.Empty;
 
                     //}
                 }
@@ -1095,7 +1095,7 @@ namespace Facilitate.Libraries.Models
                 // Update Address section
                 if (jsonObject.Contact.Address.Address1.Value.Length > 0)
                 {
-                    var address1 = "";
+                    var address1 = string.Empty;
                     var inputAddress1 = jsonObject.Contact.Address.Address1.Value.ToString();
                     if (inputAddress1.Contains(" "))
                     {
@@ -1110,7 +1110,7 @@ namespace Facilitate.Libraries.Models
 
                 if (jsonObject.Contact.Address.Address2.Value.Length > 0)
                 {
-                    var address2 = "";
+                    var address2 = string.Empty;
                     var inputAddress2 = jsonObject.Contact.Address.Address2.Value.ToString();
                     if (inputAddress2.Contains(" "))
                     {
@@ -1160,7 +1160,7 @@ namespace Facilitate.Libraries.Models
                 if (encryptUser)
                     _user = EncryptUserData(_user);
 
-                var usersJson = "";
+                var usersJson = string.Empty;
 
                 if (userId != ObjectId.Empty.ToString()) // Existing User update
                     usersJson = UpdateUser(_user, Convert.ToDouble(latitude), Convert.ToDouble(longitude)).ToJson();
@@ -1650,7 +1650,7 @@ namespace Facilitate.Libraries.Models
 
         public string CreateUserEvent(string _userId, string _eventId, string _eventDetails, double _latitude, double _longitude)
         {
-            var reportStatus = "";
+            var reportStatus = string.Empty;
 
             var eventTypeId = Convert.ToInt32(_eventId);
             var eventName = _eventDetails;
@@ -1697,7 +1697,7 @@ namespace Facilitate.Libraries.Models
 
         public string CreateNotification(Notification _notification)
         {
-            var notificationResponse = "";
+            var notificationResponse = string.Empty;
 
             try
             {
@@ -1716,7 +1716,7 @@ namespace Facilitate.Libraries.Models
 
         public string CreateUser(User _user, double _latitude, double _longitude)
         {
-            var registrationResponse = "";
+            var registrationResponse = string.Empty;
 
             try
             {
@@ -1870,7 +1870,7 @@ namespace Facilitate.Libraries.Models
 
         public string GetUserLastActivityDate(string _userId)
         {
-            string _lastActiveDate = "";
+            string _lastActiveDate = string.Empty;
 
             try
             {
@@ -2020,7 +2020,7 @@ namespace Facilitate.Libraries.Models
 
         public string CreateMessage(Message _message)
         {
-            var sendResult = "";
+            var sendResult = string.Empty;
 
             try
             {
@@ -2050,7 +2050,7 @@ namespace Facilitate.Libraries.Models
 
         public string SendEmail(Message _message)
         {
-            string sendResult = "";
+            string sendResult = string.Empty;
 
             try
             {
@@ -2129,7 +2129,7 @@ namespace Facilitate.Libraries.Models
             IMongoCollection<RenewalPeriod> _mongoRenewalPeriodsCollection;
             IMongoCollection<Message> _mongoMessageCollection;
 
-        string _dbConnectionString = "";
+        string _dbConnectionString = string.Empty;
 
         #endregion
     }

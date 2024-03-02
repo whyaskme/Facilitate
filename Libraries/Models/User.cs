@@ -25,10 +25,10 @@ namespace Facilitate.Libraries.Models
 
             IsLoggedIn = false;
 
-            FirstName = "";
-            LastName = "";
+            FirstName = string.Empty;
+            LastName = string.Empty;
 
-            Pwd = "";
+            Pwd = string.Empty;
 
             Gender = 0;
 
@@ -41,6 +41,7 @@ namespace Facilitate.Libraries.Models
 
             CreditCards = new List<CreditCard>();
             Transactions = new List<Transaction>();
+            Quotes = new List<Quote>();
         }
 
         public User(string userRole)
@@ -54,10 +55,10 @@ namespace Facilitate.Libraries.Models
             DeviceType = 0;
             IsLoggedIn = false;
 
-            FirstName = "";
-            LastName = "";
+            FirstName = string.Empty;
+            LastName = string.Empty;
 
-            Pwd = "";
+            Pwd = string.Empty;
 
             Gender = 0;
 
@@ -70,6 +71,7 @@ namespace Facilitate.Libraries.Models
 
             CreditCards = new List<CreditCard>();
             Transactions = new List<Transaction>();
+            Quotes = new List<Quote>();
         }
         public DateTime RegistrationDate { get; set; }
         public Boolean Expired { get; set; }
@@ -80,9 +82,11 @@ namespace Facilitate.Libraries.Models
         public string LastName { get; set; }
         public string Pwd { get; set; }
         public int Gender { get; set; } // 0 = Not specified, Female = 1, Male = 2
+
         public ContactInfo Contact { get; set; }
         public List<UserRole> Roles { get; set; }
         public List<CreditCard> CreditCards { get; set; }
         public List<Transaction> Transactions { get; set; }
+        public List<Quote> Quotes { get; set; }
     }
 }

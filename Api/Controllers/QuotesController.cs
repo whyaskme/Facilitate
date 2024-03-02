@@ -1,5 +1,6 @@
 using Facilitate.Libraries.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 
 namespace Api.Controllers
 {
@@ -24,13 +25,29 @@ namespace Api.Controllers
         {
             return Enumerable.Range(1, 5).Select(index => new Quote
             {
-                //Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                //TemperatureC = Random.Shared.Next(-20, 55),
-                //Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-
-                //Date = DateTime.Now.AddDays(index)
-            })
+                //quote.Date = DateAndTime.Now,
+                Address = "123 Main St",
+                City = "Anytown",
+                State = "CA",
+                Zip = "12345",
+                FirstName = "John",
+                LastName = "Doe",
+                Email = ""
+        })
             .ToArray();
+
+            //for (int i = 0; i < 5; i++)
+            //{
+            //    var quote = new Quote();
+            //    quote.Date = DateAndTime.Now;
+            //    quote.Address = "123 Main St";
+            //    quote.City = "Anytown";
+            //    quote.State = "CA";
+            //    quote.Zip = "12345";
+            //    quote.FirstName = "John";
+            //    quote.LastName = "Doe";
+            //    quote.Email = "";
+            //}
         }
     }
 }

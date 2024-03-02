@@ -15,8 +15,8 @@ namespace Facilitate.Libraries.Models
         {
             ReferenceId = referenceId;
             ReferenceType = referenceType;
-            //Name = "";
-            //Details = "";
+            //Name = string.Empty;
+            //Details = string.Empty;
         }
         public ObjectId ReferenceId { get; set; }
         public Int16 ReferenceType { get; set; }

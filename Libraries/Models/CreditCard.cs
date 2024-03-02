@@ -17,13 +17,13 @@ namespace Facilitate.Libraries.Models
             _id = ObjectId.GenerateNewId();
             _t = "CreditCard";
 
-            FullName = "";
+            FullName = string.Empty;
             CardTypeId = ObjectId.Empty;
-            CardTypeName = "";
-            Number = "";
-            Expires = "";
-            Zipcode = "";
-            CVVCode = "";
+            CardTypeName = string.Empty;
+            Number = string.Empty;
+            Expires = string.Empty;
+            Zipcode = string.Empty;
+            CVVCode = string.Empty;
         }
 
         public ObjectId _id { get; set; }

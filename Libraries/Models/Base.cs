@@ -33,7 +33,7 @@ namespace Facilitate.Libraries.Models
 
             Enabled = true;
 
-            Name = "";
+            Name = string.Empty;
         }
         /// <summary>
         /// 

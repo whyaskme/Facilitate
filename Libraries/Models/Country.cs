@@ -16,12 +16,12 @@ namespace Facilitate.Libraries.Models
         {
             _t = "Country";
 
-            Abbr = "";
+            Abbr = string.Empty;
             TimeZoneId = ObjectId.Empty;
             CountryCodeUrl = "https://countrycode.org/";
-            InternationalDialingPrefix = "";
+            InternationalDialingPrefix = string.Empty;
             CountryCallingCode = "1"; // 1 = United States
-            ISOCode = "";
+            ISOCode = string.Empty;
             AreaKm2 = 0;
         }
         public string Abbr { get; set; }

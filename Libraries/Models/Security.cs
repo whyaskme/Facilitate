@@ -61,7 +61,7 @@ namespace Facilitate.Libraries.Models
             }
             catch
             {
-                return "";
+                return string.Empty;
             }
             string DecodeAndDecrypt = AesDecrypt(StringToByteArray(cipherText), myKey);
             return (DecodeAndDecrypt);
@@ -84,7 +84,7 @@ namespace Facilitate.Libraries.Models
         {
             Byte[] outputBytes = inputBytes;
             var plaintext = string.Empty;
-            var mException = "";
+            var mException = string.Empty;
             try
             {
                 using (MemoryStream memoryStream = new MemoryStream(outputBytes))

@@ -17,13 +17,13 @@ namespace Facilitate.Libraries.Models
             _id = ObjectId.GenerateNewId();
             _t = "CreditCard";
             Date = DateTime.UtcNow;
-            Type = "";
+            Type = string.Empty;
             Amount = 0.00;
             ProcessorId = ObjectId.Empty;
             PaymentMethodId = null;
             ResultCode = 0;
-            ResultName = "";
-            ResultDetails = "";
+            ResultName = string.Empty;
+            ResultDetails = string.Empty;
             PaymentCard = new CreditCard();
         }
 
