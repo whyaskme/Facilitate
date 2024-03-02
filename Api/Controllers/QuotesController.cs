@@ -20,9 +20,9 @@ namespace Api.Controllers
         }
 
         [HttpGet(Name = "GetQuotes")]
-        public IEnumerable<Quotes> Get()
+        public IEnumerable<Quote> Get()
         {
-            return Enumerable.Range(1, 5).Select(index => new Quotes
+            return Enumerable.Range(1, 5).Select(index => new Quote
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                 TemperatureC = Random.Shared.Next(-20, 55),
