@@ -1,0 +1,47 @@
+{
+  "address": "2155 Old Highway 8, New Brighton, Minnesota 55112",
+  "fullAddress": "2155 Old Highway 8, New Brighton, Minnesota 55112",
+  "street": "2155 Old Highway 8",
+  "city": "New Brighton",
+  "state": "Minnesota",
+  "zip": "55112",
+  "firstName": "Joe",
+  "lastName": "Roofer",
+  "email": "help@roofle.com",
+  "phone": "(612) 255-8200",
+  "market": "Minneapolis-St. Paul, MN",
+  "externalUrl": "https://app.roofle.com/dashboard",
+  "timestamp": "2024-03-02T15:32:50.159Z",
+  "numberOfStructures": 2,
+  "numberOfIncludedStructures": 2,
+  "totalSquareFeet": 1909,
+  "totalInitialSquareFeet": 1909,
+  "mainRoofTotalSquareFeet": 1139,
+  "sessionId": "W5cnnBDgDNGvbWnqn1Cz8",
+  "productName": "Certainteed Landmark",
+  "structures": [
+    {
+      "name": "Main Roof",
+      "slope": "medium",
+      "isIncluded": true,
+      "squareFeet": 1909,
+      "initialSquareFeet": 1139,
+      "roofComplexity": "Simple"
+    }
+  ],
+  "priceInfo": {
+    "priceType": "BasicFinancing",
+    "total": 15069.25,
+    "pricePerSquare": 401,
+    "monthly": 334,
+    "apr": 26.1,
+    "months": 180
+  },
+  "priceRange": {
+    "totalMin": 13562,
+    "totalMax": 16576,
+    "monthlyMin": 300,
+    "monthlyMax": 367
+  },
+  "wasteFactorMainRoof": 1.12
+}
