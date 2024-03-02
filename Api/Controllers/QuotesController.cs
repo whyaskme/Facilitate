@@ -1,4 +1,4 @@
-using Api.Models;
+using Facilitate.Libraries.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -24,9 +24,11 @@ namespace Api.Controllers
         {
             return Enumerable.Range(1, 5).Select(index => new Quote
             {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+                //Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                //TemperatureC = Random.Shared.Next(-20, 55),
+                //Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+
+                //Date = DateTime.Now.AddDays(index)
             })
             .ToArray();
         }

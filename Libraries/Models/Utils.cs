@@ -237,24 +237,6 @@ namespace Facilitate.Libraries.Models
 
                 _randomUser.Pwd = RandomAlphaNumericString().ToLower();
 
-                // Get and set random TNCs
-                _mongoTNCCollection = _mongoDatabase.GetCollection<TNC>("TNCs");
-                var _tncCount = _mongoTNCCollection.Find<TNC>(s => s.Enabled == true).ToListAsync<TNC>().Result.Count;
-                var _tncs = _mongoTNCCollection.Find<TNC>(s => s.Enabled == true).ToListAsync<TNC>().Result;
-                foreach (TNC _tnc in _tncs)
-                {
-                    _randomNumber = _random.Next(1, _tncCount);
-
-                    if(_randomNumber < 5)
-                    {
-                        TNCList _tncItem = new TNCList();
-                        _tncItem._id = _tnc._id;
-                        _tncItem.Name = _tnc.Name;
-
-                        _randomUser.TNCs.Add(_tncItem);
-                    }
-                }
-
                 _randomUser.IsLoggedIn = true;
 
                 // Insert User in DB
@@ -580,81 +562,6 @@ namespace Facilitate.Libraries.Models
                 _zipCodeList.Add(_li);
             }
             return _zipCodeList;
-        }
-
-        public List<TNCList> GetTNCList()
-        {
-            List<TNCList> _tncList = new List<TNCList>();
-            List<TNC> _tncs = new List<TNC>();
-
-            try
-            {
-                _mongoTNCCollection = _mongoDatabase.GetCollection<TNC>("TNCs");
-
-                _tncs = _mongoTNCCollection.Find<TNC>(s => s.Enabled == true).SortBy(s => s.Name).ToListAsync<TNC>().Result;
-
-                foreach (TNC _tnc in _tncs)
-                {
-                    TNCList _li = new TNCList();
-                    _li._id = _tnc._id;
-                    _li.Name = _tnc.Name;
-                    _tncList.Add(_li);
-                }
-            }
-            catch (Exception ex)
-            {
-                TNCList _li = new TNCList();
-                _li._id = ObjectId.Empty;
-                _li.Name = ex.ToString();
-                _tncList.Add(_li);
-            }
-            return _tncList;
-        }
-
-        public TNC GetTNCById(string tncId)
-        {
-            List<TNC> _tncs = new List<TNC>();
-            //List<TNC> _tncList = new List<TNC>();
-
-            try
-            {
-                _mongoTNCCollection = _mongoDatabase.GetCollection<TNC>("TNCs");
-                _tncs = _mongoTNCCollection.Find<TNC>(s => s._id == ObjectId.Parse(tncId) && s.Enabled == true).SortBy(s => s.Name).ToListAsync<TNC>().Result;
-                foreach (TNC _tnc in _tncs)
-                {
-                    //_tncList.Add(_tnc);
-                    return _tnc;
-                }
-            }
-            catch(Exception ex)
-            {
-                return null;
-            }
-
-            return null;
-        }
-
-        public TNC GetTNCByName(string tncName)
-        {
-            List<TNC> _tncs = new List<TNC>();
-            //List<TNC> _tncList = new List<TNC>();
-
-            try
-            {
-                _mongoTNCCollection = _mongoDatabase.GetCollection<TNC>("TNCs");
-                _tncs = _mongoTNCCollection.Find<TNC>(s => s.Name == tncName.Trim() && s.Enabled == true).SortBy(s => s.Name).ToListAsync<TNC>().Result;
-                foreach (TNC _tnc in _tncs)
-                {
-                    //_tncList.Add(_tnc);
-                    return _tnc;
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-
-            return null;
         }
 
         public void UpdateCounties()
@@ -1112,17 +1019,6 @@ namespace Facilitate.Libraries.Models
                 {
                     _user.Enabled = true;
                     userOriginallyEnabled = _user.Enabled;
-                }
-
-                // Update TNC section
-                // Clear existing TNCS and reset from input
-                if (jsonObject.TNCs.Count != 0)
-                {
-                    _user.TNCs.Clear();
-                    foreach (var _tncId in jsonObject.TNCs)
-                    {
-                        _user.TNCs.Add(ObjectId.Parse(_tncId.ToString()));
-                    }
                 }
 
                 // Update Personal section
@@ -2193,59 +2089,6 @@ namespace Facilitate.Libraries.Models
             return sendResult;
         }
 
-        public string CreateTNCs()
-        {
-            var registrationResponse = "";
-
-            try
-            {
-                _mongoTNCCollection = _mongoDatabase.GetCollection<TNC>("TNCs");
-
-                TNC _tnc = new TNC();
-
-                Event registrationEvent = new Event(Convert.ToDouble("30.3811997"), Convert.ToDouble("-97.65724329999999"));
-                registrationEvent.Name = Constants.Event.TNC.Created.Item2;
-                registrationEvent.TypeId = Constants.Event.TNC.Created.Item1;
-
-                string[] _tncNames = new string[] { "FARE", "Fasten", "GetMe", "InstaRyde", "Lyft", "RideAustin", "ScoopMe", "Uber", "WingZ" };
-                foreach(string _tncName in _tncNames)
-                {
-                    _tnc.Name = _tncName;
-
-                    Email _email = new Email();
-                    _email.UserName = "admin";
-                    _email.Domain = _tnc.Name.ToLower() + "com";
-                    _tnc.Contact.Email = _email;
-
-                    Phone _phone = new Phone();
-                    _phone.CountryCode = "1";
-                    _phone.AreaCode = 512;
-                    _phone.Exchange = "";
-                    _phone.Number = "";
-                    _tnc.Contact.Phone = _phone;
-
-                    _tnc.Contact.Address.Address1 = "123 Some St.";
-                    _tnc.Contact.Address.Address2 = "Unit #567-A";
-                    _tnc.Contact.Address.CountryId = Constants.DefaultCountryId;
-                    _tnc.Contact.Address.StateId = Constants.DefaultStateId;
-                    _tnc.Contact.Address.CountyId = Constants.DefaultCountyId;
-                    _tnc.Contact.Address.CityId = Constants.DefaultCityId;
-                    _tnc.Contact.Address.ZipCode = 78753;
-                    _tnc.Contact.Address.TimeZoneId = Constants.DefaultTimeZoneId;
-
-                    _mongoTNCCollection.InsertOne(_tnc);
-                }
-
-                registrationResponse = "Successfully created new TNC.";
-            }
-            catch (Exception ex)
-            {
-                registrationResponse = ex.ToString();
-            }
-
-            return registrationResponse;
-        }
-
         public void UpdateSourceData(SourceData _source)
         {
             // Update Local object
@@ -2282,7 +2125,6 @@ namespace Facilitate.Libraries.Models
             IMongoCollection<NameLast> _mongoLastNameCollection;
             IMongoCollection<NameStreet> _mongoStreetNameCollection;
             IMongoCollection<Notification> _mongoNotificationCollection;
-            IMongoCollection<TNC> _mongoTNCCollection;
             IMongoCollection<UserRole> _mongoUserRoleCollection;
             IMongoCollection<RenewalPeriod> _mongoRenewalPeriodsCollection;
             IMongoCollection<Message> _mongoMessageCollection;

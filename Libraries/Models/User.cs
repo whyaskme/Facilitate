@@ -34,8 +34,6 @@ namespace Facilitate.Libraries.Models
 
             Contact = new ContactInfo();
 
-            TNCs = new List<TNCList>();
-
             Roles = new List<UserRole>();
 
             var newUserRole = new UserRole(Constants.UserRoles.Consumer.Item2);
@@ -65,8 +63,6 @@ namespace Facilitate.Libraries.Models
 
             Contact = new ContactInfo();
 
-            TNCs = new List<TNCList>();
-
             Roles = new List<UserRole>();
 
             var newUserRole = new UserRole(userRole);
@@ -85,7 +81,6 @@ namespace Facilitate.Libraries.Models
         public string Pwd { get; set; }
         public int Gender { get; set; } // 0 = Not specified, Female = 1, Male = 2
         public ContactInfo Contact { get; set; }
-        public List<TNCList> TNCs { get; set; }
         public List<UserRole> Roles { get; set; }
         public List<CreditCard> CreditCards { get; set; }
         public List<Transaction> Transactions { get; set; }
