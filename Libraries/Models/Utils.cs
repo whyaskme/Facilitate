@@ -197,10 +197,10 @@ namespace Facilitate.Libraries.Models
                 }
 
                 Phone _randomPhone = new Phone();
-                _randomPhone.CountryCode = "1"; // United States
+                _randomPhone.CountryCode = 1; // United States
                 _randomPhone.AreaCode = _randomAreaCode;
-                _randomPhone.Exchange = _random.Next(555, 999).ToString();
-                _randomPhone.Number = _random.Next(1000, 9999).ToString();
+                _randomPhone.Exchange = _random.Next(555, 999);
+                _randomPhone.Number = _random.Next(1000, 9999);
                 _randomUser.Contact.Phone = _randomPhone;
 
                 // Total ZipCode count for random City
@@ -1589,8 +1589,8 @@ namespace Facilitate.Libraries.Models
             _user.Contact.Email.UserName = EncryptString(_user.Contact.Email.UserName, Constants.EncryptionKey.ToString());
             _user.Contact.Email.Domain = EncryptString(_user.Contact.Email.Domain, Constants.EncryptionKey.ToString());
 
-            _user.Contact.Phone.Exchange = EncryptString(_user.Contact.Phone.Exchange, _user._id.ToString());
-            _user.Contact.Phone.Number = EncryptString(_user.Contact.Phone.Number, _user._id.ToString());
+            _user.Contact.Phone.Exchange = _user.Contact.Phone.Exchange;
+            _user.Contact.Phone.Number = _user.Contact.Phone.Number;
 
             return _user;
         }
@@ -1610,8 +1610,8 @@ namespace Facilitate.Libraries.Models
             _user.Contact.Email.UserName = DecryptString(_user.Contact.Email.UserName, Constants.EncryptionKey.ToString());
             _user.Contact.Email.Domain = DecryptString(_user.Contact.Email.Domain, Constants.EncryptionKey.ToString());
 
-            _user.Contact.Phone.Exchange = DecryptString(_user.Contact.Phone.Exchange, _user._id.ToString());
-            _user.Contact.Phone.Number = DecryptString(_user.Contact.Phone.Number, _user._id.ToString());
+            _user.Contact.Phone.Exchange = _user.Contact.Phone.Exchange;
+            _user.Contact.Phone.Number = _user.Contact.Phone.Number;
 
             return _user;
         }

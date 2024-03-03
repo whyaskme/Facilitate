@@ -25,8 +25,11 @@ namespace Facilitate.Libraries.Models
 
             IsLoggedIn = false;
 
+            Title = string.Empty;
             FirstName = string.Empty;
+            MiddleName = string.Empty;
             LastName = string.Empty;
+            Suffix = string.Empty;
 
             Pwd = string.Empty;
 
@@ -41,7 +44,6 @@ namespace Facilitate.Libraries.Models
 
             CreditCards = new List<CreditCard>();
             Transactions = new List<Transaction>();
-            Quotes = new List<Quote>();
         }
 
         public User(string userRole)
@@ -55,8 +57,11 @@ namespace Facilitate.Libraries.Models
             DeviceType = 0;
             IsLoggedIn = false;
 
+            Title = string.Empty;
             FirstName = string.Empty;
+            MiddleName = string.Empty;
             LastName = string.Empty;
+            Suffix = string.Empty;
 
             Pwd = string.Empty;
 
@@ -71,15 +76,17 @@ namespace Facilitate.Libraries.Models
 
             CreditCards = new List<CreditCard>();
             Transactions = new List<Transaction>();
-            Quotes = new List<Quote>();
         }
         public DateTime RegistrationDate { get; set; }
         public Boolean Expired { get; set; }
         public DateTime ExpireDate { get; set; }
         public Int16 DeviceType { get; set; } // Android (Phone) = 1, Android (Tablet) = 2, IOS (Phone) - 3, IOS (Tablet) - 4
         public bool IsLoggedIn { get; set; }
+        public string Title { get; set; }
         public string FirstName { get; set; }
+        public string MiddleName { get; set; }
         public string LastName { get; set; }
+        public string Suffix { get; set; }
         public string Pwd { get; set; }
         public int Gender { get; set; } // 0 = Not specified, Female = 1, Male = 2
 
@@ -87,6 +94,5 @@ namespace Facilitate.Libraries.Models
         public List<UserRole> Roles { get; set; }
         public List<CreditCard> CreditCards { get; set; }
         public List<Transaction> Transactions { get; set; }
-        public List<Quote> Quotes { get; set; }
     }
 }

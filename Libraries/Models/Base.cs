@@ -1,19 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
-using System.Globalization;
-using System.Net;
-using System.Net.Mail;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web;
-using System.Xml;
-
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Core;
+
+using Facilitate.Libraries.Models;
+using MongoDB.Bson.Serialization.Attributes;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+using static Facilitate.Libraries.Models.Constants.Transaction;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Facilitate.Libraries.Models
 {
@@ -34,6 +35,7 @@ namespace Facilitate.Libraries.Models
             Enabled = true;
 
             Name = string.Empty;
+            Date = DateTime.Now.Date;
         }
         /// <summary>
         /// 
@@ -48,5 +50,7 @@ namespace Facilitate.Libraries.Models
         /// </summary>
         public bool Enabled { get; set; }
         public string Name { get; set; }
+
+        public DateTime? Date { get; set; }
     }
 }

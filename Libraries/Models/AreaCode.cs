@@ -26,6 +26,7 @@ namespace Facilitate.Libraries.Models
             Longitude = 0.00;
             Latitude = 0.00;
         }
+
         public Int16 AreaCodeNumber { get; set; }
         public ObjectId CountryId { get; set; }
         public ObjectId StateId { get; set; }

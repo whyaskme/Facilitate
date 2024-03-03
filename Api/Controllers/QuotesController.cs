@@ -1,6 +1,5 @@
 using Facilitate.Libraries.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic;
 
 namespace Api.Controllers
 {
@@ -8,11 +7,6 @@ namespace Api.Controllers
     [Route("[controller]")]
     public class QuotesController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger<QuotesController> _logger;
 
         public QuotesController(ILogger<QuotesController> logger)
@@ -20,34 +14,45 @@ namespace Api.Controllers
             _logger = logger;
         }
 
+
         [HttpGet(Name = "GetQuotes")]
         public IEnumerable<Quote> Get()
         {
-            return Enumerable.Range(1, 5).Select(index => new Quote
-            {
-                //quote.Date = DateAndTime.Now,
-                Address = "123 Main St",
-                City = "Anytown",
-                State = "CA",
-                Zip = "12345",
-                FirstName = "John",
-                LastName = "Doe",
-                Email = ""
-        })
-            .ToArray();
+            List<Quote> quotes = new List<Quote>();
+            int numQuotes = 1;
 
-            //for (int i = 0; i < 5; i++)
-            //{
-            //    var quote = new Quote();
-            //    quote.Date = DateAndTime.Now;
-            //    quote.Address = "123 Main St";
-            //    quote.City = "Anytown";
-            //    quote.State = "CA";
-            //    quote.Zip = "12345";
-            //    quote.FirstName = "John";
-            //    quote.LastName = "Doe";
-            //    quote.Email = "";
-            //}
+            for(var i = 0; i < numQuotes; i++)
+            {
+                var _quote = new Quote();
+
+                quotes.Add(_quote);
+            }
+
+            return quotes;
+        }
+
+        [HttpPost(Name = "PostQuote")]
+        public string Post(string quoteId)
+        {
+            var results = "New quote (" + quoteId + ") POSTED";
+
+            return results;
+        }
+
+        [HttpPut(Name = "PutQuote")]
+        public string Get(string quoteId)
+        {
+            var results = "Old quote (" + quoteId + ") UPDATED";
+
+            return results;
+        }
+
+        [HttpDelete(Name = "DeleteQuote")]
+        public string Delete(string quoteId)
+        {
+            var results = "Old quote (" + quoteId + ") DELETED";
+
+            return results;
         }
     }
 }
