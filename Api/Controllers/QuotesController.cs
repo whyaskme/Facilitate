@@ -32,17 +32,17 @@ namespace Api.Controllers
         }
 
         [HttpPost(Name = "PostQuote")]
-        public string Post(string quoteId)
+        public string Post(Quote quote)
         {
-            var results = "New quote (" + quoteId + ") POSTED";
+            var results = "New quote (" + quote._id + ") POSTED";
 
             return results;
         }
 
         [HttpPut(Name = "PutQuote")]
-        public string Get(string quoteId)
+        public string Get(Quote quote)
         {
-            var results = "Old quote (" + quoteId + ") UPDATED";
+            var results = "Old quote (" + quote._id + ") UPDATED";
 
             return results;
         }
