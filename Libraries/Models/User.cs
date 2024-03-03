@@ -37,10 +37,10 @@ namespace Facilitate.Libraries.Models
 
             Contact = new ContactInfo();
 
-            Roles = new List<UserRole>();
+            //Roles = new List<UserRole>();
 
-            var newUserRole = new UserRole(Constants.UserRoles.Consumer.Item2);
-            Roles.Add(newUserRole);
+            //var newUserRole = new UserRole(Constants.UserRoles.Consumer.Item2);
+            //Roles.Add(newUserRole);
 
             CreditCards = new List<CreditCard>();
             Transactions = new List<Transaction>();
@@ -69,10 +69,10 @@ namespace Facilitate.Libraries.Models
 
             Contact = new ContactInfo();
 
-            Roles = new List<UserRole>();
+            //Roles = new List<UserRole>();
 
-            var newUserRole = new UserRole(userRole);
-            Roles.Add(newUserRole);
+            //var newUserRole = new UserRole(userRole);
+            //Roles.Add(newUserRole);
 
             CreditCards = new List<CreditCard>();
             Transactions = new List<Transaction>();
@@ -91,7 +91,7 @@ namespace Facilitate.Libraries.Models
         public int Gender { get; set; } // 0 = Not specified, Female = 1, Male = 2
 
         public ContactInfo Contact { get; set; }
-        public List<UserRole> Roles { get; set; }
+        //public List<UserRole> Roles { get; set; }
         public List<CreditCard> CreditCards { get; set; }
         public List<Transaction> Transactions { get; set; }
     }

@@ -34,7 +34,7 @@ namespace Api.Controllers
         [HttpPost(Name = "PostQuote")]
         public string Post(Quote quote)
         {
-            var results = "New quote (" + quote._id + ") POSTED";
+            var results = "New quote (" + quote._id + ") for (" + quote.Consumer.FirstName + " " + quote.Consumer.LastName + ") POSTED";
 
             return results;
         }
@@ -42,7 +42,7 @@ namespace Api.Controllers
         [HttpPut(Name = "PutQuote")]
         public string Get(Quote quote)
         {
-            var results = "Old quote (" + quote._id + ") UPDATED";
+            var results = "Old quote (" + quote._id + ") for (" + quote.Consumer.FirstName + " " + quote.Consumer.LastName + ") UPDATED";
 
             return results;
         }
