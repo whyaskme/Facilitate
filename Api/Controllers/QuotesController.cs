@@ -16,7 +16,7 @@ namespace Api.Controllers
 
 
         [HttpGet(Name = "GetQuotes")]
-        public IEnumerable<Quote> Get()
+        public IEnumerable<Quote> GetQuotes()
         {
             List<Quote> quotes = new List<Quote>();
             int numQuotes = 5;
@@ -63,7 +63,7 @@ namespace Api.Controllers
         }
 
         [HttpPost(Name = "PostQuote")]
-        public string Post(Quote quote)
+        public string PostQuote(Quote quote)
         {
             var results = string.Empty;
 
@@ -84,7 +84,7 @@ namespace Api.Controllers
         }
 
         [HttpPut(Name = "PutQuote")]
-        public string Put(Quote quote)
+        public string PutQuote(Quote quote)
         {
             var results = string.Empty;
 
@@ -105,7 +105,7 @@ namespace Api.Controllers
         }
 
         [HttpDelete(Name = "DeleteQuote")]
-        public string Delete(string quoteId)
+        public string DeleteQuote(string quoteId)
         {
             var results = string.Empty;
 
