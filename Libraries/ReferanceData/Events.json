@@ -1,0 +1,104 @@
+[
+  {
+    "_id": "57bebbe3d00bd5381ced588a",
+    "_t": "Event",
+    "Enabled": true,
+    "Name": "Account: LogIn",
+    "TypeId": 1006,
+    "DateTime": "2016-08-25T09:35:31.894+0000",
+    "Reference": {
+      "ReferenceId": "57beb61ad00bd2381c91030c",
+      "ReferenceType": 1
+    },
+    "Notes": "None provided",
+    "Location": {
+      "Latitude": 30.3812319,
+      "Longitude": -97.6573009
+    }
+  },
+  {
+    "_id": "57bebbe7d00bd5381ced588b",
+    "_t": "Event",
+    "Enabled": true,
+    "Name": "Location",
+    "TypeId": 2000,
+    "DateTime": "2016-08-25T09:35:35.115+0000",
+    "Reference": {
+      "ReferenceId": "57beb61ad00bd2381c91030c",
+      "ReferenceType": 1
+    },
+    "Notes": "None provided",
+    "Location": {
+      "Latitude": 30.381256900000004,
+      "Longitude": -97.6572727
+    }
+  },
+  {
+    "_id": "57bebc06d00bd5381ced5890",
+    "_t": "Event",
+    "Enabled": true,
+    "Name": "Location",
+    "TypeId": 2000,
+    "DateTime": "2016-08-25T09:36:06.553+0000",
+    "Reference": {
+      "ReferenceId": "57beb61ad00bd2381c91030c",
+      "ReferenceType": 1
+    },
+    "Notes": "None provided",
+    "Location": {
+      "Latitude": 30.381239800000003,
+      "Longitude": -97.6572796
+    }
+  },
+  {
+    "_id": "57bebc12d00bd5381ced5891",
+    "_t": "Event",
+    "Enabled": true,
+    "Name": "Location",
+    "TypeId": 2000,
+    "DateTime": "2016-08-25T09:36:18.691+0000",
+    "Reference": {
+      "ReferenceId": "57beb61ad00bd2381c91030c",
+      "ReferenceType": 1
+    },
+    "Notes": "None provided",
+    "Location": {
+      "Latitude": 30.381248399999997,
+      "Longitude": -97.6572654
+    }
+  },
+  {
+    "_id": "57bebc22d00bd5381ced5892",
+    "_t": "Event",
+    "Enabled": true,
+    "Name": "Location",
+    "TypeId": 2000,
+    "DateTime": "2016-08-25T09:36:34.044+0000",
+    "Reference": {
+      "ReferenceId": "57beb61ad00bd2381c91030c",
+      "ReferenceType": 1
+    },
+    "Notes": "None provided",
+    "Location": {
+      "Latitude": 30.3812286,
+      "Longitude": -97.657304
+    }
+  },
+  {
+    "_id": "57bebc23d00bd5381ced5893",
+    "_t": "Event",
+    "Enabled": true,
+    "Name": "Location",
+    "TypeId": 2000,
+    "DateTime": "2016-08-25T09:36:35.800+0000",
+    "Reference": {
+      "ReferenceId": "57beb61ad00bd2381c91030c",
+      "ReferenceType": 1
+    },
+    "Notes": "None provided",
+    "Location": {
+      "Latitude": 30.381254899999995,
+      "Longitude": -97.65727749999999
+    }
+  }
+]

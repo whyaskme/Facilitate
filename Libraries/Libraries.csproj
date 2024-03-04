@@ -23,4 +23,8 @@
     <PackageReference Include="System.Net.Primitives" Version="4.3.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ReferanceData\" />
+  </ItemGroup>
+
 </Project>

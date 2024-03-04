@@ -1,0 +1,26 @@
+[
+{ 
+    "_id" : "57be0508d00bc528b4bfb0f9", 
+    "_t" : "UserRole", 
+    "Enabled" : true, 
+    "Name" : "System Administrator"
+},
+{ 
+    "_id" : "57be0527d00bc528b4bfb0fa", 
+    "_t" : "UserRole", 
+    "Enabled" : true, 
+    "Name" : "Site Administrator"
+},
+{ 
+    "_id" : "57be052dd00bc528b4bfb0fb", 
+    "_t" : "UserRole", 
+    "Enabled" : true, 
+    "Name" : "Group Administrator"
+},
+{ 
+    "_id" : "57be0533d00bc528b4bfb0fc", 
+    "_t" : "UserRole", 
+    "Enabled" : true, 
+    "Name" : "Consumer"
+}
+]

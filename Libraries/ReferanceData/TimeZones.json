@@ -1,0 +1,2528 @@
+[
+{ 
+    "_id" : "57a01b573d33e01394bc8bf8", 
+    "_t" : "TimeZone", 
+    "Region" : "MH", 
+    "Name" : "Pacific/Majuro"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bf9", 
+    "_t" : "TimeZone", 
+    "Region" : "PF", 
+    "Name" : "Pacific/Marquesas"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bfa", 
+    "_t" : "TimeZone", 
+    "Region" : "UM", 
+    "Name" : "Pacific/Midway"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bfb", 
+    "_t" : "TimeZone", 
+    "Region" : "NR", 
+    "Name" : "Pacific/Nauru"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bfc", 
+    "_t" : "TimeZone", 
+    "Region" : "NU", 
+    "Name" : "Pacific/Niue"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bfd", 
+    "_t" : "TimeZone", 
+    "Region" : "NF", 
+    "Name" : "Pacific/Norfolk"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bfe", 
+    "_t" : "TimeZone", 
+    "Region" : "NC", 
+    "Name" : "Pacific/Noumea"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bff", 
+    "_t" : "TimeZone", 
+    "Region" : "AS", 
+    "Name" : "Pacific/Pago_Pago"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8c00", 
+    "_t" : "TimeZone", 
+    "Region" : "PW", 
+    "Name" : "Pacific/Palau"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8c01", 
+    "_t" : "TimeZone", 
+    "Region" : "PN", 
+    "Name" : "Pacific/Pitcairn"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8c02", 
+    "_t" : "TimeZone", 
+    "Region" : "FM", 
+    "Name" : "Pacific/Pohnpei"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8c03", 
+    "_t" : "TimeZone", 
+    "Region" : "PG", 
+    "Name" : "Pacific/Port_Moresby"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8c04", 
+    "_t" : "TimeZone", 
+    "Region" : "CK", 
+    "Name" : "Pacific/Rarotonga"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8c05", 
+    "_t" : "TimeZone", 
+    "Region" : "MP", 
+    "Name" : "Pacific/Saipan"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8c06", 
+    "_t" : "TimeZone", 
+    "Region" : "PF", 
+    "Name" : "Pacific/Tahiti"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8c07", 
+    "_t" : "TimeZone", 
+    "Region" : "KI", 
+    "Name" : "Pacific/Tarawa"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8c08", 
+    "_t" : "TimeZone", 
+    "Region" : "TO", 
+    "Name" : "Pacific/Tongatapu"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8c09", 
+    "_t" : "TimeZone", 
+    "Region" : "UM", 
+    "Name" : "Pacific/Wake"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8c0a", 
+    "_t" : "TimeZone", 
+    "Region" : "WF", 
+    "Name" : "Pacific/Wallis"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8acf", 
+    "_t" : "TimeZone", 
+    "Region" : "GL", 
+    "Name" : "America/Godthab"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ad0", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Goose_Bay"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ad1", 
+    "_t" : "TimeZone", 
+    "Region" : "TC", 
+    "Name" : "America/Grand_Turk"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ad2", 
+    "_t" : "TimeZone", 
+    "Region" : "GD", 
+    "Name" : "America/Grenada"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ad3", 
+    "_t" : "TimeZone", 
+    "Region" : "GP", 
+    "Name" : "America/Guadeloupe"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ad4", 
+    "_t" : "TimeZone", 
+    "Region" : "GT", 
+    "Name" : "America/Guatemala"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ad5", 
+    "_t" : "TimeZone", 
+    "Region" : "EC", 
+    "Name" : "America/Guayaquil"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ad6", 
+    "_t" : "TimeZone", 
+    "Region" : "GY", 
+    "Name" : "America/Guyana"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ad7", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Halifax"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ad8", 
+    "_t" : "TimeZone", 
+    "Region" : "CU", 
+    "Name" : "America/Havana"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ad9", 
+    "_t" : "TimeZone", 
+    "Region" : "MX", 
+    "Name" : "America/Hermosillo"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ada", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Indiana/Indianapolis"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8adb", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Indiana/Knox"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8adc", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Indiana/Marengo"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8add", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Indiana/Petersburg"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ade", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Indiana/Tell_City"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8adf", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Indiana/Vevay"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ae0", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Indiana/Vincennes"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ae1", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Indiana/Winamac"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ae2", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Inuvik"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ae3", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Iqaluit"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ae4", 
+    "_t" : "TimeZone", 
+    "Region" : "JM", 
+    "Name" : "America/Jamaica"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ae5", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Juneau"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ae6", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Kentucky/Louisville"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ae7", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Kentucky/Monticello"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ae8", 
+    "_t" : "TimeZone", 
+    "Region" : "BQ", 
+    "Name" : "America/Kralendijk"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ae9", 
+    "_t" : "TimeZone", 
+    "Region" : "BO", 
+    "Name" : "America/La_Paz"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aea", 
+    "_t" : "TimeZone", 
+    "Region" : "PE", 
+    "Name" : "America/Lima"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aeb", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Los_Angeles"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aec", 
+    "_t" : "TimeZone", 
+    "Region" : "SX", 
+    "Name" : "America/Lower_Princes"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aed", 
+    "_t" : "TimeZone", 
+    "Region" : "BR", 
+    "Name" : "America/Maceio"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aee", 
+    "_t" : "TimeZone", 
+    "Region" : "NI", 
+    "Name" : "America/Managua"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aef", 
+    "_t" : "TimeZone", 
+    "Region" : "BR", 
+    "Name" : "America/Manaus"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8af0", 
+    "_t" : "TimeZone", 
+    "Region" : "MF", 
+    "Name" : "America/Marigot"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8af1", 
+    "_t" : "TimeZone", 
+    "Region" : "MQ", 
+    "Name" : "America/Martinique"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8af2", 
+    "_t" : "TimeZone", 
+    "Region" : "MX", 
+    "Name" : "America/Matamoros"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8af3", 
+    "_t" : "TimeZone", 
+    "Region" : "MX", 
+    "Name" : "America/Mazatlan"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8af4", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Menominee"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8af5", 
+    "_t" : "TimeZone", 
+    "Region" : "MX", 
+    "Name" : "America/Merida"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8af6", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Metlakatla"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8af7", 
+    "_t" : "TimeZone", 
+    "Region" : "MX", 
+    "Name" : "America/Mexico_City"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8af8", 
+    "_t" : "TimeZone", 
+    "Region" : "PM", 
+    "Name" : "America/Miquelon"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8af9", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Moncton"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b25", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Toronto"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b26", 
+    "_t" : "TimeZone", 
+    "Region" : "VG", 
+    "Name" : "America/Tortola"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b27", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Vancouver"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b28", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Whitehorse"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b29", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Winnipeg"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b2a", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Yakutat"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b2b", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Yellowknife"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b2c", 
+    "_t" : "TimeZone", 
+    "Region" : "AQ", 
+    "Name" : "Antarctica/Casey"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b2d", 
+    "_t" : "TimeZone", 
+    "Region" : "AQ", 
+    "Name" : "Antarctica/Davis"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b2e", 
+    "_t" : "TimeZone", 
+    "Region" : "AQ", 
+    "Name" : "Antarctica/DumontDUrville"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b2f", 
+    "_t" : "TimeZone", 
+    "Region" : "AU", 
+    "Name" : "Antarctica/Macquarie"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b30", 
+    "_t" : "TimeZone", 
+    "Region" : "AQ", 
+    "Name" : "Antarctica/Mawson"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b31", 
+    "_t" : "TimeZone", 
+    "Region" : "AQ", 
+    "Name" : "Antarctica/McMurdo"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b32", 
+    "_t" : "TimeZone", 
+    "Region" : "AQ", 
+    "Name" : "Antarctica/Palmer"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b33", 
+    "_t" : "TimeZone", 
+    "Region" : "AQ", 
+    "Name" : "Antarctica/Rothera"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b34", 
+    "_t" : "TimeZone", 
+    "Region" : "AQ", 
+    "Name" : "Antarctica/Syowa"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b35", 
+    "_t" : "TimeZone", 
+    "Region" : "AQ", 
+    "Name" : "Antarctica/Troll"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b36", 
+    "_t" : "TimeZone", 
+    "Region" : "AQ", 
+    "Name" : "Antarctica/Vostok"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b37", 
+    "_t" : "TimeZone", 
+    "Region" : "SJ", 
+    "Name" : "Arctic/Longyearbyen"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b38", 
+    "_t" : "TimeZone", 
+    "Region" : "YE", 
+    "Name" : "Asia/Aden"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b39", 
+    "_t" : "TimeZone", 
+    "Region" : "KZ", 
+    "Name" : "Asia/Almaty"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b3a", 
+    "_t" : "TimeZone", 
+    "Region" : "JO", 
+    "Name" : "Asia/Amman"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b3b", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Asia/Anadyr"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b3c", 
+    "_t" : "TimeZone", 
+    "Region" : "KZ", 
+    "Name" : "Asia/Aqtau"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b3d", 
+    "_t" : "TimeZone", 
+    "Region" : "KZ", 
+    "Name" : "Asia/Aqtobe"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b3e", 
+    "_t" : "TimeZone", 
+    "Region" : "TM", 
+    "Name" : "Asia/Ashgabat"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b3f", 
+    "_t" : "TimeZone", 
+    "Region" : "IQ", 
+    "Name" : "Asia/Baghdad"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b40", 
+    "_t" : "TimeZone", 
+    "Region" : "BH", 
+    "Name" : "Asia/Bahrain"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b41", 
+    "_t" : "TimeZone", 
+    "Region" : "AZ", 
+    "Name" : "Asia/Baku"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b42", 
+    "_t" : "TimeZone", 
+    "Region" : "TH", 
+    "Name" : "Asia/Bangkok"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b43", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Asia/Barnaul"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b44", 
+    "_t" : "TimeZone", 
+    "Region" : "LB", 
+    "Name" : "Asia/Beirut"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b45", 
+    "_t" : "TimeZone", 
+    "Region" : "KG", 
+    "Name" : "Asia/Bishkek"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b46", 
+    "_t" : "TimeZone", 
+    "Region" : "BN", 
+    "Name" : "Asia/Brunei"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b47", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Asia/Chita"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b48", 
+    "_t" : "TimeZone", 
+    "Region" : "MN", 
+    "Name" : "Asia/Choibalsan"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b49", 
+    "_t" : "TimeZone", 
+    "Region" : "LK", 
+    "Name" : "Asia/Colombo"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b4a", 
+    "_t" : "TimeZone", 
+    "Region" : "SY", 
+    "Name" : "Asia/Damascus"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b4b", 
+    "_t" : "TimeZone", 
+    "Region" : "BD", 
+    "Name" : "Asia/Dhaka"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b4c", 
+    "_t" : "TimeZone", 
+    "Region" : "TL", 
+    "Name" : "Asia/Dili"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b4d", 
+    "_t" : "TimeZone", 
+    "Region" : "AE", 
+    "Name" : "Asia/Dubai"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b4e", 
+    "_t" : "TimeZone", 
+    "Region" : "TJ", 
+    "Name" : "Asia/Dushanbe"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b4f", 
+    "_t" : "TimeZone", 
+    "Region" : "PS", 
+    "Name" : "Asia/Gaza"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b50", 
+    "_t" : "TimeZone", 
+    "Region" : "PS", 
+    "Name" : "Asia/Hebron"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b51", 
+    "_t" : "TimeZone", 
+    "Region" : "VN", 
+    "Name" : "Asia/Ho_Chi_Minh"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b52", 
+    "_t" : "TimeZone", 
+    "Region" : "HK", 
+    "Name" : "Asia/Hong_Kong"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b53", 
+    "_t" : "TimeZone", 
+    "Region" : "MN", 
+    "Name" : "Asia/Hovd"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b54", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Asia/Irkutsk"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b55", 
+    "_t" : "TimeZone", 
+    "Region" : "ID", 
+    "Name" : "Asia/Jakarta"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b56", 
+    "_t" : "TimeZone", 
+    "Region" : "ID", 
+    "Name" : "Asia/Jayapura"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b57", 
+    "_t" : "TimeZone", 
+    "Region" : "IL", 
+    "Name" : "Asia/Jerusalem"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b58", 
+    "_t" : "TimeZone", 
+    "Region" : "AF", 
+    "Name" : "Asia/Kabul"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b59", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Asia/Kamchatka"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b5a", 
+    "_t" : "TimeZone", 
+    "Region" : "PK", 
+    "Name" : "Asia/Karachi"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b5b", 
+    "_t" : "TimeZone", 
+    "Region" : "NP", 
+    "Name" : "Asia/Kathmandu"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b5c", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Asia/Khandyga"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b5d", 
+    "_t" : "TimeZone", 
+    "Region" : "IN", 
+    "Name" : "Asia/Kolkata"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b5e", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Asia/Krasnoyarsk"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b5f", 
+    "_t" : "TimeZone", 
+    "Region" : "MY", 
+    "Name" : "Asia/Kuala_Lumpur"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b60", 
+    "_t" : "TimeZone", 
+    "Region" : "MY", 
+    "Name" : "Asia/Kuching"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b61", 
+    "_t" : "TimeZone", 
+    "Region" : "KW", 
+    "Name" : "Asia/Kuwait"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b62", 
+    "_t" : "TimeZone", 
+    "Region" : "MO", 
+    "Name" : "Asia/Macau"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b63", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Asia/Magadan"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b64", 
+    "_t" : "TimeZone", 
+    "Region" : "ID", 
+    "Name" : "Asia/Makassar"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b65", 
+    "_t" : "TimeZone", 
+    "Region" : "PH", 
+    "Name" : "Asia/Manila"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b66", 
+    "_t" : "TimeZone", 
+    "Region" : "OM", 
+    "Name" : "Asia/Muscat"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b67", 
+    "_t" : "TimeZone", 
+    "Region" : "CY", 
+    "Name" : "Asia/Nicosia"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b68", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Asia/Novokuznetsk"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b69", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Asia/Novosibirsk"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b6a", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Asia/Omsk"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b6b", 
+    "_t" : "TimeZone", 
+    "Region" : "KZ", 
+    "Name" : "Asia/Oral"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b6c", 
+    "_t" : "TimeZone", 
+    "Region" : "KH", 
+    "Name" : "Asia/Phnom_Penh"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b6d", 
+    "_t" : "TimeZone", 
+    "Region" : "ID", 
+    "Name" : "Asia/Pontianak"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b6e", 
+    "_t" : "TimeZone", 
+    "Region" : "KP", 
+    "Name" : "Asia/Pyongyang"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b6f", 
+    "_t" : "TimeZone", 
+    "Region" : "QA", 
+    "Name" : "Asia/Qatar"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b70", 
+    "_t" : "TimeZone", 
+    "Region" : "KZ", 
+    "Name" : "Asia/Qyzylorda"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b71", 
+    "_t" : "TimeZone", 
+    "Region" : "MM", 
+    "Name" : "Asia/Rangoon"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b72", 
+    "_t" : "TimeZone", 
+    "Region" : "SA", 
+    "Name" : "Asia/Riyadh"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b73", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Asia/Sakhalin"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b74", 
+    "_t" : "TimeZone", 
+    "Region" : "UZ", 
+    "Name" : "Asia/Samarkand"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b75", 
+    "_t" : "TimeZone", 
+    "Region" : "KR", 
+    "Name" : "Asia/Seoul"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b76", 
+    "_t" : "TimeZone", 
+    "Region" : "CN", 
+    "Name" : "Asia/Shanghai"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b77", 
+    "_t" : "TimeZone", 
+    "Region" : "SG", 
+    "Name" : "Asia/Singapore"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b78", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Asia/Srednekolymsk"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b79", 
+    "_t" : "TimeZone", 
+    "Region" : "TW", 
+    "Name" : "Asia/Taipei"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b7a", 
+    "_t" : "TimeZone", 
+    "Region" : "UZ", 
+    "Name" : "Asia/Tashkent"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b7b", 
+    "_t" : "TimeZone", 
+    "Region" : "GE", 
+    "Name" : "Asia/Tbilisi"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b7c", 
+    "_t" : "TimeZone", 
+    "Region" : "IR", 
+    "Name" : "Asia/Tehran"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b7d", 
+    "_t" : "TimeZone", 
+    "Region" : "BT", 
+    "Name" : "Asia/Thimphu"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b7e", 
+    "_t" : "TimeZone", 
+    "Region" : "JP", 
+    "Name" : "Asia/Tokyo"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b7f", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Asia/Tomsk"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b80", 
+    "_t" : "TimeZone", 
+    "Region" : "MN", 
+    "Name" : "Asia/Ulaanbaatar"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b81", 
+    "_t" : "TimeZone", 
+    "Region" : "CN", 
+    "Name" : "Asia/Urumqi"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b82", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Asia/Ust-Nera"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b83", 
+    "_t" : "TimeZone", 
+    "Region" : "LA", 
+    "Name" : "Asia/Vientiane"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b84", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Asia/Vladivostok"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b85", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Asia/Yakutsk"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b86", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Asia/Yekaterinburg"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b87", 
+    "_t" : "TimeZone", 
+    "Region" : "AM", 
+    "Name" : "Asia/Yerevan"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b88", 
+    "_t" : "TimeZone", 
+    "Region" : "PT", 
+    "Name" : "Atlantic/Azores"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b89", 
+    "_t" : "TimeZone", 
+    "Region" : "BM", 
+    "Name" : "Atlantic/Bermuda"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b8a", 
+    "_t" : "TimeZone", 
+    "Region" : "ES", 
+    "Name" : "Atlantic/Canary"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b8b", 
+    "_t" : "TimeZone", 
+    "Region" : "CV", 
+    "Name" : "Atlantic/Cape_Verde"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b8c", 
+    "_t" : "TimeZone", 
+    "Region" : "FO", 
+    "Name" : "Atlantic/Faroe"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b8d", 
+    "_t" : "TimeZone", 
+    "Region" : "PT", 
+    "Name" : "Atlantic/Madeira"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b8e", 
+    "_t" : "TimeZone", 
+    "Region" : "IS", 
+    "Name" : "Atlantic/Reykjavik"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b8f", 
+    "_t" : "TimeZone", 
+    "Region" : "GS", 
+    "Name" : "Atlantic/South_Georgia"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b90", 
+    "_t" : "TimeZone", 
+    "Region" : "SH", 
+    "Name" : "Atlantic/St_Helena"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b91", 
+    "_t" : "TimeZone", 
+    "Region" : "FK", 
+    "Name" : "Atlantic/Stanley"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b92", 
+    "_t" : "TimeZone", 
+    "Region" : "AU", 
+    "Name" : "Australia/Adelaide"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b93", 
+    "_t" : "TimeZone", 
+    "Region" : "AU", 
+    "Name" : "Australia/Brisbane"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b94", 
+    "_t" : "TimeZone", 
+    "Region" : "AU", 
+    "Name" : "Australia/Broken_Hill"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b95", 
+    "_t" : "TimeZone", 
+    "Region" : "AU", 
+    "Name" : "Australia/Currie"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b96", 
+    "_t" : "TimeZone", 
+    "Region" : "AU", 
+    "Name" : "Australia/Darwin"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b97", 
+    "_t" : "TimeZone", 
+    "Region" : "AU", 
+    "Name" : "Australia/Eucla"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b98", 
+    "_t" : "TimeZone", 
+    "Region" : "AU", 
+    "Name" : "Australia/Hobart"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b99", 
+    "_t" : "TimeZone", 
+    "Region" : "AU", 
+    "Name" : "Australia/Lindeman"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b9a", 
+    "_t" : "TimeZone", 
+    "Region" : "AU", 
+    "Name" : "Australia/Lord_Howe"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b9b", 
+    "_t" : "TimeZone", 
+    "Region" : "AU", 
+    "Name" : "Australia/Melbourne"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b9c", 
+    "_t" : "TimeZone", 
+    "Region" : "AU", 
+    "Name" : "Australia/Perth"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b9d", 
+    "_t" : "TimeZone", 
+    "Region" : "AU", 
+    "Name" : "Australia/Sydney"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b9e", 
+    "_t" : "TimeZone", 
+    "Region" : "NL", 
+    "Name" : "Europe/Amsterdam"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b9f", 
+    "_t" : "TimeZone", 
+    "Region" : "AD", 
+    "Name" : "Europe/Andorra"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ba0", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Europe/Astrakhan"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ba1", 
+    "_t" : "TimeZone", 
+    "Region" : "GR", 
+    "Name" : "Europe/Athens"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ba2", 
+    "_t" : "TimeZone", 
+    "Region" : "RS", 
+    "Name" : "Europe/Belgrade"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ba3", 
+    "_t" : "TimeZone", 
+    "Region" : "DE", 
+    "Name" : "Europe/Berlin"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ba4", 
+    "_t" : "TimeZone", 
+    "Region" : "SK", 
+    "Name" : "Europe/Bratislava"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ba5", 
+    "_t" : "TimeZone", 
+    "Region" : "BE", 
+    "Name" : "Europe/Brussels"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ba6", 
+    "_t" : "TimeZone", 
+    "Region" : "RO", 
+    "Name" : "Europe/Bucharest"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ba7", 
+    "_t" : "TimeZone", 
+    "Region" : "HU", 
+    "Name" : "Europe/Budapest"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ba8", 
+    "_t" : "TimeZone", 
+    "Region" : "DE", 
+    "Name" : "Europe/Busingen"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ba9", 
+    "_t" : "TimeZone", 
+    "Region" : "MD", 
+    "Name" : "Europe/Chisinau"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8baa", 
+    "_t" : "TimeZone", 
+    "Region" : "DK", 
+    "Name" : "Europe/Copenhagen"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bab", 
+    "_t" : "TimeZone", 
+    "Region" : "IE", 
+    "Name" : "Europe/Dublin"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bac", 
+    "_t" : "TimeZone", 
+    "Region" : "GI", 
+    "Name" : "Europe/Gibraltar"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bad", 
+    "_t" : "TimeZone", 
+    "Region" : "GG", 
+    "Name" : "Europe/Guernsey"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bae", 
+    "_t" : "TimeZone", 
+    "Region" : "FI", 
+    "Name" : "Europe/Helsinki"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8baf", 
+    "_t" : "TimeZone", 
+    "Region" : "IM", 
+    "Name" : "Europe/Isle_of_Man"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bb0", 
+    "_t" : "TimeZone", 
+    "Region" : "TR", 
+    "Name" : "Europe/Istanbul"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bb1", 
+    "_t" : "TimeZone", 
+    "Region" : "JE", 
+    "Name" : "Europe/Jersey"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bb2", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Europe/Kaliningrad"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bb3", 
+    "_t" : "TimeZone", 
+    "Region" : "UA", 
+    "Name" : "Europe/Kiev"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bb4", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Europe/Kirov"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bb5", 
+    "_t" : "TimeZone", 
+    "Region" : "PT", 
+    "Name" : "Europe/Lisbon"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bb6", 
+    "_t" : "TimeZone", 
+    "Region" : "SI", 
+    "Name" : "Europe/Ljubljana"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bb7", 
+    "_t" : "TimeZone", 
+    "Region" : "GB", 
+    "Name" : "Europe/London"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bb8", 
+    "_t" : "TimeZone", 
+    "Region" : "LU", 
+    "Name" : "Europe/Luxembourg"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bb9", 
+    "_t" : "TimeZone", 
+    "Region" : "ES", 
+    "Name" : "Europe/Madrid"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bba", 
+    "_t" : "TimeZone", 
+    "Region" : "MT", 
+    "Name" : "Europe/Malta"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bbb", 
+    "_t" : "TimeZone", 
+    "Region" : "AX", 
+    "Name" : "Europe/Mariehamn"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bbc", 
+    "_t" : "TimeZone", 
+    "Region" : "BY", 
+    "Name" : "Europe/Minsk"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bbd", 
+    "_t" : "TimeZone", 
+    "Region" : "MC", 
+    "Name" : "Europe/Monaco"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bbe", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Europe/Moscow"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bbf", 
+    "_t" : "TimeZone", 
+    "Region" : "NO", 
+    "Name" : "Europe/Oslo"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bc0", 
+    "_t" : "TimeZone", 
+    "Region" : "FR", 
+    "Name" : "Europe/Paris"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bc1", 
+    "_t" : "TimeZone", 
+    "Region" : "ME", 
+    "Name" : "Europe/Podgorica"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bc2", 
+    "_t" : "TimeZone", 
+    "Region" : "CZ", 
+    "Name" : "Europe/Prague"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bc3", 
+    "_t" : "TimeZone", 
+    "Region" : "LV", 
+    "Name" : "Europe/Riga"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bc4", 
+    "_t" : "TimeZone", 
+    "Region" : "IT", 
+    "Name" : "Europe/Rome"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bc5", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Europe/Samara"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bc6", 
+    "_t" : "TimeZone", 
+    "Region" : "SM", 
+    "Name" : "Europe/San_Marino"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bc7", 
+    "_t" : "TimeZone", 
+    "Region" : "BA", 
+    "Name" : "Europe/Sarajevo"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bc8", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Europe/Simferopol"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bc9", 
+    "_t" : "TimeZone", 
+    "Region" : "MK", 
+    "Name" : "Europe/Skopje"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bca", 
+    "_t" : "TimeZone", 
+    "Region" : "BG", 
+    "Name" : "Europe/Sofia"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bcb", 
+    "_t" : "TimeZone", 
+    "Region" : "SE", 
+    "Name" : "Europe/Stockholm"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bcc", 
+    "_t" : "TimeZone", 
+    "Region" : "EE", 
+    "Name" : "Europe/Tallinn"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a66", 
+    "_t" : "TimeZone", 
+    "Region" : "CI", 
+    "Name" : "Africa/Abidjan"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a67", 
+    "_t" : "TimeZone", 
+    "Region" : "GH", 
+    "Name" : "Africa/Accra"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a68", 
+    "_t" : "TimeZone", 
+    "Region" : "ET", 
+    "Name" : "Africa/Addis_Ababa"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a69", 
+    "_t" : "TimeZone", 
+    "Region" : "DZ", 
+    "Name" : "Africa/Algiers"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a6a", 
+    "_t" : "TimeZone", 
+    "Region" : "ER", 
+    "Name" : "Africa/Asmara"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a6b", 
+    "_t" : "TimeZone", 
+    "Region" : "ML", 
+    "Name" : "Africa/Bamako"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a6c", 
+    "_t" : "TimeZone", 
+    "Region" : "CF", 
+    "Name" : "Africa/Bangui"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a6d", 
+    "_t" : "TimeZone", 
+    "Region" : "GM", 
+    "Name" : "Africa/Banjul"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a6e", 
+    "_t" : "TimeZone", 
+    "Region" : "GW", 
+    "Name" : "Africa/Bissau"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a6f", 
+    "_t" : "TimeZone", 
+    "Region" : "MW", 
+    "Name" : "Africa/Blantyre"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a70", 
+    "_t" : "TimeZone", 
+    "Region" : "CG", 
+    "Name" : "Africa/Brazzaville"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a71", 
+    "_t" : "TimeZone", 
+    "Region" : "BI", 
+    "Name" : "Africa/Bujumbura"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a72", 
+    "_t" : "TimeZone", 
+    "Region" : "EG", 
+    "Name" : "Africa/Cairo"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a73", 
+    "_t" : "TimeZone", 
+    "Region" : "MA", 
+    "Name" : "Africa/Casablanca"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a74", 
+    "_t" : "TimeZone", 
+    "Region" : "ES", 
+    "Name" : "Africa/Ceuta"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a75", 
+    "_t" : "TimeZone", 
+    "Region" : "GN", 
+    "Name" : "Africa/Conakry"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a76", 
+    "_t" : "TimeZone", 
+    "Region" : "SN", 
+    "Name" : "Africa/Dakar"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a77", 
+    "_t" : "TimeZone", 
+    "Region" : "TZ", 
+    "Name" : "Africa/Dar_es_Salaam"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a78", 
+    "_t" : "TimeZone", 
+    "Region" : "DJ", 
+    "Name" : "Africa/Djibouti"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a79", 
+    "_t" : "TimeZone", 
+    "Region" : "CM", 
+    "Name" : "Africa/Douala"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a7a", 
+    "_t" : "TimeZone", 
+    "Region" : "EH", 
+    "Name" : "Africa/El_Aaiun"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a7b", 
+    "_t" : "TimeZone", 
+    "Region" : "SL", 
+    "Name" : "Africa/Freetown"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a7c", 
+    "_t" : "TimeZone", 
+    "Region" : "BW", 
+    "Name" : "Africa/Gaborone"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a7d", 
+    "_t" : "TimeZone", 
+    "Region" : "ZW", 
+    "Name" : "Africa/Harare"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a7e", 
+    "_t" : "TimeZone", 
+    "Region" : "ZA", 
+    "Name" : "Africa/Johannesburg"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a7f", 
+    "_t" : "TimeZone", 
+    "Region" : "SS", 
+    "Name" : "Africa/Juba"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a80", 
+    "_t" : "TimeZone", 
+    "Region" : "UG", 
+    "Name" : "Africa/Kampala"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a81", 
+    "_t" : "TimeZone", 
+    "Region" : "SD", 
+    "Name" : "Africa/Khartoum"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a82", 
+    "_t" : "TimeZone", 
+    "Region" : "RW", 
+    "Name" : "Africa/Kigali"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a83", 
+    "_t" : "TimeZone", 
+    "Region" : "CD", 
+    "Name" : "Africa/Kinshasa"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a84", 
+    "_t" : "TimeZone", 
+    "Region" : "NG", 
+    "Name" : "Africa/Lagos"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a85", 
+    "_t" : "TimeZone", 
+    "Region" : "GA", 
+    "Name" : "Africa/Libreville"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a86", 
+    "_t" : "TimeZone", 
+    "Region" : "TG", 
+    "Name" : "Africa/Lome"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a87", 
+    "_t" : "TimeZone", 
+    "Region" : "AO", 
+    "Name" : "Africa/Luanda"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a88", 
+    "_t" : "TimeZone", 
+    "Region" : "CD", 
+    "Name" : "Africa/Lubumbashi"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a89", 
+    "_t" : "TimeZone", 
+    "Region" : "ZM", 
+    "Name" : "Africa/Lusaka"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a8a", 
+    "_t" : "TimeZone", 
+    "Region" : "GQ", 
+    "Name" : "Africa/Malabo"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a8b", 
+    "_t" : "TimeZone", 
+    "Region" : "MZ", 
+    "Name" : "Africa/Maputo"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a8c", 
+    "_t" : "TimeZone", 
+    "Region" : "LS", 
+    "Name" : "Africa/Maseru"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a8d", 
+    "_t" : "TimeZone", 
+    "Region" : "SZ", 
+    "Name" : "Africa/Mbabane"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a8e", 
+    "_t" : "TimeZone", 
+    "Region" : "SO", 
+    "Name" : "Africa/Mogadishu"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a8f", 
+    "_t" : "TimeZone", 
+    "Region" : "LR", 
+    "Name" : "Africa/Monrovia"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a90", 
+    "_t" : "TimeZone", 
+    "Region" : "KE", 
+    "Name" : "Africa/Nairobi"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bcd", 
+    "_t" : "TimeZone", 
+    "Region" : "AL", 
+    "Name" : "Europe/Tirane"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bce", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Europe/Ulyanovsk"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bcf", 
+    "_t" : "TimeZone", 
+    "Region" : "UA", 
+    "Name" : "Europe/Uzhgorod"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bd0", 
+    "_t" : "TimeZone", 
+    "Region" : "LI", 
+    "Name" : "Europe/Vaduz"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bd1", 
+    "_t" : "TimeZone", 
+    "Region" : "VA", 
+    "Name" : "Europe/Vatican"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bd2", 
+    "_t" : "TimeZone", 
+    "Region" : "AT", 
+    "Name" : "Europe/Vienna"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bd3", 
+    "_t" : "TimeZone", 
+    "Region" : "LT", 
+    "Name" : "Europe/Vilnius"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bd4", 
+    "_t" : "TimeZone", 
+    "Region" : "RU", 
+    "Name" : "Europe/Volgograd"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bd5", 
+    "_t" : "TimeZone", 
+    "Region" : "PL", 
+    "Name" : "Europe/Warsaw"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bd6", 
+    "_t" : "TimeZone", 
+    "Region" : "HR", 
+    "Name" : "Europe/Zagreb"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bd7", 
+    "_t" : "TimeZone", 
+    "Region" : "UA", 
+    "Name" : "Europe/Zaporozhye"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bd8", 
+    "_t" : "TimeZone", 
+    "Region" : "CH", 
+    "Name" : "Europe/Zurich"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bd9", 
+    "_t" : "TimeZone", 
+    "Region" : "MG", 
+    "Name" : "Indian/Antananarivo"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bda", 
+    "_t" : "TimeZone", 
+    "Region" : "IO", 
+    "Name" : "Indian/Chagos"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bdb", 
+    "_t" : "TimeZone", 
+    "Region" : "CX", 
+    "Name" : "Indian/Christmas"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bdc", 
+    "_t" : "TimeZone", 
+    "Region" : "CC", 
+    "Name" : "Indian/Cocos"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bdd", 
+    "_t" : "TimeZone", 
+    "Region" : "KM", 
+    "Name" : "Indian/Comoro"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bde", 
+    "_t" : "TimeZone", 
+    "Region" : "TF", 
+    "Name" : "Indian/Kerguelen"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bdf", 
+    "_t" : "TimeZone", 
+    "Region" : "SC", 
+    "Name" : "Indian/Mahe"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8be0", 
+    "_t" : "TimeZone", 
+    "Region" : "MV", 
+    "Name" : "Indian/Maldives"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8be1", 
+    "_t" : "TimeZone", 
+    "Region" : "MU", 
+    "Name" : "Indian/Mauritius"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8be2", 
+    "_t" : "TimeZone", 
+    "Region" : "YT", 
+    "Name" : "Indian/Mayotte"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8be3", 
+    "_t" : "TimeZone", 
+    "Region" : "RE", 
+    "Name" : "Indian/Reunion"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8be4", 
+    "_t" : "TimeZone", 
+    "Region" : "WS", 
+    "Name" : "Pacific/Apia"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8be5", 
+    "_t" : "TimeZone", 
+    "Region" : "NZ", 
+    "Name" : "Pacific/Auckland"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8be6", 
+    "_t" : "TimeZone", 
+    "Region" : "PG", 
+    "Name" : "Pacific/Bougainville"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8be7", 
+    "_t" : "TimeZone", 
+    "Region" : "NZ", 
+    "Name" : "Pacific/Chatham"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8be8", 
+    "_t" : "TimeZone", 
+    "Region" : "FM", 
+    "Name" : "Pacific/Chuuk"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8be9", 
+    "_t" : "TimeZone", 
+    "Region" : "CL", 
+    "Name" : "Pacific/Easter"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bea", 
+    "_t" : "TimeZone", 
+    "Region" : "VU", 
+    "Name" : "Pacific/Efate"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8beb", 
+    "_t" : "TimeZone", 
+    "Region" : "KI", 
+    "Name" : "Pacific/Enderbury"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bec", 
+    "_t" : "TimeZone", 
+    "Region" : "TK", 
+    "Name" : "Pacific/Fakaofo"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bed", 
+    "_t" : "TimeZone", 
+    "Region" : "FJ", 
+    "Name" : "Pacific/Fiji"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bee", 
+    "_t" : "TimeZone", 
+    "Region" : "TV", 
+    "Name" : "Pacific/Funafuti"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bef", 
+    "_t" : "TimeZone", 
+    "Region" : "EC", 
+    "Name" : "Pacific/Galapagos"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bf0", 
+    "_t" : "TimeZone", 
+    "Region" : "PF", 
+    "Name" : "Pacific/Gambier"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bf1", 
+    "_t" : "TimeZone", 
+    "Region" : "SB", 
+    "Name" : "Pacific/Guadalcanal"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bf2", 
+    "_t" : "TimeZone", 
+    "Region" : "GU", 
+    "Name" : "Pacific/Guam"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bf3", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "Pacific/Honolulu"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bf4", 
+    "_t" : "TimeZone", 
+    "Region" : "UM", 
+    "Name" : "Pacific/Johnston"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bf5", 
+    "_t" : "TimeZone", 
+    "Region" : "KI", 
+    "Name" : "Pacific/Kiritimati"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bf6", 
+    "_t" : "TimeZone", 
+    "Region" : "FM", 
+    "Name" : "Pacific/Kosrae"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8bf7", 
+    "_t" : "TimeZone", 
+    "Region" : "MH", 
+    "Name" : "Pacific/Kwajalein"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a91", 
+    "_t" : "TimeZone", 
+    "Region" : "TD", 
+    "Name" : "Africa/Ndjamena"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a92", 
+    "_t" : "TimeZone", 
+    "Region" : "NE", 
+    "Name" : "Africa/Niamey"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a93", 
+    "_t" : "TimeZone", 
+    "Region" : "MR", 
+    "Name" : "Africa/Nouakchott"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a94", 
+    "_t" : "TimeZone", 
+    "Region" : "BF", 
+    "Name" : "Africa/Ouagadougou"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a95", 
+    "_t" : "TimeZone", 
+    "Region" : "BJ", 
+    "Name" : "Africa/Porto-Novo"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a96", 
+    "_t" : "TimeZone", 
+    "Region" : "ST", 
+    "Name" : "Africa/Sao_Tome"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a97", 
+    "_t" : "TimeZone", 
+    "Region" : "LY", 
+    "Name" : "Africa/Tripoli"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a98", 
+    "_t" : "TimeZone", 
+    "Region" : "TN", 
+    "Name" : "Africa/Tunis"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a99", 
+    "_t" : "TimeZone", 
+    "Region" : "NA", 
+    "Name" : "Africa/Windhoek"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a9a", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Adak"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a9b", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Anchorage"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a9c", 
+    "_t" : "TimeZone", 
+    "Region" : "AI", 
+    "Name" : "America/Anguilla"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a9d", 
+    "_t" : "TimeZone", 
+    "Region" : "AG", 
+    "Name" : "America/Antigua"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a9e", 
+    "_t" : "TimeZone", 
+    "Region" : "BR", 
+    "Name" : "America/Araguaina"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8a9f", 
+    "_t" : "TimeZone", 
+    "Region" : "AR", 
+    "Name" : "America/Argentina/Buenos_Aires"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aa0", 
+    "_t" : "TimeZone", 
+    "Region" : "AR", 
+    "Name" : "America/Argentina/Catamarca"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aa1", 
+    "_t" : "TimeZone", 
+    "Region" : "AR", 
+    "Name" : "America/Argentina/Cordoba"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aa2", 
+    "_t" : "TimeZone", 
+    "Region" : "AR", 
+    "Name" : "America/Argentina/Jujuy"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aa3", 
+    "_t" : "TimeZone", 
+    "Region" : "AR", 
+    "Name" : "America/Argentina/La_Rioja"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aa4", 
+    "_t" : "TimeZone", 
+    "Region" : "AR", 
+    "Name" : "America/Argentina/Mendoza"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aa5", 
+    "_t" : "TimeZone", 
+    "Region" : "AR", 
+    "Name" : "America/Argentina/Rio_Gallegos"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aa6", 
+    "_t" : "TimeZone", 
+    "Region" : "AR", 
+    "Name" : "America/Argentina/Salta"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aa7", 
+    "_t" : "TimeZone", 
+    "Region" : "AR", 
+    "Name" : "America/Argentina/San_Juan"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aa8", 
+    "_t" : "TimeZone", 
+    "Region" : "AR", 
+    "Name" : "America/Argentina/San_Luis"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aa9", 
+    "_t" : "TimeZone", 
+    "Region" : "AR", 
+    "Name" : "America/Argentina/Tucuman"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aaa", 
+    "_t" : "TimeZone", 
+    "Region" : "AR", 
+    "Name" : "America/Argentina/Ushuaia"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aab", 
+    "_t" : "TimeZone", 
+    "Region" : "AW", 
+    "Name" : "America/Aruba"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aac", 
+    "_t" : "TimeZone", 
+    "Region" : "PY", 
+    "Name" : "America/Asuncion"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aad", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Atikokan"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aae", 
+    "_t" : "TimeZone", 
+    "Region" : "BR", 
+    "Name" : "America/Bahia"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aaf", 
+    "_t" : "TimeZone", 
+    "Region" : "MX", 
+    "Name" : "America/Bahia_Banderas"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ab0", 
+    "_t" : "TimeZone", 
+    "Region" : "BB", 
+    "Name" : "America/Barbados"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ab1", 
+    "_t" : "TimeZone", 
+    "Region" : "BR", 
+    "Name" : "America/Belem"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ab2", 
+    "_t" : "TimeZone", 
+    "Region" : "BZ", 
+    "Name" : "America/Belize"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ab3", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Blanc-Sablon"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ab4", 
+    "_t" : "TimeZone", 
+    "Region" : "BR", 
+    "Name" : "America/Boa_Vista"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ab5", 
+    "_t" : "TimeZone", 
+    "Region" : "CO", 
+    "Name" : "America/Bogota"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ab6", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Boise"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ab7", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Cambridge_Bay"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ab8", 
+    "_t" : "TimeZone", 
+    "Region" : "BR", 
+    "Name" : "America/Campo_Grande"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ab9", 
+    "_t" : "TimeZone", 
+    "Region" : "MX", 
+    "Name" : "America/Cancun"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aba", 
+    "_t" : "TimeZone", 
+    "Region" : "VE", 
+    "Name" : "America/Caracas"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8abb", 
+    "_t" : "TimeZone", 
+    "Region" : "GF", 
+    "Name" : "America/Cayenne"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8abc", 
+    "_t" : "TimeZone", 
+    "Region" : "KY", 
+    "Name" : "America/Cayman"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8abd", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Chicago"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8abe", 
+    "_t" : "TimeZone", 
+    "Region" : "MX", 
+    "Name" : "America/Chihuahua"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8abf", 
+    "_t" : "TimeZone", 
+    "Region" : "CR", 
+    "Name" : "America/Costa_Rica"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ac0", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Creston"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ac1", 
+    "_t" : "TimeZone", 
+    "Region" : "BR", 
+    "Name" : "America/Cuiaba"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ac2", 
+    "_t" : "TimeZone", 
+    "Region" : "CW", 
+    "Name" : "America/Curacao"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ac3", 
+    "_t" : "TimeZone", 
+    "Region" : "GL", 
+    "Name" : "America/Danmarkshavn"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ac4", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Dawson"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ac5", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Dawson_Creek"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ac6", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Denver"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ac7", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Detroit"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ac8", 
+    "_t" : "TimeZone", 
+    "Region" : "DM", 
+    "Name" : "America/Dominica"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ac9", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Edmonton"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aca", 
+    "_t" : "TimeZone", 
+    "Region" : "BR", 
+    "Name" : "America/Eirunepe"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8acb", 
+    "_t" : "TimeZone", 
+    "Region" : "SV", 
+    "Name" : "America/El_Salvador"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8acc", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Fort_Nelson"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8acd", 
+    "_t" : "TimeZone", 
+    "Region" : "BR", 
+    "Name" : "America/Fortaleza"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8ace", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Glace_Bay"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8afa", 
+    "_t" : "TimeZone", 
+    "Region" : "MX", 
+    "Name" : "America/Monterrey"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8afb", 
+    "_t" : "TimeZone", 
+    "Region" : "UY", 
+    "Name" : "America/Montevideo"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8afc", 
+    "_t" : "TimeZone", 
+    "Region" : "MS", 
+    "Name" : "America/Montserrat"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8afd", 
+    "_t" : "TimeZone", 
+    "Region" : "BS", 
+    "Name" : "America/Nassau"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8afe", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/New_York"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8aff", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Nipigon"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b00", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Nome"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b01", 
+    "_t" : "TimeZone", 
+    "Region" : "BR", 
+    "Name" : "America/Noronha"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b02", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/North_Dakota/Beulah"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b03", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/North_Dakota/Center"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b04", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/North_Dakota/New_Salem"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b05", 
+    "_t" : "TimeZone", 
+    "Region" : "MX", 
+    "Name" : "America/Ojinaga"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b06", 
+    "_t" : "TimeZone", 
+    "Region" : "PA", 
+    "Name" : "America/Panama"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b07", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Pangnirtung"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b08", 
+    "_t" : "TimeZone", 
+    "Region" : "SR", 
+    "Name" : "America/Paramaribo"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b09", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Phoenix"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b0a", 
+    "_t" : "TimeZone", 
+    "Region" : "TT", 
+    "Name" : "America/Port_of_Spain"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b0b", 
+    "_t" : "TimeZone", 
+    "Region" : "HT", 
+    "Name" : "America/Port-au-Prince"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b0c", 
+    "_t" : "TimeZone", 
+    "Region" : "BR", 
+    "Name" : "America/Porto_Velho"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b0d", 
+    "_t" : "TimeZone", 
+    "Region" : "PR", 
+    "Name" : "America/Puerto_Rico"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b0e", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Rainy_River"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b0f", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Rankin_Inlet"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b10", 
+    "_t" : "TimeZone", 
+    "Region" : "BR", 
+    "Name" : "America/Recife"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b11", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Regina"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b12", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Resolute"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b13", 
+    "_t" : "TimeZone", 
+    "Region" : "BR", 
+    "Name" : "America/Rio_Branco"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b14", 
+    "_t" : "TimeZone", 
+    "Region" : "BR", 
+    "Name" : "America/Santarem"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b15", 
+    "_t" : "TimeZone", 
+    "Region" : "CL", 
+    "Name" : "America/Santiago"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b16", 
+    "_t" : "TimeZone", 
+    "Region" : "DO", 
+    "Name" : "America/Santo_Domingo"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b17", 
+    "_t" : "TimeZone", 
+    "Region" : "BR", 
+    "Name" : "America/Sao_Paulo"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b18", 
+    "_t" : "TimeZone", 
+    "Region" : "GL", 
+    "Name" : "America/Scoresbysund"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b19", 
+    "_t" : "TimeZone", 
+    "Region" : "US", 
+    "Name" : "America/Sitka"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b1a", 
+    "_t" : "TimeZone", 
+    "Region" : "BL", 
+    "Name" : "America/St_Barthelemy"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b1b", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/St_Johns"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b1c", 
+    "_t" : "TimeZone", 
+    "Region" : "KN", 
+    "Name" : "America/St_Kitts"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b1d", 
+    "_t" : "TimeZone", 
+    "Region" : "LC", 
+    "Name" : "America/St_Lucia"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b1e", 
+    "_t" : "TimeZone", 
+    "Region" : "VI", 
+    "Name" : "America/St_Thomas"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b1f", 
+    "_t" : "TimeZone", 
+    "Region" : "VC", 
+    "Name" : "America/St_Vincent"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b20", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Swift_Current"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b21", 
+    "_t" : "TimeZone", 
+    "Region" : "HN", 
+    "Name" : "America/Tegucigalpa"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b22", 
+    "_t" : "TimeZone", 
+    "Region" : "GL", 
+    "Name" : "America/Thule"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b23", 
+    "_t" : "TimeZone", 
+    "Region" : "CA", 
+    "Name" : "America/Thunder_Bay"
+},
+{ 
+    "_id" : "57a01b573d33e01394bc8b24", 
+    "_t" : "TimeZone", 
+    "Region" : "MX", 
+    "Name" : "America/Tijuana"
+}
+]
