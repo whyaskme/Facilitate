@@ -9,6 +9,16 @@ namespace Api.Controllers
     [Route("[controller]")]
     public class QuotesController : ControllerBase
     {
+        string dbName = "Facilitate";
+        string collectionName = "Quote";
+
+        string resultMsg = string.Empty;
+        string mongoUri = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate";
+
+        IMongoClient client;
+
+        IMongoCollection<Quote> collection;
+
         private readonly ILogger<QuotesController> _logger;
 
         public QuotesController(ILogger<QuotesController> logger)
@@ -16,90 +26,34 @@ namespace Api.Controllers
             _logger = logger;
         }
 
-
         [HttpGet(Name = "GetQuotes")]
         public IEnumerable<Quote> GetQuotes()
         {
-            var resultMsg = string.Empty;
-            var mongoUri = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate";
-
-            IMongoClient client;
-
-            IMongoCollection<Quote> collection;
-
             try
             {
                 client = new MongoClient(mongoUri);
 
-                // Provide the name of the database and collection you want to use.
-                // If they don't already exist, the driver and Atlas will create them
-                // automatically when you first write data.
-                var dbName = "Facilitate";
-                var collectionName = "Quote";
-
                 collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
 
-                foreach(Quote doc in collection.Find(new BsonDocument()).ToList())
-                {
-                    Console.WriteLine(doc);
-                }
+                var allQuotes = collection.Find(Builders<Quote>.Filter.Empty).ToList();
 
-                /*      *** INSERT DOCUMENTS ***
-                 * 
-                 * You can insert individual documents using collection.Insert(). 
-                 * In this example, we're going to create 4 documents and then 
-                 * insert them all in one call with InsertMany().
-                 */
+                return allQuotes;
 
-                //var docs = Recipe.GetRecipes();
+                //foreach (Quote quote in allQuotes)
+                //{
+                //    var id = quote._id;
+                //}
 
                 resultMsg = "Success";
             }
             catch(Exception ex)
             {
-                //Console.WriteLine("There was a problem connecting to your " +
-                //    "Atlas cluster. Check that the URI includes a valid " +
-                //    "username and password, and that your IP address is " +
-                //    $"in the Access List. Message: {ex.Message}");
-                //Console.WriteLine(ex);
-                //Console.WriteLine();
                 resultMsg = ex.Message;
             }
             finally
             {
 
             }
-
-            //// Provide the name of the database and collection you want to use.
-            //// If they don't already exist, the driver and Atlas will create them
-            //// automatically when you first write data.
-            //var dbName = "Facilitate";
-            //var collectionName = "ReferenceData";
-
-            //collection = client.GetDatabase(dbName)
-            //   .GetCollection<Recipe>(collectionName);
-
-            ///*      *** INSERT DOCUMENTS ***
-            // * 
-            // * You can insert individual documents using collection.Insert(). 
-            // * In this example, we're going to create 4 documents and then 
-            // * insert them all in one call with InsertMany().
-            // */
-
-            //var docs = Recipe.GetRecipes();
-
-            //try
-            //{
-            //    collection.InsertMany(docs);
-            //}
-            //catch (Exception e)
-            //{
-            //    Console.WriteLine($"Something went wrong trying to insert the new documents." +
-            //        $" Message: {e.Message}");
-            //    Console.WriteLine(e);
-            //    Console.WriteLine();
-            //    return;
-            //}
 
             return null;
         }
@@ -111,7 +65,10 @@ namespace Api.Controllers
 
             try
             {
+                client = new MongoClient(mongoUri);
 
+                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
+                collection.InsertOne(quote);
             }
             catch (Exception ex)
             {
