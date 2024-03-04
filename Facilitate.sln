@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "Api\Api.csproj", "{D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Libraries", "Libraries\Libraries.csproj", "{DB4C9029-AC2A-46AE-8E93-0060B5BBAD79}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BootstrapBlazor.OnlyServer1", "BootstrapBlazor.OnlyServer1\BootstrapBlazor.OnlyServer1.csproj", "{939B15C6-FDBB-4892-A788-65CC4DE82BCC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{DB4C9029-AC2A-46AE-8E93-0060B5BBAD79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB4C9029-AC2A-46AE-8E93-0060B5BBAD79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB4C9029-AC2A-46AE-8E93-0060B5BBAD79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{939B15C6-FDBB-4892-A788-65CC4DE82BCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{939B15C6-FDBB-4892-A788-65CC4DE82BCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{939B15C6-FDBB-4892-A788-65CC4DE82BCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{939B15C6-FDBB-4892-A788-65CC4DE82BCC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
