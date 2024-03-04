@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ReferanceData\" />
+    <Folder Include="ReferenceData\" />
   </ItemGroup>
 
 </Project>

@@ -1,962 +1,235 @@
 [
   {
-    "sessionId": "",
-    "leadId": "",
-    "timestamp": "2024-03-03T11:12:16.8641309-06:00",
-    "externalUrl": "",
+    "_id": {
+      "timestamp": 0,
+      "creationTime": "2024-03-04T20:39:14.007Z"
+    },
+    "_t": "string",
+    "enabled": true,
+    "name": "string",
+    "date": "2024-03-04T20:39:14.007Z",
+    "sessionId": "string",
+    "leadId": "string",
+    "timestamp": "2024-03-04T20:39:14.007Z",
+    "externalUrl": "string",
     "consumer": {
-      "registrationDate": "2024-03-03T17:12:16.8643606Z",
-      "expired": false,
-      "expireDate": "2024-03-03T17:12:16.86441Z",
+      "_id": {
+        "timestamp": 0,
+        "creationTime": "2024-03-04T20:39:14.007Z"
+      },
+      "_t": "string",
+      "enabled": true,
+      "name": "string",
+      "date": "2024-03-04T20:39:14.007Z",
+      "registrationDate": "2024-03-04T20:39:14.007Z",
+      "expired": true,
+      "expireDate": "2024-03-04T20:39:14.007Z",
       "deviceType": 0,
-      "isLoggedIn": false,
-      "title": "",
-      "firstName": "",
-      "middleName": "",
-      "lastName": "",
-      "suffix": "",
-      "pwd": "",
+      "isLoggedIn": true,
+      "title": "string",
+      "firstName": "string",
+      "middleName": "string",
+      "lastName": "string",
+      "suffix": "string",
+      "pwd": "string",
       "gender": 0,
       "contact": {
         "address": {
           "countryId": {
-            "timestamp": 1470939118,
-            "machine": 10717382,
-            "pid": 2808,
-            "increment": 13932122,
-            "creationTime": "2016-08-11T18:11:58Z"
+            "timestamp": 0,
+            "creationTime": "2024-03-04T20:39:14.007Z"
           },
-          "country": "",
+          "country": "string",
           "stateId": {
             "timestamp": 0,
-            "machine": 0,
-            "pid": 0,
-            "increment": 0,
-            "creationTime": "1970-01-01T00:00:00Z"
+            "creationTime": "2024-03-04T20:39:14.007Z"
           },
-          "state": "",
+          "state": "string",
           "countyId": {
             "timestamp": 0,
-            "machine": 0,
-            "pid": 0,
-            "increment": 0,
-            "creationTime": "1970-01-01T00:00:00Z"
+            "creationTime": "2024-03-04T20:39:14.007Z"
           },
-          "county": "",
+          "county": "string",
           "cityId": {
             "timestamp": 0,
-            "machine": 0,
-            "pid": 0,
-            "increment": 0,
-            "creationTime": "1970-01-01T00:00:00Z"
+            "creationTime": "2024-03-04T20:39:14.007Z"
           },
-          "city": "",
+          "city": "string",
           "zipCode": 0,
           "timeZoneId": {
             "timestamp": 0,
-            "machine": 0,
-            "pid": 0,
-            "increment": 0,
-            "creationTime": "1970-01-01T00:00:00Z"
+            "creationTime": "2024-03-04T20:39:14.007Z"
           },
-          "address1": "",
-          "address2": ""
+          "address1": "string",
+          "address2": "string"
         },
         "email": {
-          "userName": "",
-          "domain": ""
+          "userName": "string",
+          "domain": "string"
         },
         "phone": {
           "phoneType": 0,
-          "countryCode": 1,
+          "countryCode": 0,
           "areaCode": 0,
           "exchange": 0,
           "number": 0
         }
       },
-      "creditCards": [],
-      "transactions": [],
-      "_id": {
-        "timestamp": 0,
-        "machine": 0,
-        "pid": 0,
-        "increment": 0,
-        "creationTime": "1970-01-01T00:00:00Z"
-      },
-      "_t": "User",
-      "enabled": true,
-      "name": "",
-      "date": "2024-03-03T00:00:00-06:00"
-    },
-    "propertyInfo": {
-      "market": "",
-      "address": {
-        "countryId": {
-          "timestamp": 1470939118,
-          "machine": 10717382,
-          "pid": 2808,
-          "increment": 13932122,
-          "creationTime": "2016-08-11T18:11:58Z"
-        },
-        "country": "",
-        "stateId": {
-          "timestamp": 0,
-          "machine": 0,
-          "pid": 0,
-          "increment": 0,
-          "creationTime": "1970-01-01T00:00:00Z"
-        },
-        "state": "",
-        "countyId": {
-          "timestamp": 0,
-          "machine": 0,
-          "pid": 0,
-          "increment": 0,
-          "creationTime": "1970-01-01T00:00:00Z"
-        },
-        "county": "",
-        "cityId": {
-          "timestamp": 0,
-          "machine": 0,
-          "pid": 0,
-          "increment": 0,
-          "creationTime": "1970-01-01T00:00:00Z"
-        },
-        "city": "",
-        "zipCode": 0,
-        "timeZoneId": {
-          "timestamp": 0,
-          "machine": 0,
-          "pid": 0,
-          "increment": 0,
-          "creationTime": "1970-01-01T00:00:00Z"
-        },
-        "address1": "",
-        "address2": ""
-      },
-      "structures": [],
-      "_id": {
-        "timestamp": 1709485936,
-        "machine": 4940358,
-        "pid": 10877,
-        "increment": 9428102,
-        "creationTime": "2024-03-03T17:12:16Z"
-      },
-      "_t": "PropertyInfo",
-      "enabled": true,
-      "name": "",
-      "date": "2024-03-03T00:00:00-06:00"
-    },
-    "products": [],
-    "representative": {
-      "repLead": {
-        "title": "",
-        "firstName": "",
-        "lastName": "",
-        "suffix": ""
-      },
-      "repEmail": {
-        "userName": "",
-        "domain": ""
-      },
-      "repPhone": {
-        "phoneType": 0,
-        "countryCode": 1,
-        "areaCode": 0,
-        "exchange": 0,
-        "number": 0
-      },
-      "repCompany": "",
-      "_id": {
-        "timestamp": 1709485936,
-        "machine": 4940358,
-        "pid": 10877,
-        "increment": 9428103,
-        "creationTime": "2024-03-03T17:12:16Z"
-      },
-      "_t": "Representative",
-      "enabled": true,
-      "name": "",
-      "date": "2024-03-03T00:00:00-06:00"
-    },
-    "_id": {
-      "timestamp": 1709485936,
-      "machine": 4940358,
-      "pid": 10877,
-      "increment": 9428100,
-      "creationTime": "2024-03-03T17:12:16Z"
-    },
-    "_t": "Quote",
-    "enabled": true,
-    "name": "Quote",
-    "date": "2024-03-03T00:00:00-06:00"
-  },
-  {
-    "sessionId": "",
-    "leadId": "",
-    "timestamp": "2024-03-03T11:12:16.8670891-06:00",
-    "externalUrl": "",
-    "consumer": {
-      "registrationDate": "2024-03-03T17:12:16.8670903Z",
-      "expired": false,
-      "expireDate": "2024-03-03T17:12:16.8670904Z",
-      "deviceType": 0,
-      "isLoggedIn": false,
-      "title": "",
-      "firstName": "",
-      "middleName": "",
-      "lastName": "",
-      "suffix": "",
-      "pwd": "",
-      "gender": 0,
-      "contact": {
-        "address": {
-          "countryId": {
-            "timestamp": 1470939118,
-            "machine": 10717382,
-            "pid": 2808,
-            "increment": 13932122,
-            "creationTime": "2016-08-11T18:11:58Z"
-          },
-          "country": "",
-          "stateId": {
+      "creditCards": [
+        {
+          "_id": {
             "timestamp": 0,
-            "machine": 0,
-            "pid": 0,
-            "increment": 0,
-            "creationTime": "1970-01-01T00:00:00Z"
+            "creationTime": "2024-03-04T20:39:14.008Z"
           },
-          "state": "",
-          "countyId": {
+          "_t": "string",
+          "fullName": "string",
+          "cardTypeId": {
             "timestamp": 0,
-            "machine": 0,
-            "pid": 0,
-            "increment": 0,
-            "creationTime": "1970-01-01T00:00:00Z"
+            "creationTime": "2024-03-04T20:39:14.008Z"
           },
-          "county": "",
-          "cityId": {
-            "timestamp": 0,
-            "machine": 0,
-            "pid": 0,
-            "increment": 0,
-            "creationTime": "1970-01-01T00:00:00Z"
-          },
-          "city": "",
-          "zipCode": 0,
-          "timeZoneId": {
-            "timestamp": 0,
-            "machine": 0,
-            "pid": 0,
-            "increment": 0,
-            "creationTime": "1970-01-01T00:00:00Z"
-          },
-          "address1": "",
-          "address2": ""
-        },
-        "email": {
-          "userName": "",
-          "domain": ""
-        },
-        "phone": {
-          "phoneType": 0,
-          "countryCode": 1,
-          "areaCode": 0,
-          "exchange": 0,
-          "number": 0
+          "cardTypeName": "string",
+          "number": "string",
+          "expires": "string",
+          "zipcode": "string",
+          "cvvCode": "string"
         }
-      },
-      "creditCards": [],
-      "transactions": [],
-      "_id": {
-        "timestamp": 0,
-        "machine": 0,
-        "pid": 0,
-        "increment": 0,
-        "creationTime": "1970-01-01T00:00:00Z"
-      },
-      "_t": "User",
-      "enabled": true,
-      "name": "",
-      "date": "2024-03-03T00:00:00-06:00"
-    },
-    "propertyInfo": {
-      "market": "",
-      "address": {
-        "countryId": {
-          "timestamp": 1470939118,
-          "machine": 10717382,
-          "pid": 2808,
-          "increment": 13932122,
-          "creationTime": "2016-08-11T18:11:58Z"
-        },
-        "country": "",
-        "stateId": {
-          "timestamp": 0,
-          "machine": 0,
-          "pid": 0,
-          "increment": 0,
-          "creationTime": "1970-01-01T00:00:00Z"
-        },
-        "state": "",
-        "countyId": {
-          "timestamp": 0,
-          "machine": 0,
-          "pid": 0,
-          "increment": 0,
-          "creationTime": "1970-01-01T00:00:00Z"
-        },
-        "county": "",
-        "cityId": {
-          "timestamp": 0,
-          "machine": 0,
-          "pid": 0,
-          "increment": 0,
-          "creationTime": "1970-01-01T00:00:00Z"
-        },
-        "city": "",
-        "zipCode": 0,
-        "timeZoneId": {
-          "timestamp": 0,
-          "machine": 0,
-          "pid": 0,
-          "increment": 0,
-          "creationTime": "1970-01-01T00:00:00Z"
-        },
-        "address1": "",
-        "address2": ""
-      },
-      "structures": [],
-      "_id": {
-        "timestamp": 1709485936,
-        "machine": 4940358,
-        "pid": 10877,
-        "increment": 9428107,
-        "creationTime": "2024-03-03T17:12:16Z"
-      },
-      "_t": "PropertyInfo",
-      "enabled": true,
-      "name": "",
-      "date": "2024-03-03T00:00:00-06:00"
-    },
-    "products": [],
-    "representative": {
-      "repLead": {
-        "title": "",
-        "firstName": "",
-        "lastName": "",
-        "suffix": ""
-      },
-      "repEmail": {
-        "userName": "",
-        "domain": ""
-      },
-      "repPhone": {
-        "phoneType": 0,
-        "countryCode": 1,
-        "areaCode": 0,
-        "exchange": 0,
-        "number": 0
-      },
-      "repCompany": "",
-      "_id": {
-        "timestamp": 1709485936,
-        "machine": 4940358,
-        "pid": 10877,
-        "increment": 9428108,
-        "creationTime": "2024-03-03T17:12:16Z"
-      },
-      "_t": "Representative",
-      "enabled": true,
-      "name": "",
-      "date": "2024-03-03T00:00:00-06:00"
-    },
-    "_id": {
-      "timestamp": 1709485936,
-      "machine": 4940358,
-      "pid": 10877,
-      "increment": 9428105,
-      "creationTime": "2024-03-03T17:12:16Z"
-    },
-    "_t": "Quote",
-    "enabled": true,
-    "name": "Quote",
-    "date": "2024-03-03T00:00:00-06:00"
-  },
-  {
-    "sessionId": "",
-    "leadId": "",
-    "timestamp": "2024-03-03T11:12:16.8670946-06:00",
-    "externalUrl": "",
-    "consumer": {
-      "registrationDate": "2024-03-03T17:12:16.8670952Z",
-      "expired": false,
-      "expireDate": "2024-03-03T17:12:16.8670953Z",
-      "deviceType": 0,
-      "isLoggedIn": false,
-      "title": "",
-      "firstName": "",
-      "middleName": "",
-      "lastName": "",
-      "suffix": "",
-      "pwd": "",
-      "gender": 0,
-      "contact": {
-        "address": {
-          "countryId": {
-            "timestamp": 1470939118,
-            "machine": 10717382,
-            "pid": 2808,
-            "increment": 13932122,
-            "creationTime": "2016-08-11T18:11:58Z"
-          },
-          "country": "",
-          "stateId": {
+      ],
+      "transactions": [
+        {
+          "_id": {
             "timestamp": 0,
-            "machine": 0,
-            "pid": 0,
-            "increment": 0,
-            "creationTime": "1970-01-01T00:00:00Z"
+            "creationTime": "2024-03-04T20:39:14.008Z"
           },
-          "state": "",
-          "countyId": {
+          "_t": "string",
+          "date": "2024-03-04T20:39:14.008Z",
+          "type": "string",
+          "amount": 0,
+          "processorId": {
             "timestamp": 0,
-            "machine": 0,
-            "pid": 0,
-            "increment": 0,
-            "creationTime": "1970-01-01T00:00:00Z"
+            "creationTime": "2024-03-04T20:39:14.008Z"
           },
-          "county": "",
-          "cityId": {
-            "timestamp": 0,
-            "machine": 0,
-            "pid": 0,
-            "increment": 0,
-            "creationTime": "1970-01-01T00:00:00Z"
-          },
-          "city": "",
-          "zipCode": 0,
-          "timeZoneId": {
-            "timestamp": 0,
-            "machine": 0,
-            "pid": 0,
-            "increment": 0,
-            "creationTime": "1970-01-01T00:00:00Z"
-          },
-          "address1": "",
-          "address2": ""
-        },
-        "email": {
-          "userName": "",
-          "domain": ""
-        },
-        "phone": {
-          "phoneType": 0,
-          "countryCode": 1,
-          "areaCode": 0,
-          "exchange": 0,
-          "number": 0
+          "paymentMethodId": "string",
+          "resultCode": 0,
+          "resultName": "string",
+          "resultDetails": "string",
+          "paymentCard": {
+            "_id": {
+              "timestamp": 0,
+              "creationTime": "2024-03-04T20:39:14.008Z"
+            },
+            "_t": "string",
+            "fullName": "string",
+            "cardTypeId": {
+              "timestamp": 0,
+              "creationTime": "2024-03-04T20:39:14.008Z"
+            },
+            "cardTypeName": "string",
+            "number": "string",
+            "expires": "string",
+            "zipcode": "string",
+            "cvvCode": "string"
+          }
         }
-      },
-      "creditCards": [],
-      "transactions": [],
-      "_id": {
-        "timestamp": 0,
-        "machine": 0,
-        "pid": 0,
-        "increment": 0,
-        "creationTime": "1970-01-01T00:00:00Z"
-      },
-      "_t": "User",
-      "enabled": true,
-      "name": "",
-      "date": "2024-03-03T00:00:00-06:00"
+      ]
     },
     "propertyInfo": {
-      "market": "",
+      "_id": {
+        "timestamp": 0,
+        "creationTime": "2024-03-04T20:39:14.008Z"
+      },
+      "_t": "string",
+      "enabled": true,
+      "name": "string",
+      "date": "2024-03-04T20:39:14.008Z",
+      "market": "string",
       "address": {
         "countryId": {
-          "timestamp": 1470939118,
-          "machine": 10717382,
-          "pid": 2808,
-          "increment": 13932122,
-          "creationTime": "2016-08-11T18:11:58Z"
+          "timestamp": 0,
+          "creationTime": "2024-03-04T20:39:14.008Z"
         },
-        "country": "",
+        "country": "string",
         "stateId": {
           "timestamp": 0,
-          "machine": 0,
-          "pid": 0,
-          "increment": 0,
-          "creationTime": "1970-01-01T00:00:00Z"
+          "creationTime": "2024-03-04T20:39:14.008Z"
         },
-        "state": "",
+        "state": "string",
         "countyId": {
           "timestamp": 0,
-          "machine": 0,
-          "pid": 0,
-          "increment": 0,
-          "creationTime": "1970-01-01T00:00:00Z"
+          "creationTime": "2024-03-04T20:39:14.008Z"
         },
-        "county": "",
+        "county": "string",
         "cityId": {
           "timestamp": 0,
-          "machine": 0,
-          "pid": 0,
-          "increment": 0,
-          "creationTime": "1970-01-01T00:00:00Z"
+          "creationTime": "2024-03-04T20:39:14.008Z"
         },
-        "city": "",
+        "city": "string",
         "zipCode": 0,
         "timeZoneId": {
           "timestamp": 0,
-          "machine": 0,
-          "pid": 0,
-          "increment": 0,
-          "creationTime": "1970-01-01T00:00:00Z"
+          "creationTime": "2024-03-04T20:39:14.008Z"
         },
-        "address1": "",
-        "address2": ""
+        "address1": "string",
+        "address2": "string"
       },
-      "structures": [],
-      "_id": {
-        "timestamp": 1709485936,
-        "machine": 4940358,
-        "pid": 10877,
-        "increment": 9428112,
-        "creationTime": "2024-03-03T17:12:16Z"
-      },
-      "_t": "PropertyInfo",
-      "enabled": true,
-      "name": "",
-      "date": "2024-03-03T00:00:00-06:00"
-    },
-    "products": [],
-    "representative": {
-      "repLead": {
-        "title": "",
-        "firstName": "",
-        "lastName": "",
-        "suffix": ""
-      },
-      "repEmail": {
-        "userName": "",
-        "domain": ""
-      },
-      "repPhone": {
-        "phoneType": 0,
-        "countryCode": 1,
-        "areaCode": 0,
-        "exchange": 0,
-        "number": 0
-      },
-      "repCompany": "",
-      "_id": {
-        "timestamp": 1709485936,
-        "machine": 4940358,
-        "pid": 10877,
-        "increment": 9428113,
-        "creationTime": "2024-03-03T17:12:16Z"
-      },
-      "_t": "Representative",
-      "enabled": true,
-      "name": "",
-      "date": "2024-03-03T00:00:00-06:00"
-    },
-    "_id": {
-      "timestamp": 1709485936,
-      "machine": 4940358,
-      "pid": 10877,
-      "increment": 9428110,
-      "creationTime": "2024-03-03T17:12:16Z"
-    },
-    "_t": "Quote",
-    "enabled": true,
-    "name": "Quote",
-    "date": "2024-03-03T00:00:00-06:00"
-  },
-  {
-    "sessionId": "",
-    "leadId": "",
-    "timestamp": "2024-03-03T11:12:16.8670988-06:00",
-    "externalUrl": "",
-    "consumer": {
-      "registrationDate": "2024-03-03T17:12:16.8670994Z",
-      "expired": false,
-      "expireDate": "2024-03-03T17:12:16.8670994Z",
-      "deviceType": 0,
-      "isLoggedIn": false,
-      "title": "",
-      "firstName": "",
-      "middleName": "",
-      "lastName": "",
-      "suffix": "",
-      "pwd": "",
-      "gender": 0,
-      "contact": {
-        "address": {
-          "countryId": {
-            "timestamp": 1470939118,
-            "machine": 10717382,
-            "pid": 2808,
-            "increment": 13932122,
-            "creationTime": "2016-08-11T18:11:58Z"
-          },
-          "country": "",
-          "stateId": {
-            "timestamp": 0,
-            "machine": 0,
-            "pid": 0,
-            "increment": 0,
-            "creationTime": "1970-01-01T00:00:00Z"
-          },
-          "state": "",
-          "countyId": {
-            "timestamp": 0,
-            "machine": 0,
-            "pid": 0,
-            "increment": 0,
-            "creationTime": "1970-01-01T00:00:00Z"
-          },
-          "county": "",
-          "cityId": {
-            "timestamp": 0,
-            "machine": 0,
-            "pid": 0,
-            "increment": 0,
-            "creationTime": "1970-01-01T00:00:00Z"
-          },
-          "city": "",
-          "zipCode": 0,
-          "timeZoneId": {
-            "timestamp": 0,
-            "machine": 0,
-            "pid": 0,
-            "increment": 0,
-            "creationTime": "1970-01-01T00:00:00Z"
-          },
-          "address1": "",
-          "address2": ""
-        },
-        "email": {
-          "userName": "",
-          "domain": ""
-        },
-        "phone": {
-          "phoneType": 0,
-          "countryCode": 1,
-          "areaCode": 0,
-          "exchange": 0,
-          "number": 0
+      "structures": [
+        {
+          "name": "string",
+          "slope": "string",
+          "isIncluded": "string",
+          "squareFeet": "string",
+          "initialSquareFeet": "string",
+          "roofComplexity": "string"
         }
-      },
-      "creditCards": [],
-      "transactions": [],
-      "_id": {
-        "timestamp": 0,
-        "machine": 0,
-        "pid": 0,
-        "increment": 0,
-        "creationTime": "1970-01-01T00:00:00Z"
-      },
-      "_t": "User",
-      "enabled": true,
-      "name": "",
-      "date": "2024-03-03T00:00:00-06:00"
+      ]
     },
-    "propertyInfo": {
-      "market": "",
-      "address": {
-        "countryId": {
-          "timestamp": 1470939118,
-          "machine": 10717382,
-          "pid": 2808,
-          "increment": 13932122,
-          "creationTime": "2016-08-11T18:11:58Z"
+    "products": [
+      {
+        "name": "string",
+        "id": "string",
+        "wasteFactorMainRoof": "string",
+        "priceInfo": {
+          "priceType": "string",
+          "total": "string",
+          "pricePerSquare": "string",
+          "monthly": "string",
+          "apr": "string",
+          "months": "string"
         },
-        "country": "",
-        "stateId": {
-          "timestamp": 0,
-          "machine": 0,
-          "pid": 0,
-          "increment": 0,
-          "creationTime": "1970-01-01T00:00:00Z"
-        },
-        "state": "",
-        "countyId": {
-          "timestamp": 0,
-          "machine": 0,
-          "pid": 0,
-          "increment": 0,
-          "creationTime": "1970-01-01T00:00:00Z"
-        },
-        "county": "",
-        "cityId": {
-          "timestamp": 0,
-          "machine": 0,
-          "pid": 0,
-          "increment": 0,
-          "creationTime": "1970-01-01T00:00:00Z"
-        },
-        "city": "",
-        "zipCode": 0,
-        "timeZoneId": {
-          "timestamp": 0,
-          "machine": 0,
-          "pid": 0,
-          "increment": 0,
-          "creationTime": "1970-01-01T00:00:00Z"
-        },
-        "address1": "",
-        "address2": ""
-      },
-      "structures": [],
-      "_id": {
-        "timestamp": 1709485936,
-        "machine": 4940358,
-        "pid": 10877,
-        "increment": 9428117,
-        "creationTime": "2024-03-03T17:12:16Z"
-      },
-      "_t": "PropertyInfo",
-      "enabled": true,
-      "name": "",
-      "date": "2024-03-03T00:00:00-06:00"
-    },
-    "products": [],
-    "representative": {
-      "repLead": {
-        "title": "",
-        "firstName": "",
-        "lastName": "",
-        "suffix": ""
-      },
-      "repEmail": {
-        "userName": "",
-        "domain": ""
-      },
-      "repPhone": {
-        "phoneType": 0,
-        "countryCode": 1,
-        "areaCode": 0,
-        "exchange": 0,
-        "number": 0
-      },
-      "repCompany": "",
-      "_id": {
-        "timestamp": 1709485936,
-        "machine": 4940358,
-        "pid": 10877,
-        "increment": 9428118,
-        "creationTime": "2024-03-03T17:12:16Z"
-      },
-      "_t": "Representative",
-      "enabled": true,
-      "name": "",
-      "date": "2024-03-03T00:00:00-06:00"
-    },
-    "_id": {
-      "timestamp": 1709485936,
-      "machine": 4940358,
-      "pid": 10877,
-      "increment": 9428115,
-      "creationTime": "2024-03-03T17:12:16Z"
-    },
-    "_t": "Quote",
-    "enabled": true,
-    "name": "Quote",
-    "date": "2024-03-03T00:00:00-06:00"
-  },
-  {
-    "sessionId": "",
-    "leadId": "",
-    "timestamp": "2024-03-03T11:12:16.8671013-06:00",
-    "externalUrl": "",
-    "consumer": {
-      "registrationDate": "2024-03-03T17:12:16.8671024Z",
-      "expired": false,
-      "expireDate": "2024-03-03T17:12:16.8671024Z",
-      "deviceType": 0,
-      "isLoggedIn": false,
-      "title": "",
-      "firstName": "",
-      "middleName": "",
-      "lastName": "",
-      "suffix": "",
-      "pwd": "",
-      "gender": 0,
-      "contact": {
-        "address": {
-          "countryId": {
-            "timestamp": 1470939118,
-            "machine": 10717382,
-            "pid": 2808,
-            "increment": 13932122,
-            "creationTime": "2016-08-11T18:11:58Z"
-          },
-          "country": "",
-          "stateId": {
-            "timestamp": 0,
-            "machine": 0,
-            "pid": 0,
-            "increment": 0,
-            "creationTime": "1970-01-01T00:00:00Z"
-          },
-          "state": "",
-          "countyId": {
-            "timestamp": 0,
-            "machine": 0,
-            "pid": 0,
-            "increment": 0,
-            "creationTime": "1970-01-01T00:00:00Z"
-          },
-          "county": "",
-          "cityId": {
-            "timestamp": 0,
-            "machine": 0,
-            "pid": 0,
-            "increment": 0,
-            "creationTime": "1970-01-01T00:00:00Z"
-          },
-          "city": "",
-          "zipCode": 0,
-          "timeZoneId": {
-            "timestamp": 0,
-            "machine": 0,
-            "pid": 0,
-            "increment": 0,
-            "creationTime": "1970-01-01T00:00:00Z"
-          },
-          "address1": "",
-          "address2": ""
-        },
-        "email": {
-          "userName": "",
-          "domain": ""
-        },
-        "phone": {
-          "phoneType": 0,
-          "countryCode": 1,
-          "areaCode": 0,
-          "exchange": 0,
-          "number": 0
+        "priceRange": {
+          "totalMin": "string",
+          "totalMax": "string",
+          "monthlyMin": "string",
+          "monthlyMax": "string"
         }
-      },
-      "creditCards": [],
-      "transactions": [],
+      }
+    ],
+    "representative": {
       "_id": {
         "timestamp": 0,
-        "machine": 0,
-        "pid": 0,
-        "increment": 0,
-        "creationTime": "1970-01-01T00:00:00Z"
+        "creationTime": "2024-03-04T20:39:14.008Z"
       },
-      "_t": "User",
+      "_t": "string",
       "enabled": true,
-      "name": "",
-      "date": "2024-03-03T00:00:00-06:00"
-    },
-    "propertyInfo": {
-      "market": "",
-      "address": {
-        "countryId": {
-          "timestamp": 1470939118,
-          "machine": 10717382,
-          "pid": 2808,
-          "increment": 13932122,
-          "creationTime": "2016-08-11T18:11:58Z"
-        },
-        "country": "",
-        "stateId": {
-          "timestamp": 0,
-          "machine": 0,
-          "pid": 0,
-          "increment": 0,
-          "creationTime": "1970-01-01T00:00:00Z"
-        },
-        "state": "",
-        "countyId": {
-          "timestamp": 0,
-          "machine": 0,
-          "pid": 0,
-          "increment": 0,
-          "creationTime": "1970-01-01T00:00:00Z"
-        },
-        "county": "",
-        "cityId": {
-          "timestamp": 0,
-          "machine": 0,
-          "pid": 0,
-          "increment": 0,
-          "creationTime": "1970-01-01T00:00:00Z"
-        },
-        "city": "",
-        "zipCode": 0,
-        "timeZoneId": {
-          "timestamp": 0,
-          "machine": 0,
-          "pid": 0,
-          "increment": 0,
-          "creationTime": "1970-01-01T00:00:00Z"
-        },
-        "address1": "",
-        "address2": ""
-      },
-      "structures": [],
-      "_id": {
-        "timestamp": 1709485936,
-        "machine": 4940358,
-        "pid": 10877,
-        "increment": 9428122,
-        "creationTime": "2024-03-03T17:12:16Z"
-      },
-      "_t": "PropertyInfo",
-      "enabled": true,
-      "name": "",
-      "date": "2024-03-03T00:00:00-06:00"
-    },
-    "products": [],
-    "representative": {
+      "name": "string",
+      "date": "2024-03-04T20:39:14.008Z",
       "repLead": {
-        "title": "",
-        "firstName": "",
-        "lastName": "",
-        "suffix": ""
+        "title": "string",
+        "firstName": "string",
+        "lastName": "string",
+        "suffix": "string"
       },
       "repEmail": {
-        "userName": "",
-        "domain": ""
+        "userName": "string",
+        "domain": "string"
       },
       "repPhone": {
         "phoneType": 0,
-        "countryCode": 1,
+        "countryCode": 0,
         "areaCode": 0,
         "exchange": 0,
         "number": 0
       },
-      "repCompany": "",
-      "_id": {
-        "timestamp": 1709485936,
-        "machine": 4940358,
-        "pid": 10877,
-        "increment": 9428123,
-        "creationTime": "2024-03-03T17:12:16Z"
-      },
-      "_t": "Representative",
-      "enabled": true,
-      "name": "",
-      "date": "2024-03-03T00:00:00-06:00"
-    },
-    "_id": {
-      "timestamp": 1709485936,
-      "machine": 4940358,
-      "pid": 10877,
-      "increment": 9428120,
-      "creationTime": "2024-03-03T17:12:16Z"
-    },
-    "_t": "Quote",
-    "enabled": true,
-    "name": "Quote",
-    "date": "2024-03-03T00:00:00-06:00"
+      "repCompany": "string"
+    }
   }
 ]
