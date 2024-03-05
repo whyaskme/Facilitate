@@ -13,7 +13,9 @@ namespace Api.Controllers
         string collectionName = "Quote";
 
         string resultMsg = string.Empty;
-        string mongoUri = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate";
+        //string mongoUri = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate";
+        //string mongoUri = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate";
+        string mongoUri = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate";
 
         IMongoClient client;
 
@@ -61,6 +63,8 @@ namespace Api.Controllers
         [HttpPost(Name = "PostQuote")]
         public string PostQuote(Quote quote)
         {
+            quote._t = "Quote";
+
             var results = string.Empty;
 
             try
@@ -76,7 +80,7 @@ namespace Api.Controllers
             }
             finally
             {
-                results = "New quote (" + quote._id + ") for (" + quote.Consumer.FirstName + " " + quote.Consumer.LastName + ") POSTED";
+                results = "New quote for (" + quote.FirstName + " " + quote.LastName + ") POSTED";
             }
 
             return results;
@@ -97,7 +101,7 @@ namespace Api.Controllers
             }
             finally
             {
-                results = "Old quote (" + quote._id + ") for (" + quote.Consumer.FirstName + " " + quote.Consumer.LastName + ") UPDATED";
+                results = "Old quote for (" + quote.FirstName + " " + quote.LastName + ") UPDATED";
             }
 
             return results;

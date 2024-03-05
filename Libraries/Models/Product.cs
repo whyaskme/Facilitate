@@ -13,9 +13,10 @@ namespace Facilitate.Libraries.Models
     {
         public string? Name { get; set; }
         public string? Id { get; set; }
-        public string? WasteFactorMainRoof { get; set; }
 
         public PriceInfo? PriceInfo { get; set; }
         public PriceRange? PriceRange { get; set; }
+
+        public string? WasteFactorMainRoof { get; set; }
     }
 }

@@ -24,30 +24,60 @@ namespace Facilitate.Libraries.Models
         public Quote()
         {
             _t = "Quote";
-            _id = ObjectId.GenerateNewId();
 
-            Name = _t;
-
-            SessionId = string.Empty;
-            LeadId = string.Empty;
-            Timestamp = DateTime.Now;
+            Address = string.Empty;
+            FullAddress = string.Empty;
+            Street = string.Empty;
+            City = string.Empty;
+            State = string.Empty;
+            Zip = string.Empty;
+            FirstName = string.Empty;
+            LastName = string.Empty;
+            Email = string.Empty;
+            Phone = string.Empty;
+            Market = string.Empty;
             ExternalUrl = string.Empty;
+            Timestamp = string.Empty;
+            NumberOfStructures = string.Empty;
+            NumberOfIncludedStructures = string.Empty;
+            TotalSquareFeet = string.Empty;
+            RepLead = string.Empty;
+            RepEmail = string.Empty;
+            LeadId = string.Empty;
 
-            Consumer = new User();
-            PropertyInfo = new PropertyInfo();
             Products = new List<Product>();
-            Representative = new Representative();
-        }
+            Structures = new List<Structure>(); 
 
-        public string SessionId { get; set; }
-        public string LeadId { get; set; }
-        public DateTime Timestamp { get; set; }
+            MainRoofTotalSquareFeet = string.Empty;
+            TotalInitialSquareFeet = string.Empty;
+    }
+
+        public string Address { get; set; }
+        public string FullAddress { get; set; }
+        public string Street { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Zip { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
+        public string Market { get; set; }
         public string ExternalUrl { get; set; }
+        public string Timestamp { get; set; }
+        public string NumberOfStructures { get; set; }
+        public string NumberOfIncludedStructures { get; set; }
+        public string TotalSquareFeet { get; set; }
+        public string RepLead { get; set; }
+        public string RepEmail { get; set; }
+        public string LeadId { get; set; }
 
-        public User Consumer { get; set; }
-        public PropertyInfo PropertyInfo { get; set; }
         public List<Product> Products { get; set; }
-        public Representative Representative { get; set; }
+        public List<Structure> Structures { get; set; }
+
+        public string MainRoofTotalSquareFeet { get; set; }
+        public string TotalInitialSquareFeet { get; set; }
+        public string SessionId { get; set; }
 
         #region Implementation of IEnumerable
         List<Quote> quotes;
