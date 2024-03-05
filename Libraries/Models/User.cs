@@ -15,7 +15,7 @@ namespace Facilitate.Libraries.Models
         public User()
         {
             _t = "User";
-            _id = ObjectId.Empty;
+            _id = ObjectId.Empty.ToString();
 
             RegistrationDate = DateTime.UtcNow;
             Expired = false;

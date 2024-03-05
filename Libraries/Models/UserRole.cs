@@ -20,21 +20,21 @@ namespace Facilitate.Libraries.Models
 
             Name = roleName;
 
-            switch (roleName)
-            {
-                case "System Administrator":
-                    _id = Constants.UserRoles.SystemAdministrator.Item1;
-                    break;
-                case "Site Administrator":
-                    _id = Constants.UserRoles.SiteAdministrator.Item1;
-                    break;
-                case "Group Administrator":
-                    _id = Constants.UserRoles.GroupAdministrator.Item1;
-                    break;
-                default:
-                    _id = Constants.UserRoles.Consumer.Item1;
-                    break;
-            }
+            //switch (roleName)
+            //{
+            //    case "System Administrator":
+            //        _id = Constants.UserRoles.SystemAdministrator.Item1;
+            //        break;
+            //    case "Site Administrator":
+            //        _id = Constants.UserRoles.SiteAdministrator.Item1;
+            //        break;
+            //    case "Group Administrator":
+            //        _id = Constants.UserRoles.GroupAdministrator.Item1;
+            //        break;
+            //    default:
+            //        _id = Constants.UserRoles.Consumer.Item1;
+            //        break;
+            //}
 
             Enabled = true;
         }

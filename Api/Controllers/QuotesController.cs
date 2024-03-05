@@ -40,13 +40,6 @@ namespace Api.Controllers
                 var allQuotes = collection.Find(Builders<Quote>.Filter.Empty).ToList();
 
                 return allQuotes;
-
-                //foreach (Quote quote in allQuotes)
-                //{
-                //    var id = quote._id;
-                //}
-
-                resultMsg = "Success";
             }
             catch(Exception ex)
             {
@@ -64,6 +57,7 @@ namespace Api.Controllers
         public string PostQuote(Quote quote)
         {
             quote._t = "Quote";
+            quote._id = ObjectId.GenerateNewId().ToString();
 
             var results = string.Empty;
 

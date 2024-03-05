@@ -27,30 +27,30 @@ namespace Facilitate.Libraries.Models
 
         public City(string name)
         {
-            Utils _utils = new Utils();
-            City _myCity = _utils.GetCityByName(name);
+            //Utils _utils = new Utils();
+            //City _myCity = _utils.GetCityByName(name);
 
-            _t = _myCity._t;
-            Name = _myCity.Name;
-            CountryId = _myCity.CountryId;
-            TimeZoneId = _myCity.TimeZoneId;
-            StateId = _myCity.StateId;
-            CountyId = _myCity.CountyId;
-            EstimatedPopulation = _myCity.EstimatedPopulation;
+            //_t = _myCity._t;
+            //Name = _myCity.Name;
+            //CountryId = _myCity.CountryId;
+            //TimeZoneId = _myCity.TimeZoneId;
+            //StateId = _myCity.StateId;
+            //CountyId = _myCity.CountyId;
+            //EstimatedPopulation = _myCity.EstimatedPopulation;
         }
 
         public City(Int32 zipCode)
         {
-            Utils _utils = new Utils();
-            City _myCity = _utils.GetCityByZipCode(zipCode);
+            //Utils _utils = new Utils();
+            //City _myCity = _utils.GetCityByZipCode(zipCode);
 
-            _t = _myCity._t;
-            Name = _myCity.Name;
-            CountryId = _myCity.CountryId;
-            TimeZoneId = _myCity.TimeZoneId;
-            StateId = _myCity.StateId;
-            CountyId = _myCity.CountyId;
-            EstimatedPopulation = _myCity.EstimatedPopulation;
+            //_t = _myCity._t;
+            //Name = _myCity.Name;
+            //CountryId = _myCity.CountryId;
+            //TimeZoneId = _myCity.TimeZoneId;
+            //StateId = _myCity.StateId;
+            //CountyId = _myCity.CountyId;
+            //EstimatedPopulation = _myCity.EstimatedPopulation;
         }
 
         public ObjectId CountryId { get; set; }

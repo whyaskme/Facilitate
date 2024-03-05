@@ -1,10 +1,60 @@
 ﻿@page "/quotes"
 @rendermode InteractiveServer
 
+@using Facilitate.Libraries.Models;
+
+@using System;
+@using System.Net.Http;
+@using System.Net.Http.Headers;
+@using System.Text.Json;
+@using System.Threading.Tasks;
+
+@using Microsoft.AspNetCore.Builder;
+@using Microsoft.AspNetCore.Hosting;
+@using Microsoft.AspNetCore.Components.Server;
+@using Microsoft.AspNetCore.Mvc;
+
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
+@using Amazon.Auth.AccessControlPolicy;
+@using Newtonsoft.Json.Linq;
+
 <PageTitle>Leads</PageTitle>
 
 <h1>Leads</h1>
 
-In progress...
+<p role="status">Active Leads: <b>@quoteCount</b></p>
 
-@* <iframe src="http://api.facilitate.org/quotes"></iframe> *@
+<button class="btn btn-primary" @onclick="FetchQuotes">Refresh</button>
+
+
+@code {
+
+    public HttpClient serviceClient = new HttpClient
+        {
+            // BaseAddress = new Uri("https://api.facilitate.org/"),
+            BaseAddress = new Uri("http://localhost"),
+            Timeout = new TimeSpan(0, 2, 0)    // Standard two minute timeout on web service calls.
+        };
+
+    public int currentCount = 0;
+    public int quoteCount = 0;
+
+    public Quotes()
+    {
+        FetchQuotes();
+    }
+
+    private void FetchQuotes()
+    {
+        var response = serviceClient.GetAsync("Quotes");
+
+        var results = response.Result.Content.ReadAsStringAsync().Result;
+
+        var _quotes = JsonConvert.DeserializeObject<List<Quote>>(results);
+
+        quoteCount = _quotes.Count();
+
+        var tmpVal = "Huh";
+    }
+}

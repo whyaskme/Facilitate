@@ -52,6 +52,7 @@ namespace Facilitate.Libraries.Models
             TotalInitialSquareFeet = string.Empty;
     }
 
+        //public string _t { get; set; }
         public string Address { get; set; }
         public string FullAddress { get; set; }
         public string Street { get; set; }
