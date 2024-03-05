@@ -38,12 +38,12 @@ namespace Facilitate.Libraries.Models
             Market = string.Empty;
             ExternalUrl = string.Empty;
             Timestamp = string.Empty;
-            NumberOfStructures = string.Empty;
-            NumberOfIncludedStructures = string.Empty;
-            TotalSquareFeet = string.Empty;
+            NumberOfStructures = 0;
+            NumberOfIncludedStructures = 0;
+            TotalSquareFeet = 0;
             RepLead = string.Empty;
             RepEmail = string.Empty;
-            LeadId = string.Empty;
+            LeadId = 0;
 
             Products = new List<Product>();
             Structures = new List<Structure>(); 
@@ -65,12 +65,12 @@ namespace Facilitate.Libraries.Models
         public string Market { get; set; }
         public string ExternalUrl { get; set; }
         public string Timestamp { get; set; }
-        public string NumberOfStructures { get; set; }
-        public string NumberOfIncludedStructures { get; set; }
-        public string TotalSquareFeet { get; set; }
+        public int NumberOfStructures { get; set; }
+        public int NumberOfIncludedStructures { get; set; }
+        public int TotalSquareFeet { get; set; }
         public string RepLead { get; set; }
         public string RepEmail { get; set; }
-        public string LeadId { get; set; }
+        public int LeadId { get; set; }
 
         public List<Product> Products { get; set; }
         public List<Structure> Structures { get; set; }

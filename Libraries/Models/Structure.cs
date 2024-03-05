@@ -11,11 +11,21 @@ namespace Facilitate.Libraries.Models
 {
     public class Structure
     {
+        public Structure()
+        {
+            Name = string.Empty;
+            Slope = string.Empty;
+            IsIncluded = false;
+            SquareFeet = 0;
+            InitialSquareFeet = 0;
+            RoofComplexity = string.Empty;
+        }
+
         public string Name { get; set; }
         public string Slope { get; set; }
-        public string IsIncluded { get; set; }
-        public string SquareFeet { get; set; }
-        public string InitialSquareFeet { get; set; }
+        public bool IsIncluded { get; set; }
+        public int SquareFeet { get; set; }
+        public int InitialSquareFeet { get; set; }
         public string RoofComplexity { get; set; }
     }
 }
