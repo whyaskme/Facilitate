@@ -56,8 +56,8 @@ namespace Api.Controllers
         [HttpPost(Name = "PostQuote")]
         public string PostQuote(Quote quote)
         {
-            //quote._t = "Quote";
-            //quote._id = ObjectId.GenerateNewId().ToString();
+            quote._t = "Quote";
+            quote._id = ObjectId.GenerateNewId().ToString();
 
             var bDebug = true;
             if (bDebug)

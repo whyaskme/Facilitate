@@ -23,7 +23,7 @@ namespace Facilitate.Libraries.Models
     {
         public Quote()
         {
-            _id = ObjectId.GenerateNewId();
+            _id = ObjectId.GenerateNewId().ToString();
             _t = "Quote";
 
             address = string.Empty;
@@ -52,7 +52,7 @@ namespace Facilitate.Libraries.Models
             products = new List<Product>();
     }
 
-        public ObjectId _id { get; set; }
+        public string _id { get; set; }
         public string _t { get; set; }
 
         public string address { get; set; }
