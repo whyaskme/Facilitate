@@ -69,8 +69,8 @@ namespace Api.Controllers
                 quote.city = "New Brighton";
                 quote.state = "Minnesota";
                 quote.zip = "55112";
-                quote.firstName = "Joe";
-                quote.lastName = "Roofer";
+                quote.firstName = "Home";
+                quote.lastName = "Owner";
                 quote.email = "help@roofle.com";
                 quote.phone = "(612) 255-8200";
                 quote.market = "Minneapolis-St. Paul, MN";
@@ -83,6 +83,7 @@ namespace Api.Controllers
                 quote.totalInitialSquareFeet = 1369;
                 quote.sessionId = "nH9YvHwoBldl2ZkpQSWrX";
 
+                // Add Product Info
                 Product product = new Product();
                 product.name = "Certainteed Landmark";
                 product.id = 1;
@@ -105,10 +106,26 @@ namespace Api.Controllers
 
                 product.wasteFactorMainRoof = 1.2;
 
+                quote.products = null;
+                quote.products = new List<Product>();
                 quote.products.Add(product);
 
                 quote.repLead = "Matt Roofer";
                 quote.repEmail = "admin@facilitate.org";
+                quote.leadId = 123;
+
+                // Add Structure Info
+                Structure structure = new Structure();
+                structure.name = "Main Roof";
+                structure.slope = "medium";
+                structure.isIncluded = true;
+                structure.squareFeet = 1369;
+                structure.initialSquareFeet = 1369;
+                structure.roofComplexity = "Simple";
+
+                quote.structures = null;
+                quote.structures = new List<Structure>();
+                quote.structures.Add(structure);
             }
 
             var results = string.Empty;

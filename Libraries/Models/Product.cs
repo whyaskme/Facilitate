@@ -20,8 +20,8 @@ namespace Facilitate.Libraries.Models
             wasteFactorMainRoof = 0.00;
         }
 
-        public string? name { get; set; }
-        public int? id { get; set; }
+        public string name { get; set; }
+        public int id { get; set; }
 
         public PriceInfo? priceInfo { get; set; }
         public PriceRange? priceRange { get; set; }

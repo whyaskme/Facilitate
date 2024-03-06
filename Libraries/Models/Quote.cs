@@ -74,11 +74,11 @@ namespace Facilitate.Libraries.Models
         public int totalInitialSquareFeet { get; set; }
         public string sessionId { get; set; }
 
-        public List<Structure> structures { get; set; }
+        public List<Structure>? structures { get; set; }
         public string repLead { get; set; }
         public string repEmail { get; set; }
         public int leadId { get; set; }
-        public List<Product> products { get; set; }
+        public List<Product>? products { get; set; }
         
         #region Implementation of IEnumerable
         List<Quote> quotes;
