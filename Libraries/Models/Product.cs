@@ -13,19 +13,19 @@ namespace Facilitate.Libraries.Models
     {
         public Product()
         {
-            Name = string.Empty;
-            Id = 0;
-            PriceInfo = new PriceInfo();
-            PriceRange = new PriceRange();
-            WasteFactorMainRoof = 0.00;
+            name = string.Empty;
+            id = 0;
+            priceInfo = new PriceInfo();
+            priceRange = new PriceRange();
+            wasteFactorMainRoof = 0.00;
         }
 
-        public string? Name { get; set; }
-        public int? Id { get; set; }
+        public string? name { get; set; }
+        public int? id { get; set; }
 
-        public PriceInfo? PriceInfo { get; set; }
-        public PriceRange? PriceRange { get; set; }
+        public PriceInfo? priceInfo { get; set; }
+        public PriceRange? priceRange { get; set; }
 
-        public double? WasteFactorMainRoof { get; set; }
+        public double? wasteFactorMainRoof { get; set; }
     }
 }

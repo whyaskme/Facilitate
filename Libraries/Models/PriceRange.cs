@@ -11,15 +11,15 @@ namespace Libraries.Models
     {
         public PriceRange()
         {
-            TotalMin = 0;
-            TotalMax = 0;
-            MonthlyMin = 0;
-            MonthlyMax = 0;
+            totalMin = 0;
+            totalMax = 0;
+            monthlyMin = 0;
+            monthlyMax = 0;
         }
 
-        public double TotalMin { get; set; }
-        public double TotalMax { get; set; }
-        public double MonthlyMin { get; set; }
-        public double MonthlyMax { get; set; }
+        public double totalMin { get; set; }
+        public double totalMax { get; set; }
+        public double monthlyMin { get; set; }
+        public double monthlyMax { get; set; }
     }
 }

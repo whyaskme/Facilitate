@@ -13,19 +13,19 @@ namespace Facilitate.Libraries.Models
     {
         public Structure()
         {
-            Name = string.Empty;
-            Slope = string.Empty;
-            IsIncluded = false;
-            SquareFeet = 0;
-            InitialSquareFeet = 0;
-            RoofComplexity = string.Empty;
+            name = string.Empty;
+            slope = string.Empty;
+            isIncluded = false;
+            squareFeet = 0;
+            initialSquareFeet = 0;
+            roofComplexity = string.Empty;
         }
 
-        public string Name { get; set; }
-        public string Slope { get; set; }
-        public bool IsIncluded { get; set; }
-        public int SquareFeet { get; set; }
-        public int InitialSquareFeet { get; set; }
-        public string RoofComplexity { get; set; }
+        public string name { get; set; }
+        public string slope { get; set; }
+        public bool isIncluded { get; set; }
+        public int squareFeet { get; set; }
+        public int initialSquareFeet { get; set; }
+        public string roofComplexity { get; set; }
     }
 }

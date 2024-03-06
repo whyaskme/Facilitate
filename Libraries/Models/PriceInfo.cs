@@ -11,19 +11,19 @@ namespace Libraries.Models
     {
         public PriceInfo()
         {
-            PriceType = string.Empty;
-            Total = 0.00;
-            PricePerSquare = 0.00;
-            Monthly = 0.00;
-            Apr = 0.00;
-            Months = 0;
+            priceType = string.Empty;
+            total = 0.00;
+            pricePerSquare = 0.00;
+            monthly = 0.00;
+            apr = 0.00;
+            months = 0;
         }
 
-        public string PriceType { get; set; }
-        public double Total { get; set; }
-        public double PricePerSquare { get; set; }
-        public double Monthly { get; set; }
-        public double Apr { get; set; }
-        public int Months { get; set; }
+        public string priceType { get; set; }
+        public double total { get; set; }
+        public double pricePerSquare { get; set; }
+        public double monthly { get; set; }
+        public double apr { get; set; }
+        public int months { get; set; }
     }
 }

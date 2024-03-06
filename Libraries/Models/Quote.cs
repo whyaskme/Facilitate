@@ -19,67 +19,67 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Facilitate.Libraries.Models
 {
-    public class Quote : Base
+    public class Quote// : Base
     {
         public Quote()
         {
+            _id = ObjectId.GenerateNewId();
             _t = "Quote";
 
-            Address = string.Empty;
-            FullAddress = string.Empty;
-            Street = string.Empty;
-            City = string.Empty;
-            State = string.Empty;
-            Zip = string.Empty;
-            FirstName = string.Empty;
-            LastName = string.Empty;
-            Email = string.Empty;
-            Phone = string.Empty;
-            Market = string.Empty;
-            ExternalUrl = string.Empty;
-            Timestamp = string.Empty;
-            NumberOfStructures = 0;
-            NumberOfIncludedStructures = 0;
-            TotalSquareFeet = 0;
-            RepLead = string.Empty;
-            RepEmail = string.Empty;
-            LeadId = 0;
-
-            Products = new List<Product>();
-            Structures = new List<Structure>(); 
-
-            MainRoofTotalSquareFeet = string.Empty;
-            TotalInitialSquareFeet = string.Empty;
+            address = string.Empty;
+            fullAddress = string.Empty;
+            street = string.Empty;
+            city = string.Empty;
+            state = string.Empty;
+            zip = string.Empty;
+            firstName = string.Empty;
+            lastName = string.Empty;
+            email = string.Empty;
+            phone = string.Empty;
+            market = string.Empty;
+            externalUrl = string.Empty;
+            timestamp = string.Empty;
+            numberOfStructures = 0;
+            numberOfIncludedStructures = 0;
+            totalSquareFeet = 0;
+            mainRoofTotalSquareFeet = 0;
+            totalInitialSquareFeet = 0;
+            sessionId = string.Empty;
+            structures = new List<Structure>();
+            repLead = string.Empty;
+            repEmail = string.Empty;
+            leadId = 0;
+            products = new List<Product>();
     }
 
-        //public string _t { get; set; }
-        public string Address { get; set; }
-        public string FullAddress { get; set; }
-        public string Street { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
-        public string Zip { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
-        public string Market { get; set; }
-        public string ExternalUrl { get; set; }
-        public string Timestamp { get; set; }
-        public int NumberOfStructures { get; set; }
-        public int NumberOfIncludedStructures { get; set; }
-        public int TotalSquareFeet { get; set; }
-        public string RepLead { get; set; }
-        public string RepEmail { get; set; }
-        public int LeadId { get; set; }
+        public ObjectId _id { get; set; }
+        public string _t { get; set; }
+        public string address { get; set; }
+        public string fullAddress { get; set; }
+        public string street { get; set; }
+        public string city { get; set; }
+        public string state { get; set; }
+        public string zip { get; set; }
+        public string firstName { get; set; }
+        public string lastName { get; set; }
+        public string email { get; set; }
+        public string phone { get; set; }
+        public string market { get; set; }
+        public string externalUrl { get; set; }
+        public string timestamp { get; set; }
+        public int numberOfStructures { get; set; }
+        public int numberOfIncludedStructures { get; set; }
+        public int totalSquareFeet { get; set; }
+        public int mainRoofTotalSquareFeet { get; set; }
+        public int totalInitialSquareFeet { get; set; }
+        public string sessionId { get; set; }
 
-        public List<Product> Products { get; set; }
-        public List<Structure> Structures { get; set; }
-
-        public string MainRoofTotalSquareFeet { get; set; }
-        public string TotalInitialSquareFeet { get; set; }
-        public string SessionId { get; set; }
-
+        public List<Structure> structures { get; set; }
+        public string repLead { get; set; }
+        public string repEmail { get; set; }
+        public int leadId { get; set; }
+        public List<Product> products { get; set; }
+        
         #region Implementation of IEnumerable
         List<Quote> quotes;
         public IEnumerator<Quote> GetEnumerator()

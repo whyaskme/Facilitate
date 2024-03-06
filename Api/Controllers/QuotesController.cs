@@ -2,6 +2,7 @@ using Facilitate.Libraries.Models;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using MongoDB.Bson;
+using Libraries.Models;
 
 namespace Api.Controllers
 {
@@ -57,7 +58,58 @@ namespace Api.Controllers
         public string PostQuote(Quote quote)
         {
             quote._t = "Quote";
-            quote._id = ObjectId.GenerateNewId().ToString();
+            //quote._id = ObjectId.GenerateNewId().ToString();
+
+            var bDebug = true;
+            if (bDebug)
+            {
+                quote.address = "2155 Old Highway 8, New Brighton, Minnesota 55112";
+                quote.fullAddress = "2155 Old Highway 8, New Brighton, Minnesota 55112";
+                quote.street = "2155 Old Highway 8";
+                quote.city = "New Brighton";
+                quote.state = "Minnesota";
+                quote.zip = "55112";
+                quote.firstName = "Joe";
+                quote.lastName = "Roofer";
+                quote.email = "help@roofle.com";
+                quote.phone = "(612) 255-8200";
+                quote.market = "Minneapolis-St. Paul, MN";
+                quote.externalUrl = "https://app.roofle.com/dashboard";
+                quote.timestamp = "2023-07-19T16:48:22.193Z";
+                quote.numberOfStructures = 1;
+                quote.numberOfIncludedStructures = 1;
+                quote.totalSquareFeet = 1369;
+                quote.mainRoofTotalSquareFeet = 1369;
+                quote.totalInitialSquareFeet = 1369;
+                quote.sessionId = "nH9YvHwoBldl2ZkpQSWrX";
+
+                Product product = new Product();
+                product.name = "Certainteed Landmark";
+                product.id = 1;
+
+                PriceInfo _priceInfo = new PriceInfo();
+                _priceInfo.priceType = "BasicFinancing";
+                _priceInfo.total = 15069.5;
+                _priceInfo.pricePerSquare = 401;
+                _priceInfo.monthly = 334;
+                _priceInfo.apr = 26.1;
+                _priceInfo.months = 180;
+                product.priceInfo = _priceInfo;
+
+                PriceRange _priceRange = new PriceRange();
+                _priceRange.totalMin = 13562;
+                _priceRange.totalMax = 16575;
+                _priceRange.monthlyMin = 300;
+                _priceRange.monthlyMax = 367;
+                product.priceRange = _priceRange;
+
+                product.wasteFactorMainRoof = 1.2;
+
+                quote.products.Add(product);
+
+                quote.repLead = "Matt Roofer";
+                quote.repEmail = "admin@facilitate.org";
+            }
 
             var results = string.Empty;
 
@@ -74,7 +126,7 @@ namespace Api.Controllers
             }
             finally
             {
-                results = "New quote for (" + quote.FirstName + " " + quote.LastName + ") POSTED";
+                results = "POSTED";
             }
 
             return results;
@@ -95,7 +147,7 @@ namespace Api.Controllers
             }
             finally
             {
-                results = "Old quote for (" + quote.FirstName + " " + quote.LastName + ") UPDATED";
+                results = "UPDATED";
             }
 
             return results;
@@ -116,7 +168,7 @@ namespace Api.Controllers
             }
             finally
             {
-                results = "Old quote (" + quoteId + ") DELETED";
+                results = "DELETED";
             }
 
             return results;
