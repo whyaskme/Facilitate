@@ -54,6 +54,7 @@ namespace Facilitate.Libraries.Models
 
         public ObjectId _id { get; set; }
         public string _t { get; set; }
+
         public string address { get; set; }
         public string fullAddress { get; set; }
         public string street { get; set; }

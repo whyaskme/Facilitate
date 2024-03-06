@@ -15,7 +15,6 @@ namespace Api.Controllers
 
         string resultMsg = string.Empty;
         //string mongoUri = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate";
-        //string mongoUri = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate";
         string mongoUri = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate";
 
         IMongoClient client;
@@ -57,7 +56,7 @@ namespace Api.Controllers
         [HttpPost(Name = "PostQuote")]
         public string PostQuote(Quote quote)
         {
-            quote._t = "Quote";
+            //quote._t = "Quote";
             //quote._id = ObjectId.GenerateNewId().ToString();
 
             var bDebug = true;
