@@ -1,6 +1,8 @@
 ﻿@page "/leads"
 @rendermode InteractiveServer
 
+@attribute [StreamRendering]
+
 @using Facilitate.Libraries.Models;
 
 @using System;
@@ -19,6 +21,9 @@
 @using Amazon.Auth.AccessControlPolicy;
 @using Newtonsoft.Json.Linq;
 
+@using System.Globalization;
+@using System.Threading;
+
 <script src="javascript/Facilitate-Scripts.js"></script> 
 
 <PageTitle>New Leads</PageTitle>
@@ -36,6 +41,7 @@ else
         <table class="table">
             <thead>
                 <tr>
+                    <th></th>
                     <th>View</th>
                     <th>Status</th>
                     <th>Date</th>
@@ -54,9 +60,12 @@ else
             <tbody>
             @foreach (var _lead in _leads)
             {
+                currentItemNumber++;
+
                 <tr>
+                    <td>@currentItemNumber</td>
                     <td>
-                                <a href="javascript: expandDetails('@_lead._id')">
+                        <a href="javascript: expandDetails('@_lead._id')">
                             <img src="images/Icons/Magnifying Glass.png" alt="Expand Lead Details" style="width: 20px !important; height: auto;" />
                         </a>
                     </td>
@@ -78,11 +87,13 @@ else
         </table>
 }
 
+<br /><br />
+<hr />
 <button class="btn btn-primary" @onclick="DeleteLeads">Delete Leads</button>
 
 
 @code {
-
+    public int currentItemNumber = 0;
     private List<Quote>? _leads;
 
     public HttpClient serviceClient = new HttpClient
@@ -108,6 +119,7 @@ else
 
     private void FetchLeads()
     {
+        currentItemNumber = 0;
         updateStatus = "Fetching...";
 
         var response = serviceClient.GetAsync("Quotes");
@@ -115,6 +127,12 @@ else
         var results = response.Result.Content.ReadAsStringAsync().Result;
 
         _leads = JsonConvert.DeserializeObject<List<Quote>>(results);
+
+        foreach (var lead in _leads)
+        {
+            lead.timestamp = DateTime.Parse(lead.timestamp, CultureInfo.InvariantCulture).ToShortDateString() + " " + DateTime.Parse(lead.timestamp, CultureInfo.InvariantCulture).ToShortTimeString();
+
+        }
 
         updateStatus = _leads.Count().ToString();
     }
