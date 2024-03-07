@@ -19,13 +19,15 @@
 @using Amazon.Auth.AccessControlPolicy;
 @using Newtonsoft.Json.Linq;
 
+<script src="javascript/Facilitate-Scripts.js"></script> 
+
 <PageTitle>New Leads</PageTitle>
 
 <h1>New Leads</h1>
 
 <p role="status">Leads: <span style="color: #1f6339; font-weight: bold;">@updateStatus</span></p>
 
-@if (forecasts == null)
+@if (_leads == null)
 {
         <p><em>Loading...</em></p>
 }
@@ -34,21 +36,43 @@ else
         <table class="table">
             <thead>
                 <tr>
+                    <th>View</th>
+                    <th>Status</th>
                     <th>Date</th>
-                    <th>Temp. (C)</th>
-                    <th>Temp. (F)</th>
-                    <th>Summary</th>
+                    <th>First</th>
+                    <th>Last</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Street</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Zip</th>
+                    <th>Structs</th>
+                    <th>SqFt</th>
                 </tr>
             </thead>
             <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var _lead in _leads)
             {
-                        <tr>
-                            <td>@forecast.Date.ToShortDateString()</td>
-                            <td>@forecast.TemperatureC</td>
-                            <td>@forecast.TemperatureF</td>
-                            <td>@forecast.Summary</td>
-                        </tr>
+                <tr>
+                    <td>
+                                <a href="javascript: expandDetails('@_lead._id')">
+                            <img src="images/Icons/Magnifying Glass.png" alt="Expand Lead Details" style="width: 20px !important; height: auto;" />
+                        </a>
+                    </td>
+                    <td>New</td>
+                    <td>@_lead.timestamp.ToString()</td>
+                    <td>@_lead.firstName</td>
+                    <td>@_lead.lastName</td>
+                    <td>@_lead.email</td>
+                    <td>@_lead.phone</td>
+                    <td>@_lead.street</td>
+                    <td>@_lead.city</td>
+                    <td>@_lead.state</td>
+                    <td>@_lead.zip</td>
+                    <td>@_lead.numberOfStructures</td>
+                    <td>@_lead.mainRoofTotalSquareFeet</td>
+                </tr>
             }
             </tbody>
         </table>
@@ -58,33 +82,8 @@ else
 
 
 @code {
-    private WeatherForecast[]? forecasts;
+
     private List<Quote>? _leads;
-
-    protected override async Task OnInitializedAsync()
-    {
-        //FetchLeads();
-
-        // Simulate asynchronous loading to demonstrate streaming rendering
-        // await Task.Delay(500);
-
-        // var startDate = DateOnly.FromDateTime(DateTime.Now);
-        // var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
-        // forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        //     {
-        //         Date = startDate.AddDays(index),
-        //         TemperatureC = Random.Shared.Next(-20, 55),
-        //         Summary = summaries[Random.Shared.Next(summaries.Length)]
-        //     }).ToArray();
-    }
-
-    private class WeatherForecast
-    {
-        public DateOnly Date { get; set; }
-        public int TemperatureC { get; set; }
-        public string? Summary { get; set; }
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-    }
 
     public HttpClient serviceClient = new HttpClient
         {
@@ -118,18 +117,6 @@ else
         _leads = JsonConvert.DeserializeObject<List<Quote>>(results);
 
         updateStatus = _leads.Count().ToString();
-
-        // Simulate asynchronous loading to demonstrate streaming rendering
-        //await Task.Delay(500);
-
-        var startDate = DateOnly.FromDateTime(DateTime.Now);
-        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
-        forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = startDate.AddDays(index),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = summaries[Random.Shared.Next(summaries.Length)]
-            }).ToArray();
     }
 
     private void DeleteLeads()
