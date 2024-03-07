@@ -169,14 +169,38 @@ namespace Api.Controllers
             return results;
         }
 
+        //[HttpDelete(Name = "DeleteQuote")]
+        //public string DeleteQuote(string quoteId)
+        //{
+        //    var results = string.Empty;
+
+        //    try
+        //    {
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        results = ex.Message;
+        //    }
+        //    finally
+        //    {
+        //        results = "DELETED";
+        //    }
+
+        //    return results;
+        //}
+
         [HttpDelete(Name = "DeleteQuote")]
-        public string DeleteQuote(string quoteId)
+        public string DeleteQuote()
         {
             var results = string.Empty;
 
             try
             {
+                client = new MongoClient(mongoUri);
 
+                var db = client.GetDatabase(dbName);
+                db.DropCollection(collectionName);
             }
             catch (Exception ex)
             {

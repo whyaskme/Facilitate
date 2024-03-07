@@ -2,6 +2,9 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+.item-count-label {
+    color: #1f6339 !important;
+}
 .top-row {
     border: solid 0px #ff0000;
     height: 100px !important;

@@ -1,4 +1,4 @@
-﻿@page "/quotes"
+﻿@page "/customers"
 @rendermode InteractiveServer
 
 @using Facilitate.Libraries.Models;
@@ -19,11 +19,11 @@
 @using Amazon.Auth.AccessControlPolicy;
 @using Newtonsoft.Json.Linq;
 
-<PageTitle>Leads</PageTitle>
+<PageTitle>Active Customers</PageTitle>
 
-<h1>Leads</h1>
+<h1>Active Customers</h1>
 
-<p role="status">Active Leads: <span style="color: #ff0000;">@updateStatus</span></p>
+<p role="status">Customers: <span style="color: #1f6339; font-weight: bold;">@updateStatus</span></p>
 
 @* <button class="btn btn-primary" @onclick="FetchQuotes">Refresh</button>
  *@
@@ -39,7 +39,7 @@
 
     public string updateStatus = "Fetching...";
 
-    public Quotes()
+    public Customers()
     {
         var timer = new Timer(new TimerCallback(_ =>
         {
