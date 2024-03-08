@@ -98,8 +98,8 @@ else
 
     public HttpClient serviceClient = new HttpClient
         {
-            BaseAddress = new Uri("https://api.facilitate.org/"),
-            // BaseAddress = new Uri("http://localhost"),
+            // BaseAddress = new Uri("https://api.facilitate.org/"),
+            BaseAddress = new Uri("http://localhost/"),
             Timeout = new TimeSpan(0, 2, 0)    // Standard two minute timeout on web service calls.
         };
 
@@ -107,6 +107,8 @@ else
 
     public Leads()
     {
+        //FetchLeads();
+
         var timer = new Timer(new TimerCallback(_ =>
         {
             FetchLeads();
@@ -126,15 +128,18 @@ else
 
         var results = response.Result.Content.ReadAsStringAsync().Result;
 
-        _leads = JsonConvert.DeserializeObject<List<Quote>>(results);
-
-        foreach (var lead in _leads)
+        if (results != null)
         {
-            lead.timestamp = DateTime.Parse(lead.timestamp, CultureInfo.InvariantCulture).ToShortDateString() + " " + DateTime.Parse(lead.timestamp, CultureInfo.InvariantCulture).ToShortTimeString();
+            _leads = JsonConvert.DeserializeObject<List<Quote>>(results);
 
+            foreach (var lead in _leads)
+            {
+                lead.timestamp = DateTime.Parse(lead.timestamp, CultureInfo.InvariantCulture).ToShortDateString() + " " + DateTime.Parse(lead.timestamp, CultureInfo.InvariantCulture).ToShortTimeString();
+
+            }
+
+            updateStatus = _leads.Count().ToString();
         }
-
-        updateStatus = _leads.Count().ToString();
     }
 
     private void DeleteLeads()
