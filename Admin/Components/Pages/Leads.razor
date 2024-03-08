@@ -98,8 +98,8 @@ else
 
     public HttpClient serviceClient = new HttpClient
         {
-            // BaseAddress = new Uri("https://api.facilitate.org/"),
-            BaseAddress = new Uri("http://localhost/"),
+            BaseAddress = new Uri("https://api.facilitate.org/"),
+            // BaseAddress = new Uri("http://localhost/"),
             Timeout = new TimeSpan(0, 2, 0)    // Standard two minute timeout on web service calls.
         };
 
