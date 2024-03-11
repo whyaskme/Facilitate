@@ -65,8 +65,7 @@ else
                 <tr>
                     <td>@currentItemNumber</td>
                     <td>
-                        @* <a href="javascript: expandDetails('@_lead._id')"> *@
-                                <a href="leaddetails?leadId=@_lead._id">
+                        <a href="leaddetails?leadId=@_lead._id">
                             <img src="images/Icons/Magnifying Glass.png" alt="Expand Lead Details" style="width: 20px !important; height: auto;" />
                         </a>
                     </td>
@@ -136,7 +135,6 @@ else
             foreach (var lead in _leads)
             {
                 lead.timestamp = DateTime.Parse(lead.timestamp, CultureInfo.InvariantCulture).ToShortDateString() + " " + DateTime.Parse(lead.timestamp, CultureInfo.InvariantCulture).ToShortTimeString();
-
             }
 
             updateStatus = _leads.Count().ToString();

@@ -1,5 +1,8 @@
 ﻿@page "/leaddetails"
-@* @page "/leaddetails/{leadId:string}" *@
+
+@* @page "/leaddetails/{leadId:string?}" *@
+
+@inject NavigationManager NavManager
 
 @rendermode InteractiveServer
 
@@ -17,6 +20,7 @@
 @using Microsoft.AspNetCore.Hosting;
 @using Microsoft.AspNetCore.Components.Server;
 @using Microsoft.AspNetCore.Mvc;
+@using Microsoft.AspNetCore.WebUtilities;
 
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Serialization;
@@ -26,8 +30,6 @@
 @using System.Globalization;
 @using System.Threading;
 
-@using Facilitate.Libraries.Models;
-@using Microsoft.AspNetCore.Mvc;
 @using MongoDB.Driver;
 @using MongoDB.Bson;
 @using Libraries.Models;
@@ -36,62 +38,44 @@
 
 <h1>Lead Details</h1>
 
-<p role="status">Lead Details: <span style="color: #1f6339; font-weight: bold;">@updateStatus</span></p>
+<p role="status">LeadId: <span style="color: #1f6339; font-weight: bold;">@updateStatus</span></p>
 
-@if (_leads == null)
-{
-            <p><em>Loading...</em></p>
-}
-else
-{
-            <table class="table">
-                <thead>
-                    <tr>
-@*                         <th></th>
-                        <th>View</th> *@
-                        <th>Status</th>
-                        <th>Date</th>
-                        <th>First</th>
-                        <th>Last</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Street</th>
-                        <th>City</th>
-                        <th>State</th>
-                        <th>Zip</th>
-                        <th>Structs</th>
-                        <th>SqFt</th>
-                    </tr>
-                </thead>
-                <tbody>
-            @foreach (var _lead in _leads)
-            {
-                currentItemNumber++;
 
-                        <tr>
-@*                             <td>@currentItemNumber</td>
-                            <td>
-                                <a href="javascript: expandDetails('@_lead._id')">
-                                    <img src="images/Icons/Magnifying Glass.png" alt="Expand Lead Details" style="width: 20px !important; height: auto;" />
-                                </a>
-                            </td> *@
-                            <td>New</td>
-                            <td>@_lead.timestamp.ToString()</td>
-                            <td>@_lead.firstName</td>
-                            <td>@_lead.lastName</td>
-                            <td>@_lead.email</td>
-                            <td>@_lead.phone</td>
-                            <td>@_lead.street</td>
-                            <td>@_lead.city</td>
-                            <td>@_lead.state</td>
-                            <td>@_lead.zip</td>
-                            <td>@_lead.numberOfStructures</td>
-                            <td>@_lead.mainRoofTotalSquareFeet</td>
-                        </tr>
-            }
-                </tbody>
-            </table>
-}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Status</th>
+            <th>Date</th>
+            <th>First</th>
+            <th>Last</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Street</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Zip</th>
+            <th>Structs</th>
+            <th>SqFt</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>New</td>
+            <td>@_quote.timestamp.ToString()</td>
+            <td>@_quote.firstName</td>
+            <td>@_quote.lastName</td>
+            <td>@_quote.email</td>
+            <td>@_quote.phone</td>
+            <td>@_quote.street</td>
+            <td>@_quote.city</td>
+            <td>@_quote.state</td>
+            <td>@_quote.zip</td>
+            <td>@_quote.numberOfStructures</td>
+            <td>@_quote.mainRoofTotalSquareFeet</td>
+        </tr>
+
+    </tbody>
+</table>
 
 <br /><br />
 <hr />
@@ -99,8 +83,17 @@ else
 
 @code {
 
+    public LeadDetails() { }
+
     [Parameter]
-    public int leadId { get; set; }
+    public string leadId { get; set; }
+
+    public Quote _quote;
+
+    public int currentItemNumber = 0;
+    private List<Quote>? _leads;
+
+    public string updateStatus = "Fetching...";
 
     string dbName = "Facilitate";
     string collectionName = "Quote";
@@ -110,45 +103,54 @@ else
     string mongoUri = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate";
 
     IMongoClient client;
-
     IMongoCollection<Quote> collection;
 
-    //public string leadId = id;
-
-    public int currentItemNumber = 0;
-    private List<Quote>? _leads;
-
     public HttpClient serviceClient = new HttpClient
-        {
-            // BaseAddress = new Uri("https://api.facilitate.org/"),
-            BaseAddress = new Uri("http://localhost/"),
-            Timeout = new TimeSpan(0, 2, 0)    // Standard two minute timeout on web service calls.
-        };
-
-    public string updateStatus = "Fetching...";
-
-    public LeadDetails()
     {
-        updateStatus = "Fetching...";
+        // BaseAddress = new Uri("https://api.facilitate.org/"),
+        BaseAddress = new Uri("http://localhost/"),
+        Timeout = new TimeSpan(0, 2, 0)    // Standard two minute timeout on web service calls.
+    };
 
-        Quote _quote;
-
-        try
+    protected async override void OnInitialized()
+    {
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("leadId", out var leadId))
         {
-            client = new MongoClient(mongoUri);
+            updateStatus = leadId;
 
-            collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
+            try
+            {
+                client = new MongoClient(mongoUri);
 
-            //_quote = collection.Find(Builders<Quote>.Filter.Empty);
+                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
 
-        }
-        catch (Exception ex)
-        {
-            resultMsg = ex.Message;
-        }
-        finally
-        {
+                var response = serviceClient.GetAsync("Quotes");
 
+                var results = response.Result.Content.ReadAsStringAsync().Result;
+
+                if (results != null)
+                {
+                    _leads = JsonConvert.DeserializeObject<List<Quote>>(results);
+
+                    foreach (var lead in _leads)
+                    {
+                        if (lead._id == leadId)
+                        {
+                            lead.timestamp = DateTime.Parse(lead.timestamp, CultureInfo.InvariantCulture).ToShortDateString() + " " + DateTime.Parse(lead.timestamp, CultureInfo.InvariantCulture).ToShortTimeString();
+                            _quote = lead;
+                            return;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+            }
         }
     }
 
