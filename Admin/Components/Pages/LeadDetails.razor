@@ -132,7 +132,6 @@
                 if (results != null)
                 {
                     _leads = JsonConvert.DeserializeObject<List<Quote>>(results);
-
                     foreach (var lead in _leads)
                     {
                         if (lead._id == leadId)

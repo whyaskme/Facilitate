@@ -1,4 +1,10 @@
 ﻿
+
 function expandDetails(_leadId) {
-    alert('Expand leads details for (' + _leadId + ')');
+    if ($("#" + _leadId).is(':visible')) {
+        $("#" + _leadId).hide();
+    }
+    else {
+        $("#" + _leadId).show();
+    }
 }
