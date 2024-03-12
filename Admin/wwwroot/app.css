@@ -2,10 +2,133 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
-#detailsPanel 
+.container {
+    border: solid 1px #808080;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+.row {
+    border-top: solid 1px #808080;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.row-header
 {
+    background-color: #eee;
+    font-weight: bold;
+    color: #808080;
+}
+
+.col {
+    border: solid 0px #ff0000;
+}
+
+.row-number {
+    border: solid 0px #ff0000;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    width: 50px !important;
+    text-align: center;
+}
+
+.row-view {
+    border: solid 1px #0000ff;
+    border: solid 0px #ff0000;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    width: 50px !important;
+    text-align: center;
+}
+
+.row-date {
+    border: solid 0px #0000ff;
+    min-width: 100px !important;
+    max-width: 100px !important;
+    width: 100px !important;
+}
+
+.row-first-name {
+    border: solid 0px #0000ff;
+    min-width: 100px !important;
+    max-width: 100px !important;
+    width: 100px !important;
+}
+
+.row-last-name {
+    border: solid 0px #0000ff;
+    min-width: 125px !important;
+    max-width: 125px !important;
+    width: 125px !important;
+}
+
+.row-email {
+    border: solid 0px #0000ff;
+    min-width: 200px !important;
+    max-width: 200px !important;
+    width: 200px !important;
+}
+
+.row-phone {
+    border: solid 0px #0000ff;
+    min-width: 125px !important;
+    max-width: 125px !important;
+    width: 125px !important;
+}
+
+.row-street {
+    border: solid 0px #0000ff;
+    min-width: auto !important;
+    max-width: auto !important;
+    width: auto !important;
+}
+
+.row-city {
+    border: solid 0px #0000ff;
+    min-width: 100px !important;
+    max-width: 100px !important;
+    width: 100px !important;
+}
+
+.row-state {
+    border: solid 0px #0000ff;
+    min-width: 100px !important;
+    max-width: 100px !important;
+    width: 100px !important;
+}
+
+.row-zip {
+    border: solid 0px #0000ff;
+    min-width: 75px !important;
+    max-width: 75px !important;
+    width: 75px !important;
+}
+
+.row-structs {
+    border: solid 0px #0000ff;
+    min-width: 75px !important;
+    max-width: 75px !important;
+    width: 75px !important;
+}
+
+.row-sqft {
+    border: solid 0px #0000ff;
+    min-width: 75px !important;
+    max-width: 75px !important;
+    width: 75px !important;
+}
+
+.row-details
+{
+    border-top: dashed 1px #808080;
+    padding: 25px;
+}
+
+#detailsPanel {
     border: solid 1px #ff0000 !important;
-/*    display: none;*/
+    /*    display: none;*/
 }
 
 .item-count-label {

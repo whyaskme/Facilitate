@@ -24,9 +24,12 @@
 @using System.Globalization;
 @using System.Threading;
 
+@using BlazorBootstrap;
+
 <PageTitle>New Leads</PageTitle>
 
 <h1>New Leads</h1>
+
 
 <p role="status">Leads: <span style="color: #1f6339; font-weight: bold;">@updateStatus</span></p>
 
@@ -36,56 +39,103 @@
 }
 else
 {
-        <table class="table">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>View</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                    <th>First</th>
-                    <th>Last</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Street</th>
-                    <th>City</th>
-                    <th>State</th>
-                    <th>Zip</th>
-                    <th>Structs</th>
-                    <th>SqFt</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach (var _lead in _leads)
-            {
-                currentItemNumber++;
+    <div class="container">
+        <div class="row row-header">
+            <div class="col row-number">
+                #
+            </div>
+            <div class="col row-view">
+                View
+            </div>
+            <div class="col row-date">
+                Date
+            </div>
+            <div class="col row-first-name">
+                First
+            </div>
+            <div class="col row-last-name">
+                Last
+            </div>
+            <div class="col row-email">
+                Email
+            </div>
+            <div class="col row-phone">
+                Phone
+            </div>
+            <div class="col row-street">
+                Street
+            </div>
+            <div class="col row-city">
+                City
+            </div>
+            <div class="col row-state">
+                State
+            </div>
+            <div class="col row-zip">
+                Zip
+            </div>
+            <div class="col row-structs">
+                Structs
+            </div>
+            <div class="col row-sqft">
+                SqFt
+            </div>
+        </div>
 
-                <tr>
-                    <td>@currentItemNumber</td>
-                    <td>
-                        <a href="javascript: expandDetails('@_lead._id')">
-                            <img src="images/Icons/Magnifying Glass.png" alt="Expand Lead Details" style="width: 20px !important; height: auto;" />
-                        </a>
-                    </td>
-                    <td>New</td>
-                    <td>@_lead.timestamp.ToString()</td>
-                    <td>@_lead.firstName</td>
-                    <td>@_lead.lastName</td>
-                    <td>@_lead.email</td>
-                    <td>@_lead.phone</td>
-                    <td>@_lead.street</td>
-                    <td>@_lead.city</td>
-                    <td>@_lead.state</td>
-                    <td>@_lead.zip</td>
-                    <td>@_lead.numberOfStructures</td>
-                    <td>@_lead.mainRoofTotalSquareFeet</td>
-                </tr>
-                <tr id="@_lead._id" class="detailsPanel" style="display: none;">
-                    <td colspan=14>Details structure here...</td>
-                </tr>
-            }
-            </tbody>
-        </table>
+        @foreach (var _lead in _leads)
+        {
+            currentItemNumber++;
+
+            <div class="row">
+                <div class="col row-number">
+                    @currentItemNumber
+                </div>
+                <div class="col row-view">
+                    <a href="javascript: expandDetails('@_lead._id')">
+                        <img src="images/Icons/Magnifying Glass.png" alt="Expand Lead Details" style="width: 20px !important; height: auto;" />
+                    </a>
+                </div>
+                <div class="col row-date">
+                    @_lead.timestamp.ToString()
+                </div>
+                <div class="col row-first-name">
+                    @_lead.firstName
+                </div>
+                <div class="col row-last-name">
+                    @_lead.lastName
+                </div>
+                <div class="col row-email">
+                    @_lead.email
+                </div>
+                        <div class="col row-phone">
+                    @_lead.phone
+                </div>
+                <div class="col row-street">
+                    @_lead.street
+                </div>
+                <div class="col row-city">
+                    @_lead.city
+                </div>
+                <div class="col row-state">
+                    @_lead.state
+                </div>
+                <div class="col row-zip">
+                    @_lead.zip
+                </div>
+                <div class="col row-structs">
+                    @_lead.numberOfStructures
+                </div>
+                <div class="col row-sqft">
+                    @_lead.mainRoofTotalSquareFeet
+                </div>
+            </div>
+
+            <div id="@_lead._id" class="row row-details" style="display: none;">
+                Details here...
+            </div>
+        }
+
+    </div>
 }
 
 <br /><br />
@@ -99,8 +149,8 @@ else
 
     public HttpClient serviceClient = new HttpClient
         {
-            // BaseAddress = new Uri("https://api.facilitate.org/"),
-            BaseAddress = new Uri("http://localhost/"),
+            BaseAddress = new Uri("https://api.facilitate.org/"),
+            // BaseAddress = new Uri("http://localhost/"),
             Timeout = new TimeSpan(0, 2, 0)    // Standard two minute timeout on web service calls.
         };
 
