@@ -1,0 +1,38 @@
+﻿@page "/leads"
+
+@using AdminBlazor.Data
+@using Facilitate.Libraries.Models;
+
+@attribute [StreamRendering(true)]
+@rendermode InteractiveServer
+@inject QuoteService QuoteService
+
+<PageTitle>Leads</PageTitle>
+<h1>Leads</h1>
+
+@if (quotes == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <DxGrid Data="@quotes"
+                CssClass="mw-1100">
+        <Columns>
+            <DxGridDataColumn Caption="Date" FieldName="Date" />
+            <DxGridDataColumn Caption="Temperature (C)" FieldName="TemperatureC" />
+            <DxGridDataColumn Caption="Temperature (F)" FieldName="TemperatureF" />
+            <DxGridDataColumn Caption="Summary" FieldName="Summary" />
+        </Columns>
+    </DxGrid>
+}
+
+@code {
+    // private WeatherForecast[]? quotes;
+    private Quote[]? quotes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        quotes = await QuoteService.GetQuotesAsync();
+    }
+}
