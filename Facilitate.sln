@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "Api\Api.csproj", "{D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Libraries", "Libraries\Libraries.csproj", "{DB4C9029-AC2A-46AE-8E93-0060B5BBAD79}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminBlazor", "AdminBlazor\AdminBlazor.csproj", "{A73D07C1-E418-4695-A3D7-1504EEFFBC92}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{DB4C9029-AC2A-46AE-8E93-0060B5BBAD79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB4C9029-AC2A-46AE-8E93-0060B5BBAD79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB4C9029-AC2A-46AE-8E93-0060B5BBAD79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A73D07C1-E418-4695-A3D7-1504EEFFBC92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A73D07C1-E418-4695-A3D7-1504EEFFBC92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A73D07C1-E418-4695-A3D7-1504EEFFBC92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A73D07C1-E418-4695-A3D7-1504EEFFBC92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
