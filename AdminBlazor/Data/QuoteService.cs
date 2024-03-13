@@ -1,6 +1,8 @@
+using AdminBlazor.Components.Pages;
 using Facilitate.Libraries.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Globalization;
 
 namespace AdminBlazor.Data {
 
@@ -28,6 +30,11 @@ namespace AdminBlazor.Data {
 
                 var allQuotes = collection.Find(Builders<Quote>.Filter.Empty).ToList();
 
+                foreach (var quote in allQuotes)
+                {
+                    // Format date string
+                    quote.timestamp = DateTime.Parse(quote.timestamp, CultureInfo.InvariantCulture).ToShortDateString() + " " + DateTime.Parse(quote.timestamp, CultureInfo.InvariantCulture).ToShortTimeString();
+                }
                 return allQuotes;
             }
             catch (Exception ex)

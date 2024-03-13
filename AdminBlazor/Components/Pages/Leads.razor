@@ -8,7 +8,9 @@
 @inject QuoteService QuoteService
 
 <PageTitle>Leads</PageTitle>
-<h1>Leads</h1>
+<h1>@updateStatus Leads</h1>
+
+@* <p role="status">Leads: <span style="color: #1f6339; font-weight: bold;">@updateStatus</span></p> *@
 
 @if (quotes == null)
 {
@@ -16,9 +18,11 @@
 }
 else
 {
-    <DxGrid Data="@quotes" CssClass="mw-1100">
+    <DxGrid Data="@quotes" PageSize="5" PagerPosition="GridPagerPosition.Bottom" AllowSort="true" CssClass="mw-1100" >
         <Columns>
-            <DxGridDataColumn Caption="Date" FieldName="timestamp" />
+            <DxGridDataColumn Caption="#" FieldName="" Width="50px" TextAlignment="GridTextAlignment.Left" />
+            <DxGridDataColumn Caption="View" FieldName="" Width="50px" TextAlignment="GridTextAlignment.Left" />
+            <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="D" />
             <DxGridDataColumn Caption="First" FieldName="firstName" />
             <DxGridDataColumn Caption="Last" FieldName="lastName" />
             <DxGridDataColumn Caption="Email" FieldName="email" />
@@ -31,12 +35,41 @@ else
     </DxGrid>
 }
 
+<br /><br />
+<hr />
+<button class="btn btn-primary" @onclick="DeleteLeads">Delete Leads</button>
+
 @code {
+
+    public string updateStatus = "Fetching...";
+
+    public Leads()
+    {
+        var timer = new Timer(new TimerCallback(_ =>
+        {
+            quotes = QuoteService.GetQuotes();
+            updateStatus = quotes.Count().ToString();
+
+            InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
+        }), null, 1000, 1000);
+    }
 
     private IEnumerable<Quote>? quotes;
 
     protected override async Task OnInitializedAsync()
     {
-        quotes = QuoteService.GetQuotes();
+        // quotes = QuoteService.GetQuotes();
+    }
+
+    private void DeleteLeads()
+    {
+        updateStatus = "Deleting...";
+
+        // var response = serviceClient.DeleteAsync("Quotes");
+
+        // updateStatus = "Deleted!";
     }
 }
