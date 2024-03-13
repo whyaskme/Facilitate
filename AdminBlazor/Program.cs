@@ -12,7 +12,10 @@ builder.Services.AddDevExpressBlazor(options => {
     options.BootstrapVersion = DevExpress.Blazor.BootstrapVersion.v5;
     options.SizeMode = DevExpress.Blazor.SizeMode.Medium;
 });
+
 builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddSingleton<QuoteService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

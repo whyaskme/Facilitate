@@ -1,30 +1,44 @@
 using Facilitate.Libraries.Models;
 using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace AdminBlazor.Data {
+
     public class QuoteService
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+        string dbName = "Facilitate";
+        string collectionName = "Quote";
 
-        public Task<WeatherForecast[]> GetForecastAsync(DateOnly startDate) {
-            var rng = new Random();
-            return Task.FromResult(Enumerable.Range(1, 20).Select(index => new WeatherForecast {
-                Date = startDate.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            }).ToArray());
-        }
+        string resultMsg = string.Empty;
 
-        public Task<Quote[]> GetQuotesAsync()
+        //string mongoUri = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate";
+        string mongoUri = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate";
+
+        IMongoClient client;
+
+        IMongoCollection<Quote> collection;
+
+        public IEnumerable<Quote> GetQuotes()
         {
-            var rng = new Random();
-            return Task.FromResult(Enumerable.Range(1, 20).Select(index => new Quote
+            try
             {
-                _id = ObjectId.Empty.ToString()
-            }).ToArray());
+                client = new MongoClient(mongoUri);
+
+                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
+
+                var allQuotes = collection.Find(Builders<Quote>.Filter.Empty).ToList();
+
+                return allQuotes;
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
+            return null;
         }
     }
 }

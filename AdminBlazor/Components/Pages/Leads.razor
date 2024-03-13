@@ -16,23 +16,27 @@
 }
 else
 {
-    <DxGrid Data="@quotes"
-                CssClass="mw-1100">
+    <DxGrid Data="@quotes" CssClass="mw-1100">
         <Columns>
-            <DxGridDataColumn Caption="Date" FieldName="Date" />
-            <DxGridDataColumn Caption="Temperature (C)" FieldName="TemperatureC" />
-            <DxGridDataColumn Caption="Temperature (F)" FieldName="TemperatureF" />
-            <DxGridDataColumn Caption="Summary" FieldName="Summary" />
+            <DxGridDataColumn Caption="Date" FieldName="timestamp" />
+            <DxGridDataColumn Caption="First" FieldName="firstName" />
+            <DxGridDataColumn Caption="Last" FieldName="lastName" />
+            <DxGridDataColumn Caption="Email" FieldName="email" />
+            <DxGridDataColumn Caption="Phone" FieldName="phone" />
+            <DxGridDataColumn Caption="Street" FieldName="street" />
+            <DxGridDataColumn Caption="City" FieldName="city" />
+            <DxGridDataColumn Caption="State" FieldName="state" />
+            <DxGridDataColumn Caption="Zip" FieldName="zip" />
         </Columns>
     </DxGrid>
 }
 
 @code {
-    // private WeatherForecast[]? quotes;
-    private Quote[]? quotes;
+
+    private IEnumerable<Quote>? quotes;
 
     protected override async Task OnInitializedAsync()
     {
-        quotes = await QuoteService.GetQuotesAsync();
+        quotes = QuoteService.GetQuotes();
     }
 }
