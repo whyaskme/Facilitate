@@ -26,6 +26,7 @@ namespace Facilitate.Libraries.Models
             _id = ObjectId.GenerateNewId().ToString();
             _t = "Quote";
 
+            status = "New";
             address = string.Empty;
             fullAddress = string.Empty;
             street = string.Empty;
@@ -54,6 +55,7 @@ namespace Facilitate.Libraries.Models
 
         public string _id { get; set; }
         public string _t { get; set; }
+        public string status { get; set; }
 
         public string address { get; set; }
         public string fullAddress { get; set; }
@@ -61,6 +63,7 @@ namespace Facilitate.Libraries.Models
         public string city { get; set; }
         public string state { get; set; }
         public string zip { get; set; }
+
         public string firstName { get; set; }
         public string lastName { get; set; }
         public string email { get; set; }
@@ -68,6 +71,7 @@ namespace Facilitate.Libraries.Models
         public string market { get; set; }
         public string externalUrl { get; set; }
         public string timestamp { get; set; }
+
         public int numberOfStructures { get; set; }
         public int numberOfIncludedStructures { get; set; }
         public int totalSquareFeet { get; set; }

@@ -48,7 +48,7 @@ else
     {
         var timer = new Timer(new TimerCallback(_ =>
         {
-            quotes = QuoteService.GetQuotes();
+            quotes = QuoteService.GetQuotes("New");
             updateStatus = quotes.Count().ToString();
 
             InvokeAsync(() =>

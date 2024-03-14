@@ -1,4 +1,5 @@
 using AdminBlazor.Components.Pages;
+using DevExpress.Export.Xl;
 using Facilitate.Libraries.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -20,21 +21,18 @@ namespace AdminBlazor.Data {
 
         IMongoCollection<Quote> collection;
 
-        public IEnumerable<Quote> GetQuotes()
+        public IEnumerable<Quote> GetQuotes(string status)
         {
             try
             {
                 client = new MongoClient(mongoUri);
-
                 collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
 
-                var allQuotes = collection.Find(Builders<Quote>.Filter.Empty).SortBy(i => i.firstName).ToList();
+                var builder = Builders<Quote>.Filter;
+                var filter = builder.Eq(f => f.status, status);
 
-                foreach (var quote in allQuotes)
-                {
-                    // Format date string
-                    //quote.timestamp = DateTime.Parse(quote.timestamp, CultureInfo.InvariantCulture).ToShortDateString() + " " + DateTime.Parse(quote.timestamp, CultureInfo.InvariantCulture).ToShortTimeString();
-                }
+                var allQuotes = collection.Find(filter).ToList();
+
                 return allQuotes;
             }
             catch (Exception ex)

@@ -16,9 +16,9 @@
 }
 else
 {
-                <div>Click column headers to sort. Type and hit enter in any empty cell to search that column.<br/><br/></div>
+        <div>Click column headers to sort. Type and hit enter in any empty cell to search that column.<br/><br/></div>
 
-        <DxGrid Data="@quotes" PageSize="10" PagerPosition="GridPagerPosition.Bottom" CssClass="mw-1100" >
+        <DxGrid Data="@quotes" PageSize="10" PagerPosition="GridPagerPosition.Bottom" ShowFilterRow="true" CssClass="mw-1100" >
         <Columns>
                 <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="D" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Caption="First" FieldName="firstName" />
@@ -48,7 +48,7 @@ else
     {
         var timer = new Timer(new TimerCallback(_ =>
         {
-            quotes = QuoteService.GetQuotes();
+            quotes = QuoteService.GetQuotes("Opportunity");
             updateStatus = quotes.Count().ToString();
 
             InvokeAsync(() =>
