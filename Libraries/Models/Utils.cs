@@ -48,9 +48,19 @@ namespace Facilitate.Libraries.Models
         public static int StateNameCount = 50;
         public static int ZipCodeCount = 41365;
 
+        string dbName = "Facilitate";
+        string collectionName = "ReferenceData";
+
+        string resultMsg = string.Empty;
+        string mongoUri = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate";
+
+        IMongoClient client;
+
+        IMongoCollection<Name> namesCollection;
+
         public Utils()
         {
-
+            client = new MongoClient(mongoUri);
         }
 
         //public void CreateCities()
@@ -517,51 +527,6 @@ namespace Facilitate.Libraries.Models
             return randomDoB;
         }
 
-        //public string GetRandomFirstName(string sGender)
-        //{
-        //    var randomFirstName = "";
-
-        //    Random rnd = new Random();
-        //    int randomRecordNumber = 0;  // rnd.Next(1, 13); 
-
-        //    if (sGender == "Female") // Female
-        //        randomRecordNumber = rnd.Next(1, FemaleFirstNameCount);
-        //    else
-        //        randomRecordNumber = rnd.Next(1, MaleFirstNameCount);
-
-        //    try
-        //    {
-        //        switch (sGender.ToLower())
-        //        {
-        //            case "female":
-        //                CreateDbConnection("Female", "NameFemale");
-
-        //                List<Female> myRandomName = _mongoFemaleNameCollection.Find(s => s._t == "NameFemale").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
-        //                foreach (Female currentFemaleName in myRandomName)
-        //                {
-        //                    randomFirstName = currentFemaleName.Name;
-        //                }
-        //                break;
-
-        //            case "male":
-        //                CreateDbConnection("Male", "NameMale");
-
-        //                List<Male> myRandomMaleName = _mongoMaleNameCollection.Find(s => s._t == "NameMale").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
-        //                foreach (Male currentName in myRandomMaleName)
-        //                {
-        //                    randomFirstName = currentName.Name;
-        //                }
-        //                break;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        randomFirstName = ex.ToString();
-        //    }
-
-        //    return randomFirstName;
-        //}
-
         public string GetRandomFirstName(string sGender)
         {
             var randomFirstName = "";
@@ -574,51 +539,35 @@ namespace Facilitate.Libraries.Models
             else
                 randomRecordNumber = rnd.Next(1, MaleFirstNameCount);
 
-            var nameCollection = new List<string>();
-
-            string dbName = "Facilitate";
-            string collectionName = "ReferenceData";
-
-            string resultMsg = string.Empty;
-
-            //string mongoUri = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate";
-            string mongoUri = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate";
-
-            IMongoClient client;
-
-            IMongoCollection<NameFemale> namesCollection;
-
-            client = new MongoClient(mongoUri);
-
-            namesCollection = client.GetDatabase(dbName).GetCollection<NameFemale>(collectionName);
-
             try
             {
                 switch (sGender.ToLower())
                 {
                     case "female":
-                        var myRandomFemaleName = namesCollection.Find(s => s._t == "NameFemale").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
+                        var femaleNames = client.GetDatabase(dbName).GetCollection<NameFemale>(collectionName);
+                        var myRandomFemaleName = femaleNames.Find(s => s._t == "NameFemale").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
                         foreach (var currentFemaleName in myRandomFemaleName)
                         {
-                            randomFirstName = currentFemaleName.Name;
+                            return currentFemaleName.Name;
                         }
                         break;
 
                     case "male":
-                        var myRandomMaleName = namesCollection.Find(s => s._t == "NameMale").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
+                        var maleNames = client.GetDatabase(dbName).GetCollection<NameMale>(collectionName);
+                        var myRandomMaleName = maleNames.Find(s => s._t == "NameMale").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
                         foreach (var currentMaleName in myRandomMaleName)
                         {
-                            randomFirstName = currentMaleName.Name;
+                            return currentMaleName.Name;
                         }
                         break;
                 }
             }
             catch (Exception ex)
             {
-                randomFirstName = ex.ToString();
+                return ex.ToString();
             }
 
-            return randomFirstName;
+            return null;
         }
 
         public string GetRandomMiddleInitial()
@@ -642,17 +591,13 @@ namespace Facilitate.Libraries.Models
             Random rnd = new Random();
             int randomRecordNumber = rnd.Next(1, LastNameCount);
 
-            List<Last> myRandomName = new List<Last>();
-
             try
             {
-                CreateDbConnection("Last", "NamesLast");
-
-                // Query random on iGender
-                myRandomName = _mongoLastNameCollection.Find(s => s._t == "Last").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
-                foreach (Last currentName in myRandomName)
+                var lastNames = client.GetDatabase(dbName).GetCollection<NameMale>(collectionName);
+                var myRandomLastName = lastNames.Find(s => s._t == "NameLast").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
+                foreach (var currentLastName in myRandomLastName)
                 {
-                    randomLastName = currentName.Name;
+                    return currentLastName.Name;
                 }
             }
             catch (Exception ex)
@@ -683,30 +628,24 @@ namespace Facilitate.Libraries.Models
 
         public string GetRandomStreetName()
         {
-            var randomStreetName = "";
-
             Random rnd = new Random();
             int randomRecordNumber = rnd.Next(1, StreetNameCount);
 
-            List<Street> myRandomName = new List<Street>();
-
             try
             {
-                CreateDbConnection("Street", "NamesStreet");
-
-                // Query random on iGender
-                myRandomName = _mongoStreetNameCollection.Find(s => s._t == "Street").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
-                foreach (Street currentName in myRandomName)
+                var streetNames = client.GetDatabase(dbName).GetCollection<NameStreet>(collectionName);
+                var randomStreetName = streetNames.Find(s => s._t == "NameStreet").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
+                foreach (var currentStreetName in randomStreetName)
                 {
-                    randomStreetName = currentName.Name;
+                    return currentStreetName.Name;
                 }
             }
             catch (Exception ex)
             {
-                randomStreetName = ex.ToString();
+                return ex.ToString();
             }
 
-            return randomStreetName;
+            return null;
         }
 
         public string GetRandomCity(ObjectId stateId)
@@ -715,21 +654,20 @@ namespace Facilitate.Libraries.Models
 
             try
             {
-                CreateDbConnection("City", "StatesAndCities");
-
                 // This needs to be queried by state
-                CityNameCount = _mongoCityCollection.Find(s => s.StateId == stateId).ToListAsync().Result.Count();
+                CityNameCount = 29822; // _mongoCityCollection.Find(s => s.StateId == stateId).ToListAsync().Result.Count();
 
                 Random rnd = new Random();
                 int randomRecordNumber = rnd.Next(1, CityNameCount);
 
-                List<City> myRandomName = new List<City>();
+                var cityNames = client.GetDatabase(dbName).GetCollection<City>(collectionName);
 
-                // Query random on iGender
-                myRandomName = _mongoCityCollection.Find(s => s.StateId == stateId).Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
-                foreach (City currentName in myRandomName)
+                //var randomCities = cityNames.Find(s => s.StateId == stateId).Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
+
+                var randomCityNames = cityNames.Find(s => s._t == "City").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
+                foreach (var randomCityName in randomCityNames)
                 {
-                    randomCity = currentName.Name;
+                    return randomCityName.Name;
                 }
             }
             catch (Exception ex)
@@ -747,18 +685,16 @@ namespace Facilitate.Libraries.Models
             Random rnd = new Random();
             int randomRecordNumber = rnd.Next(1, StateNameCount);
 
-            List<State> myRandomName = new List<State>();
-
             try
             {
-                CreateDbConnection("State", "States");
-
-                // Query random on iGender
-                myRandomName = _mongoStateCollection.Find(s => s._t == "State").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
-                foreach (State currentName in myRandomName)
+                var stateNames = client.GetDatabase(dbName).GetCollection<State>(collectionName);
+                var randomStateName = stateNames.Find(s => s._t == "State").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
+                foreach (var currentState in randomStateName)
                 {
-                    randomStateInfo[0] = currentName.Name;
-                    randomStateInfo[1] = currentName._id.ToString();
+                    randomStateInfo[0] = currentState.Name;
+                    randomStateInfo[1] = currentState._id.ToString();
+
+                    return randomStateInfo;
                 }
             }
             catch (Exception ex)
@@ -770,31 +706,27 @@ namespace Facilitate.Libraries.Models
             return randomStateInfo;
         }
 
-        public ZipCode GetRandomZipCode()
+        public string GetRandomZipCode()
         {
-            ZipCode randomZipCode = new ZipCode();
-
             try
             {
-                CreateDbConnection("ZipCode", "ZipCodes");
-
                 Random rnd = new Random();
-                int randomRecordNumber = rnd.Next(1, ZipCodeCount);
+                int randomRecordNumber = rnd.Next(1, 41872);
 
-                List<ZipCode> myRandomZipCodes = new List<ZipCode>();
-
-                myRandomZipCodes = _mongoZipCodeCollection.Find(s => s._t == "ZipCode").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
-                foreach (ZipCode currentZipCode in myRandomZipCodes)
+                var zipCodes = client.GetDatabase(dbName).GetCollection<ZipCode>(collectionName);
+                var randomZipCodes = zipCodes.Find(s => s._t == "ZipCode").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
+                foreach (var randomZipCode in randomZipCodes)
                 {
-                    randomZipCode = currentZipCode;
+
+                    return randomZipCode.Zip.ToString();
                 }
             }
             catch (Exception ex)
             {
-                randomZipCode = null;
+                return ex.Message;
             }
 
-            return randomZipCode;
+            return null;
         }
 
         public List<State> GetStates()

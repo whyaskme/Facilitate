@@ -65,38 +65,60 @@ else
     {
         updateStatus = "Creating ";
 
+        List<String> nameGenders = new List<string>();
+        nameGenders.Add("male");
+        nameGenders.Add("female");
+
         Quote quote = new Quote();
 
         Utils utils = new Utils();
 
-        quote.address = "2155 Old Highway 8, New Brighton, Minnesota 55112";
-        quote.fullAddress = "2155 Old Highway 8, New Brighton, Minnesota 55112";
-        quote.street = "2155 Old Highway 8";
-        quote.city = "New Brighton";
-        quote.state = "Minnesota";
-        quote.zip = "55112";
+        var randomStreetNumber = utils.GetRandomStreetNumber();
+        var randomStreetName = utils.GetRandomStreetName();
 
-        quote.firstName = utils.GetRandomFirstName("female");
+        var randomState = utils.GetRandomState();
+        var stateName = randomState[0];
+        var stateId = randomState[1];
 
-        quote.lastName = "Owner";
-        quote.email = "help@roofle.com";
+        var randomCity = utils.GetRandomCity(MongoDB.Bson.ObjectId.Parse("52ade0932b0b6d13f88c4e8d"));
+        var randomZipCode = utils.GetRandomZipCode().ToString();
+
+        quote.address = randomStreetNumber + " " + randomStreetName + ", " + randomCity + ", " + stateName + " " + randomZipCode;
+        quote.fullAddress = quote.address;
+        quote.street = randomStreetNumber + " " + randomStreetName;
+        quote.city = randomCity;
+        quote.state = stateName;
+        quote.zip = randomZipCode;
+
+        Random rnd = new Random();
+        int randomRecordNumber = rnd.Next(0, 1);
+
+        quote.firstName = utils.GetRandomFirstName(nameGenders[randomRecordNumber]);
+        quote.lastName = utils.GetRandomLastName();
+
+        quote.email = quote.firstName.ToLower() + "@facilitate.org";
         quote.phone = "(612) 255-8200";
-        quote.market = "Minneapolis-St. Paul, MN";
+        quote.market = quote.city + ", " + quote.state;
         quote.externalUrl = "https://app.roofle.com/dashboard";
         quote.timestamp = DateTime.Now.ToLongDateString();
-        quote.numberOfStructures = 1;
-        quote.numberOfIncludedStructures = 1;
-        quote.totalSquareFeet = 1369;
-        quote.mainRoofTotalSquareFeet = 1369;
-        quote.totalInitialSquareFeet = 1369;
+
+        randomRecordNumber = rnd.Next(1, 3);
+        quote.numberOfStructures = randomRecordNumber;
+        quote.numberOfIncludedStructures = quote.numberOfStructures;
+
+        randomRecordNumber = rnd.Next(1150, 5200);
+        quote.totalSquareFeet = randomRecordNumber;
+        quote.mainRoofTotalSquareFeet = randomRecordNumber;
+        quote.totalInitialSquareFeet = randomRecordNumber;
+
         quote.sessionId = "nH9YvHwoBldl2ZkpQSWrX";
 
         // Add Product Info
-        Facilitate.Libraries.Models.Product product = new Facilitate.Libraries.Models.Product();
+        Product product = new Product();
         product.name = "Certainteed Landmark";
         product.id = 1;
 
-        Facilitate.Libraries.Models.PriceInfo _priceInfo = new Facilitate.Libraries.Models.PriceInfo();
+        PriceInfo _priceInfo = new PriceInfo();
         _priceInfo.priceType = "BasicFinancing";
         _priceInfo.total = 15069.5;
         _priceInfo.pricePerSquare = 401;
@@ -105,7 +127,7 @@ else
         _priceInfo.months = 180;
         product.priceInfo = _priceInfo;
 
-        Facilitate.Libraries.Models.PriceRange _priceRange = new Facilitate.Libraries.Models.PriceRange();
+        PriceRange _priceRange = new PriceRange();
         _priceRange.totalMin = 13562;
         _priceRange.totalMax = 16575;
         _priceRange.monthlyMin = 300;
@@ -118,17 +140,19 @@ else
         quote.products = new List<Product>();
         quote.products.Add(product);
 
-        quote.repLead = "Matt Roofer";
+        quote.repLead = "Matthew Lamz";
         quote.repEmail = "admin@facilitate.org";
-        quote.leadId = 123;
+
+        randomRecordNumber = rnd.Next(5000, 9999);
+        quote.leadId = randomRecordNumber;
 
         // Add Structure Info
         Structure structure = new Structure();
         structure.name = "Main Roof";
         structure.slope = "medium";
         structure.isIncluded = true;
-        structure.squareFeet = 1369;
-        structure.initialSquareFeet = 1369;
+        structure.squareFeet = quote.totalSquareFeet;
+        structure.initialSquareFeet = quote.totalSquareFeet;
         structure.roofComplexity = "Simple";
 
         quote.structures = null;
@@ -158,88 +182,7 @@ else
         for(var i = 0; i < 50; i++)
         {
             updateStatus = "Creating ";
-
-            Quote quote = new Quote();
-
-            quote.address = "2155 Old Highway 8, New Brighton, Minnesota 55112";
-            quote.fullAddress = "2155 Old Highway 8, New Brighton, Minnesota 55112";
-            quote.street = "2155 Old Highway 8";
-            quote.city = "New Brighton";
-            quote.state = "Minnesota";
-            quote.zip = "55112";
-            quote.firstName = "Home";
-            quote.lastName = "Owner";
-            quote.email = "help@roofle.com";
-            quote.phone = "(612) 255-8200";
-            quote.market = "Minneapolis-St. Paul, MN";
-            quote.externalUrl = "https://app.roofle.com/dashboard";
-            quote.timestamp = DateTime.Now.ToLongDateString();
-            quote.numberOfStructures = 1;
-            quote.numberOfIncludedStructures = 1;
-            quote.totalSquareFeet = 1369;
-            quote.mainRoofTotalSquareFeet = 1369;
-            quote.totalInitialSquareFeet = 1369;
-            quote.sessionId = "nH9YvHwoBldl2ZkpQSWrX";
-
-            // Add Product Info
-            Facilitate.Libraries.Models.Product product = new Facilitate.Libraries.Models.Product();
-            product.name = "Certainteed Landmark";
-            product.id = 1;
-
-            Facilitate.Libraries.Models.PriceInfo _priceInfo = new Facilitate.Libraries.Models.PriceInfo();
-            _priceInfo.priceType = "BasicFinancing";
-            _priceInfo.total = 15069.5;
-            _priceInfo.pricePerSquare = 401;
-            _priceInfo.monthly = 334;
-            _priceInfo.apr = 26.1;
-            _priceInfo.months = 180;
-            product.priceInfo = _priceInfo;
-
-            Facilitate.Libraries.Models.PriceRange _priceRange = new Facilitate.Libraries.Models.PriceRange();
-            _priceRange.totalMin = 13562;
-            _priceRange.totalMax = 16575;
-            _priceRange.monthlyMin = 300;
-            _priceRange.monthlyMax = 367;
-            product.priceRange = _priceRange;
-
-            product.wasteFactorMainRoof = 1.2;
-
-            quote.products = null;
-            quote.products = new List<Product>();
-            quote.products.Add(product);
-
-            quote.repLead = "Matt Roofer";
-            quote.repEmail = "admin@facilitate.org";
-            quote.leadId = 123;
-
-            // Add Structure Info
-            Structure structure = new Structure();
-            structure.name = "Main Roof";
-            structure.slope = "medium";
-            structure.isIncluded = true;
-            structure.squareFeet = 1369;
-            structure.initialSquareFeet = 1369;
-            structure.roofComplexity = "Simple";
-
-            quote.structures = null;
-            quote.structures = new List<Structure>();
-            quote.structures.Add(structure);
-
-            var results = string.Empty;
-
-            try
-            {
-                QuoteService.CreateQuote(quote);
-                results = "POSTED";
-            }
-            catch (Exception ex)
-            {
-                results = ex.Message;
-            }
-            finally
-            {
-
-            }
+            CreateLead();
         }
     }
 
