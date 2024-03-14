@@ -16,7 +16,7 @@
 }
 else
 {
-            <div>Click column headers to sort<br/><br/></div>
+                <div>Click column headers to sort. Type and hit enter in any empty cell to search that column.<br/><br/></div>
 
         <DxGrid Data="@quotes" PageSize="10" PagerPosition="GridPagerPosition.Bottom" CssClass="mw-1100" >
         <Columns>
@@ -42,7 +42,7 @@ else
 
 @code {
 
-    public string updateStatus = "Fetching...";
+    public string updateStatus = "Fetching ";
 
     public Opportunities()
     {
