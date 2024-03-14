@@ -1,4 +1,4 @@
-﻿@page "/leads"
+﻿@page "/customers"
 
 @using AdminBlazor.Data
 @using Facilitate.Libraries.Models;
@@ -8,7 +8,7 @@
 @inject QuoteService QuoteService
 
 <PageTitle>Leads</PageTitle>
-<h1>@updateStatus Leads</h1>
+<h1>@updateStatus Customers</h1>
 
 @if (quotes == null)
 {
@@ -44,7 +44,7 @@ else
 
     public string updateStatus = "Fetching...";
 
-    public Leads()
+    public Customers()
     {
         var timer = new Timer(new TimerCallback(_ =>
         {
