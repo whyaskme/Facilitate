@@ -37,11 +37,12 @@ else
 <hr />
 
 <button class="btn btn-primary" @onclick="CreateLead">Create 1 Customer</button>
-<button class="btn btn-primary" @onclick="CreateLeads">Create 10 Customers</button>
+<button class="btn btn-primary" @onclick="CreateLeads">Create @itemsToCreate Customers</button>
 <button class="btn btn-primary" @onclick="DeleteLeads">Delete @updateStatus Customers</button>
 
 @code {
 
+    public int itemsToCreate = 100;
     public string updateStatus = "Fetching ";
 
     public Customers()
@@ -49,7 +50,7 @@ else
         var timer = new Timer(new TimerCallback(_ =>
         {
             quotes = QuoteService.GetQuotes("Customer");
-            updateStatus = quotes.Count().ToString();
+            updateStatus = quotes.Count().ToString("N0");
 
             InvokeAsync(() =>
             {
@@ -202,7 +203,7 @@ else
 
     private void CreateLeads()
     {
-        for(var i = 0; i < 10; i++)
+        for (var i = 0; i < itemsToCreate; i++)
         {
             updateStatus = "Creating ";
             CreateLead();

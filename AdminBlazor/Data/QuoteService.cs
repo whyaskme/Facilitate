@@ -46,6 +46,31 @@ namespace AdminBlazor.Data {
             return null;
         }
 
+        public int GetQuoteCount(string status)
+        {
+            try
+            {
+                client = new MongoClient(mongoUri);
+                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
+
+                var builder = Builders<Quote>.Filter;
+                var filter = builder.Eq(f => f.status, status);
+
+                var count = collection.CountDocuments(filter);
+
+                return (int)count;
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
+            return 0;
+        }
+
         public string CreateQuote(Quote quote)
         {
             try

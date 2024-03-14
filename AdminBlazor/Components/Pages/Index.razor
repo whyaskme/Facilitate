@@ -1,7 +1,16 @@
 ﻿@page "/"
+
+@using AdminBlazor.Data
+@using Facilitate.Libraries.Models;
+
+@attribute [StreamRendering(true)]
+@rendermode InteractiveServer
+@inject QuoteService QuoteService
+
 <PageTitle>Welcome to Facilitate Platform Administration</PageTitle>
 
 <div class="welcome">
+
     <DxGridLayout CssClass="welcome-gridlayout" RowSpacing="3rem">
         <Rows>
             <DxGridLayoutRow Height="auto" Areas="header"></DxGridLayoutRow>
@@ -10,7 +19,14 @@
         <Items>
             <DxGridLayoutItem Area="header" CssClass="welcome-title">
                 <Template>
-                    <div class="welcome-title-header">Platform Admin</div>
+                    <div class="welcome-title-header">Welcome to Facilitate Platform Administration</div>
+                    <div class="summary-panel">
+                        <span class="summary-item">Leads: <b>@countLeads.ToString("N0")</b></span>
+                        <span class="summary-item">Opportunities: <b>@countOpportunities.ToString("N0")</b></span>
+                        <span class="summary-item">Customers: <b>@countCustomers.ToString("N0")</b></span>
+                        <span class="summary-item">Archives: <b>@countArchives.ToString("N0")</b></span>
+                    </div>
+
                     <div class="welcome-title-content">
                         <img src="images/Backgrounds/Contractors.webp" alt="Facilitate Platform Admin" style="width: 100%; height: auto;" />
                         <br /><br />
@@ -18,24 +34,39 @@
                     </div>
                 </Template>
             </DxGridLayoutItem>
-@*             <DxGridLayoutItem Area="cards" CssClass="welcome-cards">
-                <Template>
-                    <NavLink class="welcome-card" href="/counter">
-                        <svg class="welcome-card-img" alt="counter card">
-                            <use href="images/cards.svg#counter"></use>
-                        </svg>
-                        <div class="welcome-card-text">Counter</div>
-                        <div class="welcome-card-back"></div>
-                    </NavLink>
-                    <NavLink class="welcome-card" href="/weather">
-                        <svg class="welcome-card-img" alt="weather card">
-                            <use href="images/cards.svg#weather"></use>
-                        </svg>
-                        <div class="welcome-card-text">Weather</div>
-                        <div class="welcome-card-back"></div>
-                    </NavLink>
-                </Template>
-            </DxGridLayoutItem> *@
         </Items>
     </DxGridLayout>
 </div>
+
+@code {
+
+    public int countLeads = 0;
+    public int countOpportunities = 0;
+    public int countCustomers = 0;
+    public int countArchives = 0;
+
+    public string updateStatus = "Fetching ";
+
+    public Index()
+    {
+        var timer = new Timer(new TimerCallback(_ =>
+        {
+            GetLeadCount();
+
+            InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
+        }), null, 1000, 1000);
+    }
+
+    private IEnumerable<Quote>? quotes;
+
+    private void GetLeadCount()
+    {
+        countLeads = QuoteService.GetQuoteCount("New");
+        countOpportunities = QuoteService.GetQuoteCount("Opportunity");
+        countCustomers = QuoteService.GetQuoteCount("Customer");
+        countArchives = QuoteService.GetQuoteCount("Archive");
+    }
+}
