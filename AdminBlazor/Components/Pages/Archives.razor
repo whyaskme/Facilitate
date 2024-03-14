@@ -20,7 +20,7 @@ else
 
         <DxGrid Data="@quotes" PageSize="10" PagerPosition="GridPagerPosition.Bottom" CssClass="mw-1100" >
         <Columns>
-            <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="D" SortIndex="0" AllowSort="true" />
+                <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="D" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Caption="First" FieldName="firstName" />
             <DxGridDataColumn Caption="Last" FieldName="lastName" />
             <DxGridDataColumn Caption="Email" FieldName="email" />
@@ -36,9 +36,9 @@ else
 <br /><br />
 <hr />
 
-<button class="btn btn-primary" @onclick="CreateLead">Create 1 Lead</button>
-<button class="btn btn-primary" @onclick="CreateLeads">Create 50 Leads</button>
-<button class="btn btn-primary" @onclick="DeleteLeads">Delete Leads</button>
+<button class="btn btn-primary" @onclick="CreateLead">Create 1 Archive</button>
+<button class="btn btn-primary" @onclick="CreateLeads">Create 10 Archives</button>
+<button class="btn btn-primary" @onclick="DeleteLeads">Delete @updateStatus Archives</button>
 
 @code {
 
@@ -201,7 +201,7 @@ else
 
     private void CreateLeads()
     {
-        for(var i = 0; i < 50; i++)
+        for(var i = 0; i < 10; i++)
         {
             updateStatus = "Creating ";
             CreateLead();
