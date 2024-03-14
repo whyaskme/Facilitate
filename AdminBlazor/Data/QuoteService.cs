@@ -28,12 +28,12 @@ namespace AdminBlazor.Data {
 
                 collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
 
-                var allQuotes = collection.Find(Builders<Quote>.Filter.Empty).ToList();
+                var allQuotes = collection.Find(Builders<Quote>.Filter.Empty).SortBy(i => i.firstName).ToList();
 
                 foreach (var quote in allQuotes)
                 {
                     // Format date string
-                    quote.timestamp = DateTime.Parse(quote.timestamp, CultureInfo.InvariantCulture).ToShortDateString() + " " + DateTime.Parse(quote.timestamp, CultureInfo.InvariantCulture).ToShortTimeString();
+                    //quote.timestamp = DateTime.Parse(quote.timestamp, CultureInfo.InvariantCulture).ToShortDateString() + " " + DateTime.Parse(quote.timestamp, CultureInfo.InvariantCulture).ToShortTimeString();
                 }
                 return allQuotes;
             }
@@ -58,6 +58,31 @@ namespace AdminBlazor.Data {
                 collection.InsertOne(quote);
 
                 resultMsg = "Added Quote!";
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
+            return resultMsg;
+        }
+
+        public string DeleteAllQuotes()
+        {
+            try
+            {
+                client = new MongoClient(mongoUri);
+
+                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
+                
+                //client.GetDatabase(dbName).DropCollection("Quotes");
+
+                //var result = collection.DeleteManyAsync({});
+
+                resultMsg = "Deleted!";
             }
             catch (Exception ex)
             {

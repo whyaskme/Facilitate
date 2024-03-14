@@ -16,10 +16,10 @@
 }
 else
 {
-        <DxGrid Data="@quotes" PageSize="5" PagerPosition="GridPagerPosition.Bottom" CssClass="mw-1100" >
+        <DxGrid Data="@quotes" PageSize="10" PagerPosition="GridPagerPosition.Bottom" CssClass="mw-1100" >
         <Columns>
-            <DxGridDataColumn Caption="#" FieldName="" Width="50px" TextAlignment="GridTextAlignment.Left" />
-            <DxGridDataColumn Caption="View" FieldName="" Width="50px" TextAlignment="GridTextAlignment.Left" />
+@*             <DxGridDataColumn Caption="#" FieldName="" Width="50px" TextAlignment="GridTextAlignment.Left" />
+            <DxGridDataColumn Caption="View" FieldName="" Width="50px" TextAlignment="GridTextAlignment.Left" /> *@
             <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="D" SortIndex="0" AllowSort="true" />
             <DxGridDataColumn Caption="First" FieldName="firstName" />
             <DxGridDataColumn Caption="Last" FieldName="lastName" />
@@ -91,25 +91,25 @@ else
         quote.zip = randomZipCode;
 
         Random rnd = new Random();
-        int randomRecordNumber = rnd.Next(0, 1);
+        int randomInt = rnd.Next(0, 1);
 
-        quote.firstName = utils.GetRandomFirstName(nameGenders[randomRecordNumber]);
+        quote.firstName = utils.GetRandomFirstName(nameGenders[randomInt]);
         quote.lastName = utils.GetRandomLastName();
 
-        quote.email = quote.firstName.ToLower() + "@facilitate.org";
-        quote.phone = "(612) 255-8200";
+        quote.email = quote.firstName.ToLower() + "@" + quote.lastName.ToLower() + ".com";
+        quote.phone = "(" + utils.GetRandomAreaCode() + ") " + utils.GetRandomHomePhoneNumber();
         quote.market = quote.city + ", " + quote.state;
         quote.externalUrl = "https://app.roofle.com/dashboard";
-        quote.timestamp = DateTime.Now.ToLongDateString();
+        quote.timestamp = DateTime.Now.ToString();
 
-        randomRecordNumber = rnd.Next(1, 3);
-        quote.numberOfStructures = randomRecordNumber;
+        randomInt = rnd.Next(1, 3);
+        quote.numberOfStructures = randomInt;
         quote.numberOfIncludedStructures = quote.numberOfStructures;
 
-        randomRecordNumber = rnd.Next(1150, 5200);
-        quote.totalSquareFeet = randomRecordNumber;
-        quote.mainRoofTotalSquareFeet = randomRecordNumber;
-        quote.totalInitialSquareFeet = randomRecordNumber;
+        randomInt = rnd.Next(1150, 5200);
+        quote.totalSquareFeet = randomInt;
+        quote.mainRoofTotalSquareFeet = randomInt;
+        quote.totalInitialSquareFeet = randomInt;
 
         quote.sessionId = "nH9YvHwoBldl2ZkpQSWrX";
 
@@ -120,18 +120,37 @@ else
 
         PriceInfo _priceInfo = new PriceInfo();
         _priceInfo.priceType = "BasicFinancing";
-        _priceInfo.total = 15069.5;
-        _priceInfo.pricePerSquare = 401;
-        _priceInfo.monthly = 334;
-        _priceInfo.apr = 26.1;
-        _priceInfo.months = 180;
+
+        randomInt = rnd.Next(15069, 15069);
+        _priceInfo.total = randomInt;
+
+        randomInt = rnd.Next(401, 401);
+        _priceInfo.pricePerSquare = randomInt;
+
+        randomInt = rnd.Next(250, 400);
+        _priceInfo.monthly = randomInt;
+
+        randomInt = rnd.Next(8, 26);
+        _priceInfo.apr = randomInt;
+
+        randomInt = rnd.Next(180, 180);
+        _priceInfo.months = randomInt;
+
         product.priceInfo = _priceInfo;
 
         PriceRange _priceRange = new PriceRange();
-        _priceRange.totalMin = 13562;
-        _priceRange.totalMax = 16575;
-        _priceRange.monthlyMin = 300;
-        _priceRange.monthlyMax = 367;
+        randomInt = rnd.Next(1150, 5200);
+        _priceRange.totalMin = randomInt;
+
+        randomInt = rnd.Next(16575, 16575);
+        _priceRange.totalMax = randomInt;
+
+        randomInt = rnd.Next(300, 300);
+        _priceRange.monthlyMin = randomInt;
+
+        randomInt = rnd.Next(367, 367);
+        _priceRange.monthlyMax = randomInt;
+
         product.priceRange = _priceRange;
 
         product.wasteFactorMainRoof = 1.2;
@@ -140,11 +159,14 @@ else
         quote.products = new List<Product>();
         quote.products.Add(product);
 
-        quote.repLead = "Matthew Lamz";
-        quote.repEmail = "admin@facilitate.org";
+        randomInt = rnd.Next(0, 1);
+        var repName = utils.GetRandomFirstName(nameGenders[randomInt]) + " " + utils.GetRandomLastName();
 
-        randomRecordNumber = rnd.Next(5000, 9999);
-        quote.leadId = randomRecordNumber;
+        quote.repLead = repName;
+        quote.repEmail = repName.Replace(" ", ".").ToLower() + "@facilitate.org";
+
+        randomInt = rnd.Next(5000, 9999);
+        quote.leadId = randomInt;
 
         // Add Structure Info
         Structure structure = new Structure();

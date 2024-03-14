@@ -1,5 +1,5 @@
 ﻿@page "/"
-<PageTitle>Welcome</PageTitle>
+<PageTitle>Welcome to Facilitate Platform Administration</PageTitle>
 
 <div class="welcome">
     <DxGridLayout CssClass="welcome-gridlayout" RowSpacing="3rem">
@@ -10,11 +10,19 @@
         <Items>
             <DxGridLayoutItem Area="header" CssClass="welcome-title">
                 <Template>
-                    <div class="welcome-title-header">Hello World!</div>
-                    <div class="welcome-title-content">Welcome to your new DevExpress Blazor Application</div>
+                    <div class="welcome-title-header">Platform Admin</div>
+                    <div class="welcome-title-content">
+                        <img src="images/Backgrounds/Contractors.webp" alt="Facilitate Platform Admin" style="width: 100%; height: auto;" />
+                        <br /><br />
+                        Where we make things happen for homeowners.
+                        <br /><br />
+                        Here is where we will plugin some stats graphs once I get to this point...
+                        <br /><br />
+                        In progress...
+                    </div>
                 </Template>
             </DxGridLayoutItem>
-            <DxGridLayoutItem Area="cards" CssClass="welcome-cards">
+@*             <DxGridLayoutItem Area="cards" CssClass="welcome-cards">
                 <Template>
                     <NavLink class="welcome-card" href="/counter">
                         <svg class="welcome-card-img" alt="counter card">
@@ -31,7 +39,7 @@
                         <div class="welcome-card-back"></div>
                     </NavLink>
                 </Template>
-            </DxGridLayoutItem>
+            </DxGridLayoutItem> *@
         </Items>
     </DxGridLayout>
 </div>

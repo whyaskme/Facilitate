@@ -613,7 +613,7 @@ namespace Facilitate.Libraries.Models
             var randomStreetNumber = "";
 
             Random rnd = new Random();
-            int randomRecordNumber = rnd.Next(1, 999);
+            int randomRecordNumber = rnd.Next(100, 99999);
             randomStreetNumber = randomRecordNumber.ToString();
 
             return randomStreetNumber;
