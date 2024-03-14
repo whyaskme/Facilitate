@@ -517,6 +517,51 @@ namespace Facilitate.Libraries.Models
             return randomDoB;
         }
 
+        //public string GetRandomFirstName(string sGender)
+        //{
+        //    var randomFirstName = "";
+
+        //    Random rnd = new Random();
+        //    int randomRecordNumber = 0;  // rnd.Next(1, 13); 
+
+        //    if (sGender == "Female") // Female
+        //        randomRecordNumber = rnd.Next(1, FemaleFirstNameCount);
+        //    else
+        //        randomRecordNumber = rnd.Next(1, MaleFirstNameCount);
+
+        //    try
+        //    {
+        //        switch (sGender.ToLower())
+        //        {
+        //            case "female":
+        //                CreateDbConnection("Female", "NameFemale");
+
+        //                List<Female> myRandomName = _mongoFemaleNameCollection.Find(s => s._t == "NameFemale").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
+        //                foreach (Female currentFemaleName in myRandomName)
+        //                {
+        //                    randomFirstName = currentFemaleName.Name;
+        //                }
+        //                break;
+
+        //            case "male":
+        //                CreateDbConnection("Male", "NameMale");
+
+        //                List<Male> myRandomMaleName = _mongoMaleNameCollection.Find(s => s._t == "NameMale").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
+        //                foreach (Male currentName in myRandomMaleName)
+        //                {
+        //                    randomFirstName = currentName.Name;
+        //                }
+        //                break;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        randomFirstName = ex.ToString();
+        //    }
+
+        //    return randomFirstName;
+        //}
+
         public string GetRandomFirstName(string sGender)
         {
             var randomFirstName = "";
@@ -529,29 +574,41 @@ namespace Facilitate.Libraries.Models
             else
                 randomRecordNumber = rnd.Next(1, MaleFirstNameCount);
 
-            //List<Name> myRandomName = new List<Name>();
+            var nameCollection = new List<string>();
+
+            string dbName = "Facilitate";
+            string collectionName = "ReferenceData";
+
+            string resultMsg = string.Empty;
+
+            //string mongoUri = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate";
+            string mongoUri = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate";
+
+            IMongoClient client;
+
+            IMongoCollection<NameFemale> namesCollection;
+
+            client = new MongoClient(mongoUri);
+
+            namesCollection = client.GetDatabase(dbName).GetCollection<NameFemale>(collectionName);
 
             try
             {
-                switch (sGender)
+                switch (sGender.ToLower())
                 {
-                    case "Female":
-                        CreateDbConnection("Female", "NamesFemale");
-
-                        List<Female> myRandomName = _mongoFemaleNameCollection.Find(s => s._t == sGender).Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
-                        foreach (Female currentFemaleName in myRandomName)
+                    case "female":
+                        var myRandomFemaleName = namesCollection.Find(s => s._t == "NameFemale").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
+                        foreach (var currentFemaleName in myRandomFemaleName)
                         {
                             randomFirstName = currentFemaleName.Name;
                         }
                         break;
 
-                    case "Male":
-                        CreateDbConnection("Male", "NamesMale");
-
-                        List<Male> myRandomMaleName = _mongoMaleNameCollection.Find(s => s._t == sGender).Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
-                        foreach (Male currentName in myRandomMaleName)
+                    case "male":
+                        var myRandomMaleName = namesCollection.Find(s => s._t == "NameMale").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
+                        foreach (var currentMaleName in myRandomMaleName)
                         {
-                            randomFirstName = currentName.Name;
+                            randomFirstName = currentMaleName.Name;
                         }
                         break;
                 }
@@ -1843,6 +1900,9 @@ namespace Facilitate.Libraries.Models
 
         IMongoDatabase _mongoDatabase;
         IMongoClient _mongoClient;
+
+        IMongoCollection<State> _mongoReferenceDataCollection;
+
         IMongoCollection<State> _mongoStateCollection;
         IMongoCollection<City> _mongoCityCollection;
         IMongoCollection<ZipCode> _mongoZipCodeCollection;
@@ -1859,11 +1919,25 @@ namespace Facilitate.Libraries.Models
 
         private void CreateDbConnection(string objectType, string collectionName)
         {
-            var dbConnectionString = ConfigurationManager.ConnectionStrings["MongoServer"].ConnectionString;
+            //var dbConnectionString = ConfigurationManager.ConnectionStrings["MongoServer"].ConnectionString;
+            var dbConnectionString = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate";
 
             _mongoClient = new MongoClient(dbConnectionString);
 
-            _mongoDatabase = _mongoClient.GetDatabase(ConfigurationManager.AppSettings["MongoDbName"]); // this database uses the new API
+            //_mongoDatabase = _mongoClient.GetDatabase(ConfigurationManager.AppSettings["MongoDbName"]); // this database uses the new API
+            _mongoDatabase = _mongoClient.GetDatabase("Facilitate"); // this database uses the new API
+
+            //var _mongoMaleNameCollection = _mongoDatabase.GetCollection("ReferenceData");
+
+            //var collection = _mongoClient.GetDatabase("Facilitate").GetCollection<ReferenceData>("ReferenceData");
+
+            //var allQuotes = collection.Find(Builders<ReferenceData>.Filter.Empty).ToList();
+
+            //foreach (var quote in allQuotes)
+            //{
+            //    // Format date string
+            //    //quote.timestamp = DateTime.Parse(quote.timestamp, CultureInfo.InvariantCulture).ToShortDateString() + " " + DateTime.Parse(quote.timestamp, CultureInfo.InvariantCulture).ToShortTimeString();
+            //}
 
             switch (objectType.ToLower())
             {

@@ -13,7 +13,6 @@ builder.Services.AddDevExpressBlazor(options => {
     options.SizeMode = DevExpress.Blazor.SizeMode.Medium;
 });
 
-builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<QuoteService>();
 
 var app = builder.Build();

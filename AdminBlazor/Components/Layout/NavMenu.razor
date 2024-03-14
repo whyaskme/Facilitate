@@ -26,10 +26,10 @@
                         <DxMenu Orientation="@Orientation.Vertical" CssClass="menu">
                             <Items>
                                 <DxMenuItem NavigateUrl="/" Text="Home" CssClass="menu-item" IconCssClass="icon home-icon"></DxMenuItem>
-@*                                 <DxMenuItem NavigateUrl="/weather" Text="Weather" CssClass="menu-item" IconCssClass="icon weather-icon"></DxMenuItem> *@
                                 <DxMenuItem NavigateUrl="/leads" Text="Leads" CssClass="menu-item"></DxMenuItem>
                                 <DxMenuItem NavigateUrl="https://facilitate.org" Target="_blank" Text="Facilitate.org" CssClass="menu-item"></DxMenuItem>
                                 <DxMenuItem NavigateUrl="https://api.facilitate.org/swagger" Target="_blank" Text="Webservices" CssClass="menu-item"></DxMenuItem>
+                                <DxMenuItem NavigateUrl="https://docs.devexpress.com/Blazor/400725/blazor-components" Target="_blank" Text="DevXpress Docs" CssClass="icon docs-icon"></DxMenuItem>
                             </Items>
                         </DxMenu>
                     </div>
@@ -37,11 +37,8 @@
             </DxGridLayoutItem>
             <DxGridLayoutItem Area="footer" CssClass="footer">
                 <Template>
-                  <NavLink href="https://docs.devexpress.com/Blazor/400725/blazor-components" class="button-link">
-                    <DxButton Text="Docs" RenderStyleMode="@ButtonRenderStyleMode.Text" CssClass="footer-button" RenderStyle="@ButtonRenderStyle.Light" IconCssClass="icon docs-icon"></DxButton>
-                  </NavLink>
-@*                   <NavLink href="https://demos.devexpress.com/blazor/" class="button-link">
-                    <DxButton Text="Demos" RenderStyleMode="@ButtonRenderStyleMode.Text" CssClass="footer-button" RenderStyle="@ButtonRenderStyle.Light" IconCssClass="icon demos-icon"></DxButton>
+@*                   <NavLink href="https://docs.devexpress.com/Blazor/400725/blazor-components" class="button-link">
+                    <DxButton Text="Docs" RenderStyleMode="@ButtonRenderStyleMode.Text" Target="_blank" CssClass="footer-button" RenderStyle="@ButtonRenderStyle.Light" IconCssClass="icon docs-icon"></DxButton>
                   </NavLink> *@
                 </Template>
             </DxGridLayoutItem>

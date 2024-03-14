@@ -47,5 +47,27 @@ namespace AdminBlazor.Data {
             }
             return null;
         }
+
+        public string CreateQuote(Quote quote)
+        {
+            try
+            {
+                client = new MongoClient(mongoUri);
+
+                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
+                collection.InsertOne(quote);
+
+                resultMsg = "Added Quote!";
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
+            return resultMsg;
+        }
     }
 }

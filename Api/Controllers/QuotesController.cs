@@ -2,7 +2,6 @@ using Facilitate.Libraries.Models;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using MongoDB.Bson;
-using Libraries.Models;
 
 namespace Api.Controllers
 {
