@@ -9,6 +9,23 @@ html, body {
     overflow: hidden;
 }
 
+td{
+    padding-left: 15px;
+}
+
+label {
+    font-weight: normal;
+    color: #808080 !important;
+    margin-right: 10px;
+}
+
+h6{
+    font-size: 1.2em;
+    font-weight: normal;
+    color: #808080 !important;
+    margin-top: 25px !important;
+}
+
 .quote-detail-controls-container {
     border-top: dashed 1px #808080 !important;
     margin-top: 50px !important;
@@ -33,6 +50,7 @@ html, body {
 .detail-item {
     border-right: solid 1px #eee !important;
     margin-right: 25px !important;
+    font-weight: bold !important;
 }
 
 .btn-primary:disabled {

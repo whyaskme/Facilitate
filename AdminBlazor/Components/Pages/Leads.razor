@@ -30,7 +30,11 @@ else
             ShowFilterRow="true"
             CssClass="mw-1100"
 
-            RowClick="PauseRefresh"
+            RowClick="OnRowClick"
+
+            AllowSelectRowByClick="true"
+            SelectionMode="GridSelectionMode.Single"
+            @bind-SelectedDataItem="@SelectedDataItem"
 
             TextWrapEnabled="false"
             PagerNavigationMode="PagerNavigationMode.InputBox"
@@ -46,28 +50,110 @@ else
                 <DxGridDataColumn Caption="State" FieldName="state" />
                 <DxGridDataColumn Caption="Zip" FieldName="zip" />
                 <DxGridDataColumn Caption="Roofs" FieldName="numberOfStructures" />
-                <DxGridDataColumn Caption="Sqft" FieldName="numberOfStructures" />
+                    <DxGridDataColumn Caption="Sqft" FieldName="totalSquareFeet" />
             </Columns>
 
             <DetailRowTemplate>
-
             @{
                 var _quote = (Quote)context.DataItem;
 
-                <div class="quote-detail-container">
-                    <span class="detail-item"><b>Rec #:</b> @_quote._id</span>
-                    <span class="detail-item"><b>Referrer:</b> @_quote.externalUrl</span>
-                    <span class="detail-item"><b>Market:</b> @_quote.market</span>
-                </div>
+                <table>
+                <tbody>
+                    <tr>
+                        <td colspan=4>
+                            <h6>Lead Source</h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>RecId</label>
+                            <span class="detail-item">@_quote._id</span>
+                        </td>
+                        <td>
+                            <label>Referrer</label>
+                            <span class="detail-item">@_quote.externalUrl</span>
+                        </td>
+                        <td>
+                            <label>Market</label>
+                            <span class="detail-item">@_quote.market</span>
+                        </td>
+                        <td></td>
+                    </tr>
 
-                <div class="quote-detail-container">
-                    <span class="detail-item"><b>Rep Name:</b> @_quote.repLead</span>
-                    <span class="detail-item"><b>Rep Email:</b> @_quote.repEmail</span>
-                    <span class="detail-item"><b>Roofle Id:</b> @_quote.leadId</span>
-                </div>
+                    <tr>
+                        <td colspan=4>
+                            <h6>Property</h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Street</label>
+                            <span class="detail-item">@_quote.street</span>
+                        </td>
+                        <td>
+                            <label>City</label>
+                            <span class="detail-item">@_quote.city</span>
+                        </td>
+                        <td>
+                            <label>State</label>
+                            <span class="detail-item">@_quote.state</span>
+                        </td>
+                        <td>
+                            <label>Zip</label>
+                            <span class="detail-item">@_quote.zip</span>
+                        </td>
+                    </tr>
+
+                            <tr>
+                                <td colspan=4>
+                                    &nbsp;
+                                </td>
+                            </tr>
+
+                    <tr>
+                        <td>
+                            <label>Total Roofs</label>
+                            <span class="detail-item">@_quote.numberOfStructures</span>
+                        </td>
+                        <td>
+                            <label>Included Roofs</label>
+                            <span class="detail-item">@_quote.numberOfIncludedStructures</span>
+                        </td>
+                        <td>
+                            <label>Total Sqft</label>
+                            <span class="detail-item">@_quote.totalSquareFeet</span>
+                        </td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td colspan=4>
+                            <h6>Rep Info</h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Name</label>
+                            <span class="detail-item">@_quote.repLead</span>
+                        </td>
+                        <td>
+                            <label>Email</label>
+                            <span class="detail-item">@_quote.repEmail</span>
+                        </td>
+                        <td>
+                            <label>RoofleId</label>
+                            <span class="detail-item">@_quote.leadId</span>
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+                </table>
 
                 <div class="quote-detail-controls-container">
-                    Button controls here...
+                    <button class="btn btn-primary" @onclick="AssignLead">Assign PM</button>
+                    <button class="btn btn-primary" @onclick="EditLead">Edit</button>
+                    <button class="btn btn-primary" @onclick="UpdateLead">Update</button>
+                    <button class="btn btn-primary" @onclick="DeleteLead">Delete</button>
                 </div>
 
             }
@@ -84,11 +170,37 @@ else
 </div>
 
 @code {
-    public Quote GetQuoteDetails(string objectId)
-    {
-        Quote quote = QuoteService.GetQuoteDetails(objectId);
 
-        return quote;
+    [Parameter]
+    public object SelectedDataItem { get; set; }
+
+    void OnRowClick(GridRowClickEventArgs args)
+    {
+        var input = (Quote)args.Grid.SelectedDataItem;
+
+        PauseRefresh();
+
+        var tmp = "";
+    }
+
+    public void AssignLead()
+    {
+
+    }
+
+    public void EditLead()
+    {
+
+    }
+
+    public void UpdateLead()
+    {
+
+    }
+
+    public void DeleteLead()
+    {
+
     }
 
     [Parameter]
@@ -169,6 +281,10 @@ else
     public Leads()
     {
         RefreshTimer();
+
+        // SelectedDataItem = quotes.FirstOrDefault();
+
+        // var tmp = "";
     }
 
     public void Dispose()
