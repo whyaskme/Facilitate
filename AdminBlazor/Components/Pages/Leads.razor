@@ -18,9 +18,36 @@ else
 {
         <div>Click column headers to sort. Type and hit enter in any empty cell to search that column.<br/><br/></div>
 
-        <DxGrid Data="@quotes" PageSize="10" PagerPosition="GridPagerPosition.Bottom" ShowFilterRow="true" CssClass="mw-1100" >
+        <DxGrid 
+            Data="@quotes" 
+            PageSize="10" 
+            PagerPosition="GridPagerPosition.Bottom" 
+            ShowGroupPanel="true"
+            AutoExpandAllGroupRows="true"
+            ShowFilterRow="true"
+            CssClass="mw-1100"
+
+            TextWrapEnabled="false"
+            PagerNavigationMode="PagerNavigationMode.InputBox"
+            PageSizeSelectorVisible="true"
+            PageSizeSelectorAllRowsItemVisible="true"
+        >
+
+@*         <DxGrid Data="@quotes"
+            ShowGroupPanel="true"
+            ShowFilterRow="true"
+            TextWrapEnabled="false"
+            AutoExpandAllGroupRows="true"
+            PagerNavigationMode="PagerNavigationMode.InputBox"
+            PageSizeSelectorVisible="true"
+            PageSizeSelectorAllRowsItemVisible="true"
+            PageSizeSelectorItems="@(new int[] { 5,10,20 })"
+            CustomizeFilterRowEditor="Grid_CustomizeFilterRowEditor"
+            KeyboardNavigationEnabled="KeyboardNavigationEnabled"
+            > *@
+
         <Columns>
-                <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="D" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+            <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="D" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Caption="First" FieldName="firstName" />
             <DxGridDataColumn Caption="Last" FieldName="lastName" />
             <DxGridDataColumn Caption="Email" FieldName="email" />
