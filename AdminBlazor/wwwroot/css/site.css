@@ -9,6 +9,64 @@ html, body {
     overflow: hidden;
 }
 
+.btn-primary:disabled {
+    border: solid 1px #dad7d7 !important;
+    background-color: #dad7d7 !important;
+}
+
+.container-action-buttons-show {
+    border: solid 0px #ff0000 !important;
+    text-align: center !important;
+    visibility: visible !important;
+}
+
+.container-action-buttons-hide {
+    border: solid 0px #ff0000 !important;
+    text-align: center !important;
+    visibility: hidden !important;
+}
+
+.message-normal {
+    color: #000000 !important;
+}
+
+.message-warning {
+    color: #b10505 !important;
+    font-weight: bold !important;
+}
+
+#update-status {
+    border: solid 0px #ff0000 !important;
+    padding-bottom: 15px !important;
+}
+
+.btn-refresh-active {
+    background-color: #045e20 !important;
+    color: #fff !important;
+    margin-right: 25px !important;
+}
+
+.btn-refresh-inactive {
+    background-color: #b10505 !important;
+    color: #fff !important;
+    margin-right: 25px !important;
+}
+
+/*.dxbl-text-edit-input {
+    border: solid 1px #808080 !important;
+    background-color: #fff !important;
+}*/
+.dxbl-text-edit-input:focus {
+    border: solid 1px #ff0000 !important;
+    background-color: #fff !important;
+}
+
+tr:hover {
+    /*border: solid 1px #ff0000!important;*/
+    background-color: #eee !important;
+    cursor: pointer !important;
+}
+
 .summary-panel {
     border-top: solid 1px #808080 !important;
     text-align: center !important;

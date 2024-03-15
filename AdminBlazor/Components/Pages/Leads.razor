@@ -16,7 +16,11 @@
 }
 else
 {
-        <div>Click column headers to sort. Type and hit enter in any empty cell to search that column.<br/><br/></div>
+        <div>
+            <span id="update-status" class="@StatusClass">@RefreshStatus</span>
+            Click column headers to sort. Type and hit enter in any empty cell to search that column.
+            <br/><br/>
+        </div>
 
         <DxGrid 
             Data="@quotes" 
@@ -31,20 +35,8 @@ else
             PagerNavigationMode="PagerNavigationMode.InputBox"
             PageSizeSelectorVisible="true"
             PageSizeSelectorAllRowsItemVisible="true"
+            KeyboardNavigationEnabled="true"
         >
-
-@*         <DxGrid Data="@quotes"
-            ShowGroupPanel="true"
-            ShowFilterRow="true"
-            TextWrapEnabled="false"
-            AutoExpandAllGroupRows="true"
-            PagerNavigationMode="PagerNavigationMode.InputBox"
-            PageSizeSelectorVisible="true"
-            PageSizeSelectorAllRowsItemVisible="true"
-            PageSizeSelectorItems="@(new int[] { 5,10,20 })"
-            CustomizeFilterRowEditor="Grid_CustomizeFilterRowEditor"
-            KeyboardNavigationEnabled="KeyboardNavigationEnabled"
-            > *@
 
         <Columns>
             <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="D" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
@@ -61,23 +53,95 @@ else
 }
 
 <br /><br />
-<hr />
+@* <hr /> *@
 
-<button class="btn btn-primary" @onclick="CreateLead">Create 1 Lead</button>
-<button class="btn btn-primary" @onclick="CreateLeads">Create @itemsToCreate Leads</button>
-<button class="btn btn-primary" @onclick="DeleteLeads">Delete @updateStatus Leads</button>
+<div class="@StatusContainerClass">
+<button class="@ButtonClass" @onclick="ToggleRefresh">@ButtonText</button>
+<button class="btn btn-primary" disabled="@CreateLeadDisabled" @onclick="CreateLead">Create 1 Lead</button>
+<button class="btn btn-primary" disabled="@CreateLeadsDisabled" @onclick="CreateLeads">Create @itemsToCreate Leads</button>
+<button class="btn btn-primary" disabled="@DeleteLeadsDisabled" @onclick="DeleteLeads">Delete @updateStatus Leads</button>
+</div>
 
 @code {
+
+    [Parameter]
+    public string RefreshStatus { get; set; } = "";
+
+    [Parameter]
+    public string StatusContainerClass { get; set; } = "container-action-buttons-hide";
+
+    [Parameter]
+    public string StatusClass { get; set; } = "message-normal";
+
+    [Parameter]
+    public string ButtonText { get; set; } = "Pause Refresh";
+
+    [Parameter]
+    public string ButtonClass { get; set; } = "btn btn-outline-primary btn-refresh-active";
+
+    [Parameter]
+    public bool CreateLeadDisabled { get; set; } = true;
+
+    [Parameter]
+    public bool CreateLeadsDisabled { get; set; } = true;
+
+    [Parameter]
+    public bool DeleteLeadsDisabled { get; set; } = true;
+
+    public virtual void ToggleRefresh()
+    {
+        if (ButtonText == "Pause Refresh")
+        {
+            CreateLeadDisabled = false;
+            CreateLeadsDisabled = false;
+            DeleteLeadsDisabled = false;
+
+            ButtonText = "Resume Refresh";
+            ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
+            StatusClass = "message-warning";
+            RefreshStatus = "Auto refresh PAUSED!";
+
+            _timer?.Dispose();
+        }
+        else
+        {
+            CreateLeadDisabled = true;
+            CreateLeadsDisabled = true;
+            DeleteLeadsDisabled = true;
+
+            StatusClass = "message-normal";
+            RefreshStatus = "";
+            ButtonText = "Pause Refresh";
+            ButtonClass = "btn btn-outline-primary btn-refresh-active";
+
+            RefreshTimer();
+        }
+    }
+
+    private IEnumerable<Quote>? quotes;
 
     public int itemsToCreate = 100;
     public string updateStatus = "Fetching ";
 
+    public Timer _timer;
+
     public Leads()
     {
-        var timer = new Timer(new TimerCallback(_ =>
+        RefreshTimer();
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();           // because you need it here
+    }
+
+    private void RefreshTimer()
+    {
+        _timer = new Timer(new TimerCallback(_ =>
         {
             quotes = QuoteService.GetQuotes("New");
             updateStatus = quotes.Count().ToString("N0");
+            StatusContainerClass = "container-action-buttons-show";
 
             InvokeAsync(() =>
             {
@@ -86,7 +150,24 @@ else
         }), null, 1000, 1000);
     }
 
-    private IEnumerable<Quote>? quotes;
+    private void CreateLeads()
+    {
+        for (var i = 0; i < itemsToCreate; i++)
+        {
+            updateStatus = "Creating ";
+            CreateLead();
+        }
+    }
+
+    private void DeleteLeads()
+    {
+        updateStatus = "Deleting...";
+
+
+        // var response = serviceClient.DeleteAsync("Quotes");
+
+        // updateStatus = "Deleted!";
+    }
 
     #region Create 1 Lead
     private void CreateLead()
@@ -227,23 +308,4 @@ else
         }
     }
     #endregion
-
-    private void CreateLeads()
-    {
-        for (var i = 0; i < itemsToCreate; i++)
-        {
-            updateStatus = "Creating ";
-            CreateLead();
-        }
-    }
-
-    private void DeleteLeads()
-    {
-        updateStatus = "Deleting...";
-
-
-        // var response = serviceClient.DeleteAsync("Quotes");
-
-        // updateStatus = "Deleted!";
-    }
 }
