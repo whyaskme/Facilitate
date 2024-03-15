@@ -9,6 +9,32 @@ html, body {
     overflow: hidden;
 }
 
+.quote-detail-controls-container {
+    border-top: dashed 1px #808080 !important;
+    margin-top: 50px !important;
+    padding-top: 25px !important;
+    text-align: center !important;
+}
+
+.dxbl-grid-detail-cell {
+    border: solid 1px #5f368d !important;
+    background-color: #f7f6f6 !important;
+}
+
+.quote-details-panel {
+    border: solid 0px #ff0000 !important;
+    width: auto !important;
+}
+
+.quote-detail-container {
+    border: solid 0px #eee !important;
+}
+
+.detail-item {
+    border-right: solid 1px #eee !important;
+    margin-right: 25px !important;
+}
+
 .btn-primary:disabled {
     border: solid 1px #dad7d7 !important;
     background-color: #dad7d7 !important;
@@ -65,7 +91,7 @@ html, body {
 
 tr:hover {
     /*border: solid 1px #ff0000!important;*/
-    background-color: #eee !important;
+    background-color: #f7f6f6 !important;
     cursor: pointer !important;
 }
 

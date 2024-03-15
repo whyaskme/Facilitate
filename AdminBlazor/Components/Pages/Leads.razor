@@ -30,6 +30,8 @@ else
             ShowFilterRow="true"
             CssClass="mw-1100"
 
+            RowClick="PauseRefresh"
+
             TextWrapEnabled="false"
             PagerNavigationMode="PagerNavigationMode.InputBox"
             PageSizeSelectorVisible="true"
@@ -39,13 +41,38 @@ else
                 <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="D" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
                 <DxGridDataColumn Caption="First" FieldName="firstName" />
                 <DxGridDataColumn Caption="Last" FieldName="lastName" />
-                <DxGridDataColumn Caption="Email" FieldName="email" />
-                <DxGridDataColumn Caption="Phone" FieldName="phone" />
                 <DxGridDataColumn Caption="Street" FieldName="street" />
                 <DxGridDataColumn Caption="City" FieldName="city" />
                 <DxGridDataColumn Caption="State" FieldName="state" />
                 <DxGridDataColumn Caption="Zip" FieldName="zip" />
+                <DxGridDataColumn Caption="Roofs" FieldName="numberOfStructures" />
+                <DxGridDataColumn Caption="Sqft" FieldName="numberOfStructures" />
             </Columns>
+
+            <DetailRowTemplate>
+
+            @{
+                var _quote = (Quote)context.DataItem;
+
+                <div class="quote-detail-container">
+                    <span class="detail-item"><b>Rec #:</b> @_quote._id</span>
+                    <span class="detail-item"><b>Referrer:</b> @_quote.externalUrl</span>
+                    <span class="detail-item"><b>Market:</b> @_quote.market</span>
+                </div>
+
+                <div class="quote-detail-container">
+                    <span class="detail-item"><b>Rep Name:</b> @_quote.repLead</span>
+                    <span class="detail-item"><b>Rep Email:</b> @_quote.repEmail</span>
+                    <span class="detail-item"><b>Roofle Id:</b> @_quote.leadId</span>
+                </div>
+
+                <div class="quote-detail-controls-container">
+                    Button controls here...
+                </div>
+
+            }
+            </DetailRowTemplate>
+
         </DxGrid>
 }
 
@@ -57,6 +84,12 @@ else
 </div>
 
 @code {
+    public Quote GetQuoteDetails(string objectId)
+    {
+        Quote quote = QuoteService.GetQuoteDetails(objectId);
+
+        return quote;
+    }
 
     [Parameter]
     public string RefreshStatus { get; set; } = "";
@@ -81,6 +114,20 @@ else
 
     [Parameter]
     public bool DeleteLeadsDisabled { get; set; } = true;
+
+    public virtual void PauseRefresh()
+    {
+        CreateLeadDisabled = false;
+        CreateLeadsDisabled = false;
+        DeleteLeadsDisabled = false;
+
+        ButtonText = "Resume Refresh";
+        ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
+        StatusClass = "message-warning";
+        RefreshStatus = " Auto refresh paused...";
+
+        _timer?.Dispose();
+    }
 
     public virtual void ToggleRefresh()
     {
