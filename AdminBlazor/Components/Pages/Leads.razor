@@ -1,7 +1,11 @@
 ﻿@page "/leads"
 
 @using AdminBlazor.Data
+@using DevExpress.Data
+@using DevExpress.Data.Linq
 @using Facilitate.Libraries.Models;
+
+@* @using Microsoft.EntityFrameworkCore *@
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
@@ -22,6 +26,7 @@ else
         </div>
 
         <DxGrid 
+            @ref="Grid"
             Data="@quotes" 
             KeyFieldName="_id"
 
@@ -38,10 +43,10 @@ else
             SelectionMode="GridSelectionMode.Single"
             @bind-SelectedDataItem="@SelectedDataItem"
 
-            TextWrapEnabled="false"
+            TextWrapEnabled="true"
             PagerNavigationMode="PagerNavigationMode.InputBox"
             PageSizeSelectorVisible="true"
-            PageSizeSelectorAllRowsItemVisible="true"
+            PageSizeSelectorAllRowsItemVisible="false"
             KeyboardNavigationEnabled="true">
             <Columns>
                 <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="D" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
@@ -51,8 +56,6 @@ else
                 <DxGridDataColumn Caption="City" FieldName="city" />
                 <DxGridDataColumn Caption="State" FieldName="state" />
                 <DxGridDataColumn Caption="Zip" FieldName="zip" />
-                <DxGridDataColumn Caption="Roofs" FieldName="numberOfStructures" />
-                <DxGridDataColumn Caption="Sqft" FieldName="totalSquareFeet" />
             </Columns>
 
             <DetailRowTemplate>
@@ -334,22 +337,87 @@ else
 @code {
 
     [Parameter]
+    public GridDetailRowDisplayMode DetailRowDisplayMode { get; set; }
+
+    [Parameter]
+    public string RefreshStatus { get; set; } = "";
+
+    [Parameter]
+    public string StatusContainerClass { get; set; } = "container-action-buttons-hide";
+
+    [Parameter]
+    public string StatusClass { get; set; } = "message-normal";
+
+    [Parameter]
+    public string ButtonText { get; set; } = "Pause Refresh";
+
+    [Parameter]
+    public string ButtonClass { get; set; } = "btn btn-outline-primary btn-refresh-active";
+
+    [Parameter]
+    public bool CreateLeadDisabled { get; set; } = true;
+
+    [Parameter]
+    public bool CreateLeadsDisabled { get; set; } = true;
+
+    [Parameter]
+    public bool DeleteLeadsDisabled { get; set; } = true;
+
+    [Parameter]
     public object SelectedDataItem { get; set; }
+
+    [Parameter]
+    public int VisibleIndex { get; set; }
+
+    [Parameter]
+    public bool ClearFilterButtonVisible { get; set; }
+
+    IGrid Grid { get; set; }
+    EntityInstantFeedbackSource InstantFeedbackSource { get; set; }
+
+    public interface IQueryable : System.Collections.IEnumerable;
 
     public int currentItem = 0;
 
+    protected override void OnInitialized()
+    {
+        InstantFeedbackSource = new EntityInstantFeedbackSource(e =>
+        {
+            e.KeyExpression = "_id";
+            // e.QueryableSource = quotes;
+        });
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            RefreshTimer();
+        }
+    }
+
     void OnRowClick(GridRowClickEventArgs args)
     {
-        var input = (Quote)args.Grid.SelectedDataItem;
-
         PauseRefresh();
 
-        var tmp = "";
+        var selectedIndex = args.VisibleIndex;
+        var selectedDetailExpanded = args.Grid.IsDetailRowExpanded(selectedIndex);
+
+        if (selectedDetailExpanded)
+        {
+            args.Grid.CollapseDetailRow(selectedIndex);
+            ToggleRefresh();
+        }
+        else
+        {
+            args.Grid.ExpandDetailRow(selectedIndex);
+        }
+
     }
 
     public void CloseDetails()
     {
-
+        Grid.CollapseDetailRow(0);
     }
 
     public void EmailLead()
@@ -376,30 +444,6 @@ else
     {
 
     }
-
-    [Parameter]
-    public string RefreshStatus { get; set; } = "";
-
-    [Parameter]
-    public string StatusContainerClass { get; set; } = "container-action-buttons-hide";
-
-    [Parameter]
-    public string StatusClass { get; set; } = "message-normal";
-
-    [Parameter]
-    public string ButtonText { get; set; } = "Pause Refresh";
-
-    [Parameter]
-    public string ButtonClass { get; set; } = "btn btn-outline-primary btn-refresh-active";
-
-    [Parameter]
-    public bool CreateLeadDisabled { get; set; } = true;
-
-    [Parameter]
-    public bool CreateLeadsDisabled { get; set; } = true;
-
-    [Parameter]
-    public bool DeleteLeadsDisabled { get; set; } = true;
 
     public virtual void PauseRefresh()
     {
@@ -452,14 +496,14 @@ else
 
     public Timer _timer;
 
-    public Leads()
-    {
-        RefreshTimer();
+    // public Leads()
+    // {
+    //     RefreshTimer();
 
-        // SelectedDataItem = quotes.FirstOrDefault();
+    //     // SelectedDataItem = quotes.FirstOrDefault();
 
-        // var tmp = "";
-    }
+    //     // var tmp = "";
+    // }
 
     public void Dispose()
     {
