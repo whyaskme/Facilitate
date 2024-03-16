@@ -21,7 +21,7 @@
 else
 {
         <div>
-            Click column headers to sort. Type and hit enter in any empty cell to search that column.
+            Select row to expand details. Click column headers to sort. Type and hit enter in any empty cell to search that column. 
             <br/><br/>
         </div>
 
@@ -378,6 +378,7 @@ else
     public interface IQueryable : System.Collections.IEnumerable;
 
     public int currentItem = 0;
+    public int selectedIndex = 0;
 
     protected override void OnInitialized()
     {
@@ -400,24 +401,24 @@ else
     {
         PauseRefresh();
 
-        var selectedIndex = args.VisibleIndex;
-        var selectedDetailExpanded = args.Grid.IsDetailRowExpanded(selectedIndex);
+        selectedIndex = args.VisibleIndex;
+        var selectedDetailExpanded = Grid.IsDetailRowExpanded(selectedIndex);
 
         if (selectedDetailExpanded)
         {
-            args.Grid.CollapseDetailRow(selectedIndex);
+            Grid.CollapseDetailRow(selectedIndex);
             ToggleRefresh();
         }
         else
         {
-            args.Grid.ExpandDetailRow(selectedIndex);
+            Grid.ExpandDetailRow(selectedIndex);
         }
-
     }
 
     public void CloseDetails()
     {
-        Grid.CollapseDetailRow(0);
+        Grid.CollapseDetailRow(selectedIndex);
+        ToggleRefresh();
     }
 
     public void EmailLead()

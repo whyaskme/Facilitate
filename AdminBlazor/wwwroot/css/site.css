@@ -17,7 +17,11 @@ html, body {
 
 table {
     width: 100% !important;
-    /*    border-bottom: dashed 1px #808080 !important;*/
+}
+
+td,
+table:hover {
+    cursor: default;
 }
 
 .table-spacer {
@@ -27,10 +31,15 @@ table {
     margin-bottom: 15px;
 }
 
+.dxbl-grid-expand-button
+{
+    border: solid 1px #ff0000 !important;
+    visibility: hidden !important;
+}
+
 td {
     padding: 5px;
     padding-left: 10px;
-/*    border: solid 1px #ff0000 !important;*/
 }
 
 label {
@@ -51,12 +60,9 @@ h6 {
     font-style: normal;
     color: #808080 !important;
     margin-bottom: 0px !important;
-/*    padding-bottom: 15px;*/
 }
 
 .quote-detail-controls-container {
-/*    border-top: dashed 1px #808080 !important;
-    margin-top: 50px !important;*/
     padding-top: 25px !important;
     text-align: center !important;
 }
@@ -64,6 +70,10 @@ h6 {
 .dxbl-grid-detail-cell {
     border: solid 1px #808080 !important;
     background-color: #f7f6f6 !important;
+}
+
+.dxbl-grid-detail-cell:hover {
+    cursor: default;
 }
 
 .quote-details-panel {
@@ -102,7 +112,6 @@ h6 {
 
 .message-warning {
     color: #b10505 !important;
-/*    font-weight: bold !important;*/
 }
 
 #update-status {
@@ -126,13 +135,14 @@ h6 {
     border: solid 1px #808080 !important;
     background-color: #fff !important;
 }*/
+
 .dxbl-text-edit-input:focus {
     background-color: #fff !important;
 }
 
 tr:hover {
     background-color: #f7f6f6 !important;
-    /*cursor: pointer !important;*/
+    cursor: pointer !important;
 }
 
 .summary-panel {
