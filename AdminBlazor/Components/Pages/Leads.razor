@@ -60,26 +60,49 @@ else
                 <table>
                 <tbody>
                     <tr>
-                        <td colspan=4>
-                            <h6>Lead Source</h6>
-                        </td>
-                    </tr>
-                    <tr>
                         <td>
                             <label>RecId</label>
                             <span class="detail-item">@_quote._id</span>
                         </td>
                         <td>
                             <label>Referrer</label>
-                            <span class="detail-item">@_quote.externalUrl</span>
+                            <a href="@_quote.externalUrl" target="_blank">
+                                <span class="detail-item">@_quote.externalUrl</span>
+                            </a>
+                        </td>
+                        <td>
+                            <label>SessionId</label>
+                            <span class="detail-item">@_quote.sessionId</span>
                         </td>
                         <td>
                             <label>Market</label>
                             <span class="detail-item">@_quote.market</span>
                         </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Rep Name</label>
+                            <span class="detail-item">@_quote.repLead</span>
+                        </td>
+                        <td>
+                            <label>Rep Email</label>
+                                <a href="mailto:@_quote.repEmail" target="_blank">
+                                <span class="detail-item">@_quote.repEmail</span>
+                            </a>
+                        </td>
+                        <td>
+                            <label>RoofleId</label>
+                            <span class="detail-item">@_quote.leadId</span>
+                        </td>
                         <td></td>
                     </tr>
+                </tbody>
+                </table>
 
+                <div class="table-spacer" />
+
+                <table>
+                <tbody>
                     <tr>
                         <td colspan=4>
                             <h6>Property</h6>
@@ -103,13 +126,6 @@ else
                             <span class="detail-item">@_quote.zip</span>
                         </td>
                     </tr>
-
-                            <tr>
-                                <td colspan=4>
-                                    &nbsp;
-                                </td>
-                            </tr>
-
                     <tr>
                         <td>
                             <label>Total Roofs</label>
@@ -121,38 +137,46 @@ else
                         </td>
                         <td>
                             <label>Total Sqft</label>
-                            <span class="detail-item">@_quote.totalSquareFeet</span>
-                        </td>
-                        <td></td>
-                    </tr>
-
-                    <tr>
-                        <td colspan=4>
-                            <h6>Rep Info</h6>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Name</label>
-                            <span class="detail-item">@_quote.repLead</span>
-                        </td>
-                        <td>
-                            <label>Email</label>
-                            <span class="detail-item">@_quote.repEmail</span>
-                        </td>
-                        <td>
-                            <label>RoofleId</label>
-                            <span class="detail-item">@_quote.leadId</span>
+                            <span class="detail-item">@_quote.totalSquareFeet.ToString("N0")</span>
                         </td>
                         <td></td>
                     </tr>
                 </tbody>
                 </table>
 
+                <div class="table-spacer" />
+
+                <table>
+                <tbody>
+
+                    <tr>
+                        <td colspan=2>
+                            <h6>Products</h6>
+                        </td>
+                    </tr>
+                @{
+                    for (var i = 0; i < @_quote.products.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                <label>Name</label>
+                                <span class="detail-item">@_quote.products[i].name</span>
+                            </td>
+                            <td>
+                                <label>Waste Factor</label>
+                                <span class="detail-item">@_quote.products[i].wasteFactorMainRoof</span>
+                            </td>
+                        </tr>
+                    }
+                }
+                </tbody>
+                </table>
+
+                <div class="table-spacer" />
+
                 <div class="quote-detail-controls-container">
-                    <button class="btn btn-primary" @onclick="AssignLead">Assign PM</button>
+                    <button class="btn btn-primary" @onclick="AssignLead">Assign</button>
                     <button class="btn btn-primary" @onclick="EditLead">Edit</button>
-                    <button class="btn btn-primary" @onclick="UpdateLead">Update</button>
                     <button class="btn btn-primary" @onclick="DeleteLead">Delete</button>
                 </div>
 
