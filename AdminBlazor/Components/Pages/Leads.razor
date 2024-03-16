@@ -60,41 +60,29 @@ else
                 <table>
                 <tbody>
                     <tr>
-                        <td>
-                            <label>RecId</label>
-                            <span class="detail-item">@_quote._id</span>
-                        </td>
-                        <td>
-                            <label>Referrer</label>
-                            <a href="@_quote.externalUrl" target="_blank">
-                                <span class="detail-item">@_quote.externalUrl</span>
-                            </a>
-                        </td>
-                        <td>
-                            <label>SessionId</label>
-                            <span class="detail-item">@_quote.sessionId</span>
-                        </td>
-                        <td>
-                            <label>Market</label>
-                            <span class="detail-item">@_quote.market</span>
+                        <td colspan=4>
+                            <h6>Homeowner Info</h6>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <label>Rep Name</label>
-                            <span class="detail-item">@_quote.repLead</span>
+                            <label>First</label>
+                            <span class="detail-item">@_quote.firstName</span>
                         </td>
                         <td>
-                            <label>Rep Email</label>
-                                <a href="mailto:@_quote.repEmail" target="_blank">
-                                <span class="detail-item">@_quote.repEmail</span>
+                            <label>Last</label>
+                            <span class="detail-item">@_quote.lastName</span>
+                        </td>
+                        <td>
+                            <label>Email</label>
+                            <a href="mailto:@_quote.externalUrl">
+                                <span class="detail-item">@_quote.email</span>
                             </a>
                         </td>
                         <td>
-                            <label>RoofleId</label>
-                            <span class="detail-item">@_quote.leadId</span>
+                            <label>Phone</label>
+                            <span class="detail-item">@_quote.phone</span>
                         </td>
-                        <td></td>
                     </tr>
                 </tbody>
                 </table>
@@ -132,7 +120,7 @@ else
                             <span class="detail-item">@_quote.numberOfStructures</span>
                         </td>
                         <td>
-                            <label>Included Roofs</label>
+                            <label>Incl Roofs</label>
                             <span class="detail-item">@_quote.numberOfIncludedStructures</span>
                         </td>
                         <td>
@@ -150,13 +138,15 @@ else
                 <tbody>
 
                     <tr>
-                        <td colspan=2>
+                        <td colspan=4>
                             <h6>Products</h6>
                         </td>
                     </tr>
-                @{
+                    @{
                     for (var i = 0; i < @_quote.products.Count; i++)
                     {
+                        currentItem = i + 1;
+
                         <tr>
                             <td>
                                 <label>Name</label>
@@ -166,9 +156,95 @@ else
                                 <label>Waste Factor</label>
                                 <span class="detail-item">@_quote.products[i].wasteFactorMainRoof</span>
                             </td>
+                            <td></td>
+                            <td style="width: 100% !important;"></td>
+                        </tr>
+                        <tr>
+                            <td colspan=4>
+                                <label>Product @currentItem</label>
+                                <table>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <label>Price Type</label>
+                                            <span class="detail-item">@_quote.products[i].priceInfo.priceType</span>
+                                        </td>
+                                        <td>
+                                            <label>Total</label>
+                                            <span class="detail-item">@_quote.products[i].priceInfo.total</span>
+                                        </td>
+                                        <td>
+                                            <label>Per Square</label>
+                                            <span class="detail-item">$@_quote.products[i].priceInfo.pricePerSquare</span>
+                                        </td>
+                                        <td>
+                                            <label>Monthly</label>
+                                            <span class="detail-item">$@_quote.products[i].priceInfo.monthly</span>
+                                        </td>
+                                        <td>
+                                            <label>APR</label>
+                                            <span class="detail-item">@_quote.products[i].priceInfo.apr</span>
+                                        </td>
+                                        <td>
+                                            <label>Months</label>
+                                            <span class="detail-item">@_quote.products[i].priceInfo.months</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                </table>
+                            </td>
                         </tr>
                     }
                 }
+                </tbody>
+                </table>
+
+                <div class="table-spacer" />
+
+                <table>
+                <tbody>
+                    <tr>
+                        <td colspan=4>
+                            <h6>History</h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>RecId</label>
+                            <span class="detail-item">@_quote._id</span>
+                        </td>
+                        <td>
+                            <label>Referrer</label>
+                            <a href="@_quote.externalUrl" target="_blank">
+                                <span class="detail-item">@_quote.externalUrl</span>
+                            </a>
+                        </td>
+                        <td>
+                            <label>SessionId</label>
+                            <span class="detail-item">@_quote.sessionId</span>
+                        </td>
+                        <td>
+                            <label>Market</label>
+                            <span class="detail-item">@_quote.market</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Rep Name</label>
+                            <span class="detail-item">@_quote.repLead</span>
+                        </td>
+                        <td>
+                            <label>Rep Email</label>
+                            <a href="mailto:@_quote.repEmail">
+                                <span class="detail-item">@_quote.repEmail</span>
+                            </a>
+                        </td>
+                        <td>
+                            <label>RoofleId</label>
+                            <span class="detail-item">@_quote.leadId</span>
+                        </td>
+                        <td></td>
+                    </tr>
                 </tbody>
                 </table>
 
@@ -197,6 +273,8 @@ else
 
     [Parameter]
     public object SelectedDataItem { get; set; }
+
+    public int currentItem = 0;
 
     void OnRowClick(GridRowClickEventArgs args)
     {
