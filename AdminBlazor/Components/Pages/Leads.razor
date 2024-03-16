@@ -129,6 +129,35 @@ else
                         </td>
                         <td></td>
                     </tr>
+                    <tr>
+                        <td>
+                            <label>Name</label>
+                            <span class="detail-item">@_quote.structures[0].name</span>
+                        </td>
+                        <td>
+                            <label>Slope</label>
+                            <span class="detail-item">@_quote.structures[0].slope</span>
+                        </td>
+                        <td>
+                            <label>Is Included</label>
+                            <span class="detail-item">@_quote.structures[0].isIncluded</span>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Sqft</label>
+                            <span class="detail-item">@_quote.structures[0].squareFeet.ToString("N0")</span>
+                        </td>
+                        <td>
+                            <label>Initial Sqft</label>
+                            <span class="detail-item">@_quote.structures[0].initialSquareFeet.ToString("N0")</span>
+                        </td>
+                        <td>
+                            <label>Roof Complexity</label>
+                            <span class="detail-item">@_quote.structures[0].roofComplexity</span>
+                        </td>
+                    </tr>
                 </tbody>
                 </table>
 
@@ -142,12 +171,21 @@ else
                             <h6>Products</h6>
                         </td>
                     </tr>
-                    @{
-                    for (var i = 0; i < @_quote.products.Count; i++)
-                    {
-                        currentItem = i + 1;
+                        @{
+                            for (var i = 0; i < @_quote.products.Count; i++)
+                            {
+                                currentItem = i + 1;
 
-                        <tr>
+                                var priceLabel = @_quote.products[i].priceInfo.priceType;
+                                if (priceLabel == "BasicFinancing")
+                                {
+                                    priceLabel = "Basic Financing";
+                                }
+                                else
+                                {
+                                    priceLabel = @_quote.products[i].priceInfo.priceType;
+                                }
+                                <tr>
                             <td>
                                 <label>Name</label>
                                 <span class="detail-item">@_quote.products[i].name</span>
@@ -156,22 +194,20 @@ else
                                 <label>Waste Factor</label>
                                 <span class="detail-item">@_quote.products[i].wasteFactorMainRoof</span>
                             </td>
-                            <td></td>
+                            <td>
+                                <label>Price Type</label>
+                                <span class="detail-item">@priceLabel</span>                       
+                            </td>
                             <td style="width: 100% !important;"></td>
                         </tr>
                         <tr>
                             <td colspan=4>
-                                <label>Product @currentItem</label>
                                 <table>
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <label>Price Type</label>
-                                            <span class="detail-item">@_quote.products[i].priceInfo.priceType</span>
-                                        </td>
-                                        <td>
-                                            <label>Total</label>
-                                            <span class="detail-item">@_quote.products[i].priceInfo.total</span>
+                                            <label>Total Quote</label>
+                                            <span class="detail-item">$@_quote.products[i].priceInfo.total.ToString("N0")</span>
                                         </td>
                                         <td>
                                             <label>Per Square</label>
@@ -183,12 +219,34 @@ else
                                         </td>
                                         <td>
                                             <label>APR</label>
-                                            <span class="detail-item">@_quote.products[i].priceInfo.apr</span>
+                                            <span class="detail-item">@_quote.products[i].priceInfo.apr%</span>
                                         </td>
                                         <td>
                                             <label>Months</label>
                                             <span class="detail-item">@_quote.products[i].priceInfo.months</span>
                                         </td>
+                                        <td></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <label>Total Min</label>
+                                            <span class="detail-item">$@_quote.products[i].priceRange.totalMin.ToString("N0")</span>
+                                        </td>
+                                        <td>
+                                            <label>Total Max</label>
+                                            <span class="detail-item">$@_quote.products[i].priceRange.totalMax.ToString("N0")</span>
+                                        </td>
+                                        <td>
+                                            <label>Monthly Min</label>
+                                            <span class="detail-item">$@_quote.products[i].priceRange.monthlyMin.ToString("N0")</span>
+                                        </td>
+                                        <td>
+                                            <label>Monthly Max</label>
+                                            <span class="detail-item">$@_quote.products[i].priceRange.monthlyMax.ToString("N0")</span>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                 </tbody>
                                 </table>
@@ -251,9 +309,9 @@ else
                 <div class="table-spacer" />
 
                 <div class="quote-detail-controls-container">
-                    <button class="btn btn-primary" @onclick="AssignLead">Assign</button>
-                    <button class="btn btn-primary" @onclick="EditLead">Edit</button>
-                    <button class="btn btn-primary" @onclick="DeleteLead">Delete</button>
+                    <button class="btn btn-primary" disabled=true @onclick="AssignLead">Assign</button>
+                    <button class="btn btn-primary" disabled=true @onclick="EditLead">Edit</button>
+                    <button class="btn btn-primary" disabled=true @onclick="DeleteLead">Delete</button>
                 </div>
 
             }

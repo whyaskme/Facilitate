@@ -70,7 +70,7 @@ h6 {
 
 .detail-item {
     border-right: solid 0px #eee !important;
-    margin-right: 0px !important;
+    margin-right: 25px !important;
     font-weight: normal !important;
 }
 
@@ -126,7 +126,7 @@ h6 {
 
 tr:hover {
     background-color: #f7f6f6 !important;
-    cursor: pointer !important;
+    /*cursor: pointer !important;*/
 }
 
 .summary-panel {
