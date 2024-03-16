@@ -23,6 +23,8 @@ else
 
         <DxGrid 
             Data="@quotes" 
+            KeyFieldName="_id"
+
             PageSize="10" 
             PagerPosition="GridPagerPosition.Bottom" 
             ShowGroupPanel="true"
@@ -50,7 +52,7 @@ else
                 <DxGridDataColumn Caption="State" FieldName="state" />
                 <DxGridDataColumn Caption="Zip" FieldName="zip" />
                 <DxGridDataColumn Caption="Roofs" FieldName="numberOfStructures" />
-                    <DxGridDataColumn Caption="Sqft" FieldName="totalSquareFeet" />
+                <DxGridDataColumn Caption="Sqft" FieldName="totalSquareFeet" />
             </Columns>
 
             <DetailRowTemplate>
