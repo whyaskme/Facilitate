@@ -9,9 +9,15 @@ html, body {
     overflow: hidden;
 }
 
+.strikethru
+{
+    text-decoration: line-through;
+    color: #c0c0c0 !important;
+}
+
 table {
     width: 100% !important;
-/*    border-bottom: dashed 1px #808080 !important;*/
+    /*    border-bottom: dashed 1px #808080 !important;*/
 }
 
 .table-spacer {

@@ -230,20 +230,20 @@ else
 
                                     <tr>
                                         <td>
-                                            <label>Total Min</label>
-                                            <span class="detail-item">$@_quote.products[i].priceRange.totalMin.ToString("N0")</span>
+                                            <label class="strikethru">Total Min</label>
+                                            <span class="detail-item strikethru">$@_quote.products[i].priceRange.totalMin.ToString("N0")</span>
                                         </td>
                                         <td>
-                                            <label>Total Max</label>
-                                            <span class="detail-item">$@_quote.products[i].priceRange.totalMax.ToString("N0")</span>
+                                            <label class="strikethru">Total Max</label>
+                                            <span class="detail-item strikethru">$@_quote.products[i].priceRange.totalMax.ToString("N0")</span>
                                         </td>
                                         <td>
-                                            <label>Monthly Min</label>
-                                            <span class="detail-item">$@_quote.products[i].priceRange.monthlyMin.ToString("N0")</span>
+                                            <label class="strikethru">Monthly Min</label>
+                                            <span class="detail-item strikethru">$@_quote.products[i].priceRange.monthlyMin.ToString("N0")</span>
                                         </td>
                                         <td>
-                                            <label>Monthly Max</label>
-                                            <span class="detail-item">$@_quote.products[i].priceRange.monthlyMax.ToString("N0")</span>
+                                            <label class="strikethru">Monthly Max</label>
+                                            <span class="detail-item strikethru">$@_quote.products[i].priceRange.monthlyMax.ToString("N0")</span>
                                         </td>
                                         <td></td>
                                         <td></td>
@@ -309,9 +309,11 @@ else
                 <div class="table-spacer" />
 
                 <div class="quote-detail-controls-container">
+                    <button class="btn btn-primary" disabled=true @onclick="EmailLead">Email This</button>
                     <button class="btn btn-primary" disabled=true @onclick="AssignLead">Assign</button>
                     <button class="btn btn-primary" disabled=true @onclick="EditLead">Edit</button>
                     <button class="btn btn-primary" disabled=true @onclick="DeleteLead">Delete</button>
+                    <button class="btn btn-primary" @onclick="CloseDetails">Close</button>
                 </div>
 
             }
@@ -341,6 +343,16 @@ else
         PauseRefresh();
 
         var tmp = "";
+    }
+
+    public void CloseDetails()
+    {
+
+    }
+
+    public void EmailLead()
+    {
+
     }
 
     public void AssignLead()
