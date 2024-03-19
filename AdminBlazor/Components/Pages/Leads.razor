@@ -4,8 +4,9 @@
 @using DevExpress.Data
 @using DevExpress.Data.Linq
 @using Facilitate.Libraries.Models;
+@using MongoDB.Bson;
 
-@* @using Microsoft.EntityFrameworkCore *@
+@using Json.Net;
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
@@ -13,6 +14,16 @@
 
 <PageTitle>Leads</PageTitle>
 <h1>@updateStatus Leads <span id="update-status" class="@StatusClass">@RefreshStatus</span></h1>
+
+<script>
+  window.getIpAddress = () => {
+    return fetch('https://jsonip.com/')
+      .then((response) => response.json())
+      .then((data) => {
+        return data.ip
+      })
+  }
+</script>
 
 @if (quotes == null)
 {
@@ -336,6 +347,25 @@ else
 
 @code {
 
+    [Inject] public IJSRuntime jsRuntime { get; set; }
+
+    public string ClientIP = "";
+
+    public async Task<string> GetIpAddress()
+    {
+        try
+        {
+            ClientIP = await jsRuntime.InvokeAsync<string>("getIpAddress").ConfigureAwait(true);
+
+            return ClientIP;
+        }
+        catch (Exception e)
+        {
+            //If your request was blocked by CORS or some extension like uBlock Origin then you will get an exception.
+            return string.Empty;
+        }
+    }
+
     [Parameter]
     public GridDetailRowDisplayMode DetailRowDisplayMode { get; set; }
 
@@ -380,13 +410,11 @@ else
     public int currentItem = 0;
     public int selectedIndex = 0;
 
+    public string CurrentUserIP { get; set; }
+
     protected override void OnInitialized()
     {
-        InstantFeedbackSource = new EntityInstantFeedbackSource(e =>
-        {
-            e.KeyExpression = "_id";
-            // e.QueryableSource = quotes;
-        });
+        
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -395,6 +423,8 @@ else
         {
             RefreshTimer();
         }
+
+        GetIpAddress();
     }
 
     void OnRowClick(GridRowClickEventArgs args)
@@ -496,15 +526,6 @@ else
     public string updateStatus = "Fetching ";
 
     public Timer _timer;
-
-    // public Leads()
-    // {
-    //     RefreshTimer();
-
-    //     // SelectedDataItem = quotes.FirstOrDefault();
-
-    //     // var tmp = "";
-    // }
 
     public void Dispose()
     {
@@ -661,6 +682,23 @@ else
         quote.structures = null;
         quote.structures = new List<Structure>();
         quote.structures.Add(structure);
+
+        Event _event = new Event(0,0);
+        _event.Name = "New Quote";
+        _event.DateTime = DateTime.Now;
+        _event.Reference.ReferenceId = ObjectId.Parse(quote._id);
+        _event.Reference.ReferenceType = 0;
+        _event.Details = "New quote referred by Roofle";
+
+        var deviceIP = ClientIP;
+        var deviceType = "Desktop";
+        var latitude = 0;
+        var longitude = 0;
+
+        Location location = new Location(ObjectId.Parse(quote._id), deviceType, deviceIP, latitude, longitude);
+        _event.Location = location;
+
+        quote.events.Add(_event);
 
         var results = string.Empty;
 

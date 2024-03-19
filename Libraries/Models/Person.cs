@@ -31,10 +31,6 @@ namespace Facilitate.Libraries.Models
             Address = new Address();
             Contact = new ContactInfo();
 
-            AccountGmail = new AccountGmail();
-            AccountCL = new AccountCL();
-            AccountEBay = new AccountEBay();
-
             Market myMarket = new Market();
 
             Markets = new List<Market>();
@@ -49,10 +45,6 @@ namespace Facilitate.Libraries.Models
 
         public Address Address { get; set; }
         public ContactInfo Contact { get; set; }
-
-        public AccountGmail AccountGmail { get; set; }
-        public AccountCL AccountCL { get; set; }
-        public AccountEBay AccountEBay { get; set; }
 
         public List<Market> Markets { get; set; }
     }

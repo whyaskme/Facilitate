@@ -29,7 +29,7 @@ namespace Facilitate.Libraries.Models
         /// </summary>
         public Base()
         {
-            _id = string.Empty;// ObjectId.GenerateNewId();
+            _id = ObjectId.GenerateNewId();
             _t = "Base";
 
             Enabled = true;
@@ -40,8 +40,8 @@ namespace Facilitate.Libraries.Models
         /// <summary>
         /// 
         /// </summary>
-        //public ObjectId _id { get; set; }
-        public string _id { get; set; }
+        public ObjectId _id { get; set; }
+        //public string _id { get; set; }
         /// <summary>
         /// 
         /// </summary>

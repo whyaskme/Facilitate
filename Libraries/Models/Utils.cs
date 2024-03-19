@@ -1493,22 +1493,6 @@ namespace Facilitate.Libraries.Models
                         myUsers = _mongoPersonCollection.Find(s => s.Markets[0].Name == "").ToListAsync().Result;
                         //myUsers = _mongoPersonCollection.Find<Person>(s => s._t == "Person").ToListAsync<Person>().Result;
                         break;
-
-                    case "craigslistregistered":
-                        myUsers = _mongoPersonCollection.Find(s => s.AccountCL.IsRegistered == true).ToListAsync().Result;
-                        break;
-
-                    case "craigslistnotregistered":
-                        myUsers = _mongoPersonCollection.Find(s => s.AccountCL.IsRegistered == false).ToListAsync().Result;
-                        break;
-
-                    case "gmailregistered":
-                        myUsers = _mongoPersonCollection.Find(s => s.AccountGmail.IsRegistered == true).ToListAsync().Result;
-                        break;
-
-                    case "gmailnotregistered":
-                        myUsers = _mongoPersonCollection.Find(s => s.AccountGmail.IsRegistered == false).ToListAsync().Result;
-                        break;
                 }
             }
             catch (Exception ex)
@@ -1531,22 +1515,6 @@ namespace Facilitate.Libraries.Models
                 {
                     case "allregistered":
                         userCount = _mongoPersonCollection.Count(s => s._t == "Person", null);
-                        break;
-
-                    case "craigslistregistered":
-                        userCount = _mongoPersonCollection.Count(s => s.AccountCL.IsRegistered == true, null);
-                        break;
-
-                    case "craigslistnotregistered":
-                        userCount = _mongoPersonCollection.Count(s => s.AccountCL.IsRegistered == false, null);
-                        break;
-
-                    case "gmailregistered":
-                        userCount = _mongoPersonCollection.Count(s => s.AccountGmail.IsRegistered == true, null);
-                        break;
-
-                    case "gmailnotregistered":
-                        userCount = _mongoPersonCollection.Count(s => s.AccountGmail.IsRegistered == false, null);
                         break;
 
                     case "marketassigned":

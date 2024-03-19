@@ -1,0 +1,48 @@
+﻿@page "/getclientip"
+
+@using AdminBlazor.Data
+@using Facilitate.Libraries.Models;
+
+@attribute [StreamRendering(true)]
+@rendermode InteractiveServer
+@inject QuoteService QuoteService
+
+@* @inject IJSRuntime jsRuntime *@
+
+<PageTitle>My IP</PageTitle>
+<h1>MyIP <span id="update-status" class="">What's my IP?'</span></h1>
+
+<h3>GetClientIp</h3>
+
+<script>
+  window.getIpAddress = () => {
+    return fetch('https://jsonip.com/')
+      .then((response) => response.json())
+      .then((data) => {
+        return data.ip
+      })
+  }
+</script>
+
+<button class="btn btn-primary" @onclick="GetIpAddress">Get My IP (@ipAddress)</button>
+
+@code {
+    [Inject] public IJSRuntime jsRuntime { get; set; }
+
+    public string ipAddress = "";
+
+    public async Task<string> GetIpAddress()
+    {
+        try
+        {
+            ipAddress = await jsRuntime.InvokeAsync<string>("getIpAddress").ConfigureAwait(true);
+
+            return ipAddress;
+        }
+        catch (Exception e)
+        {
+            //If your request was blocked by CORS or some extension like uBlock Origin then you will get an exception.
+            return string.Empty;
+        }
+    }
+}

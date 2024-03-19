@@ -51,6 +51,7 @@ namespace Facilitate.Libraries.Models
             repEmail = string.Empty;
             leadId = 0;
             products = new List<Product>();
+            events = new List<Event>();
     }
 
         public string _id { get; set; }
@@ -84,7 +85,9 @@ namespace Facilitate.Libraries.Models
         public string repEmail { get; set; }
         public int leadId { get; set; }
         public List<Product>? products { get; set; }
-        
+
+        public virtual List<Event>? events { get; set; }
+
         #region Implementation of IEnumerable
         List<Quote> quotes;
         public IEnumerator<Quote> GetEnumerator()

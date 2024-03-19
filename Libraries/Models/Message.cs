@@ -24,7 +24,7 @@ namespace Facilitate.Libraries.Models
             Body = string.Empty;
             ToEmail = string.Empty;
             ToName = string.Empty;
-            Location = new Location(ObjectId.Empty, ObjectId.Empty, "", 0.00, 0.00);
+            Location = new Location(ObjectId.Empty, "", "", 0.00, 0.00);
 
             Status = Constants.Messaging.Status.None;
         }

@@ -11,20 +11,20 @@ namespace Facilitate.Libraries.Models
 {
     public class Location
     {
-        public Location(ObjectId referenceId, ObjectId tncId, String uiScreen, Double latitude, Double longitude)
+        public Location(ObjectId referenceId, String deviceType, String userIP, Double latitude, Double longitude)
         {
             DateTime = DateTime.UtcNow;
-            UIScreen = uiScreen;
+            DeviceType = deviceType;
             UserId = referenceId;
-            TNCId = tncId;
+            UserIP = userIP;
             Longitude = longitude;
             Latitude = latitude;
         }
 
         public DateTime DateTime { get; set; }
-        public String UIScreen { get; set; }
+        public String DeviceType { get; set; }
         public ObjectId UserId { get; set; }
-        public ObjectId TNCId { get; set; }
+        public String UserIP { get; set; }
         public Double Latitude { get; set; }
         public Double Longitude { get; set; }
     }
