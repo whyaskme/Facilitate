@@ -447,9 +447,10 @@ else
 
     public void DeleteLead()
     {
-        var selectedQuoteId = quotes[selectedIndex]._id;
+        QuoteService.DeleteQuote(quotes[selectedIndex]);
 
         Grid.CollapseDetailRow(selectedIndex);
+
         ToggleRefresh();
 
     }

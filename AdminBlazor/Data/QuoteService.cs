@@ -118,6 +118,35 @@ namespace AdminBlazor.Data {
             return resultMsg;
         }
 
+        public string DeleteQuote(Quote quote)
+        {
+            try
+            {
+                // This is a soft delete > move to archive.
+                client = new MongoClient(mongoUri);
+
+                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
+
+                var filter = Builders<Quote>.Filter.Eq(quote => quote._id, quote._id);
+
+                // Creates instructions to update the "name" field of the first document that matches the filter
+                var update = Builders<Quote>.Update.Set(quote => quote.status, "Archive");
+
+                collection.UpdateOne(filter, update);
+
+                resultMsg = "Archived!";
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
+            return resultMsg;
+        }
+
         public string DeleteAllQuotes()
         {
             try
