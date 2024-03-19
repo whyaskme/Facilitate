@@ -90,10 +90,10 @@ namespace Facilitate.Libraries.Models
 
         #region Implementation of IEnumerable
         List<Quote> quotes;
-        public IEnumerator<Quote> GetEnumerator()
-        {
-            return quotes.GetEnumerator();
-        }
+        //public IEnumerator<Quote> GetEnumerator()
+        //{
+        //    return quotes.GetEnumerator();
+        //}
         #endregion
     }
 

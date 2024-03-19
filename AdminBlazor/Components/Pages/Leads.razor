@@ -108,32 +108,20 @@ else
                 <table>
                 <tbody>
                     <tr>
-                        <td colspan=4>
+                        <td colspan=3>
                             <h6>Property</h6>
                         </td>
                     </tr>
                     <tr>
-                        <td>
-                            <label>Street</label>
-                            <span class="detail-item">@_quote.street</span>
-                        </td>
-                        <td>
-                            <label>City</label>
-                            <span class="detail-item">@_quote.city</span>
-                        </td>
-                        <td>
-                            <label>State</label>
-                            <span class="detail-item">@_quote.state</span>
-                        </td>
-                        <td>
-                            <label>Zip</label>
-                            <span class="detail-item">@_quote.zip</span>
+                        <td colspan=3>
+                            <label>Address</label>
+                            @_quote.street @_quote.city, @_quote.state @_quote.zip
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <label>Total Roofs</label>
-                            <span class="detail-item">@_quote.numberOfStructures</span>
+                            <label>Name</label>
+                            <span class="detail-item">@_quote.structures[0].name</span>
                         </td>
                         <td>
                             <label>Incl Roofs</label>
@@ -143,35 +131,15 @@ else
                             <label>Total Sqft</label>
                             <span class="detail-item">@_quote.totalSquareFeet.ToString("N0")</span>
                         </td>
-                        <td></td>
                     </tr>
                     <tr>
-                        <td>
-                            <label>Name</label>
-                            <span class="detail-item">@_quote.structures[0].name</span>
-                        </td>
-                        <td>
-                            <label>Slope</label>
-                            <span class="detail-item">@_quote.structures[0].slope</span>
-                        </td>
-                        <td>
-                            <label>Is Included</label>
-                            <span class="detail-item">@_quote.structures[0].isIncluded</span>
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Sqft</label>
-                            <span class="detail-item">@_quote.structures[0].squareFeet.ToString("N0")</span>
-                        </td>
-                        <td>
-                            <label>Initial Sqft</label>
-                            <span class="detail-item">@_quote.structures[0].initialSquareFeet.ToString("N0")</span>
-                        </td>
                         <td>
                             <label>Roof Complexity</label>
                             <span class="detail-item">@_quote.structures[0].roofComplexity</span>
+                        </td>
+                        <td colspan=2>
+                            <label>Slope</label>
+                            <span class="detail-item">@_quote.structures[0].slope</span>
                         </td>
                     </tr>
                 </tbody>
@@ -210,11 +178,10 @@ else
                                 <label>Waste Factor</label>
                                 <span class="detail-item">@_quote.products[i].wasteFactorMainRoof</span>
                             </td>
-                            <td>
+                            <td colspan=3>
                                 <label>Price Type</label>
-                                <span class="detail-item">@priceLabel</span>                       
+                                <span class="detail-item">@priceLabel</span>                               
                             </td>
-                            <td style="width: 100% !important;"></td>
                         </tr>
                         <tr>
                             <td colspan=4>
@@ -243,27 +210,6 @@ else
                                         </td>
                                         <td></td>
                                     </tr>
-
-                                    <tr>
-                                        <td>
-                                            <label class="strikethru">Total Min</label>
-                                            <span class="detail-item strikethru">$@_quote.products[i].priceRange.totalMin.ToString("N0")</span>
-                                        </td>
-                                        <td>
-                                            <label class="strikethru">Total Max</label>
-                                            <span class="detail-item strikethru">$@_quote.products[i].priceRange.totalMax.ToString("N0")</span>
-                                        </td>
-                                        <td>
-                                            <label class="strikethru">Monthly Min</label>
-                                            <span class="detail-item strikethru">$@_quote.products[i].priceRange.monthlyMin.ToString("N0")</span>
-                                        </td>
-                                        <td>
-                                            <label class="strikethru">Monthly Max</label>
-                                            <span class="detail-item strikethru">$@_quote.products[i].priceRange.monthlyMax.ToString("N0")</span>
-                                        </td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
                                 </tbody>
                                 </table>
                             </td>
@@ -279,7 +225,7 @@ else
                 <tbody>
                     <tr>
                         <td colspan=4>
-                            <h6>History</h6>
+                            <h6>Origin</h6>
                         </td>
                     </tr>
                     <tr>
@@ -324,11 +270,39 @@ else
 
                 <div class="table-spacer" />
 
+                <table>
+                <tbody>
+                    <tr>
+                        <td colspan=2>
+                            <h6>History</h6>
+                        </td>
+                    </tr>
+
+                    @{
+                        for(int currentEvent = 0; currentEvent < @_quote.events.Count; currentEvent++)
+                        {
+                            <tr>
+                                <td class="event-date">
+                                    <label>Date</label>
+                                    <span class="detail-item">@_quote.events[currentEvent].DateTime</span>
+                                </td>
+                                <td class="event-details">
+                                    <label>Details</label>
+                                    <span class="detail-item">@_quote.events[currentEvent].Details</span>
+                                </td>
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+                </table>
+
+                <div class="table-spacer" />
+
                 <div class="quote-detail-controls-container">
                     <button class="btn btn-primary" disabled=true @onclick="EmailLead">Email This</button>
                     <button class="btn btn-primary" @onclick="AssignLead">Assign</button>
-                    <button class="btn btn-primary" disabled=true @onclick="EditLead">Edit</button>
-                    <button class="btn btn-primary" disabled=true @onclick="DeleteLead">Delete</button>
+                    <button class="btn btn-primary" @onclick="DeleteLead">Delete</button>
                     <button class="btn btn-primary" @onclick="CloseDetails">Close</button>
                 </div>
 
@@ -414,7 +388,7 @@ else
 
     protected override void OnInitialized()
     {
-        
+
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -473,6 +447,10 @@ else
 
     public void DeleteLead()
     {
+        var selectedQuoteId = quotes[selectedIndex]._id;
+
+        Grid.CollapseDetailRow(selectedIndex);
+        ToggleRefresh();
 
     }
 
@@ -520,7 +498,8 @@ else
         }
     }
 
-    private IEnumerable<Quote>? quotes;
+    // private IEnumerable<Quote>? quotes;
+    private List<Quote>? quotes;
 
     public int itemsToCreate = 100;
     public string updateStatus = "Fetching ";
@@ -536,7 +515,7 @@ else
     {
         _timer = new Timer(new TimerCallback(_ =>
         {
-            quotes = QuoteService.GetQuotes("New");
+            quotes = (List<Quote>)QuoteService.GetQuotes("New");
             updateStatus = quotes.Count().ToString("N0");
             StatusContainerClass = "container-action-buttons-show";
 
@@ -683,6 +662,10 @@ else
         quote.structures = new List<Structure>();
         quote.structures.Add(structure);
 
+        var deviceType = "Desktop";
+        var latitude = 0;
+        var longitude = 0;
+
         Event _event = new Event(0,0);
         _event.Name = "New Quote";
         _event.DateTime = DateTime.Now;
@@ -690,12 +673,7 @@ else
         _event.Reference.ReferenceType = 0;
         _event.Details = "New quote referred by Roofle";
 
-        var deviceIP = ClientIP;
-        var deviceType = "Desktop";
-        var latitude = 0;
-        var longitude = 0;
-
-        Location location = new Location(ObjectId.Parse(quote._id), deviceType, deviceIP, latitude, longitude);
+        Location location = new Location(ObjectId.Parse(quote._id), deviceType, ClientIP, latitude, longitude);
         _event.Location = location;
 
         quote.events.Add(_event);

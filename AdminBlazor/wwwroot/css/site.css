@@ -9,8 +9,30 @@ html, body {
     overflow: hidden;
 }
 
-.strikethru
-{
+.event-history-container {
+    border-bottom: solid 0px #c0c0c0 !important;
+    width: 100% !important;
+    margin-bottom: 25px !important;
+    padding-bottom: 25px !important;
+}
+
+.event-date {
+    border: solid 1px #eee !important;
+    width: 15% !important;
+    min-width: 15% !important;
+    max-width: 15% !important;
+    text-align: right !important;
+    font-style: italic;
+}
+
+.event-details {
+    border: solid 1px #eee !important;
+    width: 85% !important;
+    min-width: 85% !important;
+    max-width: 85% !important;
+}
+
+.strikethru {
     text-decoration: line-through;
     color: #c0c0c0 !important;
 }
