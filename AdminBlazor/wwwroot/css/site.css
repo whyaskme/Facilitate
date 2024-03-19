@@ -17,7 +17,7 @@ html, body {
 }
 
 .event-date {
-    border: solid 1px #eee !important;
+    border: solid 1px #ff0000 !important;
     width: 15% !important;
     min-width: 15% !important;
     max-width: 15% !important;
@@ -26,10 +26,10 @@ html, body {
 }
 
 .event-details {
-    border: solid 1px #eee !important;
-    width: 85% !important;
+    border: solid 1px #ff0000 !important;
+/*    width: 85% !important;
     min-width: 85% !important;
-    max-width: 85% !important;
+    max-width: 85% !important;*/
 }
 
 .strikethru {

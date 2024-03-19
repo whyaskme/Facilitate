@@ -273,7 +273,7 @@ else
                 <table>
                 <tbody>
                     <tr>
-                        <td colspan=2>
+                        <td>
                             <h6>History</h6>
                         </td>
                     </tr>
@@ -282,12 +282,8 @@ else
                         for(int currentEvent = 0; currentEvent < @_quote.events.Count; currentEvent++)
                         {
                             <tr>
-                                <td class="event-date">
-                                    <label>Date</label>
-                                    <span class="detail-item">@_quote.events[currentEvent].DateTime</span>
-                                </td>
-                                <td class="event-details">
-                                    <label>Details</label>
+                                <td>
+                                    <label>@_quote.events[currentEvent].DateTime</label>
                                     <span class="detail-item">@_quote.events[currentEvent].Details</span>
                                 </td>
                             </tr>
@@ -447,9 +443,9 @@ else
 
     public void DeleteLead()
     {
-        QuoteService.DeleteQuote(quotes[selectedIndex]);
-
         Grid.CollapseDetailRow(selectedIndex);
+
+        QuoteService.DeleteQuote(quotes[selectedIndex]);
 
         ToggleRefresh();
 
@@ -692,7 +688,7 @@ else
         }
         finally
         {
-
+            ToggleRefresh();
         }
     }
     #endregion

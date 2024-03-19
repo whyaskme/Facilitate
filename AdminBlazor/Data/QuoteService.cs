@@ -4,6 +4,7 @@ using Facilitate.Libraries.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Globalization;
+using System.Threading;
 
 namespace AdminBlazor.Data {
 
@@ -20,6 +21,7 @@ namespace AdminBlazor.Data {
         IMongoClient client;
 
         IMongoCollection<Quote> collection;
+        private CancellationToken _cancellationToken;
 
         public IEnumerable<Quote> GetQuotes(string status)
         {
@@ -124,15 +126,19 @@ namespace AdminBlazor.Data {
             {
                 // This is a soft delete > move to archive.
                 client = new MongoClient(mongoUri);
-
                 collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
 
-                var filter = Builders<Quote>.Filter.Eq(quote => quote._id, quote._id);
+                var updateQuote = Builders<Quote>.Update.Set(quote => quote.status, "Archive");
 
-                // Creates instructions to update the "name" field of the first document that matches the filter
-                var update = Builders<Quote>.Update.Set(quote => quote.status, "Archive");
+                var filter = Builders<Quote>.Filter.Eq(x => x._id, quote._id);
 
-                collection.UpdateOne(filter, update);
+                Event _event = new Event(0,0);
+                _event.Details = "Quote moved to Archive";
+
+                quote.status = "Archive";
+                quote.events.Add(_event);
+
+                var result = collection.ReplaceOne(filter, quote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
 
                 resultMsg = "Archived!";
             }
