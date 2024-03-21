@@ -16,25 +16,10 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
 
-//using Google.GData.Apps;
-
-//using Google.Apis.Auth.OAuth2;
-//using Google.Apis.Gmail.v1;
-//using Google.Apis.Gmail.v1.Data;
-//using Google.Apis.Services;
-//using Google.Apis.Util.Store;
-
-//using HtmlAgilityPack;
-
-//using FluentAssertions;
-
 using MongoDB;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Microsoft.AspNetCore.Http;
-//using CLPostLibrary;
-//using MongoDB.Driver.Builders;
-//using CLPostLibrary;
 
 namespace Facilitate.Libraries.Models
 {
@@ -648,9 +633,9 @@ namespace Facilitate.Libraries.Models
             return null;
         }
 
-        public string GetRandomCity(ObjectId stateId)
+        public string[] GetRandomCity(ObjectId stateId)
         {
-            var randomCity = "";
+            string[] randomCityInfo = new string[] { "", "", "", "" };
 
             try
             {
@@ -662,25 +647,32 @@ namespace Facilitate.Libraries.Models
 
                 var cityNames = client.GetDatabase(dbName).GetCollection<City>(collectionName);
 
-                //var randomCities = cityNames.Find(s => s.StateId == stateId).Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
+                var randomCities = cityNames.Find(s => s._t == "City").ToListAsync().Result;
 
-                var randomCityNames = cityNames.Find(s => s._t == "City").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
-                foreach (var randomCityName in randomCityNames)
+                foreach (var randomCity in randomCities)
                 {
-                    return randomCityName.Name;
+                    if(randomCity.StateId == stateId)
+                    {
+                        randomCityInfo[0] = randomCity._id.ToString();
+                        randomCityInfo[1] = randomCity.Name;
+                        randomCityInfo[2] = randomCity.CountyId.ToString();
+                        randomCityInfo[3] = randomCity.TimeZoneId.ToString();
+
+                        return randomCityInfo;
+                    }
                 }
             }
             catch (Exception ex)
             {
-                randomCity = ex.ToString();
+                randomCityInfo[0] = ex.ToString();
             }
 
-            return randomCity;
+            return null;
         }
 
         public string[] GetRandomState()
         {
-            string[] randomStateInfo = new string[] { "", "" };
+            string[] randomStateInfo = new string[] { "", "", "" };
 
             Random rnd = new Random();
             int randomRecordNumber = rnd.Next(1, StateNameCount);
@@ -692,7 +684,8 @@ namespace Facilitate.Libraries.Models
                 foreach (var currentState in randomStateName)
                 {
                     randomStateInfo[0] = currentState.Name;
-                    randomStateInfo[1] = currentState._id.ToString();
+                    randomStateInfo[1] = currentState.Abbr;
+                    randomStateInfo[2] = currentState._id.ToString();
 
                     return randomStateInfo;
                 }
@@ -706,7 +699,7 @@ namespace Facilitate.Libraries.Models
             return randomStateInfo;
         }
 
-        public string GetRandomZipCode()
+        public string GetRandomZipCode(ObjectId cityId)
         {
             try
             {
@@ -1826,18 +1819,6 @@ namespace Facilitate.Libraries.Models
 
             //_mongoDatabase = _mongoClient.GetDatabase(ConfigurationManager.AppSettings["MongoDbName"]); // this database uses the new API
             _mongoDatabase = _mongoClient.GetDatabase("Facilitate"); // this database uses the new API
-
-            //var _mongoMaleNameCollection = _mongoDatabase.GetCollection("ReferenceData");
-
-            //var collection = _mongoClient.GetDatabase("Facilitate").GetCollection<ReferenceData>("ReferenceData");
-
-            //var allQuotes = collection.Find(Builders<ReferenceData>.Filter.Empty).ToList();
-
-            //foreach (var quote in allQuotes)
-            //{
-            //    // Format date string
-            //    //quote.timestamp = DateTime.Parse(quote.timestamp, CultureInfo.InvariantCulture).ToShortDateString() + " " + DateTime.Parse(quote.timestamp, CultureInfo.InvariantCulture).ToShortTimeString();
-            //}
 
             switch (objectType.ToLower())
             {

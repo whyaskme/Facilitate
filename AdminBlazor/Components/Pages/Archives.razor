@@ -180,14 +180,14 @@ else
         var stateId = randomState[1];
 
         var randomCity = utils.GetRandomCity(MongoDB.Bson.ObjectId.Parse("52ade0932b0b6d13f88c4e8d"));
-        var randomZipCode = utils.GetRandomZipCode().ToString();
+        //var randomZipCode = utils.GetRandomZipCode().ToString();
 
-        quote.address = randomStreetNumber + " " + randomStreetName + ", " + randomCity + ", " + stateName + " " + randomZipCode;
+        //quote.address = randomStreetNumber + " " + randomStreetName + ", " + randomCity + ", " + stateName + " " + randomZipCode;
         quote.fullAddress = quote.address;
         quote.street = randomStreetNumber + " " + randomStreetName;
-        quote.city = randomCity;
+        //quote.city = randomCity;
         quote.state = stateName;
-        quote.zip = randomZipCode;
+        // quote.zip = randomZipCode;
 
         Random rnd = new Random();
         int randomInt = rnd.Next(0, 1);

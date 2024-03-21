@@ -61,14 +61,14 @@ else
             PageSizeSelectorAllRowsItemVisible="false"
             KeyboardNavigationEnabled="true">
             <Columns>
-                <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="D" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
-                @* <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="D" SortIndex="0" AllowSort="true" /> *@
+                <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm:ss tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
                 <DxGridDataColumn Caption="First" FieldName="firstName" />
                 <DxGridDataColumn Caption="Last" FieldName="lastName" />
                 <DxGridDataColumn Caption="Street" FieldName="street" />
                 <DxGridDataColumn Caption="City" FieldName="city" />
                 <DxGridDataColumn Caption="State" FieldName="state" />
                 <DxGridDataColumn Caption="Zip" FieldName="zip" />
+                <DxGridDataColumn Caption="SqFt" FieldName="totalSquareFeet" />
             </Columns>
 
             <DetailRowTemplate>
@@ -79,7 +79,7 @@ else
                 <tbody>
                     <tr>
                         <td colspan=4>
-                            <h6>Homeowner Info (@_quote._id)</h6>
+                            <h6>Homeowner Info</h6>
                         </td>
                     </tr>
                     <tr>
@@ -320,6 +320,9 @@ else
 @code {
 
     [Inject] public IJSRuntime jsRuntime { get; set; }
+
+    [Parameter]
+    public string DisplayFormat { get; set; }
 
     public string ClientIP = "";
     public string selectedQuoteId = "";
@@ -563,18 +566,23 @@ else
 
         var randomState = utils.GetRandomState();
         var stateName = randomState[0];
-        var stateId = randomState[1];
+        var stateAbbr = randomState[1];
+        var stateId = randomState[2];
 
-        // var randomCity = utils.GetRandomCity(MongoDB.Bson.ObjectId.Parse("52ade0932b0b6d13f88c4e8d"));
         var randomCity = utils.GetRandomCity(MongoDB.Bson.ObjectId.Parse(stateId));
 
-        var randomZipCode = utils.GetRandomZipCode().ToString();
+        string cityId = randomCity[0];
+        string cityName = randomCity[1];
+        string cityCountyId = randomCity[2];
+        string cityTimeZoneId = randomCity[3];
 
-        quote.address = randomStreetNumber + " " + randomStreetName + ", " + randomCity + ", " + stateName + " " + randomZipCode;
+        var randomZipCode = utils.GetRandomZipCode(MongoDB.Bson.ObjectId.Parse(cityId)).ToString();
+
+        quote.address = randomStreetNumber + " " + randomStreetName + ", " + cityName + ", " + stateAbbr + " " + randomZipCode;
         quote.fullAddress = quote.address;
         quote.street = randomStreetNumber + " " + randomStreetName;
-        quote.city = randomCity;
-        quote.state = stateName;
+        quote.city = cityName;
+        quote.state = stateAbbr;
         quote.zip = randomZipCode;
 
         Random rnd = new Random();
