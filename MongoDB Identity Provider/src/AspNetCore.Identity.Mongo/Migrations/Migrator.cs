@@ -34,7 +34,7 @@ namespace AspNetCore.Identity.Mongo.Migrations
                 .Select(migration => migration.Apply<TUser, TRole, TKey>(usersCollection, rolesCollection))
                 .ToList();
 
-            migrationCollection.InsertMany(appliedMigrations);
+            //migrationCollection.InsertMany(appliedMigrations);
 
         }
     }

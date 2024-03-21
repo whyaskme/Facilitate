@@ -199,7 +199,7 @@ else
         quote.phone = "(" + utils.GetRandomAreaCode() + ") " + utils.GetRandomHomePhoneNumber();
         quote.market = quote.city + ", " + quote.state;
         quote.externalUrl = "https://app.roofle.com/dashboard";
-        quote.timestamp = DateTime.Now.ToString();
+        quote.timestamp = DateTime.Now;
 
         randomInt = rnd.Next(1, 3);
         quote.numberOfStructures = randomInt;

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +8,8 @@ using AspNetCore.Identity.Mongo;
 using SampleSite.Mailing;
 using Microsoft.AspNetCore.Authorization;
 using Policy;
+
+using TestSite.Models;
 
 namespace TestSite
 {

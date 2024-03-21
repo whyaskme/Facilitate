@@ -39,7 +39,7 @@ namespace Facilitate.Libraries.Models
             phone = string.Empty;
             market = string.Empty;
             externalUrl = string.Empty;
-            timestamp = string.Empty;
+            timestamp = DateTime.MinValue;
             numberOfStructures = 0;
             numberOfIncludedStructures = 0;
             totalSquareFeet = 0;
@@ -71,7 +71,7 @@ namespace Facilitate.Libraries.Models
         public string phone { get; set; }
         public string market { get; set; }
         public string externalUrl { get; set; }
-        public string timestamp { get; set; }
+        public DateTime timestamp { get; set; }
 
         public int numberOfStructures { get; set; }
         public int numberOfIncludedStructures { get; set; }

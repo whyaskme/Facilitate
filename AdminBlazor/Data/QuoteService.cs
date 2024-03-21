@@ -4,6 +4,7 @@ using Facilitate.Libraries.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Globalization;
+using System.Reactive;
 using System.Threading;
 
 namespace AdminBlazor.Data {
@@ -33,9 +34,11 @@ namespace AdminBlazor.Data {
                 var builder = Builders<Quote>.Filter;
                 var filter = builder.Eq(f => f.status, status);
 
-                var allQuotes = collection.Find(filter).ToList();
+                //var allQuotes = collection.Find(filter).ToList();
 
-                return allQuotes;
+                var sortedQuotes = collection.Find(filter).SortByDescending(e => e.timestamp).ToList();
+
+                return sortedQuotes;
             }
             catch (Exception ex)
             {
@@ -120,7 +123,7 @@ namespace AdminBlazor.Data {
             return resultMsg;
         }
 
-        public string DeleteQuote(Quote quote)
+        public string DeleteQuote(string quoteId, Quote quote)
         {
             try
             {
@@ -130,7 +133,7 @@ namespace AdminBlazor.Data {
 
                 var updateQuote = Builders<Quote>.Update.Set(quote => quote.status, "Archive");
 
-                var filter = Builders<Quote>.Filter.Eq(x => x._id, quote._id);
+                var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
 
                 Event _event = new Event(0,0);
                 _event.Details = "Quote moved to Archive";
