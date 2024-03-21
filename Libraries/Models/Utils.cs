@@ -1,25 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Dynamic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web;
 using System.Xml;
 
-using MongoDB;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Microsoft.AspNetCore.Http;
 
 namespace Facilitate.Libraries.Models
 {
@@ -47,384 +34,6 @@ namespace Facilitate.Libraries.Models
         {
             client = new MongoClient(mongoUri);
         }
-
-        //public void CreateCities()
-        //{
-        //    var fileType = "C:\\Joes_Data\\Development\\Personal-Sites\\CLPosts\\PostManagement\\Data\\US-Cities.csv";
-
-        //    try
-        //    {
-        //        ReadCsv("City", fileType);
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //    }
-        //}
-
-        //public string Propercase()
-        //{
-        //    var retVal = "";
-
-        //    return retVal;
-        //}
-
-        //public void CreateZipCodes()
-        //{
-        //    var fileType = "C:\\Joes_Data\\Development\\Personal-Sites\\CLPosts\\PostManagement\\Data\\zip_code_database_cleaned.csv";
-
-        //    //try
-        //    //{
-        //    ReadCsv("ZipCodes", fileType);
-        //    //}
-        //    //catch (Exception ex)
-        //    //{
-
-        //    //}
-        //}
-
-        //private string[,] ReadCsv(string objectType, string filename)
-        //{
-        //    CreateDbConnection("State", "States");
-        //    CreateDbConnection("City", "Cities");
-        //    CreateDbConnection("ZipCode", "ZipCodes");
-
-        //    // Get the file's text.
-        //    string whole_file = File.ReadAllText(filename);
-
-        //    // Split into lines.
-        //    whole_file = whole_file.Replace('\n', '\r');
-        //    string[] lines = whole_file.Split(new char[] { '\r' },
-        //        StringSplitOptions.RemoveEmptyEntries);
-
-        //    // See how many rows and columns there are.
-        //    int num_rows = lines.Length;
-        //    int num_cols = lines[0].Split(',').Length;
-
-        //    // Allocate the data array.
-        //    string[,] values = new string[num_rows, num_cols];
-
-        //    // Load the array.
-        //    for (int r = 0; r < num_rows; r++)
-        //    {
-        //        string[] line_r = lines[r].Split(',');
-        //        //for (int c = 0; c < num_cols; c++)
-        //        for (int c = 0; c < 1; c++)
-        //        {
-        //            values[r, c] = line_r[c];
-
-        //            switch (objectType.ToLower())
-        //            {
-        //                case "city":
-        //                    var cityName = line_r[0].Trim();
-        //                    var stateName = line_r[1].Trim();
-
-        //                    City myCity = new City();
-        //                    myCity.Name = cityName;
-        //                    myCity.StateName = stateName;
-        //                    myCity.StateId = GetStateIdByName(stateName);
-
-        //                    _mongoCityCollection.InsertOne(myCity, null);
-        //                    break;
-
-        //                case "zipcodes":
-
-        //                    ZipCode myZipCode = new ZipCode();
-
-        //                    var zipCode = line_r[0].Trim().Replace("\"", "");
-        //                    var city = line_r[1].Trim().Replace("\"", "");
-        //                    var state = line_r[2].Trim().Replace("\"", "");
-        //                    var county = line_r[3].Trim().Replace("\"", "");
-        //                    var timezone = line_r[4].Trim().Replace("\"", "");
-        //                    var areacodes = line_r[5].Trim().Replace("\"", "");
-        //                    var latitude = line_r[6].Trim().Replace("\"", "");
-        //                    var longitude = line_r[7].Trim().Replace("\"", "");
-        //                    var population = line_r[8].Trim().Replace("\"", "");
-
-        //                    myZipCode.Zip = zipCode;
-
-        //                    State myState = GetStateByAbbr(state);
-        //                    if (myState.Name != "")
-        //                    {
-        //                        myZipCode.StateId = myState._id;
-        //                        myZipCode.StateName = myState.Name;
-
-        //                        myZipCode.County = county.Replace("\"", "");
-        //                        myZipCode.TimeZone = timezone.Replace("\"", "");
-        //                        myZipCode.AreaCodes = areacodes.Replace("\"", "");
-
-        //                        myZipCode.CityName = city.Replace("\"", "");
-        //                        myZipCode.CityId = GetCityIdByName(myZipCode.CityName);
-
-        //                        myZipCode.Longitude = latitude.Replace("\"", "");
-        //                        myZipCode.Latitude = longitude.Replace("\"", "");
-
-        //                        if (!population.Contains("-") && !population.Contains("."))
-        //                            myZipCode.EstimatedPopulation = Convert.ToInt32(population);
-
-        //                        _mongoZipCodeCollection.InsertOne(myZipCode, null);
-        //                    }
-        //                    break;
-        //            }
-        //        }
-        //    }
-
-        //    // Return the values.
-        //    return values;
-        //}
-
-        //public void CreateFemaleNames()
-        //{
-        //    var fileType = "C:\\Temp\\Names\\census-dist-female-first.txt";
-
-        //    CreateDbConnection("Female", "NamesFemale");
-
-        //    try
-        //    {
-        //        // Read in lines from file.
-        //        foreach (string line in File.ReadLines(fileType))
-        //        {
-        //            Female myName = new Female();
-
-        //            var tmpVal = line.Split(' ');
-        //            myName.Name = tmpVal[0].ToLower();
-
-        //            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
-        //            myName.Name = textInfo.ToTitleCase(myName.Name);
-
-        //            _mongoFemaleNameCollection.InsertOne(myName, null);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var errMsg = ex.ToString();
-        //    }
-        //}
-
-        //public void CreateMaleNames()
-        //{
-        //    var fileType = "C:\\Temp\\Names\\census-dist-male-first.txt";
-
-        //    CreateDbConnection("Male", "NamesMale");
-
-        //    try
-        //    {
-        //        // Read in lines from file.
-        //        foreach (string line in File.ReadLines(fileType))
-        //        {
-        //            Male myName = new Male();
-
-        //            var tmpVal = line.Split(' ');
-        //            myName.Name = tmpVal[0].ToLower();
-
-        //            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
-        //            myName.Name = textInfo.ToTitleCase(myName.Name);
-
-        //            _mongoMaleNameCollection.InsertOne(myName, null);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var errMsg = ex.ToString();
-        //    }
-        //}
-
-        //public void CreateLastNames()
-        //{
-        //    var fileType = "C:\\Temp\\Names\\census-dist-all-last.txt";
-
-        //    CreateDbConnection("Last", "NamesLast");
-
-        //    try
-        //    {
-        //        // Read in lines from file.
-        //        foreach (string line in File.ReadLines(fileType))
-        //        {
-        //            Last myName = new Last();
-
-        //            var tmpVal = line.Split(' ');
-        //            myName.Name = tmpVal[0].ToLower();
-
-        //            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
-        //            myName.Name = textInfo.ToTitleCase(myName.Name);
-
-        //            _mongoLastNameCollection.InsertOne(myName, null);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var errMsg = ex.ToString();
-        //    }
-        //}
-
-        //public void CreateStreetNames()
-        //{
-        //    var fileType = "C:\\Temp\\Names\\allstreets.txt";
-
-        //    CreateDbConnection("Street", "NamesStreet");
-
-        //    try
-        //    {
-        //        // Read in lines from file.
-        //        foreach (string line in File.ReadLines(fileType))
-        //        {
-        //            Street myName = new Street();
-
-        //            myName.Name = line.ToLower();
-
-        //            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
-        //            myName.Name = textInfo.ToTitleCase(myName.Name);
-
-        //            _mongoStreetNameCollection.InsertOne(myName, null);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var errMsg = ex.ToString();
-        //    }
-        //}
-
-        //public void CreateNames(string nameType, string nameGender)
-        //{
-        //    var fileType = "";
-
-        //    CreateDbConnection("Name", "Names");
-
-        //    try
-        //    {
-        //        switch (nameType.ToLower())
-        //        {
-        //            case "first":
-        //                if (nameGender.ToLower() == "female")
-        //                    fileType = "C:\\Temp\\Names\\census-dist-female-first.txt";
-        //                else
-        //                    fileType = "C:\\Temp\\Names\\census-dist-male-first.txt";
-        //                break;
-
-        //            case "last":
-        //                fileType = "C:\\Temp\\Names\\census-dist-all-last.txt";
-        //                break;
-
-        //            case "street":
-        //                fileType = "C:\\Temp\\Names\\allstreets.txt";
-        //                break;
-        //        }
-
-        //        // Read in lines from file.
-        //        foreach (string line in File.ReadLines(fileType))
-        //        {
-        //            Name myName = new Name();
-
-        //            switch (nameType.ToLower())
-        //            {
-        //                case "first":
-        //                    var tmpVal = line.Split(' ');
-
-        //                    myName._t = "First";
-        //                    myName.Value = tmpVal[0].ToLower();
-
-        //                    if (nameGender.ToLower() == "female")
-        //                        myName.Gender = 1; // 4,275 names
-        //                    else
-        //                        myName.Gender = 2; // 1,219 names
-        //                    break;
-
-        //                case "last":
-        //                    var tmpVal2 = line.Split(' ');
-
-        //                    myName._t = "Last";
-        //                    myName.Value = tmpVal2[0].ToLower();
-        //                    myName.Gender = 3;  // 88,799 names
-        //                    break;
-
-        //                case "street":
-        //                    myName._t = "Street";
-        //                    myName.Value = line.ToLower();
-        //                    myName.Gender = 4;  // 91,670 names
-        //                    break;
-        //            }
-
-        //            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
-        //            myName.Value = textInfo.ToTitleCase(myName.Value);
-
-        //            _mongoNameCollection.InsertOne(myName, null);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var errMsg = ex.ToString();
-        //    }
-        //}
-
-        //public void CreatePeople(int personCount, string personGender)
-        //{
-        //    CreateDbConnection("Person", "Persons");
-
-        //    try
-        //    {
-        //        // All values should be random and unique
-        //        Person newPerson = new Person();
-
-        //        newPerson.Gender = personGender;
-
-        //        newPerson.FirstName = GetRandomFirstName(personGender);
-        //        newPerson.MiddleInitial = GetRandomMiddleInitial();
-        //        newPerson.LastName = GetRandomLastName();
-
-        //        newPerson.DoB = GetRandomDoB();
-
-        //        ZipCode randomZipCode = GetRandomZipCode();
-
-        //        Address newAddress = new Address();
-        //        newAddress.Address1 = GetRandomStreetNumber() + " " + GetRandomStreetName();
-        //        newAddress.Address2 = ""; // GetRandomUnitNumber();
-
-        //        newAddress.City = randomZipCode.CityName;
-        //        newAddress.State = randomZipCode.StateName;
-        //        newAddress.Zip = randomZipCode.Zip;
-
-        //        newPerson.Address = newAddress;
-
-        //        ContactInfo newContactInfo = new ContactInfo();
-
-        //        newContactInfo.Email = newPerson.FirstName.ToLower() + "." + newPerson.LastName.ToLower() + "@gmail.com";
-
-        //        var areaCode = randomZipCode.AreaCodes;
-        //        if (areaCode == "")
-        //            areaCode = GetRandomAreaCode();
-
-        //        newContactInfo.HomePhone = areaCode + "-" + GetRandomHomePhoneNumber();
-
-        //        newContactInfo.MobilePhone = areaCode + "-" + GetAvailableMobilePhoneNumber();
-
-        //        newPerson.Contact = newContactInfo;
-
-        //        var randomPassword = "!1myPassWord#";
-
-        //        // Add accounts
-        //        AccountGmail newAccountGmail = new AccountGmail();
-        //        newAccountGmail.UserName = newContactInfo.Email;
-        //        newAccountGmail.Password = randomPassword;
-
-        //        newPerson.AccountGmail = newAccountGmail;
-
-        //        AccountCL newClAccount = new AccountCL();
-        //        newClAccount.UserName = newContactInfo.Email;
-        //        newClAccount.Password = randomPassword;
-        //        newPerson.AccountCL = newClAccount;
-
-        //        AccountEBay EbayAccount = new AccountEBay();
-        //        EbayAccount.UserName = newContactInfo.Email;
-        //        EbayAccount.Password = randomPassword;
-        //        newPerson.AccountEBay = EbayAccount;
-
-        //        _mongoPersonCollection.InsertOne(newPerson, null);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var errMsg = ex.ToString();
-        //    }
-        //}
 
         public void UpdatePerson(Person myPerson)
         {
@@ -637,28 +246,18 @@ namespace Facilitate.Libraries.Models
         {
             string[] randomCityInfo = new string[] { "", "", "", "" };
 
+            List<City> myCities = new List<City>();
+
             try
             {
-                // This needs to be queried by state
-                CityNameCount = 29822; // _mongoCityCollection.Find(s => s.StateId == stateId).ToListAsync().Result.Count();
+                var cityCollection = client.GetDatabase(dbName).GetCollection<City>(collectionName);
+                var randomCities = cityCollection.Find(s => s._t == "City").ToListAsync().Result;
 
-                Random rnd = new Random();
-                int randomRecordNumber = rnd.Next(1, CityNameCount);
-
-                var cityNames = client.GetDatabase(dbName).GetCollection<City>(collectionName);
-
-                var randomCities = cityNames.Find(s => s._t == "City").ToListAsync().Result;
-
-                foreach (var randomCity in randomCities)
+                foreach (City randomCity in randomCities)
                 {
                     if(randomCity.StateId == stateId)
                     {
-                        randomCityInfo[0] = randomCity._id.ToString();
-                        randomCityInfo[1] = randomCity.Name;
-                        randomCityInfo[2] = randomCity.CountyId.ToString();
-                        randomCityInfo[3] = randomCity.TimeZoneId.ToString();
-
-                        return randomCityInfo;
+                        myCities.Add(randomCity);
                     }
                 }
             }
@@ -666,6 +265,24 @@ namespace Facilitate.Libraries.Models
             {
                 randomCityInfo[0] = ex.ToString();
             }
+
+            Random rnd = new Random();
+            int i = 0;
+            int randomRecordNumber = rnd.Next(myCities.Count);
+
+            foreach (City randomCity in myCities)
+            {
+                if(i == randomRecordNumber)
+                {
+                    randomCityInfo[0] = randomCity._id.ToString();
+                    randomCityInfo[1] = randomCity.Name;
+                    randomCityInfo[2] = randomCity.CountyId.ToString();
+                    randomCityInfo[3] = randomCity.TimeZoneId.ToString();
+
+                    return randomCityInfo;
+                }
+                i++;
+            }   
 
             return null;
         }
@@ -701,22 +318,37 @@ namespace Facilitate.Libraries.Models
 
         public string GetRandomZipCode(ObjectId cityId)
         {
+            List<ZipCode> myZipCodes = new List<ZipCode>();
+
             try
             {
-                Random rnd = new Random();
-                int randomRecordNumber = rnd.Next(1, 41872);
+                var zipCodeCollection = client.GetDatabase(dbName).GetCollection<ZipCode>(collectionName);
+                var randomZipCodes = zipCodeCollection.Find(s => s._t == "ZipCode").ToListAsync().Result;
 
-                var zipCodes = client.GetDatabase(dbName).GetCollection<ZipCode>(collectionName);
-                var randomZipCodes = zipCodes.Find(s => s._t == "ZipCode").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
-                foreach (var randomZipCode in randomZipCodes)
+                foreach (ZipCode randomZipCode in randomZipCodes)
                 {
-
-                    return randomZipCode.Zip.ToString();
+                    if (randomZipCode.CityId == cityId)
+                    {
+                        myZipCodes.Add(randomZipCode);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 return ex.Message;
+            }
+
+            Random rnd = new Random();
+            int i = 0;
+            int randomRecordNumber = rnd.Next(myZipCodes.Count);
+
+            foreach (ZipCode randomZipCode in myZipCodes)
+            {
+                if (i == randomRecordNumber)
+                {
+                    return randomZipCode.Zip.ToString();
+                }
+                i++;
             }
 
             return null;
@@ -749,97 +381,97 @@ namespace Facilitate.Libraries.Models
             return stateList;
         }
 
-        //public ObjectId GetStateIdByName(string stateName)
-        //{
-        //    var stateId = ObjectId.Empty;
+        public ObjectId GetStateIdByName(string stateName)
+        {
+            var stateId = ObjectId.Empty;
 
-        //    try
-        //    {
-        //        CreateDbConnection("State", "States");
+            try
+            {
+                CreateDbConnection("State", "States");
 
-        //        var stateCollection = _mongoStateCollection.Find(s => s.Name == stateName).ToListAsync().Result;
-        //        foreach (State currentState in stateCollection)
-        //        {
-        //            stateId = currentState._id;
-        //            return stateId;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var errMsg = ex.ToString();
-        //    }
+                var stateCollection = _mongoStateCollection.Find(s => s.Name == stateName).ToListAsync().Result;
+                foreach (State currentState in stateCollection)
+                {
+                    stateId = currentState._id;
+                    return stateId;
+                }
+            }
+            catch (Exception ex)
+            {
+                var errMsg = ex.ToString();
+            }
 
-        //    return stateId;
-        //}
+            return stateId;
+        }
 
-        //public ObjectId GetCityIdByName(string cityName)
-        //{
-        //    ObjectId myCityId = ObjectId.Empty;
+        public ObjectId GetCityIdByName(string cityName)
+        {
+            ObjectId myCityId = ObjectId.Empty;
 
-        //    try
-        //    {
-        //        CreateDbConnection("City", "Cities");
+            try
+            {
+                CreateDbConnection("City", "Cities");
 
-        //        var cityCollection = _mongoCityCollection.Find(s => s.Name == cityName).ToListAsync().Result;
-        //        foreach (City currentCity in cityCollection)
-        //        {
-        //            myCityId = currentCity._id;
-        //            return myCityId;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var errMsg = ex.ToString();
-        //    }
+                var cityCollection = _mongoCityCollection.Find(s => s.Name == cityName).ToListAsync().Result;
+                foreach (City currentCity in cityCollection)
+                {
+                    myCityId = currentCity._id;
+                    return myCityId;
+                }
+            }
+            catch (Exception ex)
+            {
+                var errMsg = ex.ToString();
+            }
 
-        //    return myCityId;
-        //}
+            return myCityId;
+        }
 
-        //public State GetStateByAbbr(string stateAbbr)
-        //{
-        //    State myState = new State();
+        public State GetStateByAbbr(string stateAbbr)
+        {
+            State myState = new State();
 
-        //    try
-        //    {
-        //        CreateDbConnection("State", "States");
+            try
+            {
+                CreateDbConnection("State", "States");
 
-        //        var stateCollection = _mongoStateCollection.Find(s => s.Abbr == stateAbbr).ToListAsync().Result;
-        //        foreach (State currentState in stateCollection)
-        //        {
-        //            myState = currentState;
-        //            return myState;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var errMsg = ex.ToString();
-        //    }
+                var stateCollection = _mongoStateCollection.Find(s => s.Abbr == stateAbbr).ToListAsync().Result;
+                foreach (State currentState in stateCollection)
+                {
+                    myState = currentState;
+                    return myState;
+                }
+            }
+            catch (Exception ex)
+            {
+                var errMsg = ex.ToString();
+            }
 
-        //    return myState;
-        //}
+            return myState;
+        }
 
-        //public string GetStateAbbr(ObjectId stateId)
-        //{
-        //    var stateAbbr = "";
+        public string GetStateAbbr(ObjectId stateId)
+        {
+            var stateAbbr = "";
 
-        //    try
-        //    {
-        //        CreateDbConnection("State", "States");
+            try
+            {
+                CreateDbConnection("State", "States");
 
-        //        var stateCollection = _mongoStateCollection.Find(s => s._id == stateId).ToListAsync().Result;
-        //        foreach (State currentState in stateCollection)
-        //        {
-        //            stateAbbr = currentState.Abbr;
-        //            return stateAbbr;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var errMsg = ex.ToString();
-        //    }
+                var stateCollection = _mongoStateCollection.Find(s => s._id == stateId).ToListAsync().Result;
+                foreach (State currentState in stateCollection)
+                {
+                    stateAbbr = currentState.Abbr;
+                    return stateAbbr;
+                }
+            }
+            catch (Exception ex)
+            {
+                var errMsg = ex.ToString();
+            }
 
-        //    return stateAbbr;
-        //}
+            return stateAbbr;
+        }
 
         public string SaveEvent(Event myEvent)
         {
@@ -858,129 +490,6 @@ namespace Facilitate.Libraries.Models
         }
 
         private string serviceResponse = "Successful";
-
-        //public void CreateEvents()
-        //{
-        //    CreateDbConnection("Event", "TypeDefinitions");
-
-        //    try
-        //    {
-        //        // Read in lines from file.
-        //        foreach (string line in File.ReadLines("C:\\Joes_Data\\Development\\Personal-Sites\\CLPosts\\PostManagement\\Data\\Events.txt"))
-        //        {
-        //            var tmpVal = line.Split('|');
-
-        //            Event myEvent = new Event();
-        //            myEvent.TypeId = Convert.ToInt16(tmpVal[1]);
-        //            myEvent.TypeName = tmpVal[0];
-        //            myEvent.Details = "";
-        //            myEvent.Server = "";
-
-        //            _mongoEventCollection.InsertOne(myEvent, null);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var errMsg = ex.ToString();
-        //    }
-        //}
-
-        //public void CreateMarkets()
-        //{
-        //    CreateDbConnection("State", "States");
-
-        //    CreateDbConnection("Market", "Markets");
-
-        //    List<HtmlNode> listResults = new List<HtmlNode>();
-
-        //    string URI = "http://www.craigslist.org/about/sites";
-
-        //    var itemCount = 0;
-
-        //    using (WebClient wc = new WebClient())
-        //    {
-        //        try
-        //        {
-        //            HtmlWeb w = new HtmlWeb();
-        //            HtmlDocument responseDoc = w.Load(URI);
-        //            foreach (HtmlNode node in responseDoc.DocumentNode.SelectNodes("//div[@class='colmask']"))
-        //            {
-        //                if (itemCount == 0)
-        //                {
-        //                    foreach (var childItem in node.ChildNodes)
-        //                    {
-        //                        // This is an item we need to parse
-        //                        if (childItem.Name.ToLower() == "div")
-        //                        {
-        //                            listResults.Add(childItem);
-        //                        }
-        //                    }
-        //                    itemCount++;
-        //                }
-        //            }
-
-        //            // Parse the list
-        //            foreach (var currentItem in listResults)
-        //            {
-        //                var currentStateName = "";
-        //                var currentStateId = ObjectId.Empty;
-
-        //                foreach (HtmlNode node in currentItem.ChildNodes)
-        //                {
-        //                    switch (node.Name.ToLower())
-        //                    {
-        //                        case "h4": // This is the State, get StateId
-        //                            currentStateName = node.InnerText;
-
-        //                            var stateCollection = _mongoStateCollection.Find(s => s.Name == currentStateName).ToListAsync().Result;
-        //                            foreach (State currentState in stateCollection)
-        //                            {
-        //                                currentStateId = currentState._id;
-        //                            }
-        //                            break;
-
-        //                        case "ul": // City list
-        //                            foreach (var listItem in node.ChildNodes)
-        //                            {
-        //                                switch (listItem.Name.ToLower())
-        //                                {
-        //                                    case "li":
-        //                                        // Current city
-        //                                        var currCity = listItem.InnerHtml;
-
-        //                                        // Parse city name and url
-        //                                        var tmpCityInfo = currCity.Split('>');
-
-        //                                        //<a href="http://auburn.craigslist.org"
-        //                                        var tmpVal2 = tmpCityInfo[0].Split('"');
-
-        //                                        var tmpCityUrl = tmpVal2[1].Replace("\"", "");
-        //                                        var tmpCityName = tmpCityInfo[1].Replace("</a", "");
-
-        //                                        TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
-        //                                        tmpCityName = textInfo.ToTitleCase(tmpCityName);
-
-        //                                        Market marketItem = new Market();
-        //                                        marketItem.StateId = currentStateId;
-        //                                        marketItem.Name = tmpCityName;
-        //                                        marketItem.Url = tmpCityUrl.Replace("//", "http://");
-
-        //                                        // Save
-        //                                        _mongoMarketCollection.InsertOne(marketItem, null);
-        //                                        break;
-        //                                }
-        //                            }
-        //                            break;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            var errMsg = ex.ToString();
-        //        }
-        //    }
-        //}
 
         public List<City> GetCities(ObjectId stateId)
         {
@@ -1025,164 +534,6 @@ namespace Facilitate.Libraries.Models
 
             return marketList;
         }
-
-        //public string SaveAdvertisement(Advertisement newAdvertisement)
-        //{
-        //    try
-        //    {
-        //        CreateDbConnection("Advertisement", "Advertisements");
-
-        //        // Save
-        //        _mongoAdvertisementCollection.InsertOne(newAdvertisement, null);
-
-        //        Event myEvent = new Event();
-
-        //        myEvent.TypeId = Constants.Event.Advertisement.Created.Item1;
-        //        myEvent.TypeName = Constants.Event.Advertisement.Created.Item2;
-        //        myEvent.ReferenceId = newAdvertisement._id;
-        //        myEvent.Details = newAdvertisement.AdTitle; // Constants.Event.Advertisement.Created.Item3;
-        //        myEvent.Server = "";
-
-        //        myEvent.Save();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        serviceResponse = ex.ToString();
-        //    }
-
-        //    return serviceResponse;
-        //}
-
-        //public Advertisement GetAdvertisement(ObjectId adertisementId)
-        //{
-        //    var myAdList = new List<Advertisement>();
-        //    var myAd = new Advertisement();
-
-        //    try
-        //    {
-        //        CreateDbConnection("Advertisement", "Advertisements");
-
-        //        myAdList = _mongoAdvertisementCollection.Find(s => s._id == adertisementId).ToListAsync().Result;
-        //        foreach (var currentAd in myAdList)
-        //        {
-        //            myAd = currentAd;
-        //            //return currentAd;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        serviceResponse = ex.ToString();
-        //    }
-
-        //    return myAd;
-        //}
-
-        //public List<Advertisement> GetSampleAdvertisements()
-        //{
-        //    var myAdList = new List<Advertisement>();
-        //    var myAd = new Advertisement();
-
-        //    try
-        //    {
-        //        CreateDbConnection("Advertisement", "TypeDefinitions");
-
-        //        myAdList = _mongoAdvertisementCollection.Find(s => s._t == "Advertisement").ToListAsync().Result;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        serviceResponse = ex.ToString();
-        //    }
-
-        //    return myAdList;
-        //}
-
-        //public Advertisement GetSampleAdvertisementData(ObjectId adId)
-        //{
-        //    var myAdList = new List<Advertisement>();
-        //    var myAd = new Advertisement();
-
-        //    try
-        //    {
-        //        CreateDbConnection("Advertisement", "TypeDefinitions");
-
-        //        myAdList = _mongoAdvertisementCollection.Find(s => s._id == adId).ToListAsync().Result;
-        //        foreach (var currAd in myAdList)
-        //        {
-        //            myAd = currAd;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        serviceResponse = ex.ToString();
-        //    }
-
-        //    return myAd;
-        //}
-
-        //public string DeleteAdvertisement(ObjectId adertisementId)
-        //{
-        //    var serviceResponse = "";
-
-        //    var myAdList = new List<Advertisement>();
-        //    var myAd = new Advertisement();
-
-        //    try
-        //    {
-        //        CreateDbConnection("Advertisement", "Advertisements");
-
-        //        myAdList = _mongoAdvertisementCollection.Find(s => s._id == adertisementId).ToListAsync().Result;
-        //        foreach (var currentAd in myAdList)
-        //        {
-        //            myAd = currentAd;
-
-        //            currentAd.IsDeleted = true;
-        //            _mongoAdvertisementCollection.ReplaceOne(s => s._id == adertisementId, currentAd);
-        //        }
-        //        serviceResponse = "Successful";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        serviceResponse = ex.ToString();
-        //    }
-
-        //    return serviceResponse;
-        //}
-
-        //public string GetAdCount()
-        //{
-        //    var countResponse = "";
-
-        //    List<Advertisement> myAds = new List<Advertisement>();
-
-        //    short adCount = 0;
-
-        //    try
-        //    {
-        //        CreateDbConnection("Advertisement", "Advertisements");
-
-        //        var sort = Builders<Advertisement>.Sort.Descending("DateCreated");
-
-        //        myAds = _mongoAdvertisementCollection.Find(s => s._t == "Advertisement").ToListAsync().Result;
-        //        adCount = Convert.ToInt16(myAds.Count);
-
-        //        foreach (var currAd in myAds)
-        //        {
-        //            foreach (var currState in currAd.ItemStates)
-        //            {
-        //                adCount += Convert.ToInt16(currState.Markets.Count);
-        //            }
-
-        //        }
-
-        //        countResponse = myAds.Count + "|" + adCount;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        serviceResponse = ex.ToString();
-        //    }
-
-        //    return countResponse;
-        //}
 
         public short GetEventCount(int eventType)
         {
@@ -1239,38 +590,6 @@ namespace Facilitate.Libraries.Models
         //    }
 
         //    return myEvent;
-        //}
-
-        //public string GetRandomText(int sentanceCount)
-        //{
-        //    var randomText = "";
-        //    int[] randomSenLen = { 1, 3, 5, 10 };
-
-        //    RandomText mtText = new RandomText();
-        //    randomText = mtText.Paragraph(sentanceCount, randomSenLen);
-        //    randomText += Environment.NewLine;
-
-        //    return randomText;
-        //}
-
-        //public List<Advertisement> GetAllAdvertisements(int recLimit, int pageNumber)
-        //{
-        //    List<Advertisement> myAds = new List<Advertisement>();
-
-        //    try
-        //    {
-        //        CreateDbConnection("Advertisement", "Advertisements");
-
-        //        var sort = Builders<Advertisement>.Sort.Descending("DateCreated");
-
-        //        myAds = _mongoAdvertisementCollection.Find(s => s._t == "Advertisement").Limit(recLimit).Skip(pageNumber).Sort(sort).ToListAsync().Result;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        serviceResponse = ex.ToString();
-        //    }
-
-        //    return myAds;
         //}
 
         public List<Person> GetAllUsers(int recLimit, int pageNumber, string sortBy, string orderBy)
@@ -1386,87 +705,6 @@ namespace Facilitate.Libraries.Models
                 serviceResponse = ex.ToString();
             }
         }
-
-        //public string RegisterGmailUserAccount(string userName, string firstName, string lastName, string password)
-        //{
-        //    var registrationResponse = "";
-
-        //    Service appService = new AppsService("clposts.com", "clposts81@gmail.com", "13324BossWood");
-
-        //    appService.ApplicationName = "CLPosts";
-        //    //appService.Domain = "clposts.com";
-
-        //    try
-        //    {
-        //        //var a = appService.CreateUser(UserName, GivenName, FamilyName, Password);
-        //        var a = appService.CreateUser(userName, firstName, lastName, password);
-        //    }
-        //    catch (AppsException ex)
-        //    {
-        //        var errMsg = ex.Reason.ToString() + " " + ex.ErrorCode.ToString();
-        //    }
-
-        //    try
-        //    {
-        //        string[] Scopes = { GmailService.Scope.GmailReadonly };
-        //        string ApplicationName = "CLPosts";
-
-        //        UserCredential credential;
-
-        //        var credentialFilePath = AppDomain.CurrentDomain.BaseDirectory + "PostManagement\\" + "client_secret.json";
-
-        //        //using (var stream = new FileStream("client_secret.json", FileMode.Open, FileAccess.Read))
-        //        using (var stream = new FileStream(credentialFilePath, FileMode.Open, FileAccess.Read))
-        //        {
-        //            string credPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-        //            credPath = Path.Combine(credPath, ".credentials/gmail-dotnet-quickstart");
-
-        //            credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-        //                GoogleClientSecrets.Load(stream).Secrets,
-        //                Scopes,
-        //                "user",
-        //                CancellationToken.None,
-        //                new FileDataStore(credPath, true)).Result;
-
-        //            var resp1 = "Credential file saved to: " + credPath;
-
-        //        }
-
-        //        // Create Gmail API service.
-        //        var service = new GmailService(new BaseClientService.Initializer()
-        //        {
-        //            HttpClientInitializer = credential,
-        //            ApplicationName = ApplicationName,
-        //        });
-
-        //        // Define parameters of request.
-        //        UsersResource.LabelsResource.ListRequest request = service.Users.Labels.List("me");
-
-        //        // List labels.
-        //        IList<Label> labels = request.Execute().Labels;
-        //        //Console.WriteLine("Labels:");
-
-        //        var resp2 = "";
-
-        //        if (labels != null && labels.Count > 0)
-        //        {
-        //            foreach (var labelItem in labels)
-        //            {
-        //                resp2 = "{0}" + labelItem.Name;
-        //            }
-        //        }
-        //        else
-        //        {
-        //            resp2 = "No labels found.";
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        registrationResponse = ex.ToString();
-        //    }
-
-        //    return registrationResponse;
-        //}
 
         public List<Person> GetUsersWithFilter(string queryType)
         {
@@ -1613,7 +851,6 @@ namespace Facilitate.Libraries.Models
 
             return marketCount.ToString();
         }
-
 
         public string GeoLocationByUserIp(string userIp)
         {
@@ -1762,32 +999,6 @@ namespace Facilitate.Libraries.Models
             }
             return false;
         }
-
-        #region Cookie methods
-
-        //public void CreateCookie(string cookieName, string cookieValue, DateTime cookieExpires)
-        //{
-        //    var myCookie = new HttpCookie(cookieName) { Value = cookieValue, Expires = cookieExpires };
-
-        //    HttpContext.Current.Response.Cookies.Add(myCookie);
-        //}
-
-        //public string ReadCookie(string cookieName)
-        //{
-        //    var myCookie = HttpContext.Current.Request.Cookies[cookieName];
-        //    Debug.Assert(condition: myCookie != null, message: "myCookie != null");
-        //    return myCookie.Value;
-        //}
-
-        //public void UpdateCookie()
-        //{
-        //}
-
-        //public void DeleteCookie()
-        //{
-        //}
-
-        #endregion
 
         #region MongoDB Methods
 
