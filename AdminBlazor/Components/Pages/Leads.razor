@@ -319,15 +319,17 @@ else
                     </tr>
 
                     @{
-                        for(int currentEvent = 0; currentEvent < @_quote.events.Count; currentEvent++)
+                        var currentEventCount = 1;
+                            for (int currentIndex = 0; currentIndex < @_quote.events.Count; currentIndex++)
                         {
                             <tr>
                                 <td>
-                                    <label>@_quote.events[currentEvent].DateTime</label>
-                                    <span class="detail-item">@_quote.events[currentEvent].Details</span>
+                                    <label>@currentEventCount. @_quote.events[currentIndex].DateTime</label>
+                                    <span class="detail-item">@_quote.events[currentIndex].Details</span>
                                 </td>
-                            </tr>
-                        }
+                                </tr>
+                                currentEventCount++;
+                            }
                     }
 
                 </tbody>
