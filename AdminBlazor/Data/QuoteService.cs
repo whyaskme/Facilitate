@@ -162,7 +162,7 @@ namespace AdminBlazor.Data {
                 var projectManager = quote.projectManager;
 
                 Event _event = new Event(0, 0);
-                _event.Details = "Quote assigned to (" + projectManager.FirstName + " " + projectManager.LastName + ") and moved to Opportunities";
+                _event.Details = "Lead assigned to (" + projectManager.FirstName + " " + projectManager.LastName + ") and moved to Opportunities";
 
                 quote.status = "Opportunity";
                 quote.events.Add(_event);

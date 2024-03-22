@@ -294,7 +294,7 @@ else
                             </td>
                                     <td>
                                         <label>PM Phone</label>
-                                        <span class="detail-item">(@_quote.projectManager.Contact.Phone[0].AreaCode) @_quote.projectManager.Contact.Phone[0].Exchange - @_quote.projectManager.Contact.Phone[0].Number</span>
+                                        <span class="detail-item">(@_quote.projectManager.Contact.Phone[0].AreaCode) @_quote.projectManager.Contact.Phone[0].Exchange-@_quote.projectManager.Contact.Phone[0].Number</span>
                                     </td>
                             <td>
                                 <label>PM Email</label>
@@ -352,12 +352,6 @@ else
         </DxGrid>
 }
 
-@* <div class="@StatusContainerClass">
-    <button class="@ButtonClass" @onclick="ToggleRefresh">@ButtonText</button>
-    <button class="btn btn-primary" disabled="@CreateLeadDisabled" @onclick="CreateLead">Create 1 Lead</button>
-    <button class="btn btn-primary" disabled="@CreateLeadsDisabled" @onclick="CreateLeads">Create @itemsToCreate Leads</button>
-</div> *@
-
 <DxPopup
     @bind-Visible="@PopupVisibleMakeCustomer"
     ShowFooter="true"
@@ -365,7 +359,7 @@ else
    >
     <BodyContentTemplate>
         <SampleEditForm/>
-        Put the PM list here for assignment selection
+        If this Opportunity is fully qualified to meet Customer criteria, then click Save.
     </BodyContentTemplate>
     <FooterContentTemplate>
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="MakeCustomer" />
