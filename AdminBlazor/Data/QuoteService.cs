@@ -7,6 +7,9 @@ using System.Globalization;
 using System.Reactive;
 using System.Threading;
 
+using Microsoft.Office.Interop.Excel;
+using System.Collections.Generic;
+
 namespace AdminBlazor.Data {
 
     public class QuoteService
@@ -24,6 +27,11 @@ namespace AdminBlazor.Data {
         IMongoCollection<Quote> collection;
         private CancellationToken _cancellationToken;
 
+        public List<Event> SortEventsByDateDesc(List<Event> originalList)
+        {
+            return originalList.OrderByDescending(x => x.DateTime).ToList();
+        }
+
         public IEnumerable<Quote> GetQuotes(string status)
         {
             try
@@ -37,6 +45,22 @@ namespace AdminBlazor.Data {
                 //var allQuotes = collection.Find(filter).ToList();
 
                 var sortedQuotes = collection.Find(filter).SortByDescending(e => e.timestamp).ToList();
+
+                // Sort events descending order
+                List<Event> unSortedEvents = new List<Event>();
+                List<Event> sortedEvents = new List<Event>();
+
+                for (var i = 0; i < sortedQuotes.Count; i++)
+                {
+                    for(var j = 0; j < sortedQuotes[i].events.Count; j++)
+                    {
+                        unSortedEvents.Add(sortedQuotes[i].events[j]);
+                    }
+
+                    sortedEvents = SortEventsByDateDesc(unSortedEvents);
+
+                    sortedQuotes[i].events = sortedEvents;
+                }
 
                 return sortedQuotes;
             }
