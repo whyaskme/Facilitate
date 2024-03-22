@@ -1,7 +1,12 @@
 ﻿@page "/archives"
 
 @using AdminBlazor.Data
+@using DevExpress.Data
+@using DevExpress.Data.Linq
 @using Facilitate.Libraries.Models;
+@using MongoDB.Bson;
+
+@using Json.Net;
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
@@ -10,53 +15,364 @@
 <PageTitle>Archives</PageTitle>
 <h1>@updateStatus Archives <span id="update-status" class="@StatusClass">@RefreshStatus</span></h1>
 
+@* <h3>IP Address: <span class="">@SubmissionUserIP</span></h3> *@
+
+<script>
+  window.getIpAddress = () => {
+    return fetch('https://jsonip.com/')
+      .then((response) => response.json())
+      .then((data) => {
+        return data.ip
+      })
+  }
+</script>
+
 @if (quotes == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-            <div>
-                Click column headers to sort. Type and hit enter in any empty cell to search that column.
-                <br/><br/>
-            </div>
+        <div>
+            Select row to expand details. Click column headers to sort. Type and hit enter in any empty cell to search that column. 
+            <br/><br/>
+            If you have grouped columns below, drag and drop the column back into the grid header to restore. 
+            <br/><br/>
+        </div>
 
-            <DxGrid 
-                Data="@quotes" 
-                PageSize="10" 
-                PagerPosition="GridPagerPosition.Bottom" 
-                ShowGroupPanel="true"
-                AutoExpandAllGroupRows="true"
-                ShowFilterRow="true"
-                CssClass="mw-1100"
+        <DxGrid 
+            @ref="Grid"
+            Data="@quotes" 
+            KeyFieldName="_id"
 
-                TextWrapEnabled="false"
-                PagerNavigationMode="PagerNavigationMode.InputBox"
-                PageSizeSelectorVisible="true"
-                PageSizeSelectorAllRowsItemVisible="true"
-                KeyboardNavigationEnabled="true">
-                <Columns>
-                    <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="D" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
-                    <DxGridDataColumn Caption="First" FieldName="firstName" />
-                    <DxGridDataColumn Caption="Last" FieldName="lastName" />
-                    <DxGridDataColumn Caption="Email" FieldName="email" />
-                    <DxGridDataColumn Caption="Phone" FieldName="phone" />
-                    <DxGridDataColumn Caption="Street" FieldName="street" />
-                    <DxGridDataColumn Caption="City" FieldName="city" />
-                    <DxGridDataColumn Caption="State" FieldName="state" />
-                    <DxGridDataColumn Caption="Zip" FieldName="zip" />
-                </Columns>
-            </DxGrid>
+            PageSize="10" 
+            PagerPosition="GridPagerPosition.Bottom" 
+            ShowGroupPanel="true"
+            AutoExpandAllGroupRows="true"
+            ShowFilterRow="true"
+            CssClass="mw-1100"
+
+            RowClick="OnRowClick"
+
+            AllowSelectRowByClick="true"
+            SelectionMode="GridSelectionMode.Single"
+
+            @bind-SelectedDataItem="@SelectedDataItem"
+
+            TextWrapEnabled="true"
+            PagerNavigationMode="PagerNavigationMode.InputBox"
+            PageSizeSelectorVisible="true"
+            PageSizeSelectorAllRowsItemVisible="false"
+            KeyboardNavigationEnabled="true">
+            <Columns>
+                <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm:ss tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+                <DxGridDataColumn Caption="First" FieldName="firstName" />
+                <DxGridDataColumn Caption="Last" FieldName="lastName" />
+                <DxGridDataColumn Caption="Street" FieldName="street" />
+                <DxGridDataColumn Caption="City" FieldName="city" />
+                <DxGridDataColumn Caption="State" FieldName="state" />
+                <DxGridDataColumn Caption="Zip" FieldName="zip" />
+                <DxGridDataColumn Caption="SqFt" TextAlignment="GridTextAlignment.Left" FieldName="totalSquareFeet" />
+            </Columns>
+
+            <DetailRowTemplate>
+            @{
+                var _quote = (Quote)context.DataItem;
+
+                <table>
+                <tbody>
+                    <tr>
+                        <td colspan=4>
+                            <h6>Homeowner</h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Name</label>
+                            <span class="detail-item">@_quote.firstName @_quote.lastName</span>
+                        </td>
+                        <td>
+                            <label>Email</label>
+                            <a href="mailto:@_quote.externalUrl">
+                                <span class="detail-item">@_quote.email</span>
+                            </a>
+                        </td>
+                        <td>
+                            <label>Phone</label>
+                            <span class="detail-item">@_quote.phone</span>
+                        </td>
+                        <td>
+                            <label>IP Address</label>
+                            <a href="https://whatismyipaddress.com/ip/@SubmissionUserIP" target="_blank">
+                                <span class="detail-item">@SubmissionUserIP</span>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+
+                <div class="table-spacer" />
+
+                <table>
+                <tbody>
+                    <tr>
+                        <td colspan=3>
+                            <h6>Property</h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan=3>
+                            <label>Address</label>
+                            @_quote.street @_quote.city, @_quote.state @_quote.zip
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Name</label>
+                            <span class="detail-item">@_quote.structures[0].name</span>
+                        </td>
+                        <td>
+                            <label>Incl Roofs</label>
+                            <span class="detail-item">@_quote.numberOfIncludedStructures</span>
+                        </td>
+                        <td>
+                            <label>Total Sqft</label>
+                            <span class="detail-item">@_quote.totalSquareFeet.ToString("N0")</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Roof Complexity</label>
+                            <span class="detail-item">@_quote.structures[0].roofComplexity</span>
+                        </td>
+                        <td colspan=2>
+                            <label>Slope</label>
+                            <span class="detail-item">@_quote.structures[0].slope</span>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+
+                <div class="table-spacer" />
+
+                <table>
+                <tbody>
+
+                    <tr>
+                        <td colspan=4>
+                            <h6>Products</h6>
+                        </td>
+                    </tr>
+                        @{
+                            for (var i = 0; i < @_quote.products.Count; i++)
+                            {
+                                currentItem = i + 1;
+
+                                var priceLabel = @_quote.products[i].priceInfo.priceType;
+                                if (priceLabel == "BasicFinancing")
+                                {
+                                    priceLabel = "Basic Financing";
+                                }
+                                else
+                                {
+                                    priceLabel = @_quote.products[i].priceInfo.priceType;
+                                }
+                                <tr>
+                            <td>
+                                <label>Name</label>
+                                <span class="detail-item">@_quote.products[i].name</span>
+                            </td>
+                            <td>
+                                <label>Waste Factor</label>
+                                <span class="detail-item">@_quote.products[i].wasteFactorMainRoof</span>
+                            </td>
+                            <td colspan=3>
+                                <label>Price Type</label>
+                                <span class="detail-item">@priceLabel</span>                               
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan=4>
+                                <table>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <label>Total Quote</label>
+                                            <span class="detail-item">$@_quote.products[i].priceInfo.total.ToString("N0")</span>
+                                        </td>
+                                        <td>
+                                            <label>Per Square</label>
+                                            <span class="detail-item">$@_quote.products[i].priceInfo.pricePerSquare</span>
+                                        </td>
+                                        <td>
+                                            <label>Monthly</label>
+                                            <span class="detail-item">$@_quote.products[i].priceInfo.monthly</span>
+                                        </td>
+                                        <td>
+                                            <label>APR</label>
+                                            <span class="detail-item">@_quote.products[i].priceInfo.apr%</span>
+                                        </td>
+                                        <td>
+                                            <label>Months</label>
+                                            <span class="detail-item">@_quote.products[i].priceInfo.months</span>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    }
+                }
+                </tbody>
+                </table>
+
+                <div class="table-spacer" />
+
+                <table>
+                <tbody>
+                    <tr>
+                        <td colspan=4>
+                            <h6>Origin</h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>RecId</label>
+                            <span class="detail-item">@_quote._id</span>
+                        </td>
+                        <td>
+                            <label>Referrer</label>
+                            <a href="@_quote.externalUrl" target="_blank">
+                                <span class="detail-item">@_quote.externalUrl</span>
+                            </a>
+                        </td>
+                        <td>
+                            <label>SessionId</label>
+                            <span class="detail-item">@_quote.sessionId</span>
+                        </td>
+                        <td>
+                            <label>Market</label>
+                            <span class="detail-item">@_quote.market</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Rep Name</label>
+                            <span class="detail-item">@_quote.repLead</span>
+                        </td>
+                        <td>
+                            <label>Rep Email</label>
+                            <a href="mailto:@_quote.repEmail">
+                                <span class="detail-item">@_quote.repEmail</span>
+                            </a>
+                        </td>
+                        <td>
+                            <label>RoofleId</label>
+                            <span class="detail-item">@_quote.leadId</span>
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+                </table>
+
+                if (_quote.projectManager != null)
+                {
+                    <div class="table-spacer" />
+
+                    <table>
+                    <tbody>
+                        <tr>
+                            <td colspan=4>
+                                <h6>Project</h6>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>PM Name</label>
+                                <span class="detail-item">@_quote.projectManager.FirstName @_quote.projectManager.LastName</span>
+                            </td>
+                                    <td>
+                                        <label>PM Phone</label>
+                                        <span class="detail-item">(@_quote.projectManager.Contact.Phone[0].AreaCode) @_quote.projectManager.Contact.Phone[0].Exchange - @_quote.projectManager.Contact.Phone[0].Number</span>
+                                    </td>
+                            <td>
+                                <label>PM Email</label>
+                                <a href="#" target="_blank">
+                                    <span class="detail-item">@_quote.projectManager.Contact.Email[0].UserName @_quote.projectManager.Contact.Email[0].Domain</span>
+                                </a>
+                            </td>
+                            <td>
+                                <label>Last Activity</label>
+                                        <span class="detail-item">@_quote.projectManager.Date</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                    </table>
+                }
+
+                <div class="table-spacer" />
+
+                <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            <h6>History</h6>
+                        </td>
+                    </tr>
+
+                    @{
+                        var currentEventCount = 1;
+                            for (int currentIndex = 0; currentIndex < @_quote.events.Count; currentIndex++)
+                        {
+                            <tr>
+                                <td>
+                                    <label>@currentEventCount. @_quote.events[currentIndex].DateTime</label>
+                                    <span class="detail-item">@_quote.events[currentIndex].Details</span>
+                                </td>
+                                </tr>
+                                currentEventCount++;
+                            }
+                    }
+
+                </tbody>
+                </table>
+            }
+            </DetailRowTemplate>
+
+        </DxGrid>
 }
 
-<div class="@StatusContainerClass">
-    <button class="@ButtonClass" @onclick="ToggleRefresh">@ButtonText</button>
-    <button class="btn btn-primary" disabled="@CreateLeadDisabled" @onclick="CreateLead">Create 1 Archive</button>
-    <button class="btn btn-primary" disabled="@CreateLeadsDisabled" @onclick="CreateLeads">Create @itemsToCreate Archives</button>
-    <button class="btn btn-primary" disabled="@DeleteLeadsDisabled" @onclick="DeleteLeads">Delete @updateStatus Archives</button>
-</div>
-
 @code {
+
+    bool PopupVisibleAssign { get; set; }
+    bool PopupVisibleDelete { get; set; }
+
+    [Inject] public IJSRuntime jsRuntime { get; set; }
+
+    [Parameter]
+    public string DisplayFormat { get; set; }
+
+    public string ClientIP = "";
+    public string selectedQuoteId = "";
+
+    public async Task<string> GetIpAddress()
+    {
+        try
+        {
+            SubmissionUserIP = await jsRuntime.InvokeAsync<string>("getIpAddress").ConfigureAwait(true);
+
+            return SubmissionUserIP;
+        }
+        catch (Exception e)
+        {
+            //If your request was blocked by CORS or some extension like uBlock Origin then you will get an exception.
+            return string.Empty;
+        }
+    }
+
+    [Parameter]
+    public GridDetailRowDisplayMode DetailRowDisplayMode { get; set; }
 
     [Parameter]
     public string RefreshStatus { get; set; } = "";
@@ -82,14 +398,89 @@ else
     [Parameter]
     public bool DeleteLeadsDisabled { get; set; } = true;
 
+    [Parameter]
+    public object SelectedDataItem { get; set; }
+
+    [Parameter]
+    public int VisibleIndex { get; set; }
+
+    [Parameter]
+    public bool ClearFilterButtonVisible { get; set; }
+
+    IGrid Grid { get; set; }
+    EntityInstantFeedbackSource InstantFeedbackSource { get; set; }
+
+    public interface IQueryable : System.Collections.IEnumerable;
+
+    public int currentItem = 0;
+    public int selectedIndex = 0;
+
+    public string SubmissionUserIP { get; set; }
+
+    protected override void OnInitialized(){}
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            RefreshTimer();
+        }
+
+        GetIpAddress();
+    }
+
+    void OnRowClick(GridRowClickEventArgs args)
+    {
+        PauseRefresh();
+
+        selectedIndex = args.VisibleIndex;
+
+        selectedQuoteId = quotes[selectedIndex]._id;
+
+        var selectedDetailExpanded = Grid.IsDetailRowExpanded(selectedIndex);
+        if (selectedDetailExpanded)
+        {
+            Grid.CollapseDetailRow(selectedIndex);
+            ToggleRefresh();
+        }
+        else
+        {
+            Grid.ExpandDetailRow(selectedIndex);
+        }
+    }
+
+    public void CloseDetails()
+    {
+        Grid.CollapseDetailRow(selectedIndex);
+        ToggleRefresh();
+    }
+
+    public void DeleteLead()
+    {
+        Grid.CollapseDetailRow(selectedIndex);
+
+        QuoteService.DeleteQuote(selectedQuoteId, quotes[selectedIndex]);
+
+        PopupVisibleDelete = false;
+
+        ToggleRefresh();
+
+    }
+
+    public virtual void PauseRefresh()
+    {
+        ButtonText = "Resume Refresh";
+        ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
+        StatusClass = "message-warning";
+        RefreshStatus = " Auto refresh paused...";
+
+        _timer?.Dispose();
+    }
+
     public virtual void ToggleRefresh()
     {
         if (ButtonText == "Pause Refresh")
         {
-            CreateLeadDisabled = false;
-            CreateLeadsDisabled = false;
-            DeleteLeadsDisabled = false;
-
             ButtonText = "Resume Refresh";
             ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
             StatusClass = "message-warning";
@@ -99,10 +490,6 @@ else
         }
         else
         {
-            CreateLeadDisabled = true;
-            CreateLeadsDisabled = true;
-            DeleteLeadsDisabled = true;
-
             StatusClass = "message-normal";
             RefreshStatus = "";
             ButtonText = "Pause Refresh";
@@ -112,17 +499,15 @@ else
         }
     }
 
-    private IEnumerable<Quote>? quotes;
+    // private IEnumerable<Quote>? quotes;
+    private List<Quote>? quotes;
 
-    public int itemsToCreate = 100;
+    public int itemsToCreate = 10;
     public string updateStatus = "Fetching ";
 
-    public Timer _timer;
+    bool isBulkInsert = false;
 
-    public Archives()
-    {
-        RefreshTimer();
-    }
+    public Timer _timer;
 
     public void Dispose()
     {
@@ -133,7 +518,7 @@ else
     {
         _timer = new Timer(new TimerCallback(_ =>
         {
-            quotes = QuoteService.GetQuotes("Archive");
+            quotes = (List<Quote>)QuoteService.GetQuotes("Archive");
             updateStatus = quotes.Count().ToString("N0");
             StatusContainerClass = "container-action-buttons-show";
 
@@ -143,158 +528,4 @@ else
             });
         }), null, 1000, 1000);
     }
-
-    private void CreateLeads()
-    {
-        for (var i = 0; i < itemsToCreate; i++)
-        {
-            updateStatus = "Creating ";
-            CreateLead();
-        }
-    }
-
-    private void DeleteLeads()
-    {
-        updateStatus = "Deleting...";
-    }
-
-    #region Create 1 Lead
-    private void CreateLead()
-    {
-        updateStatus = "Creating ";
-
-        List<String> nameGenders = new List<string>();
-        nameGenders.Add("male");
-        nameGenders.Add("female");
-
-        Quote quote = new Quote();
-        quote.status = "Archive";
-
-        Utils utils = new Utils();
-
-        var randomStreetNumber = utils.GetRandomStreetNumber();
-        var randomStreetName = utils.GetRandomStreetName();
-
-        var randomState = utils.GetRandomState();
-        var stateName = randomState[0];
-        var stateId = randomState[1];
-
-        var randomCity = utils.GetRandomCity(MongoDB.Bson.ObjectId.Parse("52ade0932b0b6d13f88c4e8d"));
-        //var randomZipCode = utils.GetRandomZipCode().ToString();
-
-        //quote.address = randomStreetNumber + " " + randomStreetName + ", " + randomCity + ", " + stateName + " " + randomZipCode;
-        quote.fullAddress = quote.address;
-        quote.street = randomStreetNumber + " " + randomStreetName;
-        //quote.city = randomCity;
-        quote.state = stateName;
-        // quote.zip = randomZipCode;
-
-        Random rnd = new Random();
-        int randomInt = rnd.Next(0, 1);
-
-        quote.firstName = utils.GetRandomFirstName(nameGenders[randomInt]);
-        quote.lastName = utils.GetRandomLastName();
-
-        quote.email = quote.firstName.ToLower() + "@" + quote.lastName.ToLower() + ".com";
-        quote.phone = "(" + utils.GetRandomAreaCode() + ") " + utils.GetRandomHomePhoneNumber();
-        quote.market = quote.city + ", " + quote.state;
-        quote.externalUrl = "https://app.roofle.com/dashboard";
-        quote.timestamp = DateTime.Now;
-
-        randomInt = rnd.Next(1, 3);
-        quote.numberOfStructures = randomInt;
-        quote.numberOfIncludedStructures = quote.numberOfStructures;
-
-        randomInt = rnd.Next(1150, 5200);
-        quote.totalSquareFeet = randomInt;
-        quote.mainRoofTotalSquareFeet = randomInt;
-        quote.totalInitialSquareFeet = randomInt;
-
-        quote.sessionId = "nH9YvHwoBldl2ZkpQSWrX";
-
-        // Add Product Info
-        Product product = new Product();
-        product.name = "Certainteed Landmark";
-        product.id = 1;
-
-        PriceInfo _priceInfo = new PriceInfo();
-        _priceInfo.priceType = "BasicFinancing";
-
-        randomInt = rnd.Next(15069, 15069);
-        _priceInfo.total = randomInt;
-
-        randomInt = rnd.Next(401, 401);
-        _priceInfo.pricePerSquare = randomInt;
-
-        randomInt = rnd.Next(250, 400);
-        _priceInfo.monthly = randomInt;
-
-        randomInt = rnd.Next(8, 26);
-        _priceInfo.apr = randomInt;
-
-        randomInt = rnd.Next(180, 180);
-        _priceInfo.months = randomInt;
-
-        product.priceInfo = _priceInfo;
-
-        PriceRange _priceRange = new PriceRange();
-        randomInt = rnd.Next(1150, 5200);
-        _priceRange.totalMin = randomInt;
-
-        randomInt = rnd.Next(16575, 16575);
-        _priceRange.totalMax = randomInt;
-
-        randomInt = rnd.Next(300, 300);
-        _priceRange.monthlyMin = randomInt;
-
-        randomInt = rnd.Next(367, 367);
-        _priceRange.monthlyMax = randomInt;
-
-        product.priceRange = _priceRange;
-
-        product.wasteFactorMainRoof = 1.2;
-
-        quote.products = null;
-        quote.products = new List<Product>();
-        quote.products.Add(product);
-
-        randomInt = rnd.Next(0, 1);
-        var repName = utils.GetRandomFirstName(nameGenders[randomInt]) + " " + utils.GetRandomLastName();
-
-        quote.repLead = repName;
-        quote.repEmail = repName.Replace(" ", ".").ToLower() + "@facilitate.org";
-
-        randomInt = rnd.Next(5000, 9999);
-        quote.leadId = randomInt;
-
-        // Add Structure Info
-        Structure structure = new Structure();
-        structure.name = "Main Roof";
-        structure.slope = "medium";
-        structure.isIncluded = true;
-        structure.squareFeet = quote.totalSquareFeet;
-        structure.initialSquareFeet = quote.totalSquareFeet;
-        structure.roofComplexity = "Simple";
-
-        quote.structures = null;
-        quote.structures = new List<Structure>();
-        quote.structures.Add(structure);
-
-        var results = string.Empty;
-
-        try
-        {
-            QuoteService.CreateQuote(quote);
-            results = "POSTED";
-        }
-        catch (Exception ex)
-        {
-            results = ex.Message;
-        }
-        finally
-        {
-
-        }
-    }
-    #endregion
 }

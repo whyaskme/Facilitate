@@ -161,10 +161,43 @@ namespace AdminBlazor.Data {
 
                 var projectManager = quote.projectManager;
 
-                Event _event = new Event(0,0);
+                Event _event = new Event(0, 0);
                 _event.Details = "Quote assigned to (" + projectManager.FirstName + " " + projectManager.LastName + ") and moved to Opportunities";
 
                 quote.status = "Opportunity";
+                quote.events.Add(_event);
+
+                var result = collection.ReplaceOne(filter, quote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
+            return resultMsg;
+        }
+
+        public string MakeCustomer(string quoteId, Quote quote)
+        {
+            try
+            {
+                // This is a soft delete > move to archive.
+                client = new MongoClient(mongoUri);
+                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
+
+                var updateQuote = Builders<Quote>.Update.Set(quote => quote.status, "Opportunity");
+
+                var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
+
+                var projectManager = quote.projectManager;
+
+                Event _event = new Event(0, 0);
+                _event.Details = "Opportunity converted to Customer";
+
+                quote.status = "Customer";
                 quote.events.Add(_event);
 
                 var result = collection.ReplaceOne(filter, quote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
@@ -193,7 +226,7 @@ namespace AdminBlazor.Data {
                 var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
 
                 Event _event = new Event(0, 0);
-                _event.Details = "Quote moved to Archive";
+                _event.Details = quote.status + " moved to Archive";
 
                 quote.status = "Archive";
                 quote.events.Add(_event);

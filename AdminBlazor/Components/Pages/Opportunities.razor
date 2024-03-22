@@ -1,7 +1,12 @@
 ﻿@page "/opportunities"
 
 @using AdminBlazor.Data
+@using DevExpress.Data
+@using DevExpress.Data.Linq
 @using Facilitate.Libraries.Models;
+@using MongoDB.Bson;
+
+@using Json.Net;
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
@@ -10,53 +15,409 @@
 <PageTitle>Opportunities</PageTitle>
 <h1>@updateStatus Opportunities <span id="update-status" class="@StatusClass">@RefreshStatus</span></h1>
 
+@* <h3>IP Address: <span class="">@SubmissionUserIP</span></h3> *@
+
+<script>
+  window.getIpAddress = () => {
+    return fetch('https://jsonip.com/')
+      .then((response) => response.json())
+      .then((data) => {
+        return data.ip
+      })
+  }
+</script>
+
 @if (quotes == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-            <div>
-                Click column headers to sort. Type and hit enter in any empty cell to search that column.
-                <br/><br/>
-            </div>
+        <div>
+            Select row to expand details. Click column headers to sort. Type and hit enter in any empty cell to search that column. 
+            <br/><br/>
+            If you have grouped columns below, drag and drop the column back into the grid header to restore. 
+            <br/><br/>
+        </div>
 
-            <DxGrid 
-                Data="@quotes" 
-                PageSize="10" 
-                PagerPosition="GridPagerPosition.Bottom" 
-                ShowGroupPanel="true"
-                AutoExpandAllGroupRows="true"
-                ShowFilterRow="true"
-                CssClass="mw-1100"
+        <DxGrid 
+            @ref="Grid"
+            Data="@quotes" 
+            KeyFieldName="_id"
 
-                TextWrapEnabled="false"
-                PagerNavigationMode="PagerNavigationMode.InputBox"
-                PageSizeSelectorVisible="true"
-                PageSizeSelectorAllRowsItemVisible="true"
-                KeyboardNavigationEnabled="true">
-                <Columns>
-                    <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="D" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
-                    <DxGridDataColumn Caption="First" FieldName="firstName" />
-                    <DxGridDataColumn Caption="Last" FieldName="lastName" />
-                    <DxGridDataColumn Caption="Email" FieldName="email" />
-                    <DxGridDataColumn Caption="Phone" FieldName="phone" />
-                    <DxGridDataColumn Caption="Street" FieldName="street" />
-                    <DxGridDataColumn Caption="City" FieldName="city" />
-                    <DxGridDataColumn Caption="State" FieldName="state" />
-                    <DxGridDataColumn Caption="Zip" FieldName="zip" />
-                </Columns>
-            </DxGrid>
+            PageSize="10" 
+            PagerPosition="GridPagerPosition.Bottom" 
+            ShowGroupPanel="true"
+            AutoExpandAllGroupRows="true"
+            ShowFilterRow="true"
+            CssClass="mw-1100"
+
+            RowClick="OnRowClick"
+
+            AllowSelectRowByClick="true"
+            SelectionMode="GridSelectionMode.Single"
+
+            @bind-SelectedDataItem="@SelectedDataItem"
+
+            TextWrapEnabled="true"
+            PagerNavigationMode="PagerNavigationMode.InputBox"
+            PageSizeSelectorVisible="true"
+            PageSizeSelectorAllRowsItemVisible="false"
+            KeyboardNavigationEnabled="true">
+            <Columns>
+                <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm:ss tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+                <DxGridDataColumn Caption="First" FieldName="firstName" />
+                <DxGridDataColumn Caption="Last" FieldName="lastName" />
+                <DxGridDataColumn Caption="Street" FieldName="street" />
+                <DxGridDataColumn Caption="City" FieldName="city" />
+                <DxGridDataColumn Caption="State" FieldName="state" />
+                <DxGridDataColumn Caption="Zip" FieldName="zip" />
+                <DxGridDataColumn Caption="SqFt" TextAlignment="GridTextAlignment.Left" FieldName="totalSquareFeet" />
+            </Columns>
+
+            <DetailRowTemplate>
+            @{
+                var _quote = (Quote)context.DataItem;
+
+                <table>
+                <tbody>
+                    <tr>
+                        <td colspan=4>
+                            <h6>Homeowner</h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Name</label>
+                            <span class="detail-item">@_quote.firstName @_quote.lastName</span>
+                        </td>
+                        <td>
+                            <label>Email</label>
+                            <a href="mailto:@_quote.externalUrl">
+                                <span class="detail-item">@_quote.email</span>
+                            </a>
+                        </td>
+                        <td>
+                            <label>Phone</label>
+                            <span class="detail-item">@_quote.phone</span>
+                        </td>
+                        <td>
+                            <label>IP Address</label>
+                            <a href="https://whatismyipaddress.com/ip/@SubmissionUserIP" target="_blank">
+                                <span class="detail-item">@SubmissionUserIP</span>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+
+                <div class="table-spacer" />
+
+                <table>
+                <tbody>
+                    <tr>
+                        <td colspan=3>
+                            <h6>Property</h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan=3>
+                            <label>Address</label>
+                            @_quote.street @_quote.city, @_quote.state @_quote.zip
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Name</label>
+                            <span class="detail-item">@_quote.structures[0].name</span>
+                        </td>
+                        <td>
+                            <label>Incl Roofs</label>
+                            <span class="detail-item">@_quote.numberOfIncludedStructures</span>
+                        </td>
+                        <td>
+                            <label>Total Sqft</label>
+                            <span class="detail-item">@_quote.totalSquareFeet.ToString("N0")</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Roof Complexity</label>
+                            <span class="detail-item">@_quote.structures[0].roofComplexity</span>
+                        </td>
+                        <td colspan=2>
+                            <label>Slope</label>
+                            <span class="detail-item">@_quote.structures[0].slope</span>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+
+                <div class="table-spacer" />
+
+                <table>
+                <tbody>
+
+                    <tr>
+                        <td colspan=4>
+                            <h6>Products</h6>
+                        </td>
+                    </tr>
+                        @{
+                            for (var i = 0; i < @_quote.products.Count; i++)
+                            {
+                                currentItem = i + 1;
+
+                                var priceLabel = @_quote.products[i].priceInfo.priceType;
+                                if (priceLabel == "BasicFinancing")
+                                {
+                                    priceLabel = "Basic Financing";
+                                }
+                                else
+                                {
+                                    priceLabel = @_quote.products[i].priceInfo.priceType;
+                                }
+                                <tr>
+                            <td>
+                                <label>Name</label>
+                                <span class="detail-item">@_quote.products[i].name</span>
+                            </td>
+                            <td>
+                                <label>Waste Factor</label>
+                                <span class="detail-item">@_quote.products[i].wasteFactorMainRoof</span>
+                            </td>
+                            <td colspan=3>
+                                <label>Price Type</label>
+                                <span class="detail-item">@priceLabel</span>                               
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan=4>
+                                <table>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <label>Total Quote</label>
+                                            <span class="detail-item">$@_quote.products[i].priceInfo.total.ToString("N0")</span>
+                                        </td>
+                                        <td>
+                                            <label>Per Square</label>
+                                            <span class="detail-item">$@_quote.products[i].priceInfo.pricePerSquare</span>
+                                        </td>
+                                        <td>
+                                            <label>Monthly</label>
+                                            <span class="detail-item">$@_quote.products[i].priceInfo.monthly</span>
+                                        </td>
+                                        <td>
+                                            <label>APR</label>
+                                            <span class="detail-item">@_quote.products[i].priceInfo.apr%</span>
+                                        </td>
+                                        <td>
+                                            <label>Months</label>
+                                            <span class="detail-item">@_quote.products[i].priceInfo.months</span>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    }
+                }
+                </tbody>
+                </table>
+
+                <div class="table-spacer" />
+
+                <table>
+                <tbody>
+                    <tr>
+                        <td colspan=4>
+                            <h6>Origin</h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>RecId</label>
+                            <span class="detail-item">@_quote._id</span>
+                        </td>
+                        <td>
+                            <label>Referrer</label>
+                            <a href="@_quote.externalUrl" target="_blank">
+                                <span class="detail-item">@_quote.externalUrl</span>
+                            </a>
+                        </td>
+                        <td>
+                            <label>SessionId</label>
+                            <span class="detail-item">@_quote.sessionId</span>
+                        </td>
+                        <td>
+                            <label>Market</label>
+                            <span class="detail-item">@_quote.market</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Rep Name</label>
+                            <span class="detail-item">@_quote.repLead</span>
+                        </td>
+                        <td>
+                            <label>Rep Email</label>
+                            <a href="mailto:@_quote.repEmail">
+                                <span class="detail-item">@_quote.repEmail</span>
+                            </a>
+                        </td>
+                        <td>
+                            <label>RoofleId</label>
+                            <span class="detail-item">@_quote.leadId</span>
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+                </table>
+
+                if (_quote.projectManager != null)
+                {
+                    <div class="table-spacer" />
+
+                    <table>
+                    <tbody>
+                        <tr>
+                            <td colspan=4>
+                                <h6>Project</h6>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>PM Name</label>
+                                <span class="detail-item">@_quote.projectManager.FirstName @_quote.projectManager.LastName</span>
+                            </td>
+                                    <td>
+                                        <label>PM Phone</label>
+                                        <span class="detail-item">(@_quote.projectManager.Contact.Phone[0].AreaCode) @_quote.projectManager.Contact.Phone[0].Exchange - @_quote.projectManager.Contact.Phone[0].Number</span>
+                                    </td>
+                            <td>
+                                <label>PM Email</label>
+                                <a href="#" target="_blank">
+                                    <span class="detail-item">@_quote.projectManager.Contact.Email[0].UserName @_quote.projectManager.Contact.Email[0].Domain</span>
+                                </a>
+                            </td>
+                            <td>
+                                <label>Last Activity</label>
+                                        <span class="detail-item">@_quote.projectManager.Date</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                    </table>
+                }
+
+                <div class="table-spacer" />
+
+                <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            <h6>History</h6>
+                        </td>
+                    </tr>
+
+                    @{
+                        var currentEventCount = 1;
+                            for (int currentIndex = 0; currentIndex < @_quote.events.Count; currentIndex++)
+                        {
+                            <tr>
+                                <td>
+                                    <label>@currentEventCount. @_quote.events[currentIndex].DateTime</label>
+                                    <span class="detail-item">@_quote.events[currentIndex].Details</span>
+                                </td>
+                                </tr>
+                                currentEventCount++;
+                            }
+                    }
+
+                </tbody>
+                </table>
+
+                <div class="table-spacer" />
+
+                <div class="quote-detail-controls-container">
+                    <button class="btn btn-primary" @onclick="@(() => PopupVisibleMakeCustomer = true)">Make Customer</button>
+                            <button class="btn btn-primary" @onclick="@(() => PopupVisibleDelete = true)">Archive</button>
+                    <button class="btn btn-primary" @onclick="CloseDetails">Close</button>
+                </div>
+
+            }
+            </DetailRowTemplate>
+
+        </DxGrid>
 }
 
-<div class="@StatusContainerClass">
+@* <div class="@StatusContainerClass">
     <button class="@ButtonClass" @onclick="ToggleRefresh">@ButtonText</button>
-    <button class="btn btn-primary" disabled="@CreateLeadDisabled" @onclick="CreateLead">Create 1 Opportunity</button>
-    <button class="btn btn-primary" disabled="@CreateLeadsDisabled" @onclick="CreateLeads">Create @itemsToCreate Opportunities</button>
-    <button class="btn btn-primary" disabled="@DeleteLeadsDisabled" @onclick="DeleteLeads">Delete @updateStatus Opportunities</button>
-</div>
+    <button class="btn btn-primary" disabled="@CreateLeadDisabled" @onclick="CreateLead">Create 1 Lead</button>
+    <button class="btn btn-primary" disabled="@CreateLeadsDisabled" @onclick="CreateLeads">Create @itemsToCreate Leads</button>
+</div> *@
+
+<DxPopup
+    @bind-Visible="@PopupVisibleMakeCustomer"
+    ShowFooter="true"
+    HeaderText="Make Customer"
+   >
+    <BodyContentTemplate>
+        <SampleEditForm/>
+        Put the PM list here for assignment selection
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="MakeCustomer" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleMakeCustomer = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxPopup
+    @bind-Visible="@PopupVisibleDelete"
+    ShowFooter="true"
+    HeaderText="Archive Opportunity"
+   >
+    <BodyContentTemplate>
+        Are you sure you want to delete this lead?
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteLead" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleDelete = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
 
 @code {
+
+    bool PopupVisibleMakeCustomer { get; set; }
+    bool PopupVisibleDelete { get; set; }
+
+    [Inject] public IJSRuntime jsRuntime { get; set; }
+
+    [Parameter]
+    public string DisplayFormat { get; set; }
+
+    public string ClientIP = "";
+    public string selectedQuoteId = "";
+
+    public async Task<string> GetIpAddress()
+    {
+        try
+        {
+            SubmissionUserIP = await jsRuntime.InvokeAsync<string>("getIpAddress").ConfigureAwait(true);
+
+            return SubmissionUserIP;
+        }
+        catch (Exception e)
+        {
+            //If your request was blocked by CORS or some extension like uBlock Origin then you will get an exception.
+            return string.Empty;
+        }
+    }
+
+    [Parameter]
+    public GridDetailRowDisplayMode DetailRowDisplayMode { get; set; }
 
     [Parameter]
     public string RefreshStatus { get; set; } = "";
@@ -81,6 +442,110 @@ else
 
     [Parameter]
     public bool DeleteLeadsDisabled { get; set; } = true;
+
+    [Parameter]
+    public object SelectedDataItem { get; set; }
+
+    [Parameter]
+    public int VisibleIndex { get; set; }
+
+    [Parameter]
+    public bool ClearFilterButtonVisible { get; set; }
+
+    IGrid Grid { get; set; }
+    EntityInstantFeedbackSource InstantFeedbackSource { get; set; }
+
+    public interface IQueryable : System.Collections.IEnumerable;
+
+    public int currentItem = 0;
+    public int selectedIndex = 0;
+
+    public string SubmissionUserIP { get; set; }
+
+    protected override void OnInitialized(){}
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            RefreshTimer();
+        }
+
+        GetIpAddress();
+    }
+
+    void OnRowClick(GridRowClickEventArgs args)
+    {
+        PauseRefresh();
+
+        selectedIndex = args.VisibleIndex;
+
+        selectedQuoteId = quotes[selectedIndex]._id;
+
+        var selectedDetailExpanded = Grid.IsDetailRowExpanded(selectedIndex);
+        if (selectedDetailExpanded)
+        {
+            Grid.CollapseDetailRow(selectedIndex);
+            ToggleRefresh();
+        }
+        else
+        {
+            Grid.ExpandDetailRow(selectedIndex);
+        }
+    }
+
+    public void CloseDetails()
+    {
+        Grid.CollapseDetailRow(selectedIndex);
+        ToggleRefresh();
+    }
+
+    public void MakeCustomer()
+    {
+        Grid.CollapseDetailRow(selectedIndex);
+
+        QuoteService.MakeCustomer(selectedQuoteId, quotes[selectedIndex]);
+
+        PopupVisibleMakeCustomer = false;
+
+        ToggleRefresh();
+    }
+
+    public void EditLead()
+    {
+
+    }
+
+    public void UpdateLead()
+    {
+
+    }
+
+    public void DeleteLead()
+    {
+        Grid.CollapseDetailRow(selectedIndex);
+
+        QuoteService.DeleteQuote(selectedQuoteId, quotes[selectedIndex]);
+
+        PopupVisibleDelete = false;
+
+        ToggleRefresh();
+
+    }
+
+    public virtual void PauseRefresh()
+    {
+        CreateLeadDisabled = false;
+        CreateLeadsDisabled = false;
+        DeleteLeadsDisabled = false;
+
+        ButtonText = "Resume Refresh";
+        ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
+        StatusClass = "message-warning";
+        RefreshStatus = " Auto refresh paused...";
+
+        _timer?.Dispose();
+    }
 
     public virtual void ToggleRefresh()
     {
@@ -112,17 +577,15 @@ else
         }
     }
 
-    private IEnumerable<Quote>? quotes;
+    // private IEnumerable<Quote>? quotes;
+    private List<Quote>? quotes;
 
-    public int itemsToCreate = 100;
+    public int itemsToCreate = 10;
     public string updateStatus = "Fetching ";
 
-    public Timer _timer;
+    bool isBulkInsert = false;
 
-    public Opportunities()
-    {
-        RefreshTimer();
-    }
+    public Timer _timer;
 
     public void Dispose()
     {
@@ -133,7 +596,7 @@ else
     {
         _timer = new Timer(new TimerCallback(_ =>
         {
-            quotes = QuoteService.GetQuotes("Opportunity");
+            quotes = (List<Quote>)QuoteService.GetQuotes("Opportunity");
             updateStatus = quotes.Count().ToString("N0");
             StatusContainerClass = "container-action-buttons-show";
 
@@ -146,11 +609,19 @@ else
 
     private void CreateLeads()
     {
+        List<Quote> quotes = new List<Quote>();
+
+        isBulkInsert = true;
+
         for (var i = 0; i < itemsToCreate; i++)
         {
             updateStatus = "Creating ";
             CreateLead();
         }
+
+        ToggleRefresh();
+
+        isBulkInsert = false;
     }
 
     private void DeleteLeads()
@@ -170,6 +641,8 @@ else
         Quote quote = new Quote();
         quote.status = "Opportunity";
 
+        quote.ipAddress = SubmissionUserIP;
+
         Utils utils = new Utils();
 
         var randomStreetNumber = utils.GetRandomStreetNumber();
@@ -177,16 +650,23 @@ else
 
         var randomState = utils.GetRandomState();
         var stateName = randomState[0];
-        var stateId = randomState[1];
+        var stateAbbr = randomState[1];
+        var stateId = randomState[2];
 
-        var randomCity = utils.GetRandomCity(MongoDB.Bson.ObjectId.Parse("52ade0932b0b6d13f88c4e8d"));
-        var randomZipCode = ""; //utils.GetRandomZipCode().ToString();
+        var randomCity = utils.GetRandomCity(MongoDB.Bson.ObjectId.Parse(stateId));
 
-        quote.address = randomStreetNumber + " " + randomStreetName + ", " + randomCity + ", " + stateName + " " + randomZipCode;
+        string cityId = randomCity[0];
+        string cityName = randomCity[1];
+        string cityCountyId = randomCity[2];
+        string cityTimeZoneId = randomCity[3];
+
+        var randomZipCode = utils.GetRandomZipCode(MongoDB.Bson.ObjectId.Parse(cityId)).ToString();
+
+        quote.address = randomStreetNumber + " " + randomStreetName + ", " + cityName + ", " + stateAbbr + " " + randomZipCode;
         quote.fullAddress = quote.address;
         quote.street = randomStreetNumber + " " + randomStreetName;
-        //quote.city = randomCity;
-        quote.state = stateName;
+        quote.city = cityName;
+        quote.state = stateAbbr;
         quote.zip = randomZipCode;
 
         Random rnd = new Random();
@@ -280,6 +760,22 @@ else
         quote.structures = new List<Structure>();
         quote.structures.Add(structure);
 
+        var deviceType = "Desktop";
+        var latitude = 0;
+        var longitude = 0;
+
+        Event _event = new Event(0,0);
+        _event.Name = "New Opportunity";
+        _event.DateTime = DateTime.Now;
+        _event.Reference.ReferenceId = ObjectId.Parse(quote._id);
+        _event.Reference.ReferenceType = 0;
+        _event.Details = "New Opportunity referred by Roofle";
+
+        Location location = new Location(ObjectId.Parse(quote._id), deviceType, ClientIP, latitude, longitude);
+        _event.Location = location;
+
+        quote.events.Add(_event);
+
         var results = string.Empty;
 
         try
@@ -293,7 +789,8 @@ else
         }
         finally
         {
-
+            if (!isBulkInsert)
+                ToggleRefresh();
         }
     }
     #endregion
