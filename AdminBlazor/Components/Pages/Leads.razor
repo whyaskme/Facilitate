@@ -15,7 +15,7 @@
 <PageTitle>Leads</PageTitle>
 <h1>@updateStatus Leads <span id="update-status" class="@StatusClass">@RefreshStatus</span></h1>
 
-<h3>IP Address: <span class="">@SubmissionUserIP</span></h3>
+@* <h3>IP Address: <span class="">@SubmissionUserIP</span></h3> *@
 
 <script>
   window.getIpAddress = () => {
@@ -598,6 +598,8 @@ else
 
         Quote quote = new Quote();
         quote.status = "New";
+
+        quote.ipAddress = SubmissionUserIP;
 
         Utils utils = new Utils();
 
