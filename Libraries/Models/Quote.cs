@@ -26,6 +26,7 @@ namespace Facilitate.Libraries.Models
             _id = ObjectId.GenerateNewId().ToString();
             _t = "Quote";
 
+            ipAddress = "127.0.0.1";
             status = "New";
             address = string.Empty;
             fullAddress = string.Empty;
@@ -56,6 +57,7 @@ namespace Facilitate.Libraries.Models
 
         public string _id { get; set; }
         public string _t { get; set; }
+        public string ipAddress { get; set; }
         public string status { get; set; }
 
         public string address { get; set; }

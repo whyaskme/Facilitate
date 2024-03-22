@@ -15,6 +15,8 @@
 <PageTitle>Leads</PageTitle>
 <h1>@updateStatus Leads <span id="update-status" class="@StatusClass">@RefreshStatus</span></h1>
 
+<h3>IP Address: <span class="">@SubmissionUserIP</span></h3>
+
 <script>
   window.getIpAddress = () => {
     return fetch('https://jsonip.com/')
@@ -84,12 +86,8 @@ else
                     </tr>
                     <tr>
                         <td>
-                            <label>First</label>
-                            <span class="detail-item">@_quote.firstName</span>
-                        </td>
-                        <td>
-                            <label>Last</label>
-                            <span class="detail-item">@_quote.lastName</span>
+                            <label>Name</label>
+                            <span class="detail-item">@_quote.firstName @_quote.lastName</span>
                         </td>
                         <td>
                             <label>Email</label>
@@ -100,6 +98,10 @@ else
                         <td>
                             <label>Phone</label>
                             <span class="detail-item">@_quote.phone</span>
+                        </td>
+                        <td>
+                            <label>IP Address</label>
+                            <span class="detail-item">@SubmissionUserIP</span>
                         </td>
                     </tr>
                 </tbody>
@@ -363,9 +365,9 @@ else
     {
         try
         {
-            ClientIP = await jsRuntime.InvokeAsync<string>("getIpAddress").ConfigureAwait(true);
+            SubmissionUserIP = await jsRuntime.InvokeAsync<string>("getIpAddress").ConfigureAwait(true);
 
-            return ClientIP;
+            return SubmissionUserIP;
         }
         catch (Exception e)
         {
@@ -418,11 +420,11 @@ else
     public int currentItem = 0;
     public int selectedIndex = 0;
 
-    public string CurrentUserIP { get; set; }
+    public string SubmissionUserIP { get; set; }
 
     protected override void OnInitialized()
     {
-
+        //GetIpAddress();
     }
 
     protected override void OnAfterRender(bool firstRender)
