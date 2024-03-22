@@ -36,6 +36,8 @@ else
         <div>
             Select row to expand details. Click column headers to sort. Type and hit enter in any empty cell to search that column. 
             <br/><br/>
+            If you have grouped columns below, drag and drop the column back into the grid header to restore. 
+            <br/><br/>
         </div>
 
         <DxGrid 
@@ -548,7 +550,7 @@ else
     // private IEnumerable<Quote>? quotes;
     private List<Quote>? quotes;
 
-    public int itemsToCreate = 100;
+    public int itemsToCreate = 10;
     public string updateStatus = "Fetching ";
 
     public Timer _timer;
