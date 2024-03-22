@@ -298,9 +298,8 @@ else
                 <div class="table-spacer" />
 
                 <div class="quote-detail-controls-container">
-                    <button class="btn btn-primary" disabled=true @onclick="EmailLead">Email This</button>
-                    <button class="btn btn-primary" @onclick="AssignLead">Assign</button>
-                    <button class="btn btn-primary" @onclick="DeleteLead">Delete</button>
+                    <button class="btn btn-primary" @onclick="@(() => PopupVisibleAssign = true)">Assign</button>
+                    <button class="btn btn-primary" @onclick="@(() => PopupVisibleDelete = true)">Delete</button>
                     <button class="btn btn-primary" @onclick="CloseDetails">Close</button>
                 </div>
 
@@ -314,10 +313,43 @@ else
     <button class="@ButtonClass" @onclick="ToggleRefresh">@ButtonText</button>
     <button class="btn btn-primary" disabled="@CreateLeadDisabled" @onclick="CreateLead">Create 1 Lead</button>
     <button class="btn btn-primary" disabled="@CreateLeadsDisabled" @onclick="CreateLeads">Create @itemsToCreate Leads</button>
-    <button class="btn btn-primary" disabled="@DeleteLeadsDisabled" @onclick="DeleteLeads">Delete @updateStatus Leads</button>
+@*     <button class="btn btn-primary" disabled="@DeleteLeadsDisabled" @onclick="DeleteLeads">Delete @updateStatus Leads</button> *@
 </div>
 
+<DxPopup
+    @bind-Visible="@PopupVisibleAssign"
+    ShowFooter="true"
+    HeaderText="Assign Lead"
+   >
+    <BodyContentTemplate>
+        <SampleEditForm/>
+        Put the PM list here for assignment selection
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleAssign = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxPopup
+    @bind-Visible="@PopupVisibleDelete"
+    ShowFooter="true"
+    HeaderText="Delete Lead"
+   >
+    <BodyContentTemplate>
+        Are you sure you want to delete this lead?
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteLead" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleDelete = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+
 @code {
+
+    bool PopupVisibleAssign { get; set; }
+    bool PopupVisibleDelete { get; set; }
 
     [Inject] public IJSRuntime jsRuntime { get; set; }
 
@@ -436,7 +468,13 @@ else
 
     public void AssignLead()
     {
+        Grid.CollapseDetailRow(selectedIndex);
 
+        QuoteService.AssignQuote(selectedQuoteId, quotes[selectedIndex]);
+
+        PopupVisibleAssign = false;
+
+        ToggleRefresh();
     }
 
     public void EditLead()
@@ -453,9 +491,9 @@ else
     {
         Grid.CollapseDetailRow(selectedIndex);
 
-        // var quoteId = quotes[selectedIndex]._id;
-
         QuoteService.DeleteQuote(selectedQuoteId, quotes[selectedIndex]);
+
+        PopupVisibleDelete = false;
 
         ToggleRefresh();
 

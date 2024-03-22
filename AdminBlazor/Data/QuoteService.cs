@@ -123,6 +123,37 @@ namespace AdminBlazor.Data {
             return resultMsg;
         }
 
+        public string AssignQuote(string quoteId, Quote quote)
+        {
+            try
+            {
+                // This is a soft delete > move to archive.
+                client = new MongoClient(mongoUri);
+                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
+
+                var updateQuote = Builders<Quote>.Update.Set(quote => quote.status, "Opportunity");
+
+                var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
+
+                Event _event = new Event(0,0);
+                _event.Details = "Quote moved to Opportunities";
+
+                quote.status = "Opportunity";
+                quote.events.Add(_event);
+
+                var result = collection.ReplaceOne(filter, quote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
+            return resultMsg;
+        }
+
         public string DeleteQuote(string quoteId, Quote quote)
         {
             try
@@ -135,7 +166,7 @@ namespace AdminBlazor.Data {
 
                 var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
 
-                Event _event = new Event(0,0);
+                Event _event = new Event(0, 0);
                 _event.Details = "Quote moved to Archive";
 
                 quote.status = "Archive";
