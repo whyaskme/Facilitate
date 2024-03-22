@@ -52,7 +52,7 @@ namespace Facilitate.Libraries.Models
             repEmail = string.Empty;
             leadId = 0;
             products = new List<Product>();
-            projectManager = new User();
+            projectManager = null;// new User();
             events = new List<Event>();
     }
 
