@@ -279,6 +279,38 @@ else
                 <table>
                 <tbody>
                     <tr>
+                        <td colspan=4>
+                            <h6>Project Management</h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>PM Name</label>
+                            <span class="detail-item">Name?</span>
+                        </td>
+                                <td>
+                                    <label>PM Phone</label>
+                                    <span class="detail-item">Phone?</span>
+                                </td>
+                        <td>
+                            <label>PM Email</label>
+                            <a href="#" target="_blank">
+                                <span class="detail-item">Email?</span>
+                            </a>
+                        </td>
+                        <td>
+                            <label>Last Activity</label>
+                            <span class="detail-item">Date?</span>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+
+                <div class="table-spacer" />
+
+                <table>
+                <tbody>
+                    <tr>
                         <td>
                             <h6>History</h6>
                         </td>
@@ -424,10 +456,7 @@ else
 
     public string SubmissionUserIP { get; set; }
 
-    protected override void OnInitialized()
-    {
-        //GetIpAddress();
-    }
+    protected override void OnInitialized(){}
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -465,14 +494,35 @@ else
         ToggleRefresh();
     }
 
-    public void EmailLead()
-    {
-
-    }
-
     public void AssignLead()
     {
         Grid.CollapseDetailRow(selectedIndex);
+
+        User projectManager = new User();
+        projectManager.FirstName = "Project";
+        projectManager.LastName = "Manager";
+
+        Email email = new Email();
+        email.UserName = projectManager.FirstName.ToLower() + "." + projectManager.LastName.ToLower();
+        email.Domain = "facilitate.org";
+
+        projectManager.Contact.Email.Add(email);
+
+        Phone phone = new Phone();
+        phone.AreaCode = 512;
+        phone.Exchange = 977;
+        phone.Number = 2522;
+        projectManager.Contact.Phone.Add(phone);
+
+        Address address = new Address();
+        address.Address1 = "123 Main St";
+        address.City = "Austin";
+        address.State = "TX";
+        address.ZipCode = 78704;
+
+        projectManager.Contact.Address.Add(address);
+
+        quotes[selectedIndex].projectManager = projectManager;
 
         QuoteService.AssignQuote(selectedQuoteId, quotes[selectedIndex]);
 
@@ -553,6 +603,8 @@ else
     public int itemsToCreate = 10;
     public string updateStatus = "Fetching ";
 
+    bool isBulkInsert = false;
+
     public Timer _timer;
 
     public void Dispose()
@@ -577,11 +629,19 @@ else
 
     private void CreateLeads()
     {
+        List<Quote> quotes = new List<Quote>();
+
+        isBulkInsert = true;
+
         for (var i = 0; i < itemsToCreate; i++)
         {
             updateStatus = "Creating ";
             CreateLead();
         }
+
+        ToggleRefresh();
+
+        isBulkInsert = false;
     }
 
     private void DeleteLeads()
@@ -749,7 +809,8 @@ else
         }
         finally
         {
-            ToggleRefresh();
+            if (!isBulkInsert)
+                ToggleRefresh();
         }
     }
     #endregion

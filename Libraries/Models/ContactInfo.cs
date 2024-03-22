@@ -13,13 +13,13 @@ namespace Facilitate.Libraries.Models
     {
         public ContactInfo()
         {
-            Address = new Address();
-            Email = new Email();
-            Phone = new Phone();
+            Address = new List<Address>();
+            Email = new List<Email>();
+            Phone = new List<Phone>();
         }
 
-        public Address Address { get; set; }
-        public Email Email { get; set; }
-        public Phone Phone { get; set; }
+        public List<Address> Address { get; set; }
+        public List<Email> Email { get; set; }
+        public List<Phone> Phone { get; set; }
     }
 }

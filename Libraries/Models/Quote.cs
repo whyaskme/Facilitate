@@ -52,6 +52,7 @@ namespace Facilitate.Libraries.Models
             repEmail = string.Empty;
             leadId = 0;
             products = new List<Product>();
+            projectManager = new User();
             events = new List<Event>();
     }
 
@@ -86,8 +87,9 @@ namespace Facilitate.Libraries.Models
         public string repLead { get; set; }
         public string repEmail { get; set; }
         public int leadId { get; set; }
-        public List<Product>? products { get; set; }
 
+        public virtual User? projectManager { get; set; }
+        public List<Product>? products { get; set; }
         public virtual List<Event>? events { get; set; }
 
         #region Implementation of IEnumerable

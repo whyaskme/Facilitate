@@ -135,8 +135,10 @@ namespace AdminBlazor.Data {
 
                 var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
 
+                var projectManager = quote.projectManager;
+
                 Event _event = new Event(0,0);
-                _event.Details = "Quote moved to Opportunities";
+                _event.Details = "Quote assigned to (" + projectManager.FirstName + " " + projectManager.LastName + ") and moved to Opportunities";
 
                 quote.status = "Opportunity";
                 quote.events.Add(_event);
