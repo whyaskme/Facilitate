@@ -368,19 +368,57 @@ else
 <DxPopup
     @bind-Visible="@PopupVisibleDelete"
     ShowFooter="true"
-    HeaderText="Archive Opportunity"
+    HeaderText="Archive Lead"
    >
     <BodyContentTemplate>
-        Are you sure you want to Archive this lead?
+        <p>Please type in a reason for Archival below.</p>
+        <SampleEditForm>
+            <DxTextBox 
+                @bind-Text="@ArchivalReason"
+                CssClass="cw-320"
+                InputId="archive-reason" />
+        </SampleEditForm>
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="ArchiveLead" />
+        <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Archive" Click="ArchiveLead" />
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleDelete = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
 
 @code {
+
+    string ArchivalReason { get; set; } = "";
+
+    public void ArchiveLead()
+    {
+        Grid.CollapseDetailRow(selectedIndex);
+
+        Note note = new Note();
+        note.Summary = "Opportunity Archived";
+        note.Details = note.Summary + " - " + @ArchivalReason;
+
+        Quote quote = quotes[selectedIndex];
+        quote.notes.Add(note);
+
+        QuoteService.DeleteQuote(selectedQuoteId, quote);
+
+        PopupVisibleDelete = false;
+
+        ToggleRefresh();
+    }
+
+    // public void ArchiveLead()
+    // {
+    //     Grid.CollapseDetailRow(selectedIndex);
+
+    //     QuoteService.DeleteQuote(selectedQuoteId, quotes[selectedIndex]);
+
+    //     PopupVisibleDelete = false;
+
+    //     ToggleRefresh();
+
+    // }
 
     bool PopupVisibleMakeCustomer { get; set; }
     bool PopupVisibleDelete { get; set; }
@@ -501,28 +539,6 @@ else
         PopupVisibleMakeCustomer = false;
 
         ToggleRefresh();
-    }
-
-    public void EditLead()
-    {
-
-    }
-
-    public void UpdateLead()
-    {
-
-    }
-
-    public void ArchiveLead()
-    {
-        Grid.CollapseDetailRow(selectedIndex);
-
-        QuoteService.DeleteQuote(selectedQuoteId, quotes[selectedIndex]);
-
-        PopupVisibleDelete = false;
-
-        ToggleRefresh();
-
     }
 
     public virtual void PauseRefresh()

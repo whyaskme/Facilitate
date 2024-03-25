@@ -378,14 +378,12 @@ else
    >
     <BodyContentTemplate>
         <p>Please type in a reason for Archival below.</p>
-
         <SampleEditForm>
             <DxTextBox 
                 @bind-Text="@ArchivalReason"
                 CssClass="cw-320"
                 InputId="archive-reason" />
         </SampleEditForm>
-
     </BodyContentTemplate>
     <FooterContentTemplate>
         <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Archive" Click="ArchiveLead" />
