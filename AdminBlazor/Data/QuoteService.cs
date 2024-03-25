@@ -20,6 +20,7 @@ namespace AdminBlazor.Data {
         string resultMsg = string.Empty;
 
         //string mongoUri = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate";
+        //string mongoUri = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate";
         string mongoUri = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate";
 
         IMongoClient client;
