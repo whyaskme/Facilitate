@@ -73,7 +73,7 @@ namespace Api.Controllers
                 quote.phone = "(612) 255-8200";
                 quote.market = "Minneapolis-St. Paul, MN";
                 quote.externalUrl = "https://app.roofle.com/dashboard";
-                quote.timestamp = "2023-07-19T16:48:22.193Z";
+                quote.timestamp = DateTime.UtcNow;
                 quote.numberOfStructures = 1;
                 quote.numberOfIncludedStructures = 1;
                 quote.totalSquareFeet = 1369;

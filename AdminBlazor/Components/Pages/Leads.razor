@@ -531,6 +531,19 @@ else
 
         quotes[selectedIndex].projectManager = projectManager;
 
+        // Add some notes
+        Note note = new Note();
+        note.Summary = "Lead assigned to Matthew Lamz";
+        note.Details = "This is just a test note getting attached to a lead as it's transitions from Lead > Opportunity due to PM assignment.";
+        quotes[selectedIndex].notes.Add(note);
+
+        // Add an attachment (Initial agreements or any other specified docs)
+        Attachment attachment = new Attachment();
+        attachment.MediaDescription = "Workflow and Subsequent Document Requirements";
+        attachment.MediaUrl = "/docs/templates/agreements/FACILITATE - Workflow and Subsequent Document Requirements.pdf";
+
+        quotes[selectedIndex].attachments.Add(attachment);
+
         QuoteService.AssignQuote(selectedQuoteId, quotes[selectedIndex]);
 
         PopupVisibleAssign = false;

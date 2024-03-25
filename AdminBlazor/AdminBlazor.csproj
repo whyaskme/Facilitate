@@ -21,4 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Libraries\Libraries.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\docs\templates\agreements\" />
+  </ItemGroup>
 </Project>

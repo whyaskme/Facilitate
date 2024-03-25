@@ -42,7 +42,7 @@ namespace Facilitate.Libraries.Models
             AdTitle = "";
             AdDescription = "";
 
-            AdImages = new List<AttachmentImage>();
+            AdImages = new List<Attachment>();
             ItemStates = new List<State>();
             //ItemCities = new List<City>();
         }
@@ -66,7 +66,7 @@ namespace Facilitate.Libraries.Models
         public string AdTitle { get; set; }
         public string AdDescription { get; set; }
 
-        public List<AttachmentImage> AdImages { get; set; }
+        public List<Attachment> AdImages { get; set; }
         public List<State> ItemStates { get; set; }
 
         //public string Save()
