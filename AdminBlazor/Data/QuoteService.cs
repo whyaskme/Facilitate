@@ -10,7 +10,7 @@ using System.Threading;
 using Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
 
-namespace AdminBlazor.Data {
+namespace Facilitate.Admin.Data {
 
     public class QuoteService
     {
