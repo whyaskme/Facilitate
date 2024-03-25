@@ -70,7 +70,7 @@ else
                 <DxGridDataColumn Caption="City" FieldName="city" />
                 <DxGridDataColumn Caption="State" FieldName="state" />
                 <DxGridDataColumn Caption="Zip" FieldName="zip" />
-                <DxGridDataColumn Caption="SqFt" TextAlignment="GridTextAlignment.Left" FieldName="totalSquareFeet" />
+                @* <DxGridDataColumn Caption="SqFt" TextAlignment="GridTextAlignment.Left" FieldName="totalSquareFeet" /> *@
             </Columns>
 
             <DetailRowTemplate>
@@ -256,6 +256,49 @@ else
                                 <span class="detail-item">@_quote.projectManager.Date</span>
                             </td>
                         </tr>
+
+                        <tr class="notes-container">
+                            <td style="text-align: right !important;" class="notes-items">
+                                <label>Notes</label>
+                                <button class="btn btn-primary" @onclick="@(() => PopupVisibleAddNote = true)">Add</button>
+                            </td>
+                            <td colspan="3" class="notes-items">
+                                @{
+                                    var noteCount = 1;
+                                    for (int currentIndex = 0; currentIndex < @_quote.notes.Count; currentIndex++)
+                                    {
+                                        <div class="note-row">
+                                            <label>@noteCount. @_quote.notes[currentIndex].Date</label>
+                                            <span class="detail-item">@_quote.notes[currentIndex].Details</span>
+                                        </div>
+                                        noteCount++;
+                                    }
+                                }
+                            </td>
+                        </tr>
+
+                            <tr class="notes-container">
+                                <td style="text-align: right !important;" class="notes-items">
+                                    <label>Documents</label>
+                                    <button class="btn btn-primary" @onclick="@(() => PopupVisibleAddNote = true)">Add</button>
+                                </td>
+                                <td colspan="3" class="notes-items">
+                                    @{
+                                        var documentCount = 1;
+                                        for (int currentIndex = 0; currentIndex < @_quote.attachments.Count; currentIndex++)
+                                        {
+                                            <div class="note-row">
+                                                <label>@documentCount. @_quote.attachments[currentIndex].Date</label>
+                                                <a href="@_quote.attachments[currentIndex].MediaUrl" target="_blank">
+                                                <span class="detail-item">@_quote.attachments[currentIndex].MediaDescription</span>
+                                                </a>
+                                            </div>
+                                            documentCount++;
+                                        }
+                                    }
+                                </td>
+                            </tr>
+
                     </tbody>
                     </table>
                 }
@@ -385,10 +428,34 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
+<DxPopup
+    @bind-Visible="@PopupVisibleDelete"
+    ShowFooter="true"
+    HeaderText="Archive Lead"
+   >
+    <BodyContentTemplate>
+        <p>Please type in a reason for Archival below.</p>
+        <SampleEditForm>
+            <DxTextBox 
+                @bind-Text="@ArchivalReason"
+                CssClass="cw-320"
+                InputId="archive-reason" />
+        </SampleEditForm>
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Archive" Click="ArchiveLead" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleDelete = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
 
 @code {
 
     string ArchivalReason { get; set; } = "";
+
+    bool PopupVisibleAddNote { get; set; }
+    bool PopupVisibleMakeCustomer { get; set; }
+    bool PopupVisibleDelete { get; set; }
 
     public void ArchiveLead()
     {
@@ -408,8 +475,23 @@ else
         ToggleRefresh();
     }
 
-    bool PopupVisibleMakeCustomer { get; set; }
-    bool PopupVisibleDelete { get; set; }
+    public void AddNote()
+    {
+        Grid.CollapseDetailRow(selectedIndex);
+
+        Note note = new Note();
+        note.Summary = "Note Added";
+        note.Details = note.Summary + " - " + @ArchivalReason;
+
+        Quote quote = quotes[selectedIndex];
+        quote.notes.Add(note);
+
+        //QuoteService.DeleteQuote(selectedQuoteId, quote);
+
+        PopupVisibleDelete = false;
+
+        ToggleRefresh();
+    }
 
     [Inject] public IJSRuntime jsRuntime { get; set; }
 

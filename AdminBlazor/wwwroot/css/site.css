@@ -9,6 +9,23 @@ html, body {
     overflow: hidden;
 }
 
+.notes-container {
+    border-top: dashed 0px #ff0000 !important;
+    margin-top: 75px !important;
+    padding-top: 25px !important;
+}
+
+.note-row {
+    border-bottom: dashed 0px #c0c0c0 !important;
+    padding: 5px !important;
+}
+
+.notes-items {
+    border-top: dashed 1px #c0c0c0 !important;
+    margin-top: 25px !important;
+    padding-top: 25px !important;
+}
+
 .event-history-container {
     border-bottom: solid 0px #c0c0c0 !important;
     width: 100% !important;
@@ -47,7 +64,7 @@ table:hover {
 }
 
 .table-spacer {
-    border: dashed 1px #c0c0c0 !important;
+    border: solid 1px #eee !important;
     border-collapse: collapse !important;
     margin-top: 15px;
     margin-bottom: 15px;
