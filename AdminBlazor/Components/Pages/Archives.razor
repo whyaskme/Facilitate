@@ -394,7 +394,7 @@ else
     public bool CreateLeadsDisabled { get; set; } = true;
 
     [Parameter]
-    public bool DeleteLeadsDisabled { get; set; } = true;
+    public bool ArchiveLeadsDisabled { get; set; } = true;
 
     [Parameter]
     public object SelectedDataItem { get; set; }
@@ -453,7 +453,7 @@ else
         ToggleRefresh();
     }
 
-    public void DeleteLead()
+    public void ArchiveLead()
     {
         Grid.CollapseDetailRow(selectedIndex);
 

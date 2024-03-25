@@ -340,7 +340,7 @@ else
 
                 <div class="quote-detail-controls-container">
                     <button class="btn btn-primary" @onclick="@(() => PopupVisibleMakeCustomer = true)">Make Customer</button>
-                            <button class="btn btn-primary" @onclick="@(() => PopupVisibleDelete = true)">Archive</button>
+                    <button class="btn btn-primary" @onclick="@(() => PopupVisibleDelete = true)">Archive</button>
                     <button class="btn btn-primary" @onclick="CloseDetails">Close</button>
                 </div>
 
@@ -374,7 +374,7 @@ else
         Are you sure you want to Archive this lead?
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteLead" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="ArchiveLead" />
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleDelete = false)" />
     </FooterContentTemplate>
 </DxPopup>
@@ -433,7 +433,7 @@ else
     public bool CreateLeadsDisabled { get; set; } = true;
 
     [Parameter]
-    public bool DeleteLeadsDisabled { get; set; } = true;
+    public bool ArchiveLeadsDisabled { get; set; } = true;
 
     [Parameter]
     public object SelectedDataItem { get; set; }
@@ -513,7 +513,7 @@ else
 
     }
 
-    public void DeleteLead()
+    public void ArchiveLead()
     {
         Grid.CollapseDetailRow(selectedIndex);
 
@@ -529,7 +529,7 @@ else
     {
         CreateLeadDisabled = false;
         CreateLeadsDisabled = false;
-        DeleteLeadsDisabled = false;
+        ArchiveLeadsDisabled = false;
 
         ButtonText = "Resume Refresh";
         ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
@@ -545,7 +545,7 @@ else
         {
             CreateLeadDisabled = false;
             CreateLeadsDisabled = false;
-            DeleteLeadsDisabled = false;
+            ArchiveLeadsDisabled = false;
 
             ButtonText = "Resume Refresh";
             ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
@@ -558,7 +558,7 @@ else
         {
             CreateLeadDisabled = true;
             CreateLeadsDisabled = true;
-            DeleteLeadsDisabled = true;
+            ArchiveLeadsDisabled = true;
 
             StatusClass = "message-normal";
             RefreshStatus = "";
@@ -616,7 +616,7 @@ else
         isBulkInsert = false;
     }
 
-    private void DeleteLeads()
+    private void ArchiveLeads()
     {
         updateStatus = "Deleting...";
     }

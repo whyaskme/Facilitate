@@ -354,7 +354,6 @@ else
     <button class="@ButtonClass" @onclick="ToggleRefresh">@ButtonText</button>
     <button class="btn btn-primary" disabled="@CreateLeadDisabled" @onclick="CreateLead">Create 1 Lead</button>
     <button class="btn btn-primary" disabled="@CreateLeadsDisabled" @onclick="CreateLeads">Create @itemsToCreate Leads</button>
-@*     <button class="btn btn-primary" disabled="@DeleteLeadsDisabled" @onclick="DeleteLeads">Delete @updateStatus Leads</button> *@
 </div>
 
 <DxPopup
@@ -378,16 +377,46 @@ else
     HeaderText="Archive Lead"
    >
     <BodyContentTemplate>
-        Are you sure you want to Archive this lead?
+        <p>Please type in a reason for Archival below.</p>
+
+        <SampleEditForm>
+            <DxTextBox 
+                @bind-Text="@ArchivalReason"
+                CssClass="cw-320"
+                InputId="archive-reason" />
+        </SampleEditForm>
+
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteLead" />
+        <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Archive" Click="ArchiveLead" />
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleDelete = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
 
 @code {
+    string ArchivalReason { get; set; } = "";
+
+    public void ArchiveLead()
+    {
+        Grid.CollapseDetailRow(selectedIndex);
+
+        Note note = new Note();
+        note.Summary = "Lead Archived";
+        note.Details = note.Summary + " - " + @ArchivalReason;
+
+        Quote quote = quotes[selectedIndex];
+        quote.notes.Add(note);
+
+        QuoteService.DeleteQuote(selectedQuoteId, quote);
+
+        PopupVisibleDelete = false;
+
+        ToggleRefresh();
+    }
+
+    [Parameter]
+    public bool SubmitFormOnClick { get; set; }
 
     bool PopupVisibleAssign { get; set; }
     bool PopupVisibleDelete { get; set; }
@@ -440,7 +469,7 @@ else
     public bool CreateLeadsDisabled { get; set; } = true;
 
     [Parameter]
-    public bool DeleteLeadsDisabled { get; set; } = true;
+    public bool ArchiveLeadsDisabled { get; set; } = true;
 
     [Parameter]
     public object SelectedDataItem { get; set; }
@@ -549,33 +578,11 @@ else
         ToggleRefresh();
     }
 
-    public void EditLead()
-    {
-
-    }
-
-    public void UpdateLead()
-    {
-
-    }
-
-    public void DeleteLead()
-    {
-        Grid.CollapseDetailRow(selectedIndex);
-
-        QuoteService.DeleteQuote(selectedQuoteId, quotes[selectedIndex]);
-
-        PopupVisibleDelete = false;
-
-        ToggleRefresh();
-
-    }
-
     public virtual void PauseRefresh()
     {
         CreateLeadDisabled = false;
         CreateLeadsDisabled = false;
-        DeleteLeadsDisabled = false;
+        ArchiveLeadsDisabled = false;
 
         ButtonText = "Resume Refresh";
         ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
@@ -591,7 +598,7 @@ else
         {
             CreateLeadDisabled = false;
             CreateLeadsDisabled = false;
-            DeleteLeadsDisabled = false;
+            ArchiveLeadsDisabled = false;
 
             ButtonText = "Resume Refresh";
             ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
@@ -604,7 +611,7 @@ else
         {
             CreateLeadDisabled = true;
             CreateLeadsDisabled = true;
-            DeleteLeadsDisabled = true;
+            ArchiveLeadsDisabled = true;
 
             StatusClass = "message-normal";
             RefreshStatus = "";
@@ -662,7 +669,7 @@ else
         isBulkInsert = false;
     }
 
-    private void DeleteLeads()
+    private void ArchiveLeads()
     {
         updateStatus = "Deleting...";
     }
