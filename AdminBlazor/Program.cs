@@ -30,7 +30,7 @@ builder.Services
     .AddRoles<MongoRole>()
     .AddMongoDbStores<MongoUser, MongoRole, ObjectId>(mongo =>
     {
-        mongo.ConnectionString = "mongodb://127.0.0.1:27017/Members";
+        mongo.ConnectionString = "mongodb://127.0.0.1:27017/Facilitate";
         // other options
     })
     .AddDefaultTokenProviders();
@@ -42,7 +42,7 @@ builder.Services.AddIdentityMongoDbProvider<MongoUser, MongoRole>(identity =>
 },
     mongo =>
     {
-        mongo.ConnectionString = "mongodb://127.0.0.1:27017/Members";
+        mongo.ConnectionString = "mongodb://127.0.0.1:27017/Facilitate";
         // other options
     });
 
