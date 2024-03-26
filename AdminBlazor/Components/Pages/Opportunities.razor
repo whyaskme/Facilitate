@@ -12,6 +12,8 @@
 @rendermode InteractiveServer
 @inject QuoteService QuoteService
 
+@inject NavigationManager NavigationManager
+
 <PageTitle>Opportunities</PageTitle>
 <h1>@updateStatus Opportunities <span id="update-status" class="@StatusClass">@RefreshStatus</span></h1>
 
@@ -269,15 +271,13 @@ else
                                 <button class="btn btn-primary" @onclick="@(() => PopupVisibleAddNote = true)">Send Docs</button>
                             </td>
                             <td colspan="3" class="notes-items">
-                                <label>Welcome letter
-                                    <input type="checkbox" />
-                                </label>
-                                <label>
-                                    Engagement agreement
-                                    <input type="checkbox" />
-                                </label>
-                                <label>and/or</label>
-                                <input type="file" />
+                                <DxUpload Name="myFile"
+                                            AllowMultiFileUpload="true"
+                                            UploadUrl="@GetUploadUrl("/Uploads/")"
+                                            SelectedFilesChanged="@SelectedFilesChanged"
+                                            MaxFileSize="15000000"
+                                            CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
+                                </DxUpload>
                             </td>
                         </tr>
                         <tr class="notes-container">
@@ -486,6 +486,19 @@ else
 
 
 @code {
+
+    int SelectedFilesCount { get; set; }
+
+    protected void SelectedFilesChanged(IEnumerable<UploadFileInfo> files)
+    {
+        SelectedFilesCount = files.ToList().Count;
+        InvokeAsync(StateHasChanged);
+    }
+
+    protected string GetUploadUrl(string url)
+    {
+        return NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
+    }
 
     string fileType { get; set; } = ".pdf";
     string author { get; set; } = "unknown";

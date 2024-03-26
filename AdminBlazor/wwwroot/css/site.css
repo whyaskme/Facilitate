@@ -9,6 +9,16 @@ html, body {
     overflow: hidden;
 }
 
+.dxuc-select-button {
+    border: solid 0px #ff0000 !important;
+    padding: 8px !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    position: relative !important;
+    top: -5px !important;    
+    left: 10px !important;
+}
+
 table {
     width: 100% !important;
 }
