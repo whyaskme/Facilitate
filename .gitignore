@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 /Website Backups/2-21-2024
 /Website Backups/3-13-2024
+/AdminBlazor/wwwroot/js
+/AdminBlazor/wwwroot/lib
