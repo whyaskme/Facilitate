@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminBlazor", "AdminBlazor\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Facilitate.Libraries", "Libraries\Facilitate.Libraries.csproj", "{BD7AC219-2C75-42E8-88EE-DA39BEE044A9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestSite", "MongoDB-Membership\samples\TestSite\TestSite.csproj", "{0F655495-B3FB-4151-803F-29793B9E4160}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileServices", "FileServices\FileServices.csproj", "{BDA3BA6E-9C25-4F98-83F9-1EC1EE791C94}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{BD7AC219-2C75-42E8-88EE-DA39BEE044A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD7AC219-2C75-42E8-88EE-DA39BEE044A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD7AC219-2C75-42E8-88EE-DA39BEE044A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F655495-B3FB-4151-803F-29793B9E4160}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F655495-B3FB-4151-803F-29793B9E4160}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F655495-B3FB-4151-803F-29793B9E4160}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F655495-B3FB-4151-803F-29793B9E4160}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDA3BA6E-9C25-4F98-83F9-1EC1EE791C94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDA3BA6E-9C25-4F98-83F9-1EC1EE791C94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDA3BA6E-9C25-4F98-83F9-1EC1EE791C94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDA3BA6E-9C25-4F98-83F9-1EC1EE791C94}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
