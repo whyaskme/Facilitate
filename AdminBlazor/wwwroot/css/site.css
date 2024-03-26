@@ -24,6 +24,12 @@ table {
     border: dashed 0px #ff0000 !important;
 }
 
+.bar-spacer {
+    border: solid 0px #ff0000 !important;
+    color: #c0c0c0 !important;
+    margin: 5px !important;
+}
+
 .notes-container {
     background-color: #ffffff !important;
     border: solid 1px #c0c0c0 !important;

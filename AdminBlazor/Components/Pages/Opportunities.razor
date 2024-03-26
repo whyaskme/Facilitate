@@ -233,20 +233,20 @@ else
                     <tbody>
                         <tr>
                             <td colspan=4>
-                                <h6>Project</h6>
+                                <h6>Project Details</h6>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <label>PM Name</label>
+                                <label>Project Manager</label>
                                 <span class="detail-item">@_quote.projectManager.FirstName @_quote.projectManager.LastName</span>
                             </td>
                             <td>
-                                <label>PM Phone</label>
+                                <label>Phone</label>
                                 <span class="detail-item">(@_quote.projectManager.Contact.Phone[0].AreaCode) @_quote.projectManager.Contact.Phone[0].Exchange-@_quote.projectManager.Contact.Phone[0].Number</span>
                             </td>
                             <td>
-                                <label>PM Email</label>
+                                <label>Email</label>
                                 <a href="#" target="_blank">
                                     <span class="detail-item">@_quote.projectManager.Contact.Email[0].UserName @_quote.projectManager.Contact.Email[0].Domain</span>
                                 </a>
@@ -270,21 +270,27 @@ else
                             </td>
                             <td colspan="3" class="notes-items">
                                 @{
-                                    var documentCount = 1;
+                                    var documentCount = _quote.attachments.Count;
                                     for (int currentIndex = 0; currentIndex < @_quote.attachments.Count; currentIndex++)
                                     {
                                         <div class="note-row">
                                             <a href="#">Edit</a>
-                                            &nbsp;|&nbsp;
+                                            <span class="bar-spacer">|</span>
                                             <a href="#">Delete</a>
-                                            <label>@documentCount. @_quote.attachments[currentIndex].Date</label>
+                                            <span class="bar-spacer">|</span>
+                                            <label>@documentCount) @_quote.attachments[currentIndex].Date</label>
+                                            <span class="bar-spacer">|</span>
                                             <a href="@_quote.attachments[currentIndex].MediaUrl" target="_blank">
                                                 <span class="detail-item">@_quote.attachments[currentIndex].MediaDescription</span>
                                             </a>
+                                            <span class="bar-spacer">|</span>
                                             <label>File Type</label>
                                             <span>@fileType</span>
+                                            <span class="bar-spacer">|</span>
+                                            <label>Author</label>
+                                            <span>@author</span>
                                         </div>
-                                        documentCount++;
+                                        documentCount--;
                                     }
                                 }
                             </td>
@@ -295,17 +301,22 @@ else
                             </td>
                             <td colspan="3" class="notes-items">
                                 @{
-                                    var noteCount = 1;
+                                    var noteCount = _quote.notes.Count;
                                     for (int currentIndex = 0; currentIndex < @_quote.notes.Count; currentIndex++)
                                     {
                                         <div class="note-row">
                                             <a href="#">Edit</a>
-                                            &nbsp;|&nbsp;
+                                            <span class="bar-spacer">|</span>
                                             <a href="#">Delete</a>
-                                            <label>@noteCount. @_quote.notes[currentIndex].Date</label>
+                                            <span class="bar-spacer">|</span>
+                                            <label>@noteCount) @_quote.notes[currentIndex].Date</label>
+                                            <span class="bar-spacer">|</span>
                                             <span class="detail-item">@_quote.notes[currentIndex].Details</span>
+                                            <span class="bar-spacer">|</span>
+                                            <label>Author</label>
+                                            <span>@author</span>
                                         </div>
-                                        noteCount++;
+                                        noteCount--;
                                     }
                                 }
                             </td>
@@ -374,17 +385,17 @@ else
                     </tr>
 
                     @{
-                        var currentEventCount = 1;
-                            for (int currentIndex = 0; currentIndex < @_quote.events.Count; currentIndex++)
+                        var currentEventCount = _quote.events.Count;
+                        for (int currentIndex = 0; currentIndex < @_quote.events.Count; currentIndex++)
                         {
                             <tr>
                                 <td>
-                                    <label>@currentEventCount. @_quote.events[currentIndex].DateTime</label>
+                                    <label>@currentEventCount) @_quote.events[currentIndex].DateTime</label>
                                     <span class="detail-item">@_quote.events[currentIndex].Details</span>
                                 </td>
-                                </tr>
-                                currentEventCount++;
-                            }
+                            </tr>
+                            currentEventCount--;
+                        }
                     }
 
                 </tbody>
@@ -463,6 +474,8 @@ else
 @code {
 
     string fileType { get; set; } = ".pdf";
+    string author { get; set; } = "Facilitate Platform";
+
     string ArchivalReason { get; set; } = "";
 
     bool PopupVisibleAddNote { get; set; }
