@@ -5,6 +5,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Data\Uploads\**" />
+    <Content Remove="Data\Uploads\**" />
+    <EmbeddedResource Remove="Data\Uploads\**" />
+    <None Remove="Data\Uploads\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="AspNetCore.Identity.Mongo" Version="8.3.3" />
     <PackageReference Include="DevExpress.Blazor" Version="23.2.4" />
     <PackageReference Include="Json.Net" Version="1.0.33" />
@@ -19,7 +25,6 @@
     <PackageReference Include="MongoDB.Libmongocrypt" Version="1.8.2" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Data\Uploads\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="wwwroot\docs\templates\agreements\" />
   </ItemGroup>

@@ -268,16 +268,16 @@ else
                     <tbody>
                         <tr class="notes-container">
                             <td style="text-align: center !important;" class="notes-items">
-                                <button class="btn btn-primary" @onclick="@(() => PopupVisibleAddNote = true)">Send Docs</button>
+                                <DxUpload Name="myFile"
+                                          AllowMultiFileUpload="true"
+                                          UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                          SelectedFilesChanged="@SelectedFilesChanged"
+                                          MaxFileSize="15000000"
+                                          CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
+                                </DxUpload>
                             </td>
                             <td colspan="3" class="notes-items">
-                                <DxUpload Name="myFile"
-                                            AllowMultiFileUpload="true"
-                                          UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
-                                            SelectedFilesChanged="@SelectedFilesChanged"
-                                            MaxFileSize="15000000"
-                                            CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
-                                </DxUpload>
+                                <button class="btn btn-primary" disabled="@SendDocsDisabled" @onclick="@(() => PopupVisibleAddNote = true)">Send Files</button>
                             </td>
                         </tr>
                         <tr class="notes-container">
@@ -588,6 +588,9 @@ else
 
     [Parameter]
     public bool CreateLeadDisabled { get; set; } = true;
+
+    [Parameter]
+    public bool SendDocsDisabled { get; set; } = true;
 
     [Parameter]
     public bool CreateLeadsDisabled { get; set; } = true;
