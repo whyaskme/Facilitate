@@ -1,6 +1,6 @@
 ﻿@page "/upload"
 
-@using Facilitate.Admin.Data
+@using AdminBlazor.Data
 @using DevExpress.Data
 @using DevExpress.Data.Linq
 @using Facilitate.Libraries.Models;
@@ -27,7 +27,7 @@
     Name="MyUpload"
     UploadMode=UploadMode.OnButtonClick
     AllowMultiFileUpload="true"
-    UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+          UploadUrl="@GetUploadUrl("api/FileService/")"
     SelectedFilesChanged="@SelectedFilesChanged"
     MaxFileSize="15000000"
     CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">

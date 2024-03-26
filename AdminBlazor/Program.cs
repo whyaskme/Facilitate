@@ -1,4 +1,4 @@
-using Facilitate.Admin.Data;
+using AdminBlazor.Data;
 using AdminBlazor.Components;
 
 using AspNetCore.Identity.Mongo;

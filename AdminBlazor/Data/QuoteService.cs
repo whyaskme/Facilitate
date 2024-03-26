@@ -10,7 +10,7 @@ using System.Threading;
 using Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
 
-namespace Facilitate.Admin.Data {
+namespace AdminBlazor.Data {
 
     public class QuoteService
     {
@@ -163,7 +163,7 @@ namespace Facilitate.Admin.Data {
                 var projectManager = quote.projectManager;
 
                 Event _event = new Event(0, 0);
-                _event.Details = "Lead assigned to (" + projectManager.FirstName + " " + projectManager.LastName + ") and moved to Opportunities";
+                //_event.Details = "Lead assigned to (" + projectManager.FirstName + " " + projectManager.LastName + ") and moved to Opportunities";
 
                 quote.status = "Opportunity";
                 quote.events.Add(_event);

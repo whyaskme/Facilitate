@@ -1,6 +1,6 @@
 ﻿@page "/leads"
 
-@using Facilitate.Admin.Data
+@using AdminBlazor.Data
 @using DevExpress.Data
 @using DevExpress.Data.Linq
 @using Facilitate.Libraries.Models;
@@ -288,21 +288,21 @@ else
                         <tr>
                             <td>
                                 <label>PM Name</label>
-                                <span class="detail-item">@_quote.projectManager.FirstName @_quote.projectManager.LastName</span>
+                                <span class="detail-item"></span>
                             </td>
                                     <td>
                                         <label>PM Phone</label>
-                                        <span class="detail-item">(@_quote.projectManager.Contact.Phone[0].AreaCode) @_quote.projectManager.Contact.Phone[0].Exchange-@_quote.projectManager.Contact.Phone[0].Number</span>
+                                        <span class="detail-item"></span>
                                     </td>
                             <td>
                                 <label>PM Email</label>
                                 <a href="#" target="_blank">
-                                    <span class="detail-item">@_quote.projectManager.Contact.Email[0].UserName @_quote.projectManager.Contact.Email[0].Domain</span>
+                                    <span class="detail-item"></span>
                                 </a>
                             </td>
                             <td>
                                 <label>Last Activity</label>
-                                        <span class="detail-item">@_quote.projectManager.Date</span>
+                                        <span class="detail-item"></span>
                             </td>
                         </tr>
                     </tbody>
@@ -530,31 +530,31 @@ else
     {
         Grid.CollapseDetailRow(selectedIndex);
 
-        User projectManager = new User();
-        projectManager.FirstName = "Matthew";
-        projectManager.LastName = "Lamz";
+        // User projectManager = new User();
+        // projectManager.FirstName = "Matthew";
+        // projectManager.LastName = "Lamz";
 
-        Email email = new Email();
-        email.UserName = projectManager.FirstName.ToLower() + "." + projectManager.LastName.ToLower();
-        email.Domain = "facilitate.org";
+        // Email email = new Email();
+        // email.UserName = projectManager.FirstName.ToLower() + "." + projectManager.LastName.ToLower();
+        // email.Domain = "facilitate.org";
 
-        projectManager.Contact.Email.Add(email);
+        // projectManager.Contact.Email.Add(email);
 
-        Phone phone = new Phone();
-        phone.AreaCode = 512;
-        phone.Exchange = 977;
-        phone.Number = 2522;
-        projectManager.Contact.Phone.Add(phone);
+        // Phone phone = new Phone();
+        // phone.AreaCode = 512;
+        // phone.Exchange = 977;
+        // phone.Number = 2522;
+        // projectManager.Contact.Phone.Add(phone);
 
-        Address address = new Address();
-        address.Address1 = "123 Main St";
-        address.City = "Austin";
-        address.State = "TX";
-        address.ZipCode = 78704;
+        // Address address = new Address();
+        // address.Address1 = "123 Main St";
+        // address.City = "Austin";
+        // address.State = "TX";
+        // address.ZipCode = 78704;
 
-        projectManager.Contact.Address.Add(address);
+        // projectManager.Contact.Address.Add(address);
 
-        quotes[selectedIndex].projectManager = projectManager;
+        // quotes[selectedIndex].projectManager = projectManager;
 
         // Add some notes
         Note note = new Note();
@@ -623,6 +623,8 @@ else
     // private IEnumerable<Quote>? quotes;
     private List<Quote>? quotes;
 
+    private List<User>? users;
+
     public int itemsToCreate = 10;
     public string updateStatus = "Fetching ";
 
@@ -640,6 +642,11 @@ else
         _timer = new Timer(new TimerCallback(_ =>
         {
             quotes = (List<Quote>)QuoteService.GetQuotes("New");
+
+            AdminBlazor.Data.MemberService memberService = new AdminBlazor.Data.MemberService();
+
+            var users = memberService.GetMembers(Constants.UserRoles.ProjectManager);
+
             updateStatus = quotes.Count().ToString("N0");
             StatusContainerClass = "container-action-buttons-show";
 

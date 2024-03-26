@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BlazorDemo.AspNetCoreHost;
+namespace AdminBlazor.Data;
+
 [Route("api/[controller]")]
 [ApiController]
 public class UploadController : ControllerBase

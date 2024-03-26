@@ -76,10 +76,13 @@ namespace Facilitate.Libraries.Models
 
         public static class UserRoles
         {
-            public static Tuple<ObjectId, string> SystemAdministrator = new Tuple<ObjectId, string>(ObjectId.Parse("57be0508d00bc528b4bfb0f9"), "System Administrator");
-            public static Tuple<ObjectId, string> SiteAdministrator = new Tuple<ObjectId, string>(ObjectId.Parse("57be0527d00bc528b4bfb0fa"), "Site Administrator");
-            public static Tuple<ObjectId, string> GroupAdministrator = new Tuple<ObjectId, string>(ObjectId.Parse("57be052dd00bc528b4bfb0fb"), "Group Administrator");
-            public static Tuple<ObjectId, string> Consumer = new Tuple<ObjectId, string>(ObjectId.Parse("57be0533d00bc528b4bfb0fc"), "Consumer");
+            public static Tuple<ObjectId, string> SystemAdministrator = new Tuple<ObjectId, string>(ObjectId.Parse("66030593a266bc0d03e368c8"), "System Administrator");
+            public static Tuple<ObjectId, string> SiteAdministrator = new Tuple<ObjectId, string>(ObjectId.Parse("660305aaa266bc0d03e368c9"), "Site Administrator");
+            public static Tuple<ObjectId, string> GroupAdministrator = new Tuple<ObjectId, string>(ObjectId.Parse("660305b4a266bc0d03e368ca"), "Group Administrator");
+            public static Tuple<ObjectId, string> ProjectSupervisor = new Tuple<ObjectId, string>(ObjectId.Parse("660305bea266bc0d03e368cb"), "Project Supervisor");
+            public static Tuple<ObjectId, string> ProjectManager = new Tuple<ObjectId, string>(ObjectId.Parse("660305c8a266bc0d03e368cc"), "Project Manager");
+            public static Tuple<ObjectId, string> Homeowner = new Tuple<ObjectId, string>(ObjectId.Parse("660305d1a266bc0d03e368cd"), "Homeowner");
+            public static Tuple<ObjectId, string> Consumer = new Tuple<ObjectId, string>(ObjectId.Parse("660305d9a266bc0d03e368ce"), "Consumer");
         }
 
         #endregion
