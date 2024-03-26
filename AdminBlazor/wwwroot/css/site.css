@@ -35,11 +35,11 @@ table {
     border: solid 1px #c0c0c0 !important;
 }
 
-    .notes-container td {
-        border: solid 1px #c0c0c0 !important;
-        padding: 0px !important;
-        padding: 15px !important;
-    }
+.notes-container td {
+    border: solid 1px #c0c0c0 !important;
+    padding: 0px !important;
+    padding: 15px !important;
+}
 
 .note-row {
     border-bottom: dashed 0px #c0c0c0 !important;
@@ -69,12 +69,10 @@ table {
 
 .event-details {
     border: solid 1px #ff0000 !important;
-/*    width: 85% !important;
-    min-width: 85% !important;
-    max-width: 85% !important;*/
 }
 
-.strikethru {
+.author {
+    font-size: 1.1em !important;
     text-decoration: line-through;
     color: #c0c0c0 !important;
 }
@@ -98,7 +96,7 @@ label {
 }
 
 label:after {
-    content: ':';
+    content: '' !important;
 }
 
 h6 {

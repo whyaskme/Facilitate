@@ -265,7 +265,23 @@ else
                 <table>
                     <tbody>
                         <tr class="notes-container">
-                            <td style="text-align: right !important;" class="notes-items">
+                            <td style="text-align: center !important;" class="notes-items">
+                                <button class="btn btn-primary" @onclick="@(() => PopupVisibleAddNote = true)">Send Docs</button>
+                            </td>
+                            <td colspan="3" class="notes-items">
+                                <label>Welcome letter
+                                    <input type="checkbox" />
+                                </label>
+                                <label>
+                                    Engagement agreement
+                                    <input type="checkbox" />
+                                </label>
+                                <label>and/or</label>
+                                <input type="file" />
+                            </td>
+                        </tr>
+                        <tr class="notes-container">
+                            <td style="text-align: center !important;" class="notes-items">
                                 <button class="btn btn-primary" @onclick="@(() => PopupVisibleAddNote = true)">Add Files</button>
                             </td>
                             <td colspan="3" class="notes-items">
@@ -274,11 +290,10 @@ else
                                     for (int currentIndex = 0; currentIndex < @_quote.attachments.Count; currentIndex++)
                                     {
                                         <div class="note-row">
-                                            <a href="#">Edit</a>
-                                            <span class="bar-spacer">|</span>
-                                            <a href="#">Delete</a>
-                                            <span class="bar-spacer">|</span>
                                             <label>@documentCount) @_quote.attachments[currentIndex].Date</label>
+                                            <span class="bar-spacer">|</span>
+                                            <a href="#">Edit</a>
+                                            <a href="#">Delete</a>
                                             <span class="bar-spacer">|</span>
                                             <a href="@_quote.attachments[currentIndex].MediaUrl" target="_blank">
                                                 <span class="detail-item">@_quote.attachments[currentIndex].MediaDescription</span>
@@ -288,7 +303,7 @@ else
                                             <span>@fileType</span>
                                             <span class="bar-spacer">|</span>
                                             <label>Author</label>
-                                            <span>@author</span>
+                                            <span class="author">@author</span>
                                         </div>
                                         documentCount--;
                                     }
@@ -296,7 +311,7 @@ else
                             </td>
                         </tr>
                         <tr class="notes-container">
-                            <td style="text-align: right !important;" class="notes-items">
+                            <td style="text-align: center !important;" class="notes-items">
                                 <button class="btn btn-primary" @onclick="@(() => PopupVisibleAddNote = true)">Add Note</button>
                             </td>
                             <td colspan="3" class="notes-items">
@@ -305,16 +320,15 @@ else
                                     for (int currentIndex = 0; currentIndex < @_quote.notes.Count; currentIndex++)
                                     {
                                         <div class="note-row">
-                                            <a href="#">Edit</a>
-                                            <span class="bar-spacer">|</span>
-                                            <a href="#">Delete</a>
-                                            <span class="bar-spacer">|</span>
                                             <label>@noteCount) @_quote.notes[currentIndex].Date</label>
+                                            <span class="bar-spacer">|</span>
+                                            <a href="#">Edit</a>
+                                            <a href="#">Delete</a>
                                             <span class="bar-spacer">|</span>
                                             <span class="detail-item">@_quote.notes[currentIndex].Details</span>
                                             <span class="bar-spacer">|</span>
                                             <label>Author</label>
-                                            <span>@author</span>
+                                            <span class="author">@author</span>
                                         </div>
                                         noteCount--;
                                     }
@@ -474,7 +488,7 @@ else
 @code {
 
     string fileType { get; set; } = ".pdf";
-    string author { get; set; } = "Facilitate Platform";
+    string author { get; set; } = "unknown";
 
     string ArchivalReason { get; set; } = "";
 
