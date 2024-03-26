@@ -34,9 +34,9 @@ namespace AdminBlazor.Data
         IMongoCollection<User> collection;
         private CancellationToken _cancellationToken;
 
-        public IEnumerable<User> GetMembers(Tuple<ObjectId, string> memberType)
+        public List<User> GetMembers(Tuple<ObjectId, string> memberType)
         {
-            IEnumerable<User> members = null;
+            List<User> members = null;
 
             ObjectId memberTypeId = memberType.Item1;
             string memberTypeValue = memberType.Item2;
@@ -47,9 +47,17 @@ namespace AdminBlazor.Data
                 collection = client.GetDatabase(dbName).GetCollection<User>(collectionName);
 
                 var builder = Builders<User>.Filter;
-                var filter = builder.Eq(f => f.UserName, "matthew");
+                var filter = builder.Ne(f => f.UserName, "facilitate-null");
 
                 members = collection.Find(filter).ToList();
+
+                foreach(var member in collection.Find(filter).ToList())
+                {
+                    if (member.Roles.Contains(memberTypeId.ToString()))
+                    {
+                        members.Append(member);
+                    }
+                }
 
                 return members;
             }

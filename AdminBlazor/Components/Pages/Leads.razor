@@ -6,6 +6,8 @@
 @using Facilitate.Libraries.Models;
 @using MongoDB.Bson;
 
+@using Microsoft.AspNetCore.Mvc;
+
 @using Json.Net;
 
 @attribute [StreamRendering(true)]
@@ -393,7 +395,20 @@ else
 
 
 @code {
+
+
+    //public List<User> projectManagers { get; set; }
+
     string ArchivalReason { get; set; } = "";
+
+    // public class SampleEditForm : DxForm
+    // {
+    //     protected override void OnInitialized()
+    //     {
+    //         base.OnInitialized();
+    //         EditContext = new EditContext(this);
+    //     }
+    // }
 
     public void ArchiveLead()
     {
