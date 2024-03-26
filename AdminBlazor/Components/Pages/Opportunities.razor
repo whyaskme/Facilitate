@@ -273,7 +273,7 @@ else
                             <td colspan="3" class="notes-items">
                                 <DxUpload Name="myFile"
                                             AllowMultiFileUpload="true"
-                                            UploadUrl="@GetUploadUrl("/Uploads/")"
+                                          UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
                                             SelectedFilesChanged="@SelectedFilesChanged"
                                             MaxFileSize="15000000"
                                             CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
