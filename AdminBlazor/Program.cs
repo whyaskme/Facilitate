@@ -18,7 +18,10 @@ builder.Services.AddDevExpressBlazor(options => {
     options.SizeMode = DevExpress.Blazor.SizeMode.Medium;
 });
 
+builder.Services.AddSingleton<FileService>();
+builder.Services.AddSingleton<MemberService>();
 builder.Services.AddSingleton<QuoteService>();
+builder.Services.AddSingleton<UploadService>();
 
 builder.Services.AddCors(x => x.AddPolicy("externalRequests",
                     policy => policy

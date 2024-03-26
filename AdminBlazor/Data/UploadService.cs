@@ -5,7 +5,7 @@ namespace AdminBlazor.Data;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UploadController : ControllerBase
+public class UploadService : ControllerBase
 {
     [HttpGet("[action]")]
     public ActionResult Upload()
