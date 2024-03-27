@@ -15,6 +15,7 @@ namespace Facilitate.Libraries.Models
         public User()
         {
             //_id = ObjectId.GenerateNewId();
+            Profile = new Profile();
         }
 
         public ObjectId _id { get; set; }
@@ -53,8 +54,10 @@ namespace Facilitate.Libraries.Models
         public string Pwd { get; set; }
         public int Gender { get; set; } // 0 = Not specified, Female = 1, Male = 2
 
-        public ContactInfo Contact { get; set; }
-        public List<CreditCard> CreditCards { get; set; }
-        public List<Transaction> Transactions { get; set; }
+        //public ContactInfo Contact { get; set; }
+        //public List<CreditCard> CreditCards { get; set; }
+        //public List<Transaction> Transactions { get; set; }
+
+        public Profile Profile { get; set; }
     }
 }
