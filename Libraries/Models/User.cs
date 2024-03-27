@@ -33,14 +33,28 @@ namespace Facilitate.Libraries.Models
         public bool LockoutEnabled { get; set; }
         public Int32 AccessFailedCount { get; set; }
 
-        //public List<Role> Roles { get; set; }
         public string[] Roles { get; set; }
 
         public List<Claim> Claims { get; set; }
-
         public List<Login> Logins { get; set; }
-        //public string[] Login { get; set; }
-
         public List<Token> Tokens { get; set; }
+
+        // Custom profile fields
+        public DateTime RegistrationDate { get; set; }
+        public Boolean Expired { get; set; }
+        public DateTime ExpireDate { get; set; }
+        public Int16 DeviceType { get; set; } // Android (Phone) = 1, Android (Tablet) = 2, IOS (Phone) - 3, IOS (Tablet) - 4
+        public bool IsLoggedIn { get; set; }
+        public string Title { get; set; }
+        public string FirstName { get; set; }
+        public string MiddleName { get; set; }
+        public string LastName { get; set; }
+        public string Suffix { get; set; }
+        public string Pwd { get; set; }
+        public int Gender { get; set; } // 0 = Not specified, Female = 1, Male = 2
+
+        public ContactInfo Contact { get; set; }
+        public List<CreditCard> CreditCards { get; set; }
+        public List<Transaction> Transactions { get; set; }
     }
 }
