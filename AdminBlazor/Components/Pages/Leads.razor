@@ -370,16 +370,32 @@ else
             <DxListBox 
                 Data="@ProjectManagers" 
                 @bind-Values="@Values"
+                SelectedItemsChanged="@((IEnumerable<User> values) => SelectedProjectManagerChanged(values))"
                 SelectionMode="ListBoxSelectionMode.Single"
                 ShowCheckboxes="true">
-
                 <Columns>
                     <DxListEditorColumn FieldName="NormalizedUserName" Caption="Name" />
                     <DxListEditorColumn FieldName="Email" Caption="Email" />
-                    <DxListEditorColumn FieldName="_id" Caption="Id" />
+                    <DxListEditorColumn FieldName="_id" Visible="false" Caption="Id" />
                 </Columns>
-
             </DxListBox>
+@*             <DxComboBox Data="@ProjectManagers"
+                        @bind-Value="@Values"
+                        SelectedItemChanged="@((User user) => SelectedItemChanged(user))"
+                        CssClass="cw-480"
+                        FilteringMode="DataGridFilteringMode.Contains"
+                        EditFormat="{1} {2}"
+                        InputId="cbMultiColumn">
+                <Columns>
+                    <DxListEditorColumn FieldName="NormalizedUserName"
+                                        Caption="Name" />
+                    <DxListEditorColumn FieldName="Email"
+                                        Caption="Email" />
+                    <DxListEditorColumn FieldName="_id"
+                                        Visible="false"
+                                        Caption="Id" />
+                </Columns>
+            </DxComboBox> *@
         </div>
     </BodyContentTemplate>
     <FooterContentTemplate>
@@ -412,6 +428,16 @@ else
 @code {
 
     IEnumerable<string> Values { get; set; }
+
+    IEnumerable<User> SelectedProjectManager { get; set; }
+
+    [Parameter]
+    public EventCallback<IEnumerable<User>> SelectedItemsChanged { get; set; }
+
+    void SelectedProjectManagerChanged(IEnumerable<User> selectedProjectManager)
+    {
+        SelectedProjectManager = selectedProjectManager;
+    }
 
     AdminBlazor.Data.MemberService memberService = new AdminBlazor.Data.MemberService();
 
@@ -555,37 +581,11 @@ else
     {
         Grid.CollapseDetailRow(selectedIndex);
 
-        //var tmp = selectedProjectManager;
-
-        // User projectManager = new User();
-        // projectManager.FirstName = "Matthew";
-        // projectManager.LastName = "Lamz";
-
-        // Email email = new Email();
-        // email.UserName = projectManager.FirstName.ToLower() + "." + projectManager.LastName.ToLower();
-        // email.Domain = "facilitate.org";
-
-        // projectManager.Contact.Email.Add(email);
-
-        // Phone phone = new Phone();
-        // phone.AreaCode = 512;
-        // phone.Exchange = 977;
-        // phone.Number = 2522;
-        // projectManager.Contact.Phone.Add(phone);
-
-        // Address address = new Address();
-        // address.Address1 = "123 Main St";
-        // address.City = "Austin";
-        // address.State = "TX";
-        // address.ZipCode = 78704;
-
-        // projectManager.Contact.Address.Add(address);
-
-        // quotes[selectedIndex].projectManager = projectManager;
+        quotes[selectedIndex].projectManager = SelectedProjectManager.ToList()[0];
 
         // Add some notes
         Note note = new Note();
-        note.Summary = "Lead assigned to Matthew Lamz";
+        note.Summary = "Lead assigned to " + quotes[selectedIndex].projectManager.NormalizedUserName + " | " + quotes[selectedIndex].projectManager.Email;
         note.Details = "This is just a test note getting attached to a lead as it transitions from Lead > Opportunity due to PM assignment.";
         quotes[selectedIndex].notes.Add(note);
 
