@@ -34,9 +34,11 @@ namespace AdminBlazor.Data
         IMongoCollection<User> collection;
         private CancellationToken _cancellationToken;
 
-        public List<User> GetMembers(Tuple<ObjectId, string> memberType)
+        //public List<ListItem> GetMembers(Tuple<ObjectId, string> memberType)
+        public string[] GetMembers(Tuple<ObjectId, string> memberType)
         {
             List<User> members = null;
+            List<ListItem> projectManagers = new List<ListItem>();
 
             ObjectId memberTypeId = memberType.Item1;
             string memberTypeValue = memberType.Item2;
@@ -51,15 +53,26 @@ namespace AdminBlazor.Data
 
                 members = collection.Find(filter).ToList();
 
-                foreach(var member in collection.Find(filter).ToList())
+                string[] projectManagersArray = new string[members.Count];
+                int index = 0;
+
+                foreach (User member in members)
                 {
                     if (member.Roles.Contains(memberTypeId.ToString()))
                     {
-                        members.Append(member);
+                        //members.Append(member);
+                        //ListItem listItem = new ListItem();
+                        //listItem.Text = member.NormalizedUserName;
+                        //listItem.Value = member._id.ToString();
+                        //projectManagers.Add(listItem);
+
+                        projectManagersArray[index] = member.NormalizedUserName;
+
+                        index++;
                     }
                 }
 
-                return members;
+                return projectManagersArray;
             }
             catch (Exception ex)
             {

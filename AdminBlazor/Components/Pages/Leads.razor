@@ -366,6 +366,16 @@ else
     <BodyContentTemplate>
         <SampleEditForm/>
         Put the PM list here for assignment selection
+
+        <DxListBox Data="@ProjectManagers" @bind-Values="@Values"></DxListBox>
+
+@*         <select id="projectManagersList">
+            <option>List item 1 </option>
+            <option>List item 2 </option>
+            <option>List item 3 </option>
+            <option>List item N </option>
+        </select> *@
+
     </BodyContentTemplate>
     <FooterContentTemplate>
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
@@ -397,7 +407,16 @@ else
 @code {
 
 
-    //public List<User> projectManagers { get; set; }
+    IEnumerable<string> Cities = new List<string>() {
+        "London",
+        "Berlin",
+        "Paris",
+    };
+
+    IEnumerable<string> Values { get; set; }
+    
+    AdminBlazor.Data.MemberService memberService = new AdminBlazor.Data.MemberService();
+    IEnumerable<string> ProjectManagers = new List<string>();
 
     string ArchivalReason { get; set; } = "";
 
@@ -509,6 +528,7 @@ else
     {
         if (firstRender)
         {
+            ProjectManagers = memberService.GetMembers(Constants.UserRoles.ProjectManager);
             RefreshTimer();
         }
 
@@ -638,7 +658,7 @@ else
     // private IEnumerable<Quote>? quotes;
     private List<Quote>? quotes;
 
-    private List<User>? users;
+    //private List<ListItem>? projectManagers;
 
     public int itemsToCreate = 10;
     public string updateStatus = "Fetching ";
@@ -658,9 +678,9 @@ else
         {
             quotes = (List<Quote>)QuoteService.GetQuotes("New");
 
-            AdminBlazor.Data.MemberService memberService = new AdminBlazor.Data.MemberService();
+            //AdminBlazor.Data.MemberService memberService = new AdminBlazor.Data.MemberService();
 
-            var users = memberService.GetMembers(Constants.UserRoles.ProjectManager);
+            //projectManagers = memberService.GetMembers(Constants.UserRoles.ProjectManager);
 
             updateStatus = quotes.Count().ToString("N0");
             StatusContainerClass = "container-action-buttons-show";
