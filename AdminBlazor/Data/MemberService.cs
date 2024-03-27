@@ -66,7 +66,11 @@ namespace AdminBlazor.Data
                         //listItem.Value = member._id.ToString();
                         //projectManagers.Add(listItem);
 
-                        projectManagersArray[index] = member.NormalizedUserName;
+                        var memberData = member.NormalizedUserName;
+                        memberData += " (" + member.Email + ")";
+                        //memberData += " | " + member._id;
+
+                        projectManagersArray[index] = memberData;
 
                         index++;
                     }

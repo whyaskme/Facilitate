@@ -364,18 +364,9 @@ else
     HeaderText="Assign Lead"
    >
     <BodyContentTemplate>
-        <SampleEditForm/>
-        Put the PM list here for assignment selection
-
-        <DxListBox Data="@ProjectManagers" @bind-Values="@Values"></DxListBox>
-
-@*         <select id="projectManagersList">
-            <option>List item 1 </option>
-            <option>List item 2 </option>
-            <option>List item 3 </option>
-            <option>List item N </option>
-        </select> *@
-
+        <div>Please select a Project Manager for assignment</div>
+        <br />
+        <div><DxListBox Data="@ProjectManagers" @bind-Values="@Values"></DxListBox></div>
     </BodyContentTemplate>
     <FooterContentTemplate>
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
