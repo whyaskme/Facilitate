@@ -3,12 +3,12 @@
 @using AdminBlazor.Data
 @using DevExpress.Data
 @using DevExpress.Data.Linq
-@using Facilitate.Libraries.Models;
-@using MongoDB.Bson;
+@using Facilitate.Libraries.Models
+@using MongoDB.Bson
 
-@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.AspNetCore.Mvc
 
-@using Json.Net;
+@using Json.Net
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
@@ -411,29 +411,13 @@ else
 
 @code {
 
-
-    IEnumerable<string> Cities = new List<string>() {
-        "London",
-        "Berlin",
-        "Paris",
-    };
-
     IEnumerable<string> Values { get; set; }
-    
+
     AdminBlazor.Data.MemberService memberService = new AdminBlazor.Data.MemberService();
 
     public List<User>? ProjectManagers;
 
     string ArchivalReason { get; set; } = "";
-
-    // public class SampleEditForm : DxForm
-    // {
-    //     protected override void OnInitialized()
-    //     {
-    //         base.OnInitialized();
-    //         EditContext = new EditContext(this);
-    //     }
-    // }
 
     public void ArchiveLead()
     {
@@ -570,6 +554,8 @@ else
     public void AssignLead()
     {
         Grid.CollapseDetailRow(selectedIndex);
+
+        //var tmp = selectedProjectManager;
 
         // User projectManager = new User();
         // projectManager.FirstName = "Matthew";
