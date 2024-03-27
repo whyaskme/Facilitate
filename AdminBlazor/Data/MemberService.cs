@@ -34,8 +34,7 @@ namespace AdminBlazor.Data
         IMongoCollection<User> collection;
         private CancellationToken _cancellationToken;
 
-        //public List<ListItem> GetMembers(Tuple<ObjectId, string> memberType)
-        public string[] GetMembers(Tuple<ObjectId, string> memberType)
+        public List<User> GetMembers(Tuple<ObjectId, string> memberType)
         {
             List<User> members = null;
             List<ListItem> projectManagers = new List<ListItem>();
@@ -52,31 +51,15 @@ namespace AdminBlazor.Data
                 var filter = builder.Ne(f => f.UserName, "facilitate-null");
 
                 members = collection.Find(filter).ToList();
-
-                string[] projectManagersArray = new string[members.Count];
-                int index = 0;
-
                 foreach (User member in members)
                 {
                     if (member.Roles.Contains(memberTypeId.ToString()))
                     {
-                        //members.Append(member);
-                        //ListItem listItem = new ListItem();
-                        //listItem.Text = member.NormalizedUserName;
-                        //listItem.Value = member._id.ToString();
-                        //projectManagers.Add(listItem);
-
-                        var memberData = member.NormalizedUserName;
-                        memberData += " (" + member.Email + ")";
-                        //memberData += " | " + member._id;
-
-                        projectManagersArray[index] = memberData;
-
-                        index++;
+                        members.Append(member);
                     }
                 }
 
-                return projectManagersArray;
+                return members;
             }
             catch (Exception ex)
             {
