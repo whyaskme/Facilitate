@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Net;
 using System.Net.Mail;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Xml;
 
@@ -26,8 +27,9 @@ namespace Facilitate.Libraries.Models
         string resultMsg = string.Empty;
         string mongoUri = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate";
 
-        IMongoClient client;
+        public TextInfo textinfo = new CultureInfo("en-US", false).TextInfo;
 
+        IMongoClient client;
         IMongoCollection<Name> namesCollection;
 
         public Utils()
@@ -381,19 +383,72 @@ namespace Facilitate.Libraries.Models
             return stateList;
         }
 
+        public ZipCode GetGeoLocationInfoByZipCode(int zipCode)
+        {
+            try
+            {
+                var zipCodeCollection = client.GetDatabase(dbName).GetCollection<ZipCode>("ReferenceData");
+                var selectedZipCodes = zipCodeCollection.Find(s => s.Zip == zipCode).ToListAsync().Result;
+
+                foreach (ZipCode currentZipCode in selectedZipCodes)
+                {
+                    return currentZipCode;
+                }
+            }
+            catch (Exception ex)
+            {
+                var errMsg = ex.ToString();
+            }
+
+            return null;
+        }
+
         public ObjectId GetStateIdByName(string stateName)
         {
+            stateName = textinfo.ToTitleCase(stateName.ToLower());
+
             var stateId = ObjectId.Empty;
 
             try
             {
-                CreateDbConnection("State", "States");
+                var stateCollection = client.GetDatabase(dbName).GetCollection<State>("ReferenceData");
+                var selectedState = stateCollection.Find(s => s.Name == stateName).ToListAsync().Result;
 
-                var stateCollection = _mongoStateCollection.Find(s => s.Name == stateName).ToListAsync().Result;
-                foreach (State currentState in stateCollection)
+                foreach (State currentState in selectedState)
                 {
-                    stateId = currentState._id;
-                    return stateId;
+                    if(currentState._t == "State")
+                    {
+                        stateId = currentState._id;
+                        return stateId;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var errMsg = ex.ToString();
+            }
+
+            return stateId;
+        }
+
+        public ObjectId GetStateByAbbr(string stateAbbr)
+        {
+            stateAbbr = stateAbbr.ToUpper();
+
+            var stateId = ObjectId.Empty;
+
+            try
+            {
+                var stateCollection = client.GetDatabase(dbName).GetCollection<State>("ReferenceData");
+                var selectedState = stateCollection.Find(s => s.Abbr == stateAbbr).ToListAsync().Result;
+
+                foreach (State currentState in selectedState)
+                {
+                    if (currentState._t == "State")
+                    {
+                        stateId = currentState._id;
+                        return stateId;
+                    }
                 }
             }
             catch (Exception ex)
@@ -427,19 +482,27 @@ namespace Facilitate.Libraries.Models
             return myCityId;
         }
 
-        public State GetStateByAbbr(string stateAbbr)
+        public ObjectId GetCityIdByNameAndStateId(string cityName, ObjectId StateId)
         {
-            State myState = new State();
+            cityName = textinfo.ToTitleCase(cityName.ToLower());
+
+            var cityId = ObjectId.Empty;
 
             try
             {
-                CreateDbConnection("State", "States");
+                var cityCollection = client.GetDatabase(dbName).GetCollection<City>("ReferenceData");
+                var selectedCities = cityCollection.Find(s => s.Name == cityName).ToListAsync().Result;
 
-                var stateCollection = _mongoStateCollection.Find(s => s.Abbr == stateAbbr).ToListAsync().Result;
-                foreach (State currentState in stateCollection)
+                foreach (City currentCity in selectedCities)
                 {
-                    myState = currentState;
-                    return myState;
+                    if (currentCity.StateId == StateId)
+                    {
+                        if (currentCity._t == "City")
+                        {
+                            cityId = currentCity._id;
+                            return cityId;
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -447,7 +510,62 @@ namespace Facilitate.Libraries.Models
                 var errMsg = ex.ToString();
             }
 
-            return myState;
+            return cityId;
+        }
+
+        public City GetCityInfoByNameAndStateId(string cityName, ObjectId StateId)
+        {
+            cityName = textinfo.ToTitleCase(cityName.ToLower());
+
+            var cityId = ObjectId.Empty;
+
+            try
+            {
+                var cityCollection = client.GetDatabase(dbName).GetCollection<City>("ReferenceData");
+                var selectedCities = cityCollection.Find(s => s.Name == cityName).ToListAsync().Result;
+
+                foreach (City currentCity in selectedCities)
+                {
+                    if (currentCity.StateId == StateId)
+                    {
+                        if (currentCity._t == "City")
+                        {
+                            return currentCity;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var errMsg = ex.ToString();
+            }
+
+            return null;
+        }
+
+        public County GetCountyByCityTimeZoneId(ObjectId timezoneId)
+        {
+            timezoneId = ObjectId.Parse("57a01b573d33e01394bc8afe");
+
+            try
+            {
+                var countyCollection = client.GetDatabase(dbName).GetCollection<County>("ReferenceData");
+                var selectedCounties = countyCollection.Find(s => s.TimeZoneId == timezoneId).ToListAsync().Result;
+
+                foreach (County currentCounty in selectedCounties)
+                {
+                    if (currentCounty._t == "County")
+                    {
+                        return currentCounty;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var errMsg = ex.ToString();
+            }
+
+            return null;
         }
 
         public string GetStateAbbr(ObjectId stateId)
@@ -568,29 +686,29 @@ namespace Facilitate.Libraries.Models
             return eventCount;
         }
 
-        //public Event GetEvent(ObjectId eventId)
-        //{
-        //    var myEventList = new List<Event>();
-        //    var myEvent = new Event();
+        public Event GetEvent(ObjectId eventId)
+        {
+            var myEventList = new List<Event>();
+            var myEvent = new Event(0,0);
 
-        //    try
-        //    {
-        //        CreateDbConnection("Event", "Events");
+            try
+            {
+                CreateDbConnection("Event", "Events");
 
-        //        myEventList = _mongoEventCollection.Find(s => s._id == eventId).ToListAsync().Result;
-        //        foreach (var currentAd in myEventList)
-        //        {
-        //            myEvent = currentAd;
-        //            //return currentAd;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        serviceResponse = ex.ToString();
-        //    }
+                myEventList = _mongoEventCollection.Find(s => s._id == eventId).ToListAsync().Result;
+                foreach (var currentAd in myEventList)
+                {
+                    myEvent = currentAd;
+                    //return currentAd;
+                }
+            }
+            catch (Exception ex)
+            {
+                serviceResponse = ex.ToString();
+            }
 
-        //    return myEvent;
-        //}
+            return myEvent;
+        }
 
         public List<Person> GetAllUsers(int recLimit, int pageNumber, string sortBy, string orderBy)
         {

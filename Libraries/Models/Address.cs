@@ -26,7 +26,9 @@ namespace Facilitate.Libraries.Models
             City = string.Empty;
 
             ZipCode = 00000;
+
             TimeZoneId = ObjectId.Empty;
+            TimeZone = string.Empty;
 
             Address1 = string.Empty;
             Address2 = string.Empty;
@@ -45,7 +47,9 @@ namespace Facilitate.Libraries.Models
         public string City { get; set; }
 
         public Int32 ZipCode { get; set; }
+
         public ObjectId TimeZoneId { get; set; }
+        public string TimeZone { get; set; }
 
         public string Address1 { get; set; }
         public string Address2 { get; set; }

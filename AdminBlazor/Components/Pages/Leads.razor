@@ -374,28 +374,12 @@ else
                 SelectionMode="ListBoxSelectionMode.Single"
                 ShowCheckboxes="true">
                 <Columns>
-                    <DxListEditorColumn FieldName="NormalizedUserName" Caption="Name" />
+                    <DxListEditorColumn FieldName="Profile.FirstName" Caption="First" />
+                    <DxListEditorColumn FieldName="Profile.LastName" Caption="Last" />
                     <DxListEditorColumn FieldName="Email" Caption="Email" />
                     <DxListEditorColumn FieldName="_id" Visible="false" Caption="Id" />
                 </Columns>
             </DxListBox>
-@*             <DxComboBox Data="@ProjectManagers"
-                        @bind-Value="@Values"
-                        SelectedItemChanged="@((User user) => SelectedItemChanged(user))"
-                        CssClass="cw-480"
-                        FilteringMode="DataGridFilteringMode.Contains"
-                        EditFormat="{1} {2}"
-                        InputId="cbMultiColumn">
-                <Columns>
-                    <DxListEditorColumn FieldName="NormalizedUserName"
-                                        Caption="Name" />
-                    <DxListEditorColumn FieldName="Email"
-                                        Caption="Email" />
-                    <DxListEditorColumn FieldName="_id"
-                                        Visible="false"
-                                        Caption="Id" />
-                </Columns>
-            </DxComboBox> *@
         </div>
     </BodyContentTemplate>
     <FooterContentTemplate>
