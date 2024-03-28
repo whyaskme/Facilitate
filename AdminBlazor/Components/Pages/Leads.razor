@@ -569,7 +569,11 @@ else
 
         // Add some notes
         Note note = new Note();
-        note.Summary = "Lead assigned to " + quotes[selectedIndex].projectManager.NormalizedUserName + " | " + quotes[selectedIndex].projectManager.Email;
+
+        var pmName = quotes[selectedIndex].projectManager.Profile.FirstName;
+        pmName += " " + quotes[selectedIndex].projectManager.Profile.LastName;
+
+        note.Summary = "Lead assigned to " + pmName + " | " + quotes[selectedIndex].projectManager.Email;
         note.Details = "This is just a test note getting attached to a lead as it transitions from Lead > Opportunity due to PM assignment.";
         quotes[selectedIndex].notes.Add(note);
 
