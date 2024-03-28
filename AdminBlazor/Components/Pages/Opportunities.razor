@@ -537,263 +537,270 @@ else
 
 @code {
 
-    [Parameter]
-    public List<string> AcceptedFileTypes { get; set; }
+    #region Private Properties
 
-    int SelectedFilesCount { get; set; }
+        private List<Quote>? quotes;
 
-    ObjectId SelectedFileId { get; set; }
+        int SelectedFilesCount { get; set; }
 
-    public string lastActivityDate = DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm:ss tt");
+        ObjectId SelectedFileId { get; set; }
 
-    protected void SelectedFilesChanged(IEnumerable<UploadFileInfo> files)
-    {
-        SelectedFilesCount = files.ToList().Count;
-        InvokeAsync(StateHasChanged);
-    }
+        IGrid QuoteGrid { get; set; }
 
-    protected void EmailFiles()
-    {
-        var tmpVal = "";
-    }
+        IGrid EventGrid { get; set; }
 
-    protected string GetUploadUrl(string url)
-    {
-        return NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
-    }
+        EntityInstantFeedbackSource InstantFeedbackSource { get; set; }
 
-    string fileType { get; set; } = ".pdf";
-    string author { get; set; } = "unknown";
+        bool isBulkInsert = false;
 
-    string NoteDetails { get; set; } = "";
+        string fileType { get; set; } = ".pdf";
+        string author { get; set; } = "unknown";
 
-    bool PopupVisibleAddFile { get; set; }
-    bool PopupVisibleDeleteFile { get; set; }
+        string NoteDetails { get; set; } = "";
 
-    bool PopupVisibleAddNote { get; set; }
-    bool PopupVisibleDeleteNote { get; set; }
+    #endregion
 
-    bool PopupVisibleMakeCustomer { get; set; }
-    bool PopupVisibleArchive { get; set; }
+    #region Private Properties
 
-    public void ArchiveLead()
-    {
-        QuoteGrid.CollapseDetailRow(selectedIndex);
+        [Inject] public IJSRuntime jsRuntime { get; set; }
 
-        Note note = new Note();
-        note.Summary = "Opportunity Archived";
-        note.Details = @NoteDetails;
+        public string ClientIP = "";
+        public string selectedQuoteId = "";
 
-        Quote quote = quotes[selectedIndex];
-        quote.notes.Add(note);
+        public interface IQueryable : System.Collections.IEnumerable;
 
-        QuoteService.DeleteQuote(selectedQuoteId, quote);
+        public int currentItem = 0;
+        public int selectedIndex = 0;
 
-        PopupVisibleArchive = false;
+        public string SubmissionUserIP { get; set; }
 
-        ToggleRefresh();
-    }
+        public int itemsToCreate = 10;
+        public string updateStatus = "Fetching ";
 
-    public void AddNote()
-    {
-        QuoteGrid.CollapseDetailRow(selectedIndex);
+    #endregion
 
-        Note note = new Note();
-        note.Summary = "Note Added";
-        note.Details = @NoteDetails;
+    #region Popup properties
 
-        Quote quote = quotes[selectedIndex];
-        quote.notes.Add(note);
+        bool PopupVisibleAddFile { get; set; }
+        bool PopupVisibleDeleteFile { get; set; }
 
-        Event _event = new Event(0, 0);
-        _event.Details = "Added NoteId (" + note._id + ") to Quote";
+        bool PopupVisibleAddNote { get; set; }
+        bool PopupVisibleDeleteNote { get; set; }
 
-        quote.status = "Opportunity";
-        quote.events.Add(_event);
+        bool PopupVisibleMakeCustomer { get; set; }
+        bool PopupVisibleArchive { get; set; }
 
-        QuoteService.UpdateQuote(selectedQuoteId, quotes[selectedIndex]);
+    #endregion
 
-        PopupVisibleAddNote = false;
+    #region Parameters
 
-        ToggleRefresh();
+        [Parameter]
+        public string DisplayFormat { get; set; }
 
-        QuoteGrid.ExpandDetailRow(selectedIndex);
-    }
+        [Parameter]
+        public List<string> AcceptedFileTypes { get; set; }
 
-    [Inject] public IJSRuntime jsRuntime { get; set; }
+        [Parameter]
+        public GridDetailRowDisplayMode DetailRowDisplayMode { get; set; }
 
-    [Parameter]
-    public string DisplayFormat { get; set; }
+        [Parameter]
+        public string RefreshStatus { get; set; } = "";
 
-    public string ClientIP = "";
-    public string selectedQuoteId = "";
+        [Parameter]
+        public string StatusContainerClass { get; set; } = "container-action-buttons-hide";
 
-    public async Task<string> GetIpAddress()
-    {
-        try
+        [Parameter]
+        public string StatusClass { get; set; } = "message-normal";
+
+        [Parameter]
+        public string ButtonText { get; set; } = "Pause Refresh";
+
+        [Parameter]
+        public string ButtonClass { get; set; } = "btn btn-outline-primary btn-refresh-active";
+
+        [Parameter]
+        public bool CreateLeadDisabled { get; set; } = true;
+
+        [Parameter]
+        public bool SendDocsDisabled { get; set; } = false;
+
+        [Parameter]
+        public bool CreateLeadsDisabled { get; set; } = true;
+
+        [Parameter]
+        public bool ArchiveLeadsDisabled { get; set; } = true;
+
+        [Parameter]
+        public object SelectedQuoteItem { get; set; }
+
+        [Parameter]
+        public object SelectedEventItem { get; set; }
+
+        [Parameter]
+        public int VisibleIndex { get; set; }
+
+        [Parameter]
+        public bool ClearFilterButtonVisible { get; set; }
+
+    #endregion
+
+    #region Methods
+
+        protected override void OnInitialized() { }
+
+        protected override void OnAfterRender(bool firstRender)
         {
-            SubmissionUserIP = await jsRuntime.InvokeAsync<string>("getIpAddress").ConfigureAwait(true);
+            if (firstRender)
+            {
+                RefreshTimer();
+            }
 
-            return SubmissionUserIP;
-        }
-        catch (Exception e)
-        {
-            //If your request was blocked by CORS or some extension like uBlock Origin then you will get an exception.
-            return string.Empty;
-        }
-    }
-
-    [Parameter]
-    public GridDetailRowDisplayMode DetailRowDisplayMode { get; set; }
-
-    [Parameter]
-    public string RefreshStatus { get; set; } = "";
-
-    [Parameter]
-    public string StatusContainerClass { get; set; } = "container-action-buttons-hide";
-
-    [Parameter]
-    public string StatusClass { get; set; } = "message-normal";
-
-    [Parameter]
-    public string ButtonText { get; set; } = "Pause Refresh";
-
-    [Parameter]
-    public string ButtonClass { get; set; } = "btn btn-outline-primary btn-refresh-active";
-
-    [Parameter]
-    public bool CreateLeadDisabled { get; set; } = true;
-
-    [Parameter]
-    public bool SendDocsDisabled { get; set; } = false;
-
-    [Parameter]
-    public bool CreateLeadsDisabled { get; set; } = true;
-
-    [Parameter]
-    public bool ArchiveLeadsDisabled { get; set; } = true;
-
-    [Parameter]
-    public object SelectedQuoteItem { get; set; }
-
-    [Parameter]
-    public object SelectedEventItem { get; set; }
-
-    [Parameter]
-    public int VisibleIndex { get; set; }
-
-    [Parameter]
-    public bool ClearFilterButtonVisible { get; set; }
-
-    IGrid QuoteGrid { get; set; }
-
-    IGrid EventGrid { get; set; }
-
-    EntityInstantFeedbackSource InstantFeedbackSource { get; set; }
-
-    public interface IQueryable : System.Collections.IEnumerable;
-
-    public int currentItem = 0;
-    public int selectedIndex = 0;
-
-    public string SubmissionUserIP { get; set; }
-
-    protected override void OnInitialized(){}
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender)
-        {
-            RefreshTimer();
+            GetIpAddress();
         }
 
-        GetIpAddress();
-    }
+        void OnRowClick(GridRowClickEventArgs args)
+        {
+            PauseRefresh();
 
-    void OnRowClick(GridRowClickEventArgs args)
-    {
-        PauseRefresh();
+            selectedIndex = args.VisibleIndex;
 
-        selectedIndex = args.VisibleIndex;
+            selectedQuoteId = quotes[selectedIndex]._id;
 
-        selectedQuoteId = quotes[selectedIndex]._id;
+            var selectedDetailExpanded = QuoteGrid.IsDetailRowExpanded(selectedIndex);
+            if (selectedDetailExpanded)
+            {
+                QuoteGrid.CollapseDetailRow(selectedIndex);
+                ToggleRefresh();
+            }
+            else
+            {
+                QuoteGrid.ExpandDetailRow(selectedIndex);
+            }
+        }
 
-        var selectedDetailExpanded = QuoteGrid.IsDetailRowExpanded(selectedIndex);
-        if (selectedDetailExpanded)
+        public async Task<string> GetIpAddress()
+        {
+            try
+            {
+                SubmissionUserIP = await jsRuntime.InvokeAsync<string>("getIpAddress").ConfigureAwait(true);
+
+                return SubmissionUserIP;
+            }
+            catch (Exception e)
+            {
+                //If your request was blocked by CORS or some extension like uBlock Origin then you will get an exception.
+                return string.Empty;
+            }
+        }
+
+        protected void SelectedFilesChanged(IEnumerable<UploadFileInfo> files)
+        {
+            SelectedFilesCount = files.ToList().Count;
+            InvokeAsync(StateHasChanged);
+        }
+
+        protected void EmailFiles()
+        {
+            var tmpVal = "";
+        }
+
+        protected string GetUploadUrl(string url)
+        {
+            return NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
+        }
+
+        public void ArchiveLead()
+        {
+            QuoteGrid.CollapseDetailRow(selectedIndex);
+
+            Note note = new Note();
+            note.Summary = "Opportunity Archived";
+            note.Details = @NoteDetails;
+
+            Quote quote = quotes[selectedIndex];
+            quote.notes.Add(note);
+
+            QuoteService.DeleteQuote(selectedQuoteId, quote);
+
+            PopupVisibleArchive = false;
+
+            ToggleRefresh();
+        }
+
+        public void AddNote()
+        {
+            QuoteGrid.CollapseDetailRow(selectedIndex);
+
+            Note note = new Note();
+            note.Summary = "Note Added";
+            note.Details = @NoteDetails;
+
+            Quote quote = quotes[selectedIndex];
+            quote.notes.Add(note);
+
+            Event _event = new Event(0, 0);
+            _event.Details = "Added NoteId (" + note._id + ") to Quote";
+
+            quote.status = "Opportunity";
+            quote.events.Add(_event);
+
+            QuoteService.UpdateQuote(selectedQuoteId, quotes[selectedIndex]);
+
+            PopupVisibleAddNote = false;
+
+            ToggleRefresh();
+
+            QuoteGrid.ExpandDetailRow(selectedIndex);
+        }
+
+        public void CloseDetails()
         {
             QuoteGrid.CollapseDetailRow(selectedIndex);
             ToggleRefresh();
         }
-        else
+
+        public void DeleteFile()
         {
-            QuoteGrid.ExpandDetailRow(selectedIndex);
+            var tmpVal = "";
+
+            PopupVisibleDeleteFile = false;
+
+            // Grid.CollapseDetailRow(selectedIndex);
+            // ToggleRefresh();
         }
-    }
 
-    public void CloseDetails()
-    {
-        QuoteGrid.CollapseDetailRow(selectedIndex);
-        ToggleRefresh();
-    }
+        public void DeleteNote()
+        {
+            var tmpVal = "";
 
-    public void DeleteFile()
-    {
-        var tmpVal = "";
+            PopupVisibleDeleteNote = false;
 
-        PopupVisibleDeleteFile = false;
+            // Grid.CollapseDetailRow(selectedIndex);
+            // ToggleRefresh();
+        }
 
-        // Grid.CollapseDetailRow(selectedIndex);
-        // ToggleRefresh();
-    }
+        public void MakeCustomer()
+        {
+            QuoteGrid.CollapseDetailRow(selectedIndex);
 
-    public void DeleteNote()
-    {
-        var tmpVal = "";
+            Quote quote = quotes[selectedIndex];
+            quote.status = "Customer";
 
-        PopupVisibleDeleteNote = false;
+            var projectManager = quote.projectManager;
 
-        // Grid.CollapseDetailRow(selectedIndex);
-        // ToggleRefresh();
-    }
+            Event _event = new Event(0, 0);
+            _event.Details = "Opportunity converted to Customer";
 
-    public void MakeCustomer()
-    {
-        QuoteGrid.CollapseDetailRow(selectedIndex);
+            quote.events.Add(_event);
 
-        Quote quote = quotes[selectedIndex];
-        quote.status = "Customer";
+            QuoteService.UpdateQuote(selectedQuoteId, quotes[selectedIndex]);
 
-        var projectManager = quote.projectManager;
+            PopupVisibleMakeCustomer = false;
 
-        Event _event = new Event(0, 0);
-        _event.Details = "Opportunity converted to Customer";
+            ToggleRefresh();
+        }
 
-        quote.events.Add(_event);
-
-        QuoteService.UpdateQuote(selectedQuoteId, quotes[selectedIndex]);
-
-        PopupVisibleMakeCustomer = false;
-
-        ToggleRefresh();
-    }
-
-    public virtual void PauseRefresh()
-    {
-        CreateLeadDisabled = false;
-        CreateLeadsDisabled = false;
-        ArchiveLeadsDisabled = false;
-
-        ButtonText = "Resume Refresh";
-        ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
-        StatusClass = "message-warning";
-        RefreshStatus = " Auto refresh paused...";
-
-        _timer?.Dispose();
-    }
-
-    public virtual void ToggleRefresh()
-    {
-        if (ButtonText == "Pause Refresh")
+        public virtual void PauseRefresh()
         {
             CreateLeadDisabled = false;
             CreateLeadsDisabled = false;
@@ -806,50 +813,60 @@ else
 
             _timer?.Dispose();
         }
-        else
+
+        public virtual void ToggleRefresh()
         {
-            CreateLeadDisabled = true;
-            CreateLeadsDisabled = true;
-            ArchiveLeadsDisabled = true;
-
-            StatusClass = "message-normal";
-            RefreshStatus = "";
-            ButtonText = "Pause Refresh";
-            ButtonClass = "btn btn-outline-primary btn-refresh-active";
-
-            RefreshTimer();
-        }
-    }
-
-    // private IEnumerable<Quote>? quotes;
-    private List<Quote>? quotes;
-
-    public int itemsToCreate = 10;
-    public string updateStatus = "Fetching ";
-
-    bool isBulkInsert = false;
-
-    public Timer _timer;
-
-    public void Dispose()
-    {
-        _timer?.Dispose();           // because you need it here
-    }
-
-    private void RefreshTimer()
-    {
-        //quotes = null;
-
-        _timer = new Timer(new TimerCallback(_ =>
-        {
-            quotes = (List<Quote>)QuoteService.GetQuotes("Opportunity");
-            updateStatus = quotes.Count().ToString("N0");
-            StatusContainerClass = "container-action-buttons-show";
-
-            InvokeAsync(() =>
+            if (ButtonText == "Pause Refresh")
             {
-                StateHasChanged();
-            });
-        }), null, 1000, 1000);
-    }
+                CreateLeadDisabled = false;
+                CreateLeadsDisabled = false;
+                ArchiveLeadsDisabled = false;
+
+                ButtonText = "Resume Refresh";
+                ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
+                StatusClass = "message-warning";
+                RefreshStatus = " Auto refresh paused...";
+
+                _timer?.Dispose();
+            }
+            else
+            {
+                CreateLeadDisabled = true;
+                CreateLeadsDisabled = true;
+                ArchiveLeadsDisabled = true;
+
+                StatusClass = "message-normal";
+                RefreshStatus = "";
+                ButtonText = "Pause Refresh";
+                ButtonClass = "btn btn-outline-primary btn-refresh-active";
+
+                RefreshTimer();
+            }
+        }
+
+        public Timer _timer;
+
+        public void Dispose()
+        {
+            _timer?.Dispose();           // because you need it here
+        }
+
+        private void RefreshTimer()
+        {
+            //quotes = null;
+
+            _timer = new Timer(new TimerCallback(_ =>
+            {
+                quotes = (List<Quote>)QuoteService.GetQuotes("Opportunity");
+                updateStatus = quotes.Count().ToString("N0");
+                StatusContainerClass = "container-action-buttons-show";
+
+                InvokeAsync(() =>
+                {
+                    StateHasChanged();
+                });
+            }), null, 1000, 1000);
+        }
+
+    #endregion
 }
