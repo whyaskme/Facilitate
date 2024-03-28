@@ -275,22 +275,41 @@ else
                 <table>
                     <tbody>
                         <tr class="notes-container">
-                            <td style="text-align: center !important;" class="notes-items">
-                                <DxUpload Name="myFile"
-                                          AllowMultiFileUpload="true"
-                                          UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
-                                          SelectedFilesChanged="@SelectedFilesChanged"
-                                          MaxFileSize="15000000"
-                                          CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
-                                </DxUpload>
+                            <td class="table-button-container">
+                                <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@(() => PopupVisibleAddNote = true)">Email Docs</button>
                             </td>
                             <td colspan="3" class="notes-items">
-                                <button class="btn btn-primary" disabled="@SendDocsDisabled" @onclick="@(() => PopupVisibleAddNote = true)">Send Files</button>
+                                <label class="document-label-container">
+                                    Welcome letter
+                                    <input type="checkbox" id="welcomeletter" name="welcomeletter" value="welcomeletter">
+                                </label>
+                                <label class="document-label-container">
+                                    Engagement Agreement
+                                    <input type="checkbox" id="engagementagreement" name="engagementagreement" value="engagementagreement">
+                                </label>
+                                <label class="document-label-container">
+                                    and/or
+                                </label>
+                                <label>
+                                    <DxUpload Name="myFile"
+                                              AllowMultiFileUpload="true"
+                                              UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                              SelectedFilesChanged="@SelectedFilesChanged"
+                                              MaxFileSize="15000000"
+                                              CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
+                                    </DxUpload>
+                                </label>
                             </td>
                         </tr>
                         <tr class="notes-container">
-                            <td style="text-align: center !important;" class="notes-items">
-                                <button class="btn btn-primary" @onclick="@(() => PopupVisibleAddNote = true)">Add Files</button>
+                            <td class="table-button-container">
+                                <DxUpload Name="myFile"
+                                            AllowMultiFileUpload="true"
+                                            UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                            SelectedFilesChanged="@SelectedFilesChanged"
+                                            MaxFileSize="15000000"
+                                          CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
+                                </DxUpload>
                             </td>
                             <td colspan="3" class="notes-items">
                                 @{
@@ -301,8 +320,7 @@ else
                                             <label>@documentCount) @_quote.attachments[currentIndex].Date</label>
                                             <span class="bar-spacer">|</span>
 
-                                            <span class="">@_quote.attachments[currentIndex]._id</span>
-                                            <span class="hyperlink" @onclick="DeleteFile">Delete</span>
+                                            <span id="@_quote.attachments[currentIndex]._id" class="hyperlink" @onclick="@(() => PopupVisibleDeleteFile = true)">Delete</span>
 
                                             <span class="bar-spacer">|</span>
                                             <a href="@_quote.attachments[currentIndex].MediaUrl" target="_blank">
@@ -321,8 +339,8 @@ else
                             </td>
                         </tr>
                         <tr class="notes-container">
-                            <td style="text-align: center !important;" class="notes-items">
-                                <button class="btn btn-primary" @onclick="@(() => PopupVisibleAddNote = true)">Add Note</button>
+                            <td class="table-button-container">
+                                <button class="btn btn-primary doc-select-button" @onclick="@(() => PopupVisibleAddNote = true)">Add Note</button>
                             </td>
                             <td colspan="3" class="notes-items">
                                 @{
@@ -333,8 +351,7 @@ else
                                             <label>@noteCount) @_quote.notes[currentIndex].Date</label>
                                             <span class="bar-spacer">|</span>
 
-                                            <span class="">@_quote.notes[currentIndex]._id</span>
-                                            <span class="hyperlink" @onclick="DeleteNote">Delete</span>
+                                            <span id="@_quote.attachments[currentIndex]._id" class="hyperlink" @onclick="@(() => PopupVisibleDeleteNote = true)">Delete</span>
 
                                             <span class="bar-spacer">|</span>
                                             <span class="detail-item">@_quote.notes[currentIndex].Details</span>
@@ -431,7 +448,7 @@ else
 
                 <div class="quote-detail-controls-container">
                     <button class="btn btn-primary" @onclick="@(() => PopupVisibleMakeCustomer = true)">Make Customer</button>
-                    <button class="btn btn-primary" @onclick="@(() => PopupVisibleDelete = true)">Archive</button>
+                    <button class="btn btn-primary" @onclick="@(() => PopupVisibleArchive = true)">Archive</button>
                     <button class="btn btn-primary" @onclick="CloseDetails">Close</button>
                 </div>
 
@@ -440,6 +457,32 @@ else
 
         </DxGrid>
 }
+
+<DxPopup @bind-Visible="@PopupVisibleDeleteFile"
+    ShowFooter="true"
+    HeaderText="Delete File"
+   >
+    <BodyContentTemplate>
+        Are you sure you want to delete FileId: (@SelectedFileId)?
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteFile" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleDeleteFile = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxPopup @bind-Visible="@PopupVisibleDeleteNote"
+    ShowFooter="true"
+    HeaderText="Delete Note"
+   >
+    <BodyContentTemplate>
+        Are you sure you want to delete NoteId: (@SelectedFileId)?
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteNote" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleDeleteNote = false)" />
+    </FooterContentTemplate>
+</DxPopup>
 
 <DxPopup
     @bind-Visible="@PopupVisibleMakeCustomer"
@@ -457,7 +500,7 @@ else
 </DxPopup>
 
 <DxPopup
-    @bind-Visible="@PopupVisibleDelete"
+    @bind-Visible="@PopupVisibleArchive"
     ShowFooter="true"
     HeaderText="Archive Lead"
    >
@@ -472,12 +515,12 @@ else
     </BodyContentTemplate>
     <FooterContentTemplate>
         <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Archive" Click="ArchiveLead" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleDelete = false)" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleArchive = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
 <DxPopup
-    @bind-Visible="@PopupVisibleDelete"
+    @bind-Visible="@PopupVisibleArchive"
     ShowFooter="true"
     HeaderText="Archive Lead"
    >
@@ -492,7 +535,7 @@ else
     </BodyContentTemplate>
     <FooterContentTemplate>
         <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Archive" Click="ArchiveLead" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleDelete = false)" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleArchive = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -500,6 +543,8 @@ else
 @code {
 
     int SelectedFilesCount { get; set; }
+
+    ObjectId SelectedFileId { get; set; }
 
     public string lastActivityDate = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt");
 
@@ -519,9 +564,14 @@ else
 
     string ArchivalReason { get; set; } = "";
 
+    bool PopupVisibleAddFile { get; set; }
+    bool PopupVisibleDeleteFile { get; set; }
+
     bool PopupVisibleAddNote { get; set; }
+    bool PopupVisibleDeleteNote { get; set; }
+
     bool PopupVisibleMakeCustomer { get; set; }
-    bool PopupVisibleDelete { get; set; }
+    bool PopupVisibleArchive { get; set; }
 
     public void ArchiveLead()
     {
@@ -536,7 +586,7 @@ else
 
         QuoteService.DeleteQuote(selectedQuoteId, quote);
 
-        PopupVisibleDelete = false;
+        PopupVisibleArchive = false;
 
         ToggleRefresh();
     }
@@ -554,7 +604,7 @@ else
 
         //QuoteService.DeleteQuote(selectedQuoteId, quote);
 
-        PopupVisibleDelete = false;
+        PopupVisibleArchive = false;
 
         ToggleRefresh();
     }
@@ -604,7 +654,7 @@ else
     public bool CreateLeadDisabled { get; set; } = true;
 
     [Parameter]
-    public bool SendDocsDisabled { get; set; } = true;
+    public bool SendDocsDisabled { get; set; } = false;
 
     [Parameter]
     public bool CreateLeadsDisabled { get; set; } = true;
@@ -673,6 +723,8 @@ else
     {
         var tmpVal = "";
 
+        PopupVisibleDeleteFile = false;
+
         // Grid.CollapseDetailRow(selectedIndex);
         // ToggleRefresh();
     }
@@ -680,6 +732,8 @@ else
     public void DeleteNote()
     {
         var tmpVal = "";
+
+        PopupVisibleDeleteNote = false;
 
         // Grid.CollapseDetailRow(selectedIndex);
         // ToggleRefresh();

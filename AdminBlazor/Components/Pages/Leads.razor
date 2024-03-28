@@ -342,7 +342,7 @@ else
 
                 <div class="quote-detail-controls-container">
                     <button class="btn btn-primary" @onclick="@(() => PopupVisibleAssign = true)">Assign</button>
-                    <button class="btn btn-primary" @onclick="@(() => PopupVisibleDelete = true)">Archive</button>
+                    <button class="btn btn-primary" @onclick="@(() => PopupVisibleArchive = true)">Archive</button>
                     <button class="btn btn-primary" @onclick="CloseDetails">Close</button>
                 </div>
 
@@ -389,7 +389,7 @@ else
 </DxPopup>
 
 <DxPopup
-    @bind-Visible="@PopupVisibleDelete"
+    @bind-Visible="@PopupVisibleArchive"
     ShowFooter="true"
     HeaderText="Archive Lead"
    >
@@ -404,7 +404,7 @@ else
     </BodyContentTemplate>
     <FooterContentTemplate>
         <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Archive" Click="ArchiveLead" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleDelete = false)" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleArchive = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -442,7 +442,7 @@ else
 
         QuoteService.DeleteQuote(selectedQuoteId, quote);
 
-        PopupVisibleDelete = false;
+        PopupVisibleArchive = false;
 
         ToggleRefresh();
     }
@@ -451,7 +451,7 @@ else
     public bool SubmitFormOnClick { get; set; }
 
     bool PopupVisibleAssign { get; set; }
-    bool PopupVisibleDelete { get; set; }
+    bool PopupVisibleArchive { get; set; }
 
     [Inject] public IJSRuntime jsRuntime { get; set; }
 

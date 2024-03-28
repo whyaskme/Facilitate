@@ -346,7 +346,7 @@ else
     string ArchivalReason { get; set; } = "";
 
     bool PopupVisibleAssign { get; set; }
-    bool PopupVisibleDelete { get; set; }
+    bool PopupVisibleArchive { get; set; }
 
     [Inject] public IJSRuntime jsRuntime { get; set; }
 
@@ -461,7 +461,7 @@ else
 
         QuoteService.DeleteQuote(selectedQuoteId, quotes[selectedIndex]);
 
-        PopupVisibleDelete = false;
+        PopupVisibleArchive = false;
 
         ToggleRefresh();
 
