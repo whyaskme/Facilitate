@@ -54,7 +54,7 @@ namespace Facilitate.Libraries.Models
             products = new List<Product>();
             attachments = new List<Attachment>();
             notes = new List<Note>();
-            projectManager = null;// new User();
+            projectManager = null;
             events = new List<Event>();
     }
 
@@ -90,7 +90,9 @@ namespace Facilitate.Libraries.Models
         public string repEmail { get; set; }
         public int leadId { get; set; }
 
-        public virtual User? projectManager { get; set; }
+        //public virtual User? projectManager { get; set; }
+        public virtual ProjectManagerSummary? projectManager { get; set; }
+
         public List<Product>? products { get; set; }
         public List<Attachment>? attachments { get; set; }
         public List<Note>? notes { get; set; }

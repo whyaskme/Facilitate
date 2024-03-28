@@ -229,6 +229,18 @@ else
 
                 if (_quote.projectManager != null)
                 {
+                    var projectManager ="Huh?";
+
+                    // var projectManager = _quote.projectManager.Profile.FirstName + " " + _quote.projectManager.Profile.LastName;
+
+                    var projectManagerPhone = "512-799-2522";
+                    
+                        // var projectManagerPhone = "(" + _quote.projectManager.Profile.Contact.Phone[0].AreaCode + ")";
+                    // projectManagerPhone += " " + _quote.projectManager.Profile.Contact.Phone[0].Exchange;
+                    // projectManagerPhone += "-" + _quote.projectManager.Profile.Contact.Phone[0].Number;
+
+                    var projectManagerEmail = "huh@facilitate.org"; //_quote.projectManager.Profile.Contact.Email[0].UserName + "@" + _quote.projectManager.Profile.Contact.Email[0].Domain;
+
                     <div class="table-spacer" />
 
                     <table>
@@ -241,20 +253,28 @@ else
                         <tr>
                             <td>
                                 <label>Project Manager</label>
-                                <span class="detail-item"></span>
+                                    <span class="detail-item">@projectManager</span>
                             </td>
                             <td>
                                 <label>Phone</label>
-                                <span class="detail-item"></span>
+                                    <span class="detail-item">@projectManagerPhone</span>
                             </td>
                             <td>
                                 <label>Email</label>
                                 <a href="#" target="_blank">
-                                    <span class="detail-item"></span>
+                                        <span class="detail-item">@projectManagerEmail</span>
                                 </a>
                             </td>
                             <td>
                                 <label>Last Activity</label>
+                                    @{
+                                        var eventCount = _quote.events.Count;
+                                        for (int currentIndex = 0; currentIndex < eventCount; currentIndex++)
+                                        {
+                                            lastActivityDate = @_quote.events[currentIndex].DateTime.ToString();
+                                            eventCount--;
+                                        }
+                                    }
                                 <span class="detail-item"></span>
                             </td>
                         </tr>
@@ -488,6 +508,8 @@ else
 @code {
 
     int SelectedFilesCount { get; set; }
+
+    public string lastActivityDate = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt");
 
     protected void SelectedFilesChanged(IEnumerable<UploadFileInfo> files)
     {
@@ -739,192 +761,4 @@ else
             });
         }), null, 1000, 1000);
     }
-
-    private void CreateLeads()
-    {
-        List<Quote> quotes = new List<Quote>();
-
-        isBulkInsert = true;
-
-        for (var i = 0; i < itemsToCreate; i++)
-        {
-            updateStatus = "Creating ";
-            CreateLead();
-        }
-
-        ToggleRefresh();
-
-        isBulkInsert = false;
-    }
-
-    private void ArchiveLeads()
-    {
-        updateStatus = "Deleting...";
-    }
-
-    #region Create 1 Lead
-    private void CreateLead()
-    {
-        updateStatus = "Creating ";
-
-        List<String> nameGenders = new List<string>();
-        nameGenders.Add("male");
-        nameGenders.Add("female");
-
-        Quote quote = new Quote();
-        quote.status = "Opportunity";
-
-        quote.ipAddress = SubmissionUserIP;
-
-        Utils utils = new Utils();
-
-        var randomStreetNumber = utils.GetRandomStreetNumber();
-        var randomStreetName = utils.GetRandomStreetName();
-
-        var randomState = utils.GetRandomState();
-        var stateName = randomState[0];
-        var stateAbbr = randomState[1];
-        var stateId = randomState[2];
-
-        var randomCity = utils.GetRandomCity(MongoDB.Bson.ObjectId.Parse(stateId));
-
-        string cityId = randomCity[0];
-        string cityName = randomCity[1];
-        string cityCountyId = randomCity[2];
-        string cityTimeZoneId = randomCity[3];
-
-        var randomZipCode = utils.GetRandomZipCode(MongoDB.Bson.ObjectId.Parse(cityId)).ToString();
-
-        quote.address = randomStreetNumber + " " + randomStreetName + ", " + cityName + ", " + stateAbbr + " " + randomZipCode;
-        quote.fullAddress = quote.address;
-        quote.street = randomStreetNumber + " " + randomStreetName;
-        quote.city = cityName;
-        quote.state = stateAbbr;
-        quote.zip = randomZipCode;
-
-        Random rnd = new Random();
-        int randomInt = rnd.Next(0, 1);
-
-        quote.firstName = utils.GetRandomFirstName(nameGenders[randomInt]);
-        quote.lastName = utils.GetRandomLastName();
-
-        quote.email = quote.firstName.ToLower() + "@" + quote.lastName.ToLower() + ".com";
-        quote.phone = "(" + utils.GetRandomAreaCode() + ") " + utils.GetRandomHomePhoneNumber();
-        quote.market = quote.city + ", " + quote.state;
-        quote.externalUrl = "https://app.roofle.com/dashboard";
-        quote.timestamp = DateTime.Now;
-
-        randomInt = rnd.Next(1, 3);
-        quote.numberOfStructures = randomInt;
-        quote.numberOfIncludedStructures = quote.numberOfStructures;
-
-        randomInt = rnd.Next(1150, 5200);
-        quote.totalSquareFeet = randomInt;
-        quote.mainRoofTotalSquareFeet = randomInt;
-        quote.totalInitialSquareFeet = randomInt;
-
-        quote.sessionId = "nH9YvHwoBldl2ZkpQSWrX";
-
-        // Add Product Info
-        Product product = new Product();
-        product.name = "Certainteed Landmark";
-        product.id = 1;
-
-        PriceInfo _priceInfo = new PriceInfo();
-        _priceInfo.priceType = "BasicFinancing";
-
-        randomInt = rnd.Next(15069, 15069);
-        _priceInfo.total = randomInt;
-
-        randomInt = rnd.Next(401, 401);
-        _priceInfo.pricePerSquare = randomInt;
-
-        randomInt = rnd.Next(250, 400);
-        _priceInfo.monthly = randomInt;
-
-        randomInt = rnd.Next(8, 26);
-        _priceInfo.apr = randomInt;
-
-        randomInt = rnd.Next(180, 180);
-        _priceInfo.months = randomInt;
-
-        product.priceInfo = _priceInfo;
-
-        PriceRange _priceRange = new PriceRange();
-        randomInt = rnd.Next(1150, 5200);
-        _priceRange.totalMin = randomInt;
-
-        randomInt = rnd.Next(16575, 16575);
-        _priceRange.totalMax = randomInt;
-
-        randomInt = rnd.Next(300, 300);
-        _priceRange.monthlyMin = randomInt;
-
-        randomInt = rnd.Next(367, 367);
-        _priceRange.monthlyMax = randomInt;
-
-        product.priceRange = _priceRange;
-
-        product.wasteFactorMainRoof = 1.2;
-
-        quote.products = null;
-        quote.products = new List<Product>();
-        quote.products.Add(product);
-
-        randomInt = rnd.Next(0, 1);
-        var repName = utils.GetRandomFirstName(nameGenders[randomInt]) + " " + utils.GetRandomLastName();
-
-        quote.repLead = repName;
-        quote.repEmail = repName.Replace(" ", ".").ToLower() + "@facilitate.org";
-
-        randomInt = rnd.Next(5000, 9999);
-        quote.leadId = randomInt;
-
-        // Add Structure Info
-        Structure structure = new Structure();
-        structure.name = "Main Roof";
-        structure.slope = "medium";
-        structure.isIncluded = true;
-        structure.squareFeet = quote.totalSquareFeet;
-        structure.initialSquareFeet = quote.totalSquareFeet;
-        structure.roofComplexity = "Simple";
-
-        quote.structures = null;
-        quote.structures = new List<Structure>();
-        quote.structures.Add(structure);
-
-        var deviceType = "Desktop";
-        var latitude = 0;
-        var longitude = 0;
-
-        Event _event = new Event(0,0);
-        _event.Name = "New Opportunity";
-        _event.DateTime = DateTime.Now;
-        _event.Reference.ReferenceId = ObjectId.Parse(quote._id);
-        _event.Reference.ReferenceType = 0;
-        _event.Details = "New Opportunity referred by Roofle";
-
-        Location location = new Location(ObjectId.Parse(quote._id), deviceType, ClientIP, latitude, longitude);
-        _event.Location = location;
-
-        quote.events.Add(_event);
-
-        var results = string.Empty;
-
-        try
-        {
-            QuoteService.CreateQuote(quote);
-            results = "POSTED";
-        }
-        catch (Exception ex)
-        {
-            results = ex.Message;
-        }
-        finally
-        {
-            if (!isBulkInsert)
-                ToggleRefresh();
-        }
-    }
-    #endregion
 }

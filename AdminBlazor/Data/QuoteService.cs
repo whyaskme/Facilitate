@@ -162,13 +162,8 @@ namespace AdminBlazor.Data {
 
                 var projectManager = quote.projectManager;
 
-                var pmName = projectManager.Profile.FirstName;
-                pmName += " " + projectManager.Profile.LastName;
-
-                var pmEmail = projectManager.Profile.Contact.Email[0].UserName + "@" + projectManager.Profile.Contact.Email[0].Domain;
-
                 Event _event = new Event(0, 0);
-                _event.Details = "Lead assigned to Project Manager Id: " + projectManager._id + " (" + pmName + "), moved to Opportunities and emailed to: " + pmEmail;
+                _event.Details = "Lead assigned to Project Manager Id: " + projectManager._id + " (" + projectManager.Name + "), moved to Opportunities and emailed to: " + projectManager.Email;
 
                 quote.status = "Opportunity";
                 quote.events.Add(_event);

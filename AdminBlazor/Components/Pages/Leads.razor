@@ -565,15 +565,27 @@ else
     {
         Grid.CollapseDetailRow(selectedIndex);
 
-        quotes[selectedIndex].projectManager = SelectedProjectManager.ToList()[0];
+        var currProjectManager = SelectedProjectManager.ToList()[0];
+
+        var pmEmail = currProjectManager.Profile.Contact.Email[0].UserName;
+        pmEmail += "@" + currProjectManager.Profile.Contact.Email[0].Domain;
+
+        var pmPhone = "(" + currProjectManager.Profile.Contact.Phone[0].AreaCode.ToString() + ")";
+        pmPhone += " " + currProjectManager.Profile.Contact.Phone[0].Exchange.ToString();
+        pmPhone += "-" + currProjectManager.Profile.Contact.Phone[0].Number.ToString();
+
+        ProjectManagerSummary pmSummary = new ProjectManagerSummary();
+        pmSummary._id = currProjectManager._id;
+        pmSummary.Name = currProjectManager.Profile.FirstName + " " + currProjectManager.Profile.LastName;
+        pmSummary.Email = pmEmail;
+        pmSummary.Phone = pmPhone;
+
+        quotes[selectedIndex].projectManager = pmSummary;
 
         // Add some notes
         Note note = new Note();
 
-        var pmName = quotes[selectedIndex].projectManager.Profile.FirstName;
-        pmName += " " + quotes[selectedIndex].projectManager.Profile.LastName;
-
-        note.Summary = "Lead assigned to " + pmName + " | " + quotes[selectedIndex].projectManager.Email;
+        note.Summary = "Lead assigned to " + pmSummary.Name + " | " + pmSummary.Email;
         note.Details = "This is just a test note getting attached to a lead as it transitions from Lead > Opportunity due to PM assignment.";
         quotes[selectedIndex].notes.Add(note);
 
