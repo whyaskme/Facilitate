@@ -9,13 +9,18 @@ html, body {
     overflow: hidden;
 }
 
+.hyperlink {
+    color: #b10505 !important;
+    text-decoration: underline !important;
+}
+
 .dxuc-select-button {
     border: solid 0px #ff0000 !important;
     padding: 8px !important;
     padding-left: 15px !important;
     padding-right: 15px !important;
     position: relative !important;
-    top: -5px !important;    
+    top: -5px !important;
     left: 10px !important;
 }
 

@@ -300,7 +300,10 @@ else
                                         <div class="note-row">
                                             <label>@documentCount) @_quote.attachments[currentIndex].Date</label>
                                             <span class="bar-spacer">|</span>
-                                            <a href="#">Delete</a>
+
+                                            <span class="">@_quote.attachments[currentIndex]._id</span>
+                                            <span class="hyperlink" @onclick="DeleteFile">Delete</span>
+
                                             <span class="bar-spacer">|</span>
                                             <a href="@_quote.attachments[currentIndex].MediaUrl" target="_blank">
                                                 <span class="detail-item">@_quote.attachments[currentIndex].MediaDescription</span>
@@ -329,7 +332,10 @@ else
                                         <div class="note-row">
                                             <label>@noteCount) @_quote.notes[currentIndex].Date</label>
                                             <span class="bar-spacer">|</span>
-                                            <a href="#">Delete</a>
+
+                                            <span class="">@_quote.notes[currentIndex]._id</span>
+                                            <span class="hyperlink" @onclick="DeleteNote">Delete</span>
+
                                             <span class="bar-spacer">|</span>
                                             <span class="detail-item">@_quote.notes[currentIndex].Details</span>
                                             <span class="bar-spacer">|</span>
@@ -661,6 +667,22 @@ else
     {
         Grid.CollapseDetailRow(selectedIndex);
         ToggleRefresh();
+    }
+
+    public void DeleteFile()
+    {
+        var tmpVal = "";
+
+        // Grid.CollapseDetailRow(selectedIndex);
+        // ToggleRefresh();
+    }
+
+    public void DeleteNote()
+    {
+        var tmpVal = "";
+
+        // Grid.CollapseDetailRow(selectedIndex);
+        // ToggleRefresh();
     }
 
     public void MakeCustomer()
