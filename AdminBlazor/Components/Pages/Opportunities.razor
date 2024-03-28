@@ -93,7 +93,7 @@ else
                         </td>
                         <td>
                             <label>Email</label>
-                            <a href="mailto:@_quote.externalUrl">
+                                <a href="mailto:@_quote.email">
                                 <span class="detail-item">@_quote.email</span>
                             </a>
                         </td>
@@ -229,18 +229,6 @@ else
 
                 if (_quote.projectManager != null)
                 {
-                    var projectManager ="Huh?";
-
-                    // var projectManager = _quote.projectManager.Profile.FirstName + " " + _quote.projectManager.Profile.LastName;
-
-                    var projectManagerPhone = "512-799-2522";
-                    
-                        // var projectManagerPhone = "(" + _quote.projectManager.Profile.Contact.Phone[0].AreaCode + ")";
-                    // projectManagerPhone += " " + _quote.projectManager.Profile.Contact.Phone[0].Exchange;
-                    // projectManagerPhone += "-" + _quote.projectManager.Profile.Contact.Phone[0].Number;
-
-                    var projectManagerEmail = "huh@facilitate.org"; //_quote.projectManager.Profile.Contact.Email[0].UserName + "@" + _quote.projectManager.Profile.Contact.Email[0].Domain;
-
                     <div class="table-spacer" />
 
                     <table>
@@ -253,16 +241,16 @@ else
                         <tr>
                             <td>
                                 <label>Project Manager</label>
-                                    <span class="detail-item">@projectManager</span>
+                                <span class="detail-item">@_quote.projectManager.Name</span>
                             </td>
                             <td>
                                 <label>Phone</label>
-                                    <span class="detail-item">@projectManagerPhone</span>
+                                <span class="detail-item">@_quote.projectManager.Phone</span>
                             </td>
                             <td>
                                 <label>Email</label>
-                                <a href="#" target="_blank">
-                                        <span class="detail-item">@projectManagerEmail</span>
+                                <a href="mailto:@_quote.projectManager.Email" target="_blank">
+                                    <span class="detail-item">@_quote.projectManager.Email</span>
                                 </a>
                             </td>
                             <td>
@@ -274,8 +262,8 @@ else
                                             lastActivityDate = @_quote.events[currentIndex].DateTime.ToString();
                                             eventCount--;
                                         }
-                                    }
-                                <span class="detail-item"></span>
+                                     }
+                                    <span class="detail-item">@lastActivityDate</span>
                             </td>
                         </tr>
                     </tbody>
@@ -312,7 +300,6 @@ else
                                         <div class="note-row">
                                             <label>@documentCount) @_quote.attachments[currentIndex].Date</label>
                                             <span class="bar-spacer">|</span>
-                                            <a href="#">Edit</a>
                                             <a href="#">Delete</a>
                                             <span class="bar-spacer">|</span>
                                             <a href="@_quote.attachments[currentIndex].MediaUrl" target="_blank">
@@ -342,7 +329,6 @@ else
                                         <div class="note-row">
                                             <label>@noteCount) @_quote.notes[currentIndex].Date</label>
                                             <span class="bar-spacer">|</span>
-                                            <a href="#">Edit</a>
                                             <a href="#">Delete</a>
                                             <span class="bar-spacer">|</span>
                                             <span class="detail-item">@_quote.notes[currentIndex].Details</span>
