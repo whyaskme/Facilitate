@@ -33,6 +33,11 @@ namespace AdminBlazor.Data {
             return originalList.OrderByDescending(x => x.DateTime).ToList();
         }
 
+        public List<Note> SortNotesByDateDesc(List<Note> originalList)
+        {
+            return originalList.OrderByDescending(x => x.Date).ToList();
+        }
+
         public IEnumerable<Quote> GetQuotes(string status)
         {
             try
@@ -43,23 +48,31 @@ namespace AdminBlazor.Data {
                 var builder = Builders<Quote>.Filter;
                 var filter = builder.Eq(f => f.status, status);
 
-                //var allQuotes = collection.Find(filter).ToList();
-
                 var sortedQuotes = collection.Find(filter).SortByDescending(e => e.timestamp).ToList();
 
                 // Sort events descending order
                 List<Event> unSortedEvents = new List<Event>();
                 List<Event> sortedEvents = new List<Event>();
 
+                List<Note> unSortedNotes = new List<Note>();
+                List<Note> sortedNotes = new List<Note>();
+
                 for (var i = 0; i < sortedQuotes.Count; i++)
                 {
-                    for(var j = 0; j < sortedQuotes[i].events.Count; j++)
+                    for(var j = 0; j < sortedQuotes[i].notes.Count; j++)
+                    {
+                        unSortedNotes.Add(sortedQuotes[i].notes[j]);
+                    }
+
+                    for (var j = 0; j < sortedQuotes[i].events.Count; j++)
                     {
                         unSortedEvents.Add(sortedQuotes[i].events[j]);
                     }
 
-                    sortedEvents = SortEventsByDateDesc(unSortedEvents);
+                    sortedNotes = SortNotesByDateDesc(unSortedNotes);
+                    sortedQuotes[i].notes = sortedNotes;
 
+                    sortedEvents = SortEventsByDateDesc(unSortedEvents);
                     sortedQuotes[i].events = sortedEvents;
                 }
 

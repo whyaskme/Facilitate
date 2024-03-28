@@ -254,16 +254,8 @@ else
                                 </a>
                             </td>
                             <td>
-                                <label>Last Activity</label>
-                                    @{
-                                        var eventCount = _quote.events.Count;
-                                        for (int currentIndex = 0; currentIndex < eventCount; currentIndex++)
-                                        {
-                                            lastActivityDate = @_quote.events[currentIndex].DateTime.ToString();
-                                            eventCount--;
-                                        }
-                                     }
-                                    <span class="detail-item">@lastActivityDate</span>
+                                <label>Homebase</label>
+                                <span class="detail-item">@_quote.projectManager.City, @_quote.projectManager.State @_quote.projectManager.Zip</span>
                             </td>
                         </tr>
                     </tbody>
@@ -292,12 +284,12 @@ else
                                 </label>
                                 <label>
                                     <DxUpload Name="myFile"
-                                              AllowMultiFileUpload="true"
-                                              UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
-                                              SelectedFilesChanged="@SelectedFilesChanged"
-                                              MaxFileSize="15000000"
-                                              AcceptedFileTypes="@(new List<string> { "image/*"})"
-                                              CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
+                                        AllowMultiFileUpload="true"
+                                        UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                        SelectedFilesChanged="@SelectedFilesChanged"
+                                        MaxFileSize="15000000"
+                                        AcceptedFileTypes="@(new List<string> { "image/*", "video/*"})"
+                                        CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
                                     </DxUpload>
                                 </label>
                             </td>
@@ -305,12 +297,12 @@ else
                         <tr class="notes-container">
                             <td class="table-button-container">
                                 <DxUpload Name="myFile"
-                                            AllowMultiFileUpload="true"
-                                            UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
-                                            SelectedFilesChanged="@SelectedFilesChanged"
-                                            MaxFileSize="15000000"
-                                          AcceptedFileTypes="@(new List<string> { "image/*"})"
-                                          CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
+                                    AllowMultiFileUpload="true"
+                                    UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                    SelectedFilesChanged="@SelectedFilesChanged"
+                                    MaxFileSize="15000000"
+                                    AcceptedFileTypes="@(new List<string> { "image/*", "video/*"})"
+                                    CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
                                 </DxUpload>
                             </td>
                             <td colspan="3" class="notes-items">
@@ -601,7 +593,7 @@ else
         quote.notes.Add(note);
 
         Event _event = new Event(0, 0);
-        _event.Details = "Added note to Quote";
+        _event.Details = "Added NoteId (" + note._id + ") to Quote";
 
         quote.status = "Opportunity";
         quote.events.Add(_event);
@@ -610,7 +602,9 @@ else
 
         PopupVisibleAddNote = false;
 
-        //ToggleRefresh();
+        ToggleRefresh();
+
+        Grid.ExpandDetailRow(selectedIndex);
     }
 
     [Inject] public IJSRuntime jsRuntime { get; set; }

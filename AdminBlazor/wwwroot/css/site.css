@@ -15,6 +15,9 @@ html, body {
     vertical-align: middle !important;
     background-color: #ffffff !important;
     padding: 0px !important;
+    width: 150px !important;
+    min-width: 150px !important;
+    max-width: 150px !important;
 }
 
 .doc-select-button {
