@@ -181,6 +181,29 @@ namespace AdminBlazor.Data {
             return resultMsg;
         }
 
+        public string UpdateQuote(string quoteId, Quote quote)
+        {
+            try
+            {
+                // This is a soft delete > move to archive.
+                client = new MongoClient(mongoUri);
+                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
+
+                var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
+
+                var result = collection.ReplaceOne(filter, quote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
+            return resultMsg;
+        }
+
         public string MakeCustomer(string quoteId, Quote quote)
         {
             try

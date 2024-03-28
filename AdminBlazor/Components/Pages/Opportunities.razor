@@ -296,6 +296,7 @@ else
                                               UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
                                               SelectedFilesChanged="@SelectedFilesChanged"
                                               MaxFileSize="15000000"
+                                              AcceptedFileTypes="@(new List<string> { "image/*"})"
                                               CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
                                     </DxUpload>
                                 </label>
@@ -308,6 +309,7 @@ else
                                             UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
                                             SelectedFilesChanged="@SelectedFilesChanged"
                                             MaxFileSize="15000000"
+                                          AcceptedFileTypes="@(new List<string> { "image/*"})"
                                           CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
                                 </DxUpload>
                             </td>
@@ -329,9 +331,6 @@ else
                                             <span class="bar-spacer">|</span>
                                             <label>File Type</label>
                                             <span>@fileType</span>
-                                            <span class="bar-spacer">|</span>
-                                            <label>Author</label>
-                                            <span class="author">@author</span>
                                         </div>
                                         documentCount--;
                                     }
@@ -351,13 +350,10 @@ else
                                             <label>@noteCount) @_quote.notes[currentIndex].Date</label>
                                             <span class="bar-spacer">|</span>
 
-                                            <span id="@_quote.attachments[currentIndex]._id" class="hyperlink" @onclick="@(() => PopupVisibleDeleteNote = true)">Delete</span>
+                                            <span class="hyperlink" @onclick="@(() => PopupVisibleDeleteNote = true)">Delete</span>
 
                                             <span class="bar-spacer">|</span>
                                             <span class="detail-item">@_quote.notes[currentIndex].Details</span>
-                                            <span class="bar-spacer">|</span>
-                                            <label>Author</label>
-                                            <span class="author">@author</span>
                                         </div>
                                         noteCount--;
                                     }
@@ -499,23 +495,22 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup
-    @bind-Visible="@PopupVisibleArchive"
+<DxPopup @bind-Visible="@PopupVisibleAddNote"
     ShowFooter="true"
-    HeaderText="Archive Lead"
+    HeaderText="Add Note"
    >
     <BodyContentTemplate>
-        <p>Please type in a reason for Archival below.</p>
+        <p>Please type in your notes below.</p>
         <SampleEditForm>
             <DxTextBox 
-                @bind-Text="@ArchivalReason"
+                @bind-Text="@NoteDetails"
                 CssClass="cw-320"
                 InputId="archive-reason" />
         </SampleEditForm>
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Archive" Click="ArchiveLead" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleArchive = false)" />
+        <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AddNote" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleAddNote = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -528,7 +523,7 @@ else
         <p>Please type in a reason for Archival below.</p>
         <SampleEditForm>
             <DxTextBox 
-                @bind-Text="@ArchivalReason"
+                @bind-Text="@NoteDetails"
                 CssClass="cw-320"
                 InputId="archive-reason" />
         </SampleEditForm>
@@ -541,6 +536,9 @@ else
 
 
 @code {
+
+    [Parameter]
+    public List<string> AcceptedFileTypes { get; set; }
 
     int SelectedFilesCount { get; set; }
 
@@ -562,7 +560,7 @@ else
     string fileType { get; set; } = ".pdf";
     string author { get; set; } = "unknown";
 
-    string ArchivalReason { get; set; } = "";
+    string NoteDetails { get; set; } = "";
 
     bool PopupVisibleAddFile { get; set; }
     bool PopupVisibleDeleteFile { get; set; }
@@ -579,7 +577,7 @@ else
 
         Note note = new Note();
         note.Summary = "Opportunity Archived";
-        note.Details = note.Summary + " - " + @ArchivalReason;
+        note.Details = @NoteDetails;
 
         Quote quote = quotes[selectedIndex];
         quote.notes.Add(note);
@@ -597,16 +595,22 @@ else
 
         Note note = new Note();
         note.Summary = "Note Added";
-        note.Details = note.Summary + " - " + @ArchivalReason;
+        note.Details = @NoteDetails;
 
         Quote quote = quotes[selectedIndex];
         quote.notes.Add(note);
 
-        //QuoteService.DeleteQuote(selectedQuoteId, quote);
+        Event _event = new Event(0, 0);
+        _event.Details = "Added note to Quote";
 
-        PopupVisibleArchive = false;
+        quote.status = "Opportunity";
+        quote.events.Add(_event);
 
-        ToggleRefresh();
+        QuoteService.UpdateQuote(selectedQuoteId, quotes[selectedIndex]);
+
+        PopupVisibleAddNote = false;
+
+        //ToggleRefresh();
     }
 
     [Inject] public IJSRuntime jsRuntime { get; set; }
