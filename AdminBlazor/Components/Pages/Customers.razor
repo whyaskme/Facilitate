@@ -502,43 +502,6 @@ else
         ToggleRefresh();
     }
 
-    public void AssignLead()
-    {
-        Grid.CollapseDetailRow(selectedIndex);
-
-        // User projectManager = new User();
-        // projectManager.FirstName = "Matthew";
-        // projectManager.LastName = "Lamz";
-
-        // Email email = new Email();
-        // email.UserName = projectManager.FirstName.ToLower() + "." + projectManager.LastName.ToLower();
-        // email.Domain = "facilitate.org";
-
-        // projectManager.Contact.Email.Add(email);
-
-        // Phone phone = new Phone();
-        // phone.AreaCode = 512;
-        // phone.Exchange = 977;
-        // phone.Number = 2522;
-        // projectManager.Contact.Phone.Add(phone);
-
-        // Address address = new Address();
-        // address.Address1 = "123 Main St";
-        // address.City = "Austin";
-        // address.State = "TX";
-        // address.ZipCode = 78704;
-
-        // projectManager.Contact.Address.Add(address);
-
-        // quotes[selectedIndex].projectManager = projectManager;
-
-        QuoteService.AssignQuote(selectedQuoteId, quotes[selectedIndex]);
-
-        PopupVisibleAssign = false;
-
-        ToggleRefresh();
-    }
-
     public virtual void PauseRefresh()
     {
         CreateLeadDisabled = false;

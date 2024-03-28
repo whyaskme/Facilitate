@@ -20,7 +20,6 @@ namespace AdminBlazor.Data {
         string resultMsg = string.Empty;
 
         //string mongoUri = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate";
-        //string mongoUri = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate";
         string mongoUri = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate";
 
         IMongoClient client;
@@ -33,6 +32,11 @@ namespace AdminBlazor.Data {
             return originalList.OrderByDescending(x => x.DateTime).ToList();
         }
 
+        public List<Attachment> SortFilesByDateDesc(List<Attachment> originalList)
+        {
+            return originalList.OrderByDescending(x => x.Date).ToList();
+        }
+
         public List<Note> SortNotesByDateDesc(List<Note> originalList)
         {
             return originalList.OrderByDescending(x => x.Date).ToList();
@@ -40,8 +44,11 @@ namespace AdminBlazor.Data {
 
         public IEnumerable<Quote> GetQuotes(string status)
         {
-            List<Event> unSortedEvents = new List<Event>();
+            Utils utils = new Utils();
+
+            List<Attachment> unSortedFiles = new List<Attachment>();
             List<Note> unSortedNotes = new List<Note>();
+            List<Event> unSortedEvents = new List<Event>();
 
             try
             {
@@ -54,49 +61,43 @@ namespace AdminBlazor.Data {
                 var sortedQuotes = collection.Find(filter).SortByDescending(e => e.timestamp).ToList();
                 for (var i = 0; i < sortedQuotes.Count; i++)
                 {
-                    unSortedEvents.Clear();
+                    unSortedFiles.Clear();
                     unSortedNotes.Clear();
+                    unSortedEvents.Clear();
+
+                    for (var j = 0; j < sortedQuotes[i].attachments.Count; j++)
+                    {
+                        Attachment currentAttachment = sortedQuotes[i].attachments[j];
+
+                        var currentDateTime = currentAttachment.Date;
+
+                        currentAttachment.Date = currentAttachment.Date.ToLocalTime();
+
+                        unSortedFiles.Add(currentAttachment);
+                    }
 
                     for (var j = 0; j < sortedQuotes[i].notes.Count; j++)
                     {
-                        unSortedNotes.Add(sortedQuotes[i].notes[j]);
+                        Note currentNote = sortedQuotes[i].notes[j];
+                        currentNote.Date = currentNote.Date.ToLocalTime();
+
+                        unSortedNotes.Add(currentNote);
                     }
 
                     for (var j = 0; j < sortedQuotes[i].events.Count; j++)
                     {
-                        unSortedEvents.Add(sortedQuotes[i].events[j]);
+                        Event currentEvent = sortedQuotes[i].events[j];
+                        currentEvent.DateTime = currentEvent.DateTime.ToLocalTime();
+
+                        unSortedEvents.Add(currentEvent);
                     }
 
+                    sortedQuotes[i].attachments = SortFilesByDateDesc(unSortedFiles);
                     sortedQuotes[i].notes = SortNotesByDateDesc(unSortedNotes);
                     sortedQuotes[i].events = SortEventsByDateDesc(unSortedEvents);
                 }
 
                 return sortedQuotes;
-            }
-            catch (Exception ex)
-            {
-                resultMsg = ex.Message;
-            }
-            finally
-            {
-
-            }
-            return null;
-        }
-
-        public Quote GetQuoteDetails(string objectId)
-        {
-            try
-            {
-                client = new MongoClient(mongoUri);
-                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
-
-                var builder = Builders<Quote>.Filter;
-                var filter = builder.Eq(f => f._id, objectId);
-
-                var _quote = collection.Find(filter).ToList();
-
-                return (Quote)_quote[0];
             }
             catch (Exception ex)
             {
@@ -156,39 +157,6 @@ namespace AdminBlazor.Data {
             return resultMsg;
         }
 
-        public string AssignQuote(string quoteId, Quote quote)
-        {
-            try
-            {
-                // This is a soft delete > move to archive.
-                client = new MongoClient(mongoUri);
-                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
-
-                var updateQuote = Builders<Quote>.Update.Set(quote => quote.status, "Opportunity");
-
-                var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
-
-                var projectManager = quote.projectManager;
-
-                Event _event = new Event(0, 0);
-                _event.Details = "Lead assigned to Project Manager Id: " + projectManager._id + " (" + projectManager.Name + "), moved to Opportunities and emailed to: " + projectManager.Email;
-
-                quote.status = "Opportunity";
-                quote.events.Add(_event);
-
-                var result = collection.ReplaceOne(filter, quote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                resultMsg = ex.Message;
-            }
-            finally
-            {
-
-            }
-            return resultMsg;
-        }
-
         public string UpdateQuote(string quoteId, Quote quote)
         {
             try
@@ -198,39 +166,6 @@ namespace AdminBlazor.Data {
                 collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
 
                 var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
-
-                var result = collection.ReplaceOne(filter, quote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                resultMsg = ex.Message;
-            }
-            finally
-            {
-
-            }
-            return resultMsg;
-        }
-
-        public string MakeCustomer(string quoteId, Quote quote)
-        {
-            try
-            {
-                // This is a soft delete > move to archive.
-                client = new MongoClient(mongoUri);
-                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
-
-                var updateQuote = Builders<Quote>.Update.Set(quote => quote.status, "Opportunity");
-
-                var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
-
-                var projectManager = quote.projectManager;
-
-                Event _event = new Event(0, 0);
-                _event.Details = "Opportunity converted to Customer";
-
-                quote.status = "Customer";
-                quote.events.Add(_event);
 
                 var result = collection.ReplaceOne(filter, quote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
             }

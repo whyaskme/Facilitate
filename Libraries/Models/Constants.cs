@@ -168,21 +168,6 @@ namespace Facilitate.Libraries.Models
             public static Tuple<int, string> ViewSupport = new Tuple<int, string>(ViewSwitchboard.Item1 + 1, "Account: View Support");
         }
 
-        public static class TNC
-        {
-            public static Tuple<int, string> Created = new Tuple<int, string>(TNCStartRange, "TNC: Created");
-            public static Tuple<int, string> Updated = new Tuple<int, string>(Created.Item1 + 1, "TNC: Updated");
-            public static Tuple<int, string> Deleted = new Tuple<int, string>(Updated.Item1 + 1, "TNC: Deleted");
-            public static Tuple<int, string> Disabled = new Tuple<int, string>(Deleted.Item1 + 1, "TNC: Disabled");
-            public static Tuple<int, string> Enabled = new Tuple<int, string>(Disabled.Item1 + 1, "TNC: Enabled");
-            public static Tuple<int, string> Flagged = new Tuple<int, string>(Enabled.Item1 + 1, "TNC: Flagged");
-
-            // User TNC actions
-            public static Tuple<int, string> RideRequestAccepted = new Tuple<int, string>(Flagged.Item1 + 1, "Ride Request: Accepted");
-            public static Tuple<int, string> RideRequestIgnored = new Tuple<int, string>(RideRequestAccepted.Item1 + 1, "Ride Request: Ignored");
-            public static Tuple<int, string> RideRequestRejected = new Tuple<int, string>(RideRequestIgnored.Item1 + 1, "Ride Request: Rejected");
-        }
-
         public static class GPS
         {
             public static Tuple<int, string> Report = new Tuple<int, string>(GPSStartRange, "Location");

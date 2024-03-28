@@ -565,6 +565,8 @@ else
     {
         Grid.CollapseDetailRow(selectedIndex);
 
+        quotes[selectedIndex].status = "Opportunity";
+
         var currProjectManager = SelectedProjectManager.ToList()[0];
 
         var pmEmail = currProjectManager.Profile.Contact.Email[0].UserName;
@@ -585,12 +587,6 @@ else
 
         quotes[selectedIndex].projectManager = pmSummary;
 
-        // Add some notes
-        // Note note = new Note();
-        // note.Summary = "Lead assigned to " + pmSummary.Name + " | " + pmSummary.Email;
-        // note.Details = "This is just a test note getting attached to a lead as it transitions from Lead > Opportunity due to PM assignment.";
-        // quotes[selectedIndex].notes.Add(note);
-
         // Add an attachment (Initial agreements or any other specified docs)
         Attachment attachment = new Attachment();
         attachment.MediaDescription = "Workflow and Subsequent Document Requirements";
@@ -598,7 +594,18 @@ else
 
         quotes[selectedIndex].attachments.Add(attachment);
 
-        QuoteService.AssignQuote(selectedQuoteId, quotes[selectedIndex]);
+        Event docSentEvent = new Event(0, 0);
+        docSentEvent.Details = attachment.MediaDescription + " sent to " + quotes[selectedIndex].email;
+        quotes[selectedIndex].events.Add(docSentEvent);
+
+        // Assignment event
+        var projectManager = quotes[selectedIndex].projectManager;
+        Event assignmentEvent = new Event(0, 0);
+        assignmentEvent.Details = "Lead assigned to Project Manager Id: " + projectManager._id + " (" + projectManager.Name + "), moved to Opportunities and emailed to: " + projectManager.Email;
+        quotes[selectedIndex].events.Add(assignmentEvent);
+
+        // QuoteService.AssignQuote(selectedQuoteId, quotes[selectedIndex]);
+        QuoteService.UpdateQuote(selectedQuoteId, quotes[selectedIndex]);
 
         PopupVisibleAssign = false;
 

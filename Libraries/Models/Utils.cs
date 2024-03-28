@@ -37,6 +37,11 @@ namespace Facilitate.Libraries.Models
             client = new MongoClient(mongoUri);
         }
 
+        public DateTime FormateDateTimeToLocal(DateTime dt)
+        {
+            return dt.ToLocalTime();
+        }
+
         public void UpdatePerson(Person myPerson)
         {
             try

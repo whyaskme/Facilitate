@@ -18,7 +18,7 @@ namespace Facilitate.Libraries.Models
         {
             _id = ObjectId.GenerateNewId();
             _t = "Attachment";
-            Date = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture);
+            Date = DateTime.UtcNow;
             MediaDescription = "";
             MediaUrl = "";
         }
@@ -27,7 +27,7 @@ namespace Facilitate.Libraries.Models
 
         public ObjectId _id { get; set; }
         public string _t { get; set; }
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
         public string MediaDescription { get; set; }
         public string MediaUrl { get; set; }
 
