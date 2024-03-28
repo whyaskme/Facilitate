@@ -15,7 +15,7 @@ namespace Facilitate.Libraries.Models
             _id = ObjectId.GenerateNewId();
             _t = "Note";
             //Date = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture);
-            Date = DateTime.Now;
+            Date = DateTime.UtcNow;
             Summary = "";
             Details = "";
         }

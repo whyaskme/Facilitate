@@ -685,7 +685,6 @@ else
         quote.phone = "(" + utils.GetRandomAreaCode() + ") " + utils.GetRandomHomePhoneNumber();
         quote.market = quote.city + ", " + quote.state;
         quote.externalUrl = "https://app.roofle.com/dashboard";
-        quote.timestamp = DateTime.Now;
 
         randomInt = rnd.Next(1, 3);
         quote.numberOfStructures = randomInt;
@@ -772,7 +771,7 @@ else
 
         Event _event = new Event(0,0);
         _event.Name = "New Customer";
-        _event.DateTime = DateTime.Now;
+        _event.DateTime = DateTime.UtcNow;
         _event.Reference.ReferenceId = ObjectId.Parse(quote._id);
         _event.Reference.ReferenceType = 0;
         _event.Details = "New Customer referred by Roofle";

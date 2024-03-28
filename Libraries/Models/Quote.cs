@@ -40,7 +40,7 @@ namespace Facilitate.Libraries.Models
             phone = string.Empty;
             market = string.Empty;
             externalUrl = string.Empty;
-            timestamp = DateTime.MinValue;
+            timestamp = DateTime.UtcNow;
             numberOfStructures = 0;
             numberOfIncludedStructures = 0;
             totalSquareFeet = 0;

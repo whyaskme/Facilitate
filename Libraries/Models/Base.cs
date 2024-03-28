@@ -35,7 +35,7 @@ namespace Facilitate.Libraries.Models
             Enabled = true;
 
             Name = string.Empty;
-            Date = DateTime.Now.Date;
+            Date = DateTime.UtcNow.Date;
         }
         /// <summary>
         /// 

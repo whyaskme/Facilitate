@@ -40,6 +40,9 @@ namespace AdminBlazor.Data {
 
         public IEnumerable<Quote> GetQuotes(string status)
         {
+            List<Event> unSortedEvents = new List<Event>();
+            List<Note> unSortedNotes = new List<Note>();
+
             try
             {
                 client = new MongoClient(mongoUri);
@@ -49,17 +52,12 @@ namespace AdminBlazor.Data {
                 var filter = builder.Eq(f => f.status, status);
 
                 var sortedQuotes = collection.Find(filter).SortByDescending(e => e.timestamp).ToList();
-
-                // Sort events descending order
-                List<Event> unSortedEvents = new List<Event>();
-                List<Event> sortedEvents = new List<Event>();
-
-                List<Note> unSortedNotes = new List<Note>();
-                List<Note> sortedNotes = new List<Note>();
-
                 for (var i = 0; i < sortedQuotes.Count; i++)
                 {
-                    for(var j = 0; j < sortedQuotes[i].notes.Count; j++)
+                    unSortedEvents.Clear();
+                    unSortedNotes.Clear();
+
+                    for (var j = 0; j < sortedQuotes[i].notes.Count; j++)
                     {
                         unSortedNotes.Add(sortedQuotes[i].notes[j]);
                     }
@@ -69,11 +67,8 @@ namespace AdminBlazor.Data {
                         unSortedEvents.Add(sortedQuotes[i].events[j]);
                     }
 
-                    sortedNotes = SortNotesByDateDesc(unSortedNotes);
-                    sortedQuotes[i].notes = sortedNotes;
-
-                    sortedEvents = SortEventsByDateDesc(unSortedEvents);
-                    sortedQuotes[i].events = sortedEvents;
+                    sortedQuotes[i].notes = SortNotesByDateDesc(unSortedNotes);
+                    sortedQuotes[i].events = SortEventsByDateDesc(unSortedEvents);
                 }
 
                 return sortedQuotes;

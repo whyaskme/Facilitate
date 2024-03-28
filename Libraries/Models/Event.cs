@@ -26,7 +26,7 @@ namespace Facilitate.Libraries.Models
 
             Location = new Location(_id, "", "", latitude, longitude);
         }
-        //public ObjectId _id { get; set; }
+
         public int TypeId { get; set; }
         public DateTime DateTime { get; set; }
         public Reference Reference { get; set; }

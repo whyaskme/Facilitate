@@ -52,7 +52,7 @@ namespace CLPostLibrary
         public RandomText()
         {
             // Create a Random object for use during the existence of this object
-            _random = new Random(DateTime.Now.Millisecond);
+            _random = new Random(DateTime.UtcNow.Millisecond);
         }     
 
         /// <summary>
