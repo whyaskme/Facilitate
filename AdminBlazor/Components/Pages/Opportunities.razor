@@ -41,7 +41,7 @@ else
         </div>
 
         <DxGrid 
-            @ref="Grid"
+            @ref="QuoteGrid"
             Data="@quotes" 
             KeyFieldName="_id"
 
@@ -57,7 +57,7 @@ else
             AllowSelectRowByClick="true"
             SelectionMode="GridSelectionMode.Single"
 
-            @bind-SelectedDataItem="@SelectedDataItem"
+            @bind-SelectedDataItem="@SelectedQuoteItem"
 
             TextWrapEnabled="true"
             PagerNavigationMode="PagerNavigationMode.InputBox"
@@ -65,14 +65,14 @@ else
             PageSizeSelectorAllRowsItemVisible="false"
             KeyboardNavigationEnabled="true">
             <Columns>
-            <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm:ss tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
-                <DxGridDataColumn Caption="First" FieldName="firstName" />
-                <DxGridDataColumn Caption="Last" FieldName="lastName" />
-                <DxGridDataColumn Caption="Street" FieldName="street" />
-                <DxGridDataColumn Caption="City" FieldName="city" />
-                <DxGridDataColumn Caption="State" FieldName="state" />
-                <DxGridDataColumn Caption="Zip" FieldName="zip" />
-            <DxGridDataColumn Caption="Manager" TextAlignment="GridTextAlignment.Left" FieldName="projectManager.Name" />
+                <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm:ss tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+                    <DxGridDataColumn Caption="First" FieldName="firstName" />
+                    <DxGridDataColumn Caption="Last" FieldName="lastName" />
+                    <DxGridDataColumn Caption="Street" FieldName="street" />
+                    <DxGridDataColumn Caption="City" FieldName="city" />
+                    <DxGridDataColumn Caption="State" FieldName="state" />
+                    <DxGridDataColumn Caption="Zip" FieldName="zip" />
+                <DxGridDataColumn Caption="Manager" TextAlignment="GridTextAlignment.Left" FieldName="projectManager.Name" />
             </Columns>
 
             <DetailRowTemplate>
@@ -268,9 +268,10 @@ else
                     <tbody>
                         <tr class="notes-container">
                             <td class="table-button-container">
-                                <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@(() => PopupVisibleAddNote = true)">Email Docs</button>
+                                <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Email Docs</button>
                             </td>
                             <td colspan="3" class="notes-items">
+                                <h4>Send Documents</h4>
                                 <label class="document-label-container">
                                     Welcome letter
                                     <input type="checkbox" id="welcomeletter" name="welcomeletter" value="welcomeletter">
@@ -308,6 +309,7 @@ else
                                 </DxUpload>
                             </td>
                             <td colspan="3" class="notes-items">
+                                <h4>File Attachments</h4>
                                 @{
                                     var documentCount = _quote.attachments.Count;
                                     for (int currentIndex = 0; currentIndex < @_quote.attachments.Count; currentIndex++)
@@ -336,6 +338,7 @@ else
                                 <button class="btn btn-primary doc-select-button" @onclick="@(() => PopupVisibleAddNote = true)">Add Note</button>
                             </td>
                             <td colspan="3" class="notes-items">
+                                <h4>File Notes</h4>
                                 @{
                                     var noteCount = _quote.notes.Count;
                                     for (int currentIndex = 0; currentIndex < @_quote.notes.Count; currentIndex++)
@@ -416,21 +419,24 @@ else
                             <h6>History</h6>
                         </td>
                     </tr>
+                    <tr> 
+                        <td>
 
-                    @{
-                        var currentEventCount = _quote.events.Count;
-                        for (int currentIndex = 0; currentIndex < @_quote.events.Count; currentIndex++)
-                        {
-                            <tr>
-                                <td>
-                                    <label>@currentEventCount) @_quote.events[currentIndex].DateTime</label>
-                                    <span class="detail-item">@_quote.events[currentIndex].Details</span>
-                                </td>
-                            </tr>
-                            currentEventCount--;
-                        }
-                    }
-
+                            @{
+                                var currentEventCount = _quote.events.Count;
+                                for (int currentIndex = 0; currentIndex < @_quote.events.Count; currentIndex++)
+                                {
+                                    <tr>
+                                        <td>
+                                            <label>@currentEventCount) @_quote.events[currentIndex].DateTime</label>
+                                            <span class="detail-item">@_quote.events[currentIndex].Details</span>
+                                        </td>
+                                    </tr>
+                                    currentEventCount--;
+                                }
+                            }
+                        </td>
+                    </tr>
                 </tbody>
                 </table>
 
@@ -546,6 +552,11 @@ else
         InvokeAsync(StateHasChanged);
     }
 
+    protected void EmailFiles()
+    {
+        var tmpVal = "";
+    }
+
     protected string GetUploadUrl(string url)
     {
         return NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
@@ -567,7 +578,7 @@ else
 
     public void ArchiveLead()
     {
-        Grid.CollapseDetailRow(selectedIndex);
+        QuoteGrid.CollapseDetailRow(selectedIndex);
 
         Note note = new Note();
         note.Summary = "Opportunity Archived";
@@ -585,7 +596,7 @@ else
 
     public void AddNote()
     {
-        Grid.CollapseDetailRow(selectedIndex);
+        QuoteGrid.CollapseDetailRow(selectedIndex);
 
         Note note = new Note();
         note.Summary = "Note Added";
@@ -606,7 +617,7 @@ else
 
         ToggleRefresh();
 
-        Grid.ExpandDetailRow(selectedIndex);
+        QuoteGrid.ExpandDetailRow(selectedIndex);
     }
 
     [Inject] public IJSRuntime jsRuntime { get; set; }
@@ -663,7 +674,10 @@ else
     public bool ArchiveLeadsDisabled { get; set; } = true;
 
     [Parameter]
-    public object SelectedDataItem { get; set; }
+    public object SelectedQuoteItem { get; set; }
+
+    [Parameter]
+    public object SelectedEventItem { get; set; }
 
     [Parameter]
     public int VisibleIndex { get; set; }
@@ -671,7 +685,10 @@ else
     [Parameter]
     public bool ClearFilterButtonVisible { get; set; }
 
-    IGrid Grid { get; set; }
+    IGrid QuoteGrid { get; set; }
+
+    IGrid EventGrid { get; set; }
+
     EntityInstantFeedbackSource InstantFeedbackSource { get; set; }
 
     public interface IQueryable : System.Collections.IEnumerable;
@@ -701,21 +718,21 @@ else
 
         selectedQuoteId = quotes[selectedIndex]._id;
 
-        var selectedDetailExpanded = Grid.IsDetailRowExpanded(selectedIndex);
+        var selectedDetailExpanded = QuoteGrid.IsDetailRowExpanded(selectedIndex);
         if (selectedDetailExpanded)
         {
-            Grid.CollapseDetailRow(selectedIndex);
+            QuoteGrid.CollapseDetailRow(selectedIndex);
             ToggleRefresh();
         }
         else
         {
-            Grid.ExpandDetailRow(selectedIndex);
+            QuoteGrid.ExpandDetailRow(selectedIndex);
         }
     }
 
     public void CloseDetails()
     {
-        Grid.CollapseDetailRow(selectedIndex);
+        QuoteGrid.CollapseDetailRow(selectedIndex);
         ToggleRefresh();
     }
 
@@ -741,7 +758,7 @@ else
 
     public void MakeCustomer()
     {
-        Grid.CollapseDetailRow(selectedIndex);
+        QuoteGrid.CollapseDetailRow(selectedIndex);
 
         Quote quote = quotes[selectedIndex];
         quote.status = "Customer";
