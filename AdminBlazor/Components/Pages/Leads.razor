@@ -442,7 +442,7 @@ else
         Quote quote = quotes[selectedIndex];
         quote.notes.Add(note);
 
-        WebServices.DeleteQuote(selectedQuoteId, quote);
+        WebServices.DeleteQuote(selectedQuoteId);
 
         PopupVisibleArchive = false;
 

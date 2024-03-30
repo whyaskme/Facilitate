@@ -1,10 +1,12 @@
 ﻿using Facilitate.Libraries.Models;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using MongoDB.Driver;
+using static Facilitate.Libraries.Models.Constants.Messaging;
 
 namespace AdminBlazor.Data
 {
-    [Route("api/WebServices")]
+    [Route("api/[controller]")]
     [ApiController]
     public class WebServices : ControllerBase
     {
@@ -156,15 +158,9 @@ namespace AdminBlazor.Data
             return resultMsg;
         }
 
-        // DELETE api/<WebServices>/5
-        //[HttpDelete("{id}")]
-        //public void DeleteQuote(int id)
-        //{
-        //}
-
         //DELETE api/<WebServices>/5
-        //[HttpDelete("{id}")]
-        public string DeleteQuote(string quoteId, Quote quote)
+        [HttpDelete("{quoteId}, {quote}")]
+        public string DeleteQuote(string quoteId)
         {
             try
             {
@@ -172,17 +168,19 @@ namespace AdminBlazor.Data
                 client = new MongoClient(mongoUri);
                 collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
 
-                var updateQuote = Builders<Quote>.Update.Set(quote => quote.status, "Archive");
+                // Get the selected quote for update
+                var builder = Builders<Quote>.Filter;
+                var filter = builder.Eq(f => f._id, quoteId);
 
-                var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
+                var sortedelectedQuote = collection.Find(filter).ToList()[0];
 
                 Event _event = new Event(0, 0);
-                _event.Details = quote.status + " moved to Archive";
+                _event.Details = sortedelectedQuote.status + " moved to Archive";
 
-                quote.status = "Archive";
-                quote.events.Add(_event);
+                sortedelectedQuote.status = "Archive";
+                sortedelectedQuote.events.Add(_event);
 
-                var result = collection.ReplaceOne(filter, quote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+                var result = collection.ReplaceOne(filter, sortedelectedQuote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
 
                 resultMsg = "Archived!";
             }
