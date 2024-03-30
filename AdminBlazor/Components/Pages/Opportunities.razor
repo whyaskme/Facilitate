@@ -271,7 +271,9 @@ else
                                 <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Email Docs</button>
                             </td>
                             <td colspan="3" class="notes-items">
-                                <h4>Send Documents</h4>
+
+                                <h4>Send Documents <span @onclick="@(() => PopupVisibleHelpSendFiles = true)" class="link-help-info">Help?</span></h4>
+
                                 <label class="document-label-container">
                                     Welcome letter
                                     <input type="checkbox" id="welcomeletter" name="welcomeletter" value="welcomeletter">
@@ -309,7 +311,9 @@ else
                                 </DxUpload>
                             </td>
                             <td colspan="3" class="notes-items">
-                                <h4>File Attachments</h4>
+
+                                <h4>File Attachments <span @onclick="@(() => PopupVisibleHelpFileAttachments = true)" class="link-help-info">Help?</span></h4>
+
                                 @{
                                     var documentCount = _quote.attachments.Count;
                                     for (int currentIndex = 0; currentIndex < @_quote.attachments.Count; currentIndex++)
@@ -338,7 +342,9 @@ else
                                 <button class="btn btn-primary doc-select-button" @onclick="@(() => PopupVisibleAddNote = true)">Add Note</button>
                             </td>
                             <td colspan="3" class="notes-items">
-                                <h4>File Notes</h4>
+
+                                <h4>File Notes <span @onclick="@(() => PopupVisibleHelpFileNotes = true)" class="link-help-info">Help?</span></h4>
+
                                 @{
                                     var noteCount = _quote.notes.Count;
                                     for (int currentIndex = 0; currentIndex < @_quote.notes.Count; currentIndex++)
@@ -534,6 +540,39 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
+<DxPopup @bind-Visible="@PopupVisibleHelpSendFiles"
+    ShowFooter="true"
+    HeaderText="Send Documents Help?">
+    <BodyContentTemplate>
+        <p>Send Documents details...</p>
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => PopupVisibleHelpSendFiles = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxPopup @bind-Visible="@PopupVisibleHelpFileAttachments"
+    ShowFooter="true"
+    HeaderText="File Attachments Help?">
+    <BodyContentTemplate>
+        <p>File Attachments details...</p>
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => PopupVisibleHelpFileAttachments = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxPopup @bind-Visible="@PopupVisibleHelpFileNotes"
+         ShowFooter="true"
+         HeaderText="File Notes Help?">
+    <BodyContentTemplate>
+        <p>File Notes details...</p>
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => PopupVisibleHelpFileNotes = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
 
 @code {
 
@@ -589,6 +628,10 @@ else
 
         bool PopupVisibleMakeCustomer { get; set; }
         bool PopupVisibleArchive { get; set; }
+
+        bool PopupVisibleHelpSendFiles { get; set; }
+        bool PopupVisibleHelpFileAttachments { get; set; }
+        bool PopupVisibleHelpFileNotes { get; set; }
 
     #endregion
 

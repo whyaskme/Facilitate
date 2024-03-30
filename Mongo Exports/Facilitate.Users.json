@@ -1,0 +1,274 @@
+[{
+  "_id": {
+    "$oid": "6604afac291fe0817c6cf15e"
+  },
+  "UserName": "admin",
+  "NormalizedUserName": "ADMIN",
+  "Email": "admin@Facilitate.org",
+  "NormalizedEmail": "ADMIN@FACILITATE.ORG",
+  "EmailConfirmed": true,
+  "PasswordHash": "AQAAAAIAAYagAAAAEFVuegv1OaYboqU66b/QTjAAFwhXh/Nwe8CQzZi7IF2A2V2eigmRWFhLJtHnOOh4SQ==",
+  "SecurityStamp": "5PTQR4WKT5HKIPLBYB2Y3SDY64ANPBHB",
+  "ConcurrencyStamp": "f32b4951-c374-437e-a0a2-4a24c2133749",
+  "PhoneNumber": "(512) 799-2522",
+  "PhoneNumberConfirmed": true,
+  "TwoFactorEnabled": false,
+  "LockoutEnd": null,
+  "LockoutEnabled": true,
+  "AccessFailedCount": 0,
+  "Roles": [
+    "66030593a266bc0d03e368c8",
+    "660305aaa266bc0d03e368c9",
+    "660305b4a266bc0d03e368ca",
+    "660305bea266bc0d03e368cb",
+    "660305c8a266bc0d03e368cc",
+    "660305d1a266bc0d03e368cd",
+    "660305d9a266bc0d03e368ce"
+  ],
+  "Claims": [
+    {
+      "_id": 0,
+      "UserId": "6604afac291fe0817c6cf15e",
+      "ClaimType": "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+      "ClaimValue": "System Administrator"
+    },
+    {
+      "_id": 0,
+      "UserId": "6604afac291fe0817c6cf15e",
+      "ClaimType": "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+      "ClaimValue": "Site Administrator"
+    },
+    {
+      "_id": 0,
+      "UserId": "6604afac291fe0817c6cf15e",
+      "ClaimType": "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+      "ClaimValue": "Group Administrator"
+    },
+    {
+      "_id": 0,
+      "UserId": "6604afac291fe0817c6cf15e",
+      "ClaimType": "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+      "ClaimValue": "Project Supervisor"
+    },
+    {
+      "_id": 0,
+      "UserId": "6604afac291fe0817c6cf15e",
+      "ClaimType": "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+      "ClaimValue": "Project Manager"
+    },
+    {
+      "_id": 0,
+      "UserId": "6604afac291fe0817c6cf15e",
+      "ClaimType": "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+      "ClaimValue": "Homeowner"
+    },
+    {
+      "_id": 0,
+      "UserId": "6604afac291fe0817c6cf15e",
+      "ClaimType": "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+      "ClaimValue": "Consumer"
+    }
+  ],
+  "Logins": [],
+  "Tokens": [],
+  "Profile": {
+    "RegistrationDate": {
+      "$date": "2024-03-27T23:45:48.268Z"
+    },
+    "Expired": false,
+    "ExpireDate": {
+      "$date": "9999-12-31T23:59:59.999Z"
+    },
+    "DeviceType": 0,
+    "IsLoggedIn": false,
+    "Title": "",
+    "FirstName": "Joseph",
+    "MiddleName": "",
+    "LastName": "Baranauskas",
+    "Suffix": "",
+    "Gender": 0,
+    "Contact": {
+      "Address": [
+        {
+          "CountryId": {
+            "$oid": "52ade08e2b0b6d13f88c4e53"
+          },
+          "Country": "US",
+          "StateId": {
+            "$oid": "52ade0932b0b6d13f88c4e8a"
+          },
+          "State": "TX",
+          "CountyId": {
+            "$oid": "57a2a543d00bc10e9c1884f6"
+          },
+          "County": "Travis County",
+          "CityId": {
+            "$oid": "57a1d01cd00bc130c038b424"
+          },
+          "City": "Austin",
+          "ZipCode": 78753,
+          "TimeZoneId": {
+            "$oid": "57a01b573d33e01394bc8abd"
+          },
+          "TimeZone": "America/Chicago",
+          "Address1": "13324 Bosswoord Dr",
+          "Address2": null
+        }
+      ],
+      "Email": [
+        {
+          "UserName": "admin",
+          "Domain": "facilitate.org"
+        }
+      ],
+      "Phone": [
+        {
+          "PhoneType": 0,
+          "CountryCode": 1,
+          "AreaCode": 512,
+          "Exchange": 799,
+          "Number": 2522
+        }
+      ]
+    },
+    "CreditCards": [],
+    "Transactions": []
+  }
+},
+{
+  "_id": {
+    "$oid": "6604b0a6291fe0817c6cf167"
+  },
+  "UserName": "matthew",
+  "NormalizedUserName": "MATTHEW",
+  "Email": "matthew@facilitate.org",
+  "NormalizedEmail": "MATTHEW@FACILITATE.ORG",
+  "EmailConfirmed": true,
+  "PasswordHash": "AQAAAAIAAYagAAAAEOjcQPqrVRzx1Pv5aklYFUDHyx9MC6DNEXu5Id2Vho/++rXW7hyBq5kmtSpcTda4+A==",
+  "SecurityStamp": "63ST7S7LS5IGCLJV3RYJB3IBY7VQK4LH",
+  "ConcurrencyStamp": "b91feff1-ff09-4f27-be47-9c61a0da9f4d",
+  "PhoneNumber": "(512) 496-3687",
+  "PhoneNumberConfirmed": true,
+  "TwoFactorEnabled": false,
+  "LockoutEnd": null,
+  "LockoutEnabled": true,
+  "AccessFailedCount": 0,
+  "Roles": [
+    "66030593a266bc0d03e368c8",
+    "660305aaa266bc0d03e368c9",
+    "660305b4a266bc0d03e368ca",
+    "660305bea266bc0d03e368cb",
+    "660305c8a266bc0d03e368cc",
+    "660305d1a266bc0d03e368cd",
+    "660305d9a266bc0d03e368ce"
+  ],
+  "Claims": [
+    {
+      "_id": 0,
+      "UserId": "6604b0a6291fe0817c6cf167",
+      "ClaimType": "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+      "ClaimValue": "System Administrator"
+    },
+    {
+      "_id": 0,
+      "UserId": "6604b0a6291fe0817c6cf167",
+      "ClaimType": "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+      "ClaimValue": "Site Administrator"
+    },
+    {
+      "_id": 0,
+      "UserId": "6604b0a6291fe0817c6cf167",
+      "ClaimType": "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+      "ClaimValue": "Group Administrator"
+    },
+    {
+      "_id": 0,
+      "UserId": "6604b0a6291fe0817c6cf167",
+      "ClaimType": "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+      "ClaimValue": "Project Supervisor"
+    },
+    {
+      "_id": 0,
+      "UserId": "6604b0a6291fe0817c6cf167",
+      "ClaimType": "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+      "ClaimValue": "Project Manager"
+    },
+    {
+      "_id": 0,
+      "UserId": "6604b0a6291fe0817c6cf167",
+      "ClaimType": "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+      "ClaimValue": "Homeowner"
+    },
+    {
+      "_id": 0,
+      "UserId": "6604b0a6291fe0817c6cf167",
+      "ClaimType": "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+      "ClaimValue": "Consumer"
+    }
+  ],
+  "Logins": [],
+  "Tokens": [],
+  "Profile": {
+    "RegistrationDate": {
+      "$date": "2024-03-27T23:49:58.077Z"
+    },
+    "Expired": false,
+    "ExpireDate": {
+      "$date": "9999-12-31T23:59:59.999Z"
+    },
+    "DeviceType": 0,
+    "IsLoggedIn": false,
+    "Title": "",
+    "FirstName": "Matthew",
+    "MiddleName": "",
+    "LastName": "Lamz",
+    "Suffix": "",
+    "Gender": 0,
+    "Contact": {
+      "Address": [
+        {
+          "CountryId": {
+            "$oid": "52ade08e2b0b6d13f88c4e53"
+          },
+          "Country": "US",
+          "StateId": {
+            "$oid": "52ade0932b0b6d13f88c4e8a"
+          },
+          "State": "TX",
+          "CountyId": {
+            "$oid": "57a2a543d00bc10e9c1884f6"
+          },
+          "County": "Travis County",
+          "CityId": {
+            "$oid": "57a1d01cd00bc130c038b434"
+          },
+          "City": "Austin",
+          "ZipCode": 78726,
+          "TimeZoneId": {
+            "$oid": "57a01b573d33e01394bc8abd"
+          },
+          "TimeZone": "America/Chicago",
+          "Address1": "11121 Calavar Dr",
+          "Address2": null
+        }
+      ],
+      "Email": [
+        {
+          "UserName": "matthew",
+          "Domain": "facilitate.org"
+        }
+      ],
+      "Phone": [
+        {
+          "PhoneType": 0,
+          "CountryCode": 1,
+          "AreaCode": 512,
+          "Exchange": 496,
+          "Number": 3687
+        }
+      ]
+    },
+    "CreditCards": [],
+    "Transactions": []
+  }
+}]

@@ -11,8 +11,20 @@ html, body {
 
 h4 {
     color: #c0c0c0 !important;
-    font-size: 1.3em !important;
+    font-size: 1.2em !important;
+    font-style: normal !important;
+}
+
+.hyperlink {
+    color: #b10505 !important;
+    text-decoration: underline !important;
+}
+
+.link-help-info {
+    border: solid 0px #ff0000 !important;
+    color: #808080 !important;
     font-style: italic !important;
+    font-size: 1.0em !important;
 }
 
 .table-button-container {
@@ -57,11 +69,6 @@ h4 {
     position: relative !important;
     top: -5px !important;
     margin-right: 15px !important;
-}
-
-.hyperlink {
-    color: #b10505 !important;
-    text-decoration: underline !important;
 }
 
 table {
