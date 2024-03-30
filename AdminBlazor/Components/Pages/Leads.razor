@@ -12,7 +12,7 @@
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
-@inject QuoteService QuoteService
+@inject WebServices WebServices
 
 <PageTitle>Leads</PageTitle>
 <h1>@updateStatus Leads <span id="update-status" class="@StatusClass">@RefreshStatus</span></h1>
@@ -411,6 +411,8 @@ else
 
 @code {
 
+    WebServices webServices = new WebServices();
+
     IEnumerable<string> Values { get; set; }
 
     IEnumerable<User> SelectedProjectManager { get; set; }
@@ -440,7 +442,7 @@ else
         Quote quote = quotes[selectedIndex];
         quote.notes.Add(note);
 
-        QuoteService.DeleteQuote(selectedQuoteId, quote);
+        WebServices.DeleteQuote(selectedQuoteId, quote);
 
         PopupVisibleArchive = false;
 
@@ -604,8 +606,8 @@ else
         assignmentEvent.Details = "Lead assigned to Project Manager Id: " + projectManager._id + " (" + projectManager.Name + "), moved to Opportunities and emailed to: " + projectManager.Email;
         quotes[selectedIndex].events.Add(assignmentEvent);
 
-        // QuoteService.AssignQuote(selectedQuoteId, quotes[selectedIndex]);
-        QuoteService.UpdateQuote(selectedQuoteId, quotes[selectedIndex]);
+        // WebServices.AssignQuote(selectedQuoteId, quotes[selectedIndex]);
+        WebServices.UpdateQuote(selectedQuoteId, quotes[selectedIndex]);
 
         PopupVisibleAssign = false;
 
@@ -675,7 +677,7 @@ else
     {
         _timer = new Timer(new TimerCallback(_ =>
         {
-            quotes = (List<Quote>)QuoteService.GetQuotes("New");
+            quotes = webServices.GetQuotes("New");
             updateStatus = quotes.Count().ToString("N0");
             StatusContainerClass = "container-action-buttons-show";
 
@@ -858,7 +860,7 @@ else
 
         try
         {
-            QuoteService.CreateQuote(quote);
+            WebServices.CreateQuote(quote);
             results = "POSTED";
         }
         catch (Exception ex)

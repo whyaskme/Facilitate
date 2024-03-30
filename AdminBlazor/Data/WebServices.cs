@@ -4,10 +4,12 @@ using MongoDB.Driver;
 
 namespace AdminBlazor.Data
 {
-    [Route("api/[controller]")]
+    [Route("api/WebServices")]
     [ApiController]
     public class WebServices : ControllerBase
     {
+        Utils utils = new Utils();
+
         string dbName = "Facilitate";
         string collectionName = "Quote";
 
@@ -22,11 +24,10 @@ namespace AdminBlazor.Data
         private CancellationToken _cancellationToken;
 
         // GET: api/<WebServices>
-        [HttpGet]
-        public IEnumerable<Quote> GetQuotes(string status)
+        //[HttpGet]
+        [Route("GetQuotes")]
+        public List<Quote> GetQuotes(string status)
         {
-            Utils utils = new Utils();
-
             List<Attachment> unSortedFiles = new List<Attachment>();
             List<Note> unSortedNotes = new List<Note>();
             List<Event> unSortedEvents = new List<Event>();
@@ -78,7 +79,7 @@ namespace AdminBlazor.Data
                     sortedQuotes[i].events = SortEventsByDateDesc(unSortedEvents);
                 }
 
-                return (IEnumerable<Quote>)sortedQuotes;
+                return sortedQuotes;
             }
             catch (Exception ex)
             {
@@ -110,10 +111,115 @@ namespace AdminBlazor.Data
         {
         }
 
-        // DELETE api/<WebServices>/5
-        [HttpDelete("{id}")]
-        public void DeleteQuote(int id)
+        public string UpdateQuote(string quoteId, Quote quote)
         {
+            try
+            {
+                // This is a soft delete > move to archive.
+                client = new MongoClient(mongoUri);
+                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
+
+                var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
+
+                var result = collection.ReplaceOne(filter, quote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
+            return resultMsg;
+        }
+
+        public string CreateQuote(Quote quote)
+        {
+            try
+            {
+                client = new MongoClient(mongoUri);
+
+                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
+                collection.InsertOne(quote);
+
+                resultMsg = "Added Quote!";
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
+            return resultMsg;
+        }
+
+        // DELETE api/<WebServices>/5
+        //[HttpDelete("{id}")]
+        //public void DeleteQuote(int id)
+        //{
+        //}
+
+        //DELETE api/<WebServices>/5
+        //[HttpDelete("{id}")]
+        public string DeleteQuote(string quoteId, Quote quote)
+        {
+            try
+            {
+                // This is a soft delete > move to archive.
+                client = new MongoClient(mongoUri);
+                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
+
+                var updateQuote = Builders<Quote>.Update.Set(quote => quote.status, "Archive");
+
+                var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
+
+                Event _event = new Event(0, 0);
+                _event.Details = quote.status + " moved to Archive";
+
+                quote.status = "Archive";
+                quote.events.Add(_event);
+
+                var result = collection.ReplaceOne(filter, quote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+
+                resultMsg = "Archived!";
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
+            return resultMsg;
+        }
+
+        public int GetQuoteCount(string status)
+        {
+            try
+            {
+                client = new MongoClient(mongoUri);
+                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
+
+                var builder = Builders<Quote>.Filter;
+                var filter = builder.Eq(f => f.status, status);
+
+                var count = collection.CountDocuments(filter);
+
+                return (int)count;
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
+            return 0;
         }
 
         public List<Event> SortEventsByDateDesc(List<Event> originalList)

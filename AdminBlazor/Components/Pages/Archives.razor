@@ -10,7 +10,7 @@
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
-@inject QuoteService QuoteService
+@inject WebServices WebServices
 
 <PageTitle>Archives</PageTitle>
 <h1>@updateStatus Archives <span id="update-status" class="@StatusClass">@RefreshStatus</span></h1>
@@ -343,6 +343,8 @@ else
 
 @code {
 
+    WebServices webServices = new WebServices();
+
     string ArchivalReason { get; set; } = "";
 
     bool PopupVisibleAssign { get; set; }
@@ -459,7 +461,7 @@ else
     {
         Grid.CollapseDetailRow(selectedIndex);
 
-        QuoteService.DeleteQuote(selectedQuoteId, quotes[selectedIndex]);
+        WebServices.DeleteQuote(selectedQuoteId, quotes[selectedIndex]);
 
         PopupVisibleArchive = false;
 
@@ -518,7 +520,7 @@ else
     {
         _timer = new Timer(new TimerCallback(_ =>
         {
-            quotes = (List<Quote>)QuoteService.GetQuotes("Archive");
+            quotes = webServices.GetQuotes("Archive");
             updateStatus = quotes.Count().ToString("N0");
             StatusContainerClass = "container-action-buttons-show";
 

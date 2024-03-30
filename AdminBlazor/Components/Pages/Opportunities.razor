@@ -10,7 +10,7 @@
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
-@inject QuoteService QuoteService
+@inject WebServices WebServices
 
 @inject NavigationManager NavigationManager
 
@@ -576,6 +576,8 @@ else
 
 @code {
 
+    WebServices webServices = new WebServices();
+
     #region Private Properties
 
         private List<Quote>? quotes;
@@ -763,7 +765,7 @@ else
             Quote quote = quotes[selectedIndex];
             quote.notes.Add(note);
 
-            QuoteService.DeleteQuote(selectedQuoteId, quote);
+            WebServices.DeleteQuote(selectedQuoteId, quote);
 
             PopupVisibleArchive = false;
 
@@ -787,7 +789,7 @@ else
             quote.status = "Opportunity";
             quote.events.Add(_event);
 
-            QuoteService.UpdateQuote(selectedQuoteId, quotes[selectedIndex]);
+            WebServices.UpdateQuote(selectedQuoteId, quotes[selectedIndex]);
 
             PopupVisibleAddNote = false;
 
@@ -836,7 +838,7 @@ else
 
             quote.events.Add(_event);
 
-            QuoteService.UpdateQuote(selectedQuoteId, quotes[selectedIndex]);
+            WebServices.UpdateQuote(selectedQuoteId, quotes[selectedIndex]);
 
             PopupVisibleMakeCustomer = false;
 
@@ -900,7 +902,7 @@ else
 
             _timer = new Timer(new TimerCallback(_ =>
             {
-                quotes = (List<Quote>)QuoteService.GetQuotes("Opportunity");
+                quotes = webServices.GetQuotes("Opportunity");
                 updateStatus = quotes.Count().ToString("N0");
                 StatusContainerClass = "container-action-buttons-show";
 

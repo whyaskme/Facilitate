@@ -5,7 +5,7 @@
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
-@inject QuoteService QuoteService
+@inject WebServices WebServices
 
 <PageTitle>Welcome to Facilitate Platform Administration</PageTitle>
 
@@ -64,9 +64,9 @@
 
     private void GetLeadCount()
     {
-        countLeads = QuoteService.GetQuoteCount("New");
-        countOpportunities = QuoteService.GetQuoteCount("Opportunity");
-        countCustomers = QuoteService.GetQuoteCount("Customer");
-        countArchives = QuoteService.GetQuoteCount("Archive");
+        countLeads = WebServices.GetQuoteCount("New");
+        countOpportunities = WebServices.GetQuoteCount("Opportunity");
+        countCustomers = WebServices.GetQuoteCount("Customer");
+        countArchives = WebServices.GetQuoteCount("Archive");
     }
 }
