@@ -9,6 +9,14 @@ html, body {
     overflow: hidden;
 }
 
+.icon-help {
+    border: solid 0px #ff0000 !important;
+    width: 20px !important;
+    position: relative !important;
+    top: -2px !important;
+    left: 5px !important;
+}
+
 h4 {
     color: #c0c0c0 !important;
     font-size: 1.2em !important;

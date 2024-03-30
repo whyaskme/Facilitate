@@ -272,7 +272,9 @@ else
                             </td>
                             <td colspan="3" class="notes-items">
 
-                                <h4>Send Documents <span @onclick="@(() => PopupVisibleHelpSendFiles = true)" class="link-help-info">Help?</span></h4>
+                                <h4>Send Documents <span @onclick="@(() => PopupVisibleHelpSendFiles = true)" class="link-help-info">
+                                    <img src="images/icons/Help.jpg" class="icon-help" />
+                                </span></h4>
 
                                 <label class="document-label-container">
                                     Welcome letter
@@ -789,7 +791,7 @@ else
             quote.status = "Opportunity";
             quote.events.Add(_event);
 
-            WebServices.UpdateQuote(selectedQuoteId, quotes[selectedIndex]);
+            WebServices.UpdateQuote(quotes[selectedIndex]);
 
             PopupVisibleAddNote = false;
 
@@ -838,7 +840,7 @@ else
 
             quote.events.Add(_event);
 
-            WebServices.UpdateQuote(selectedQuoteId, quotes[selectedIndex]);
+            WebServices.UpdateQuote(quotes[selectedIndex]);
 
             PopupVisibleMakeCustomer = false;
 

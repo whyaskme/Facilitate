@@ -113,8 +113,11 @@ namespace AdminBlazor.Data
         {
         }
 
-        public string UpdateQuote(string quoteId, Quote quote)
+        [HttpPut("{quote}")]
+        public string UpdateQuote(Quote quote)
         {
+            string quoteId = quote._id;
+
             try
             {
                 // This is a soft delete > move to archive.
@@ -158,7 +161,6 @@ namespace AdminBlazor.Data
             return resultMsg;
         }
 
-        //DELETE api/<WebServices>/5
         [HttpDelete("{quoteId}, {quote}")]
         public string DeleteQuote(string quoteId)
         {

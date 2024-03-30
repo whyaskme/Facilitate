@@ -607,7 +607,7 @@ else
         quotes[selectedIndex].events.Add(assignmentEvent);
 
         // WebServices.AssignQuote(selectedQuoteId, quotes[selectedIndex]);
-        WebServices.UpdateQuote(selectedQuoteId, quotes[selectedIndex]);
+        WebServices.UpdateQuote(quotes[selectedIndex]);
 
         PopupVisibleAssign = false;
 
