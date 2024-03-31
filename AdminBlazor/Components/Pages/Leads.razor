@@ -29,7 +29,7 @@
 
 @if (quotes == null)
 {
-    <p><em>Loading...</em></p>
+@*     <p><em>Loading...</em></p> *@
 }
 else
 {
@@ -82,7 +82,7 @@ else
                 <table>
                 <tbody>
                     <tr>
-                        <td colspan=4>
+                        <td colspan=3>
                             <h6>Homeowner</h6>
                         </td>
                     </tr>
@@ -93,7 +93,7 @@ else
                         </td>
                         <td>
                             <label>Email</label>
-                            <a href="mailto:@_quote.externalUrl">
+                            <a href="mailto:@_quote.email">
                                 <span class="detail-item">@_quote.email</span>
                             </a>
                         </td>
@@ -101,12 +101,19 @@ else
                             <label>Phone</label>
                             <span class="detail-item">@_quote.phone</span>
                         </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Property Address</label>
+                            @_quote.street @_quote.city, @_quote.state @_quote.zip
+                        </td>
                         <td>
                             <label>IP Address</label>
                             <a href="https://whatismyipaddress.com/ip/@SubmissionUserIP" target="_blank">
                                 <span class="detail-item">@SubmissionUserIP</span>
                             </a>
                         </td>
+                        <td></td>
                     </tr>
                 </tbody>
                 </table>
@@ -117,37 +124,32 @@ else
                 <tbody>
                     <tr>
                         <td colspan=3>
-                            <h6>Property</h6>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan=3>
-                            <label>Address</label>
-                            <b>@_quote.street @_quote.city, @_quote.state @_quote.zip</b>
+                            <h6>Project</h6>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <label>Name</label>
-                            <span class="detail-item">@_quote.structures[0].name</span>
+                            <label>Total Sqft</label>
+                            <span class="detail-item">@_quote.totalSquareFeet.ToString("N0")</span>
                         </td>
                         <td>
                             <label>Incl Roofs</label>
                             <span class="detail-item">@_quote.numberOfIncludedStructures</span>
                         </td>
-                        <td>
-                            <label>Total Sqft</label>
-                            <span class="detail-item">@_quote.totalSquareFeet.ToString("N0")</span>
-                        </td>
+                        <td></td>
                     </tr>
                     <tr>
                         <td>
                             <label>Roof Complexity</label>
                             <span class="detail-item">@_quote.structures[0].roofComplexity</span>
                         </td>
-                        <td colspan=2>
+                        <td>
                             <label>Slope</label>
                             <span class="detail-item">@_quote.structures[0].slope</span>
+                        </td>
+                        <td>
+                            <label>Name</label>
+                            <span class="detail-item">@_quote.structures[0].name</span>
                         </td>
                     </tr>
                 </tbody>
@@ -159,7 +161,7 @@ else
                 <tbody>
 
                     <tr>
-                        <td colspan=4>
+                        <td colspan=3>
                             <h6>Products</h6>
                         </td>
                     </tr>
@@ -177,53 +179,50 @@ else
                                 {
                                     priceLabel = @_quote.products[i].priceInfo.priceType;
                                 }
+
                                 <tr>
-                            <td>
-                                <label>Name</label>
-                                <span class="detail-item">@_quote.products[i].name</span>
-                            </td>
-                            <td>
-                                <label>Waste Factor</label>
-                                <span class="detail-item">@_quote.products[i].wasteFactorMainRoof</span>
-                            </td>
-                            <td colspan=3>
-                                <label>Price Type</label>
-                                <span class="detail-item">@priceLabel</span>                               
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan=4>
-                                <table>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <label>Total Quote</label>
-                                            <span class="detail-item">$@_quote.products[i].priceInfo.total.ToString("N0")</span>
-                                        </td>
-                                        <td>
-                                            <label>Per Square</label>
-                                            <span class="detail-item">$@_quote.products[i].priceInfo.pricePerSquare</span>
-                                        </td>
-                                        <td>
-                                            <label>Monthly</label>
-                                            <span class="detail-item">$@_quote.products[i].priceInfo.monthly</span>
-                                        </td>
-                                        <td>
-                                            <label>APR</label>
-                                            <span class="detail-item">@_quote.products[i].priceInfo.apr%</span>
-                                        </td>
-                                        <td>
-                                            <label>Months</label>
-                                            <span class="detail-item">@_quote.products[i].priceInfo.months</span>
-                                        </td>
-                                        <td></td>
-                                    </tr>
-                                </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                    }
-                }
+                                    <td>
+                                        <label>Name</label>
+                                        <span class="detail-item">@_quote.products[i].name</span>
+                                    </td>
+                                    <td>
+                                        <label>Waste Factor</label>
+                                        <span class="detail-item">@_quote.products[i].wasteFactorMainRoof</span>
+                                    </td>
+                                    <td>
+                                        <label>Price Type</label>
+                                        <span class="detail-item">@priceLabel</span>                               
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <label>Total Quote</label>
+                                        <span class="detail-item">$@_quote.products[i].priceInfo.total.ToString("N0")</span>
+                                    </td>
+                                    <td>
+                                        <label>Per Square</label>
+                                        <span class="detail-item">$@_quote.products[i].priceInfo.pricePerSquare</span>
+                                    </td>
+                                    <td>
+                                        <label>Monthly</label>
+                                        <span class="detail-item">$@_quote.products[i].priceInfo.monthly</span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <label>APR</label>
+                                        <span class="detail-item">@_quote.products[i].priceInfo.apr%</span>
+                                    </td>
+                                    <td>
+                                        <label>Months</label>
+                                        <span class="detail-item">@_quote.products[i].priceInfo.months</span>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            }
+                        }
                 </tbody>
                 </table>
 
@@ -232,10 +231,28 @@ else
                 <table>
                 <tbody>
                     <tr>
-                        <td colspan=4>
+                        <td colspan=3>
                             <h6>Origin</h6>
                         </td>
                     </tr>
+
+                        <tr>
+                            <td>
+                                <label>Market</label>
+                                <span class="detail-item">@_quote.market</span>
+                            </td>
+                            <td>
+                                <label>Rep Name</label>
+                                <span class="detail-item">@_quote.repLead</span>
+                            </td>
+                            <td>
+                                <label>Rep Email</label>
+                                <a href="mailto:@_quote.repEmail">
+                                    <span class="detail-item">@_quote.repEmail</span>
+                                </a>
+                            </td>
+                        </tr>
+
                     <tr>
                         <td>
                             <label>RecId</label>
@@ -248,91 +265,60 @@ else
                             </a>
                         </td>
                         <td>
-                            <label>SessionId</label>
+                            <label>Session</label>
                             <span class="detail-item">@_quote.sessionId</span>
                         </td>
-                        <td>
-                            <label>Market</label>
-                            <span class="detail-item">@_quote.market</span>
-                        </td>
                     </tr>
+
                     <tr>
-                        <td>
-                            <label>Rep Name</label>
-                            <span class="detail-item">@_quote.repLead</span>
-                        </td>
-                        <td>
-                            <label>Rep Email</label>
-                            <a href="mailto:@_quote.repEmail">
-                                <span class="detail-item">@_quote.repEmail</span>
-                            </a>
-                        </td>
                         <td>
                             <label>RoofleId</label>
                             <span class="detail-item">@_quote.leadId</span>
                         </td>
-                        <td></td>
+                        <td>
+
+                        </td>
+                        <td>
+
+                        </td>
+
                     </tr>
                 </tbody>
                 </table>
-
-                if (_quote.projectManager != null)
-                {
-                    <div class="table-spacer" />
-
-                    <table>
-                    <tbody>
-                        <tr>
-                            <td colspan=4>
-                                <h6>Project</h6>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>PM Name</label>
-                                <span class="detail-item"></span>
-                            </td>
-                                    <td>
-                                        <label>PM Phone</label>
-                                        <span class="detail-item"></span>
-                                    </td>
-                            <td>
-                                <label>PM Email</label>
-                                <a href="#" target="_blank">
-                                    <span class="detail-item"></span>
-                                </a>
-                            </td>
-                            <td>
-                                <label>Last Activity</label>
-                                        <span class="detail-item"></span>
-                            </td>
-                        </tr>
-                    </tbody>
-                    </table>
-                }
 
                 <div class="table-spacer" />
 
                 <table>
                 <tbody>
                     <tr>
-                        <td>
+                        <td colspan="3">
                             <h6>History</h6>
+                            <br />
                         </td>
                     </tr>
 
                     @{
                         var currentEventCount = 1;
-                            for (int currentIndex = 0; currentIndex < @_quote.events.Count; currentIndex++)
+                        for (int currentIndex = 0; currentIndex < @_quote.events.Count; currentIndex++)
                         {
                             <tr>
-                                <td>
-                                    <label>@currentEventCount. @_quote.events[currentIndex].DateTime</label>
-                                    <span class="detail-item">@_quote.events[currentIndex].Details</span>
+                                <td colspan="3">
+                                    <div class="div-date-container">@currentEventCount. @_quote.events[currentIndex].DateTime</div>
                                 </td>
-                                </tr>
-                                currentEventCount++;
-                            }
+                            </tr>
+                            <tr>
+                                <td>
+                                    @_quote.events[currentIndex].Details
+                                </td>
+                                <td>
+                                    <label>Author</label>
+                                    <span>@Author</span>
+                                </td>
+                                <td></td>
+                            </tr>
+                                
+                            currentEventCount++;
+                        }
                     }
 
                 </tbody>
@@ -357,6 +343,12 @@ else
     <button class="btn btn-primary" disabled="@CreateLeadDisabled" @onclick="CreateLead">Create 1 Lead</button>
     <button class="btn btn-primary" disabled="@CreateLeadsDisabled" @onclick="CreateLeads">Create @itemsToCreate Leads</button>
 </div>
+
+<DxLoadingPanel @bind-Visible=@LoadingPanelVisible
+                PositionTarget="body"
+                ApplyBackgroundShading="true"
+                CssClass="w-100">
+</DxLoadingPanel>
 
 <DxPopup
     @bind-Visible="@PopupVisibleAssign"
@@ -405,6 +397,10 @@ else
 
 
 @code {
+
+    bool LoadingPanelVisible { get; set; } = true;
+
+    string Author { get; set; } = "unknown";
 
     WebServices webServices = new WebServices();
 
@@ -656,7 +652,7 @@ else
     // private IEnumerable<Quote>? quotes;
     private List<Quote>? quotes;
 
-    public int itemsToCreate = 1000;
+    public int itemsToCreate = 100;
     public string updateStatus = "Fetching ";
 
     bool isBulkInsert = false;
@@ -670,6 +666,8 @@ else
 
     private void RefreshTimer()
     {
+        LoadingPanelVisible = true;
+
         _timer = new Timer(new TimerCallback(_ =>
         {
             quotes = webServices.GetQuotes("New");
@@ -681,6 +679,8 @@ else
                 StateHasChanged();
             });
         }), null, 1000, 1000);
+
+        LoadingPanelVisible = false;
     }
 
     private void CreateLeads()

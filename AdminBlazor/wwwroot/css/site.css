@@ -9,6 +9,23 @@ html, body {
     overflow: hidden;
 }
 
+table {
+    width: 100% !important;
+}
+
+td {
+    padding: 5px;
+    padding-left: 10px;
+/*    border-bottom: solid 1px #dad7d7 !important;*/
+}
+
+.table-spacer {
+    border: solid 1px #eee !important;
+    border-collapse: collapse !important;
+    /*    margin-top: 15px;*/
+    margin: 25px !important;
+}
+
 .icon-help {
     border: solid 0px #ff0000 !important;
     width: 20px !important;
@@ -18,12 +35,14 @@ html, body {
 }
 
 .div-date-container {
-    border-top: dashed 1px #c0c0c0 !important;
+    border-top: solid 1px #dad7d7 !important;
+    position: relative !important;
+    left: -7px !important;
     padding-top: 15px !important;
 }
 
 h4 {
-    color: #c0c0c0 !important;
+    color: #dad7d7 !important;
     font-size: 1.3em !important;
     font-weight: bold !important;
 }
@@ -84,51 +103,40 @@ h4 {
     margin-right: 15px !important;
 }
 
-table {
-    width: 100% !important;
-}
-
-.table-spacer {
-    border: solid 1px #eee !important;
-    border-collapse: collapse !important;
-    margin-top: 15px;
-    margin-bottom: 15px;
-}
-
 .dashed-spacer {
     border: dashed 0px #ff0000 !important;
 }
 
 .bar-spacer {
     border: solid 0px #ff0000 !important;
-    color: #c0c0c0 !important;
+    color: #dad7d7 !important;
     margin: 5px !important;
 }
 
 .notes-container {
     background-color: #ffffff !important;
-    border: solid 1px #c0c0c0 !important;
+    border: solid 1px #dad7d7 !important;
 }
 
 .notes-container td {
-    border: solid 1px #c0c0c0 !important;
+    border: solid 1px #dad7d7 !important;
     padding: 0px !important;
     padding: 15px !important;
 }
 
 .note-row {
-    border-bottom: dashed 0px #c0c0c0 !important;
+    border-bottom: dashed 0px #dad7d7 !important;
     padding: 10px !important;
 }
 
 .notes-items {
-    border-top: dashed 0px #c0c0c0 !important;
+    border-top: dashed 0px #dad7d7 !important;
     margin-top: 25px !important;
     padding-top: 25px !important;
 }
 
 .event-history-container {
-    border-bottom: solid 0px #c0c0c0 !important;
+    border-bottom: solid 0px #dad7d7 !important;
     width: 100% !important;
     margin-bottom: 25px !important;
     padding-bottom: 25px !important;
@@ -150,18 +158,13 @@ table {
 .author {
     font-size: 1.1em !important;
     text-decoration: line-through;
-    color: #c0c0c0 !important;
+    color: #dad7d7 !important;
 }
 
 .dxbl-grid-expand-button
 {
     border: solid 1px #ff0000 !important;
     visibility: hidden !important;
-}
-
-td {
-    padding: 5px;
-    padding-left: 10px;
 }
 
 label {
@@ -242,13 +245,13 @@ h6 {
 }
 
 .btn-refresh-active {
-    background-color: #045e20 !important;
+    background-color: #b10505 !important;
     color: #fff !important;
     margin-right: 25px !important;
 }
 
 .btn-refresh-inactive {
-    background-color: #b10505 !important;
+    background-color: #045e20 !important;
     color: #fff !important;
     margin-right: 25px !important;
 }

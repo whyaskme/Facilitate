@@ -49,6 +49,9 @@ namespace AdminBlazor.Data
                     unSortedNotes.Clear();
                     unSortedEvents.Clear();
 
+                    // Convert to local time
+                    sortedQuotes[i].timestamp = sortedQuotes[i].timestamp.ToLocalTime();
+
                     for (var j = 0; j < sortedQuotes[i].attachments.Count; j++)
                     {
                         Attachment currentAttachment = sortedQuotes[i].attachments[j];
