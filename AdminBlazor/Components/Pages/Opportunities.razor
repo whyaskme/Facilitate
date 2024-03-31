@@ -272,9 +272,7 @@ else
                             </td>
                             <td colspan="3" class="notes-items">
 
-                                <h4>Send Documents <span @onclick="@(() => PopupVisibleHelpSendFiles = true)" class="link-help-info">
-                                    <img src="images/icons/Help.jpg" class="icon-help" />
-                                </span></h4>
+                                <h4>Send Documents <span @onclick="@(() => PopupVisibleHelpSendFiles = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
 
                                 <label class="document-label-container">
                                     Welcome letter
@@ -314,15 +312,16 @@ else
                             </td>
                             <td colspan="3" class="notes-items">
 
-                                <h4>File Attachments <span @onclick="@(() => PopupVisibleHelpFileAttachments = true)" class="link-help-info">Help?</span></h4>
+                                <h4>File Attachments <span @onclick="@(() => PopupVisibleHelpFileAttachments = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
 
                                 @{
                                     var documentCount = _quote.attachments.Count;
                                     for (int currentIndex = 0; currentIndex < @_quote.attachments.Count; currentIndex++)
                                     {
                                         <div class="note-row">
-                                            <label>@documentCount) @_quote.attachments[currentIndex].Date</label>
-                                            <span class="bar-spacer">|</span>
+                                            <div class="div-date-container">
+                                                <label>@documentCount) @_quote.attachments[currentIndex].Date</label>
+                                            </div>
 
                                             <span id="@_quote.attachments[currentIndex]._id" class="hyperlink" @onclick="@(() => PopupVisibleDeleteFile = true)">Delete</span>
 
@@ -332,7 +331,10 @@ else
                                             </a>
                                             <span class="bar-spacer">|</span>
                                             <label>File Type</label>
-                                            <span>@fileType</span>
+                                            <span>@FileType</span>
+                                            <span class="bar-spacer">|</span>
+                                            <label>Author</label>
+                                            <span>@Author</span>
                                         </div>
                                         documentCount--;
                                     }
@@ -345,20 +347,25 @@ else
                             </td>
                             <td colspan="3" class="notes-items">
 
-                                <h4>File Notes <span @onclick="@(() => PopupVisibleHelpFileNotes = true)" class="link-help-info">Help?</span></h4>
+                                <h4>File Notes <span @onclick="@(() => PopupVisibleHelpFileNotes = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
 
                                 @{
                                     var noteCount = _quote.notes.Count;
                                     for (int currentIndex = 0; currentIndex < @_quote.notes.Count; currentIndex++)
                                     {
                                         <div class="note-row">
-                                            <label>@noteCount) @_quote.notes[currentIndex].Date</label>
-                                            <span class="bar-spacer">|</span>
+                                            <div class="div-date-container">
+                                                <label>@noteCount) @_quote.notes[currentIndex].Date</label>
+                                            </div>
 
                                             <span class="hyperlink" @onclick="@(() => PopupVisibleDeleteNote = true)">Delete</span>
 
                                             <span class="bar-spacer">|</span>
                                             <span class="detail-item">@_quote.notes[currentIndex].Details</span>
+
+                                            <span class="bar-spacer">|</span>
+                                            <label>Author</label>
+                                            <span>@Author</span>
                                         </div>
                                         noteCount--;
                                     }
@@ -436,7 +443,9 @@ else
                                 {
                                     <tr>
                                         <td>
-                                            <label>@currentEventCount) @_quote.events[currentIndex].DateTime</label>
+                                            <div class="div-date-container">
+                                                <label>@currentEventCount) @_quote.events[currentIndex].Date</label>
+                                            </div>
                                             <span class="detail-item">@_quote.events[currentIndex].Details</span>
                                         </td>
                                     </tr>
@@ -596,8 +605,8 @@ else
 
         bool isBulkInsert = false;
 
-        string fileType { get; set; } = ".pdf";
-        string author { get; set; } = "unknown";
+        string FileType { get; set; } = ".pdf";
+        string Author { get; set; } = "unknown";
 
         string NoteDetails { get; set; } = "";
 

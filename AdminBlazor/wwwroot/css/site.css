@@ -17,6 +17,11 @@ html, body {
     left: 5px !important;
 }
 
+.div-date-container {
+    border-top: dashed 1px #c0c0c0 !important;
+    padding-top: 15px !important;
+}
+
 h4 {
     color: #c0c0c0 !important;
     font-size: 1.2em !important;
@@ -112,7 +117,7 @@ table {
 }
 
 .note-row {
-    border-bottom: dashed 1px #c0c0c0 !important;
+    border-bottom: dashed 0px #c0c0c0 !important;
     padding: 10px !important;
 }
 
