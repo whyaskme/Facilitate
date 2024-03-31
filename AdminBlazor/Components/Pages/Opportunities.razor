@@ -559,8 +559,28 @@ else
                 CssClass="w-100">
 </DxLoadingPanel>
 
+<div class="@StatusContainerClass">
+    <button class="@ButtonClass" disabled="@RefreshDisabled" @onclick="ToggleRefresh">@ButtonText</button>
+</div>
+
 
 @code {
+
+    public void EnableRefreshAndCreateControls(bool bEnable)
+    {
+        if (bEnable)
+        {
+            RefreshDisabled = false;
+            ArchiveLeadsDisabled = false;
+        }
+        else
+        {
+            RefreshDisabled = true;
+            CreateLeadDisabled = true;
+            CreateLeadsDisabled = true;
+            ArchiveLeadsDisabled = true;
+        }
+    }
 
     bool LoadingPanelVisible { get; set; } = true;
 
@@ -654,6 +674,9 @@ else
         public string ButtonClass { get; set; } = "btn btn-outline-primary btn-refresh-active";
 
         [Parameter]
+        public bool RefreshDisabled { get; set; } = false;
+
+        [Parameter]
         public bool CreateLeadDisabled { get; set; } = true;
 
         [Parameter]
@@ -695,21 +718,20 @@ else
 
         void OnRowClick(GridRowClickEventArgs args)
         {
-            PauseRefresh();
-
             selectedIndex = args.VisibleIndex;
-
             selectedQuoteId = quotes[selectedIndex]._id;
 
             var selectedDetailExpanded = QuoteGrid.IsDetailRowExpanded(selectedIndex);
             if (selectedDetailExpanded)
             {
                 QuoteGrid.CollapseDetailRow(selectedIndex);
-                ToggleRefresh();
             }
             else
             {
                 QuoteGrid.ExpandDetailRow(selectedIndex);
+                ToggleRefresh();
+
+                EnableRefreshAndCreateControls(false);
             }
         }
 
@@ -885,22 +907,24 @@ else
             _timer?.Dispose();           // because you need it here
         }
 
-        private void RefreshTimer()
+    private void RefreshTimer()
+    {
+        LoadingPanelVisible = true;
+
+        _timer = new Timer(new TimerCallback(_ =>
         {
-            //quotes = null;
+            quotes = webServices.GetQuotes("Opportunity");
+            updateStatus = quotes.Count().ToString("N0");
+            StatusContainerClass = "container-action-buttons-show";
 
-            _timer = new Timer(new TimerCallback(_ =>
+            InvokeAsync(() =>
             {
-                quotes = webServices.GetQuotes("Opportunity");
-                updateStatus = quotes.Count().ToString("N0");
-                StatusContainerClass = "container-action-buttons-show";
+                StateHasChanged();
+            });
+        }), null, 1000, 1000);
 
-                InvokeAsync(() =>
-                {
-                    StateHasChanged();
-                });
-            }), null, 1000, 1000);
-        }
+        LoadingPanelVisible = false;
+    }
 
     #endregion
 }
