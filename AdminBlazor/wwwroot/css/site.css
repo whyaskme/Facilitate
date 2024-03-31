@@ -22,6 +22,8 @@ td {
 .td-send-label {
     border: solid 0px #ff0000 !important;
     width: 250px !important;
+    vertical-align: top !important;
+    padding-top: 25px !important;
 }
 
 .td-send-button {
@@ -34,12 +36,10 @@ td {
     -webkit-border-radius: 5px !important;
     border-radius: 5px !important;
     padding: 10px !important;
-    /*    position: relative !important;
-    top: 25px !important;*/
 }
 
 .project-detail-work-panel {
-    border-top: dashed 1px #dad7d7 !important;
+    border-top: solid 1px #c0c0c0 !important;
     margin-top: 25px !important;
     padding-top: 5px !important;
 }

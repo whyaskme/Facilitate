@@ -269,6 +269,14 @@ else
                         <tbody>
                             <tr>
                                 <td class="table-button-container">
+                                    <label>
+                                        <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
+                                    </label>
+                                </td>
+                                <td class="td-send-label">
+                                    <h6>Send Documents <span @onclick="@(() => IsPopupVisibleHelpSendFiles = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h6>
+                                </td>
+                                <td class="td-send-button">
                                     <DxUpload Name="fileUpload1"
                                               AllowMultiFileUpload="true"
                                               UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
@@ -278,14 +286,6 @@ else
                                               AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
                                               CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
                                     </DxUpload>
-                                </td>
-                                <td class="td-send-label">
-                                    <h6>Send @_quote.firstName Documents <span @onclick="@(() => IsPopupVisibleHelpSendFiles = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h6>
-                                </td>
-                                <td class="td-send-button">
-                                    <label>
-                                        <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
-                                    </label>
                                 </td>
                             </tr>
                         </tbody>
