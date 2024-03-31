@@ -725,6 +725,7 @@ else
             if (selectedDetailExpanded)
             {
                 QuoteGrid.CollapseDetailRow(selectedIndex);
+                //EnableRefreshAndCreateControls(true);
             }
             else
             {
@@ -809,12 +810,15 @@ else
             ToggleRefresh();
 
             QuoteGrid.ExpandDetailRow(selectedIndex);
+
+            EnableRefreshAndCreateControls(true);
         }
 
         public void CloseDetails()
         {
             QuoteGrid.CollapseDetailRow(selectedIndex);
             ToggleRefresh();
+            EnableRefreshAndCreateControls(true);
         }
 
         public void DeleteFile()
@@ -856,6 +860,8 @@ else
             PopupVisibleMakeCustomer = false;
 
             ToggleRefresh();
+
+            EnableRefreshAndCreateControls(true);
         }
 
         public virtual void PauseRefresh()
