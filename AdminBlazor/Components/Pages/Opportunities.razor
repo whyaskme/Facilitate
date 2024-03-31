@@ -68,7 +68,7 @@ else
                 <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm:ss tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
                     <DxGridDataColumn Caption="First" FieldName="firstName" />
                     <DxGridDataColumn Caption="Last" FieldName="lastName" />
-                    <DxGridDataColumn Caption="Street" FieldName="street" />
+@*                     <DxGridDataColumn Caption="Street" FieldName="street" /> *@
                     <DxGridDataColumn Caption="City" FieldName="city" />
                     <DxGridDataColumn Caption="State" FieldName="state" />
                     <DxGridDataColumn Caption="Zip" FieldName="zip" />
@@ -123,7 +123,7 @@ else
                     <tr>
                         <td colspan=3>
                             <label>Address</label>
-                            @_quote.street @_quote.city, @_quote.state @_quote.zip
+                            <b>@_quote.street @_quote.city, @_quote.state @_quote.zip</b>
                         </td>
                     </tr>
                     <tr>
@@ -320,11 +320,11 @@ else
                                     {
                                         <div class="note-row">
                                             <div class="div-date-container">
-                                                <label>@documentCount) @_quote.attachments[currentIndex].Date</label>
+                                                <label><b>@documentCount)</b> @_quote.attachments[currentIndex].Date</label>
                                             </div>
 
                                             <span id="@_quote.attachments[currentIndex]._id" class="hyperlink" @onclick="@(() => PopupVisibleDeleteFile = true)">Delete</span>
-
+                                            
                                             <span class="bar-spacer">|</span>
                                             <a href="@_quote.attachments[currentIndex].MediaUrl" target="_blank">
                                                 <span class="detail-item">@_quote.attachments[currentIndex].MediaDescription</span>
@@ -355,7 +355,7 @@ else
                                     {
                                         <div class="note-row">
                                             <div class="div-date-container">
-                                                <label>@noteCount) @_quote.notes[currentIndex].Date</label>
+                                                <label><b>@noteCount)</b> @_quote.notes[currentIndex].Date</label>
                                             </div>
 
                                             <span class="hyperlink" @onclick="@(() => PopupVisibleDeleteNote = true)">Delete</span>
@@ -444,9 +444,12 @@ else
                                     <tr>
                                         <td>
                                             <div class="div-date-container">
-                                                <label>@currentEventCount) @_quote.events[currentIndex].Date</label>
+                                            <label><b>@currentEventCount)</b> @_quote.events[currentIndex].Date</label>
                                             </div>
                                             <span class="detail-item">@_quote.events[currentIndex].Details</span>
+                                            <span class="bar-spacer">|</span>
+                                            <label>Author</label>
+                                            <span>@Author</span>
                                         </td>
                                     </tr>
                                     currentEventCount--;
@@ -471,10 +474,7 @@ else
         </DxGrid>
 }
 
-<DxPopup @bind-Visible="@PopupVisibleDeleteFile"
-    ShowFooter="true"
-    HeaderText="Delete File"
-   >
+<DxPopup @bind-Visible="@PopupVisibleDeleteFile" ShowFooter="true" HeaderText="Delete File">
     <BodyContentTemplate>
         Are you sure you want to delete FileId: (@SelectedFileId)?
     </BodyContentTemplate>
@@ -484,10 +484,7 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup @bind-Visible="@PopupVisibleDeleteNote"
-    ShowFooter="true"
-    HeaderText="Delete Note"
-   >
+<DxPopup @bind-Visible="@PopupVisibleDeleteNote" ShowFooter="true" HeaderText="Delete Note">
     <BodyContentTemplate>
         Are you sure you want to delete NoteId: (@SelectedFileId)?
     </BodyContentTemplate>
@@ -498,12 +495,8 @@ else
 </DxPopup>
 
 <DxPopup
-    @bind-Visible="@PopupVisibleMakeCustomer"
-    ShowFooter="true"
-    HeaderText="Make Customer"
-   >
+    @bind-Visible="@PopupVisibleMakeCustomer" ShowFooter="true" HeaderText="Make Customer">
     <BodyContentTemplate>
-        <SampleEditForm/>
         If this Opportunity is fully qualified to meet Customer criteria, then click Save.
     </BodyContentTemplate>
     <FooterContentTemplate>
@@ -512,18 +505,10 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup @bind-Visible="@PopupVisibleAddNote"
-    ShowFooter="true"
-    HeaderText="Add Note"
-   >
+<DxPopup @bind-Visible="@PopupVisibleAddNote" ShowFooter="true" HeaderText="Add Note">
     <BodyContentTemplate>
         <p>Please type in your notes below.</p>
-        <SampleEditForm>
-            <DxTextBox 
-                @bind-Text="@NoteDetails"
-                CssClass="cw-320"
-                InputId="archive-reason" />
-        </SampleEditForm>
+        <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
     </BodyContentTemplate>
     <FooterContentTemplate>
         <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AddNote" />
@@ -532,18 +517,10 @@ else
 </DxPopup>
 
 <DxPopup
-    @bind-Visible="@PopupVisibleArchive"
-    ShowFooter="true"
-    HeaderText="Archive Lead"
-   >
+    @bind-Visible="@PopupVisibleArchive" ShowFooter="true" HeaderText="Archive Lead">
     <BodyContentTemplate>
         <p>Please type in a reason for Archival below.</p>
-        <SampleEditForm>
-            <DxTextBox 
-                @bind-Text="@NoteDetails"
-                CssClass="cw-320"
-                InputId="archive-reason" />
-        </SampleEditForm>
+        <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
     </BodyContentTemplate>
     <FooterContentTemplate>
         <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Archive" Click="ArchiveLead" />
@@ -551,9 +528,7 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup @bind-Visible="@PopupVisibleHelpSendFiles"
-    ShowFooter="true"
-    HeaderText="Send Documents Help?">
+<DxPopup @bind-Visible="@PopupVisibleHelpSendFiles" ShowFooter="true" HeaderText="Send Documents Help?">
     <BodyContentTemplate>
         <p>Send Documents details...</p>
     </BodyContentTemplate>
@@ -562,9 +537,7 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup @bind-Visible="@PopupVisibleHelpFileAttachments"
-    ShowFooter="true"
-    HeaderText="File Attachments Help?">
+<DxPopup @bind-Visible="@PopupVisibleHelpFileAttachments" ShowFooter="true" HeaderText="File Attachments Help?">
     <BodyContentTemplate>
         <p>File Attachments details...</p>
     </BodyContentTemplate>
@@ -573,9 +546,7 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup @bind-Visible="@PopupVisibleHelpFileNotes"
-         ShowFooter="true"
-         HeaderText="File Notes Help?">
+<DxPopup @bind-Visible="@PopupVisibleHelpFileNotes" ShowFooter="true" HeaderText="File Notes Help?">
     <BodyContentTemplate>
         <p>File Notes details...</p>
     </BodyContentTemplate>
@@ -612,9 +583,11 @@ else
 
     #endregion
 
-    #region Private Properties
+    #region Public Properties
 
         [Inject] public IJSRuntime jsRuntime { get; set; }
+
+        public Timer _timer;
 
         public string ClientIP = "";
         public string selectedQuoteId = "";
@@ -803,6 +776,7 @@ else
             WebServices.UpdateQuote(quotes[selectedIndex]);
 
             PopupVisibleAddNote = false;
+            NoteDetails = "";
 
             ToggleRefresh();
 
@@ -899,8 +873,6 @@ else
                 RefreshTimer();
             }
         }
-
-        public Timer _timer;
 
         public void Dispose()
         {

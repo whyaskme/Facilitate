@@ -68,7 +68,7 @@ else
                 <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm:ss tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
                 <DxGridDataColumn Caption="First" FieldName="firstName" />
                 <DxGridDataColumn Caption="Last" FieldName="lastName" />
-                <DxGridDataColumn Caption="Street" FieldName="street" />
+@*                 <DxGridDataColumn Caption="Street" FieldName="street" /> *@
                 <DxGridDataColumn Caption="City" FieldName="city" />
                 <DxGridDataColumn Caption="State" FieldName="state" />
                 <DxGridDataColumn Caption="Zip" FieldName="zip" />
@@ -123,7 +123,7 @@ else
                     <tr>
                         <td colspan=3>
                             <label>Address</label>
-                            @_quote.street @_quote.city, @_quote.state @_quote.zip
+                            <b>@_quote.street @_quote.city, @_quote.state @_quote.zip</b>
                         </td>
                     </tr>
                     <tr>
@@ -395,12 +395,7 @@ else
    >
     <BodyContentTemplate>
         <p>Please type in a reason for Archival below.</p>
-        <SampleEditForm>
-            <DxTextBox 
-                @bind-Text="@ArchivalReason"
-                CssClass="cw-320"
-                InputId="archive-reason" />
-        </SampleEditForm>
+        <DxMemo @bind-Text="@ArchivalReason" InputId="archive-reason" CssClass="cw-320" />
     </BodyContentTemplate>
     <FooterContentTemplate>
         <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Archive" Click="ArchiveLead" />
