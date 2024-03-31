@@ -79,7 +79,9 @@ else
             @{
                 var _quote = (Quote)context.DataItem;
 
-                <table>
+                var notesCount = _quote.notes.Count;
+
+                <table class="table-detail">
                     <tbody>
                         <tr>
                             <td colspan=3>
@@ -122,7 +124,7 @@ else
 
                 <div class="table-spacer" />
 
-                <table>
+                <table class="table-detail">
                     <tbody>
                         <tr>
                             <td colspan=3>
@@ -159,7 +161,7 @@ else
 
                 <div class="table-spacer" />
 
-                <table>
+                <table class="table-detail">
                     <tbody>
                         <tr>
                             <td colspan=3>
@@ -227,50 +229,45 @@ else
                     </tbody>
                 </table>
 
-                if (_quote.projectManager != null)
-                {
-                    <div class="table-spacer" />
+                <div class="table-spacer" />
 
-                    <table>
+                <table class="table-detail">
                     <tbody>
                         <tr>
-                            <td colspan=4>
+                            <td colspan=3>
                                 <h6>Project Details</h6>
                             </td>
                         </tr>
                         <tr>
-                            <td>
-                                <label>Project Manager</label>
-                                <span class="detail-item">@_quote.projectManager.Name</span>
-                            </td>
-                            <td>
-                                <label>Phone</label>
-                                <span class="detail-item">@_quote.projectManager.Phone</span>
-                            </td>
-                            <td>
-                                <label>Email</label>
-                                <a href="mailto:@_quote.projectManager.Email" target="_blank">
-                                    <span class="detail-item">@_quote.projectManager.Email</span>
-                                </a>
-                            </td>
-                            <td>
-                                <label>Homebase</label>
-                                <span class="detail-item">@_quote.projectManager.City, @_quote.projectManager.State @_quote.projectManager.Zip</span>
+                            <td colspan=3>
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <label>Project Manager</label>
+                                                <span class="detail-item">@_quote.projectManager.Name</span>
+                                            </td>
+                                            <td>
+                                                <label>Phone</label>
+                                                <span class="detail-item">@_quote.projectManager.Phone</span>
+                                            </td>
+                                            <td>
+                                                <label>Email</label>
+                                                <a href="mailto:@_quote.projectManager.Email" target="_blank">
+                                                    <span class="detail-item">@_quote.projectManager.Email</span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                                </table>
                             </td>
                         </tr>
-                    </tbody>
-                    </table>
-                }
 
-                <div class="table-spacer dashed-spacer" />
-
-                <table>
-                    <tbody>
-                        <tr class="notes-container">
+                        <tr>
                             <td class="table-button-container">
                                 <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Email Docs</button>
                             </td>
-                            <td colspan="3" class="notes-items">
+                            <td colspan="2" class="detail-colum">
 
                                 <h4>Send Documents <span @onclick="@(() => PopupVisibleHelpSendFiles = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
 
@@ -298,7 +295,7 @@ else
                                 </label>
                             </td>
                         </tr>
-                        <tr class="notes-container">
+                        <tr>
                             <td class="table-button-container">
                                 <DxUpload Name="myFile"
                                     AllowMultiFileUpload="true"
@@ -310,7 +307,7 @@ else
                                     CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
                                 </DxUpload>
                             </td>
-                            <td colspan="3" class="notes-items">
+                            <td colspan="2" class="detail-colum">
 
                                 <h4>File Attachments <span @onclick="@(() => PopupVisibleHelpFileAttachments = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
 
@@ -341,35 +338,36 @@ else
                                 }
                             </td>
                         </tr>
-                        <tr class="notes-container">
+                        <tr>
                             <td class="table-button-container">
                                 <button class="btn btn-primary doc-select-button" @onclick="@(() => PopupVisibleAddNote = true)">Add Note</button>
                             </td>
-                            <td colspan="3" class="notes-items">
+                            <td colspan="2" class="detail-colum">
 
                                 <h4>File Notes <span @onclick="@(() => PopupVisibleHelpFileNotes = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
 
-                                @{
-                                    var noteCount = _quote.notes.Count;
-                                    for (int currentIndex = 0; currentIndex < @_quote.notes.Count; currentIndex++)
-                                    {
-                                        <div class="note-row">
-                                            <div class="div-date-container">
-                                                <label><b>@noteCount)</b> @_quote.notes[currentIndex].Date</label>
-                                            </div>
-
-                                            <span class="hyperlink" @onclick="@(() => PopupVisibleDeleteNote = true)">Delete</span>
-
-                                            <span class="bar-spacer">|</span>
-                                            <span class="detail-item">@_quote.notes[currentIndex].Details</span>
-
-                                            <span class="bar-spacer">|</span>
-                                            <label>Author</label>
-                                            <span>@Author</span>
+                                <div class="notes-container">
+                                @foreach (Note note in _quote.notes)
+                                {
+                                    <div class="note-row">
+                                        <div class="div-date-container">
+                                            <label><b>@notesCount)</b> @note.Date</label>
                                         </div>
-                                        noteCount--;
-                                    }
+
+                                        <span class="hyperlink" @onclick="() => DeleteNote(_quote, note)">Delete</span>
+
+                                        <span class="bar-spacer">|</span>
+                                        <span class="detail-item">@note.Details</span>
+
+                                        <span class="bar-spacer">|</span>
+                                        <label>Author</label>
+                                        <span>@Author</span>
+                                    </div>
+
+                                    notesCount--;
                                 }
+                                </div>
+
                             </td>
                         </tr>
 
@@ -378,7 +376,7 @@ else
 
                 <div class="table-spacer" />
 
-                <table>
+                <table class="table-detail">
                     <tbody>
                         <tr>
                             <td colspan=3>
@@ -436,7 +434,7 @@ else
 
                 <div class="table-spacer" />
 
-                <table>
+                <table class="table-detail">
                     <tbody>
                         <tr>
                             <td colspan="3">
@@ -501,7 +499,7 @@ else
         Are you sure you want to delete NoteId: (@SelectedFileId)?
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteNote" />
+@*         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteNote" /> *@
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleDeleteNote = false)" />
     </FooterContentTemplate>
 </DxPopup>
@@ -577,6 +575,8 @@ else
 
 
 @code {
+
+    public int noteCount = 0;
 
     public void EnableRefreshAndCreateControls(bool bEnable)
     {
@@ -809,7 +809,7 @@ else
             quote.notes.Add(note);
 
             Event _event = new Event(0, 0);
-            _event.Details = "Added NoteId (" + note._id + ") to Quote";
+            _event.Details = "Note (" + note.Details + ") added to Quote";
 
             quote.status = "Opportunity";
             quote.events.Add(_event);
@@ -843,14 +843,20 @@ else
             // ToggleRefresh();
         }
 
-        public void DeleteNote()
+    public void DeleteNote(Quote quote, Note note)
         {
-            var tmpVal = "";
+            quote.notes.Remove(note);
+
+            Event _event = new Event(0, 0);
+            _event.Details = "Note (" + note.Details + ") from to Quote";
+
+            quote.events.Add(_event);
+
+            WebServices.UpdateQuote(quote);
 
             PopupVisibleDeleteNote = false;
 
-            // Grid.CollapseDetailRow(selectedIndex);
-            // ToggleRefresh();
+            ToggleRefresh();
         }
 
         public void MakeCustomer()
