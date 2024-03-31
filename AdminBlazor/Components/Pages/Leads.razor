@@ -104,11 +104,13 @@ else
                     </tr>
                     <tr>
                         <td>
-                            <label>Property Address</label>
-                            @_quote.street @_quote.city, @_quote.state @_quote.zip
+                            <label>Address</label>
+                            <a href="https://www.google.com/maps/search/@_quote.street @_quote.city, @_quote.state @_quote.zip" target="_blank">
+                                @_quote.street @_quote.city, @_quote.state @_quote.zip
+                            </a>
                         </td>
                         <td>
-                            <label>IP Address</label>
+                            <label>IP</label>
                             <a href="https://whatismyipaddress.com/ip/@SubmissionUserIP" target="_blank">
                                 <span class="detail-item">@SubmissionUserIP</span>
                             </a>
@@ -129,27 +131,27 @@ else
                     </tr>
                     <tr>
                         <td>
-                            <label>Total Sqft</label>
+                            <label>Sqft</label>
                             <span class="detail-item">@_quote.totalSquareFeet.ToString("N0")</span>
                         </td>
                         <td>
-                            <label>Incl Roofs</label>
+                            <label>Roofs</label>
                             <span class="detail-item">@_quote.numberOfIncludedStructures</span>
                         </td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>
-                            <label>Roof Complexity</label>
+                            <label>Name</label>
+                            <span class="detail-item">@_quote.structures[0].name</span>
+                        </td>
+                        <td>
+                            <label>Complexity</label>
                             <span class="detail-item">@_quote.structures[0].roofComplexity</span>
                         </td>
                         <td>
                             <label>Slope</label>
                             <span class="detail-item">@_quote.structures[0].slope</span>
-                        </td>
-                        <td>
-                            <label>Name</label>
-                            <span class="detail-item">@_quote.structures[0].name</span>
                         </td>
                     </tr>
                 </tbody>
