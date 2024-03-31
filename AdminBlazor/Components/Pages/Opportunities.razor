@@ -79,9 +79,9 @@ else
             @{
                 var _quote = (Quote)context.DataItem;
 
-                var attachmentsCount = _quote.attachments.Count;
-                var notesCount = _quote.notes.Count;
-                var eventsCount = _quote.events.Count;
+                attachmentsCount = _quote.attachments.Count;
+                notesCount = _quote.notes.Count;
+                eventsCount = _quote.events.Count;
 
                 <table class="table-detail">
                     <tbody>
@@ -282,7 +282,7 @@ else
                                 </td>
                                 <td colspan="2" class="detail-colum">
 
-                                    <h4>Send @_quote.firstName Documents <span @onclick="@(() => PopupVisibleHelpSendFiles = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
+                                    <h4>Send @_quote.firstName Documents <span @onclick="@(() => IsPopupVisibleHelpSendFiles = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
 
                                     <label class="document-label-container">
                                         Welcome letter
@@ -318,7 +318,7 @@ else
                                 </td>
                                 <td colspan="2" class="detail-colum">
 
-                                    <h4>@attachmentsCount File Attachments <span @onclick="@(() => PopupVisibleHelpFileAttachments = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
+                                    <h4>@attachmentsCount File Attachments <span @onclick="@(() => IsPopupVisibleHelpFileAttachments = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
 
                                     @{
                                         <div class="notes-container">
@@ -331,7 +331,7 @@ else
                                                             <label><b>@attachmentsCount)</b> @attachment.Date</label>
                                                         </div>
 
-                                                        <span class="hyperlink" @onclick="() => DeleteAttachment(_quote, attachment)">Delete</span>
+                                                        <span class="hyperlink" @onclick="() => SelectAttachmentToDelete(_quote, attachment)">Delete</span>
 
                                                         <span class="bar-spacer">|</span>
                                                         <a href="@attachment.MediaUrl" target="_blank">
@@ -361,11 +361,11 @@ else
 
                             <tr>
                                 <td class="table-button-container">
-                                    <button class="btn btn-primary doc-select-button" @onclick="@(() => PopupVisibleAddNote = true)">Add Note</button>
+                                    <button class="btn btn-primary doc-select-button" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
                                 </td>
                                 <td colspan="2" class="detail-colum">
 
-                                    <h4>@notesCount Notes <span @onclick="@(() => PopupVisibleHelpFileNotes = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
+                                    <h4>@notesCount Notes <span @onclick="@(() => IsPopupVisibleHelpFileNotes = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
 
                                     <div class="notes-container">
                                         @foreach (Note note in _quote.notes)
@@ -377,7 +377,7 @@ else
                                                         <label><b>@notesCount)</b> @note.Date</label>
                                                     </div>
 
-                                                    <span class="hyperlink" @onclick="() => DeleteNote(_quote, note)">Delete</span>
+                                                    <span class="hyperlink" @onclick="() => SelectNoteToDelete(_quote, note)">Delete</span>
 
                                                     <span class="bar-spacer">|</span>
                                                     <span class="detail-item">@note.Details</span>
@@ -499,8 +499,8 @@ else
                 <div class="table-spacer" />
 
                 <div class="quote-detail-controls-container">
-                    <button class="btn btn-primary" @onclick="@(() => PopupVisibleMakeCustomer = true)">Make Customer</button>
-                    <button class="btn btn-primary" @onclick="@(() => PopupVisibleArchive = true)">Archive</button>
+                    <button class="btn btn-primary" @onclick="@(() => IsPopupVisibleMakeCustomer = true)">Make Customer</button>
+                    <button class="btn btn-primary" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
                     <button class="btn btn-primary" @onclick="CloseDetails">Close</button>
                 </div>
 
@@ -510,82 +510,93 @@ else
         </DxGrid>
 }
 
-<DxPopup @bind-Visible="@PopupVisibleDeleteFile" ShowFooter="true" HeaderText="Delete File">
+<DxPopup @bind-Visible="@IsPopupVisibleSelectAttachmentToDelete" ShowFooter="true" HeaderText="Delete File">
     <BodyContentTemplate>
-        Are you sure you want to delete FileId: (@SelectedFileId)?
+        Are you sure you want to delete "@selectedAttachment.MediaDescription"?
     </BodyContentTemplate>
     <FooterContentTemplate>
-@*         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteFile" /> *@
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleDeleteFile = false)" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteSelectedAttachment" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleSelectAttachmentToDelete = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup @bind-Visible="@PopupVisibleDeleteNote" ShowFooter="true" HeaderText="Delete Note">
+<DxPopup @bind-Visible="@IsPopupVisibleSelectNoteToDelete" ShowFooter="true" HeaderText="Delete Note">
     <BodyContentTemplate>
-        Are you sure you want to delete NoteId: (@SelectedFileId)?
+        Are you sure you want to delete "@selectedNote.Details"?
     </BodyContentTemplate>
     <FooterContentTemplate>
-@*         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteNote" /> *@
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleDeleteNote = false)" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteSelectedNote" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleSelectNoteToDelete = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
 <DxPopup
-    @bind-Visible="@PopupVisibleMakeCustomer" ShowFooter="true" HeaderText="Make Customer">
+    @bind-Visible="@IsPopupVisibleMakeCustomer" ShowFooter="true" HeaderText="Make Customer">
     <BodyContentTemplate>
         If this Opportunity is fully qualified to meet Customer criteria, then click Save.
     </BodyContentTemplate>
     <FooterContentTemplate>
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="MakeCustomer" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleMakeCustomer = false)" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleMakeCustomer = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup @bind-Visible="@PopupVisibleAddNote" ShowFooter="true" HeaderText="Add Note">
+<DxPopup @bind-Visible="@IsPopupVisibleAddNote" ShowFooter="true" HeaderText="Add Note">
     <BodyContentTemplate>
         <p>Please type in your notes below.</p>
         <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
     </BodyContentTemplate>
     <FooterContentTemplate>
         <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AddNote" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleAddNote = false)" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleAddNote = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup @bind-Visible="@PopupVisibleArchive" ShowFooter="true" HeaderText="Please type in a reason for Archival below">
+@* <DxPopup @bind-Visible="@IsPopupVisibleAddNote" ShowFooter="true" HeaderText="Add Note">
+    <BodyContentTemplate>
+        <p>Please type in your notes below.</p>
+        <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AddNote" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleAddNote = false)" />
+    </FooterContentTemplate>
+</DxPopup> *@
+
+<DxPopup @bind-Visible="@IsArchivePopupVisible" ShowFooter="true" HeaderText="Please type in a reason for Archival below">
     <BodyContentTemplate>
         <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
     </BodyContentTemplate>
     <FooterContentTemplate>
         <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Archive" Click="ArchiveLead" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleArchive = false)" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsArchivePopupVisible = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup @bind-Visible="@PopupVisibleHelpSendFiles" ShowFooter="true" HeaderText="Send Documents Help?">
+<DxPopup @bind-Visible="@IsPopupVisibleHelpSendFiles" ShowFooter="true" HeaderText="Send Documents Help?">
     <BodyContentTemplate>
         <p>Send Documents details...</p>
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => PopupVisibleHelpSendFiles = false)" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpSendFiles = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup @bind-Visible="@PopupVisibleHelpFileAttachments" ShowFooter="true" HeaderText="File Attachments Help?">
+<DxPopup @bind-Visible="@IsPopupVisibleHelpFileAttachments" ShowFooter="true" HeaderText="File Attachments Help?">
     <BodyContentTemplate>
         <p>File Attachments details...</p>
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => PopupVisibleHelpFileAttachments = false)" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpFileAttachments = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup @bind-Visible="@PopupVisibleHelpFileNotes" ShowFooter="true" HeaderText="File Notes Help?">
+<DxPopup @bind-Visible="@IsPopupVisibleHelpFileNotes" ShowFooter="true" HeaderText="File Notes Help?">
     <BodyContentTemplate>
         <p>File Notes details...</p>
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => PopupVisibleHelpFileNotes = false)" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpFileNotes = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -603,6 +614,10 @@ else
 @code {
 
     public int noteCount = 0;
+
+    public Quote selectedQuote { get; set; }
+    public Attachment selectedAttachment { get; set; }
+    public Note selectedNote { get; set; }
 
     public void EnableRefreshAndCreateControls(bool bEnable)
     {
@@ -666,22 +681,26 @@ else
         public int itemsToCreate = 10;
         public string updateStatus = "Fetching ";
 
+        public int attachmentsCount = 0;
+        public int notesCount = 0;
+        public int eventsCount = 0;
+
     #endregion
 
     #region Popup properties
 
-        bool PopupVisibleAddFile { get; set; }
-        bool PopupVisibleDeleteFile { get; set; }
+        bool IsPopupVisibleAddFile { get; set; }
+        bool IsPopupVisibleSelectAttachmentToDelete { get; set; }
 
-        bool PopupVisibleAddNote { get; set; }
-        bool PopupVisibleDeleteNote { get; set; }
+        bool IsPopupVisibleAddNote { get; set; }
+        bool IsPopupVisibleSelectNoteToDelete { get; set; }
 
-        bool PopupVisibleMakeCustomer { get; set; }
-        bool PopupVisibleArchive { get; set; }
+        bool IsPopupVisibleMakeCustomer { get; set; }
+        bool IsArchivePopupVisible { get; set; }
 
-        bool PopupVisibleHelpSendFiles { get; set; }
-        bool PopupVisibleHelpFileAttachments { get; set; }
-        bool PopupVisibleHelpFileNotes { get; set; }
+        bool IsPopupVisibleHelpSendFiles { get; set; }
+        bool IsPopupVisibleHelpFileAttachments { get; set; }
+        bool IsPopupVisibleHelpFileNotes { get; set; }
 
     #endregion
 
@@ -818,7 +837,7 @@ else
 
             WebServices.DeleteQuote(selectedQuoteId);
 
-            PopupVisibleArchive = false;
+            IsArchivePopupVisible = false;
 
             ToggleRefresh();
         }
@@ -842,7 +861,7 @@ else
 
             WebServices.UpdateQuote(quotes[selectedIndex]);
 
-            PopupVisibleAddNote = false;
+            IsPopupVisibleAddNote = false;
             NoteDetails = "";
 
             ToggleRefresh();
@@ -859,39 +878,58 @@ else
             EnableRefreshAndCreateControls(true);
         }
 
-        public void DeleteAttachment(Quote quote, Attachment attachment)
+        public void SelectAttachmentToDelete(Quote quote, Attachment attachment)
         {
-            attachment.IsDeleted = true;
-            //quote.attachments.Remove(attachment);
+            selectedQuote = quote;
+            selectedAttachment = attachment;
 
-            Event _event = new Event(0, 0);
-            _event.Details = "Deleted attachment (" + attachment.MediaDescription + ") from to Quote";
-
-            quote.events.Add(_event);
-
-            WebServices.UpdateQuote(quote);
-
-            // PopupVisibleDeleteNote = false;
+            IsPopupVisibleSelectAttachmentToDelete = true;
 
             RefreshTimer();
         }
 
-        public void DeleteNote(Quote quote, Note note)
+        public void SelectNoteToDelete(Quote quote, Note note)
         {
-            note.IsDeleted = true;
+            selectedQuote = quote;
+            selectedNote = note;
 
-            // quote.notes.Remove(note);
+            IsPopupVisibleSelectNoteToDelete = true;
+        }
+
+        public void DeleteSelectedAttachment()
+        {
+            selectedAttachment.IsDeleted = true;
 
             Event _event = new Event(0, 0);
-            _event.Details = "Deleted note (" + note.Details + ") from Quote";
+            _event.Details = "Deleted attachment (" + selectedAttachment.MediaDescription + ") from Quote";
 
-            quote.events.Add(_event);
+            selectedQuote.events.Add(_event);
 
-            WebServices.UpdateQuote(quote);
-
-            // PopupVisibleDeleteNote = false;
+            WebServices.UpdateQuote(selectedQuote);
 
             RefreshTimer();
+
+            IsPopupVisibleSelectAttachmentToDelete = false;
+
+            attachmentsCount--;
+        }
+
+        public void DeleteSelectedNote()
+        {
+            selectedNote.IsDeleted = true;
+
+            Event _event = new Event(0, 0);
+            _event.Details = "Deleted note (" + selectedNote.Details + ") from Quote";
+
+            selectedQuote.events.Add(_event);
+
+            WebServices.UpdateQuote(selectedQuote);
+
+            RefreshTimer();
+
+            IsPopupVisibleSelectNoteToDelete = false;
+
+            notesCount--;
         }
 
         public void MakeCustomer()
@@ -910,7 +948,7 @@ else
 
             WebServices.UpdateQuote(quotes[selectedIndex]);
 
-            PopupVisibleMakeCustomer = false;
+            IsPopupVisibleMakeCustomer = false;
 
             ToggleRefresh();
 
