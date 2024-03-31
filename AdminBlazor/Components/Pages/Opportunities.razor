@@ -270,11 +270,19 @@ else
 
                             <tr>
                                 <td class="table-button-container">
-                                    <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
+                                    <DxUpload Name="fileUpload1"
+                                              AllowMultiFileUpload="true"
+                                              UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                              SelectedFilesChanged="@SelectedFilesChanged"
+                                              MaxFileSize="15000000"
+                                              AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
+                                              AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
+                                              CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
+                                    </DxUpload>
                                 </td>
                                 <td colspan="2" class="detail-colum">
 
-                                    <h4>Documents <span @onclick="@(() => PopupVisibleHelpSendFiles = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
+                                    <h4>Send @_quote.firstName Documents <span @onclick="@(() => PopupVisibleHelpSendFiles = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
 
                                     <label class="document-label-container">
                                         Welcome letter
@@ -284,19 +292,8 @@ else
                                         Engagement Agreement
                                         <input type="checkbox" id="engagementagreement" name="engagementagreement" value="engagementagreement">
                                     </label>
-                                    <label class="document-label-container">
-                                        and/or
-                                    </label>
                                     <label>
-                                        <DxUpload Name="myFile"
-                                            AllowMultiFileUpload="true"
-                                            UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
-                                            SelectedFilesChanged="@SelectedFilesChanged"
-                                            MaxFileSize="15000000"
-                                            AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
-                                            AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
-                                            CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
-                                        </DxUpload>
+                                        <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
                                     </label>
                                 </td>
                             </tr>
@@ -309,7 +306,7 @@ else
 
                             <tr>
                                 <td class="table-button-container">
-                                    <DxUpload Name="myFile"
+                                    <DxUpload Name="fileUpload2"
                                         AllowMultiFileUpload="true"
                                         UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
                                         SelectedFilesChanged="@SelectedFilesChanged"
@@ -321,32 +318,35 @@ else
                                 </td>
                                 <td colspan="2" class="detail-colum">
 
-                                    <h4>@attachmentsCount Attachments <span @onclick="@(() => PopupVisibleHelpFileAttachments = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
+                                    <h4>@attachmentsCount File Attachments <span @onclick="@(() => PopupVisibleHelpFileAttachments = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
 
                                     @{
                                         <div class="notes-container">
                                             @foreach (Attachment attachment in _quote.attachments)
                                             {
-                                                <div class="note-row">
-                                                    <div class="div-date-container">
-                                                        <label><b>@attachmentsCount)</b> @attachment.Date</label>
+                                                if (!attachment.IsDeleted)
+                                                {
+                                                    <div class="note-row">
+                                                        <div class="div-date-container">
+                                                            <label><b>@attachmentsCount)</b> @attachment.Date</label>
+                                                        </div>
+
+                                                        <span class="hyperlink" @onclick="() => DeleteAttachment(_quote, attachment)">Delete</span>
+
+                                                        <span class="bar-spacer">|</span>
+                                                        <a href="@attachment.MediaUrl" target="_blank">
+                                                            <span class="detail-item">@attachment.MediaDescription</span>
+                                                        </a>
+                                                        <span class="bar-spacer">|</span>
+                                                        <label>File Type</label>
+                                                        <span>@FileType</span>
+                                                        <span class="bar-spacer">|</span>
+                                                        <label>Author</label>
+                                                        <span>@Author</span>
                                                     </div>
 
-                                                    <span class="hyperlink" @onclick="() => DeleteAttachment(_quote, attachment)">Delete</span>
-
-                                                    <span class="bar-spacer">|</span>
-                                                    <a href="@attachment.MediaUrl" target="_blank">
-                                                        <span class="detail-item">@attachment.MediaDescription</span>
-                                                    </a>
-                                                    <span class="bar-spacer">|</span>
-                                                    <label>File Type</label>
-                                                    <span>@FileType</span>
-                                                    <span class="bar-spacer">|</span>
-                                                    <label>Author</label>
-                                                    <span>@Author</span>
-                                                </div>
-
-                                                attachmentsCount--;
+                                                    attachmentsCount--;
+                                                }
                                             }
                                         </div>
                                     }
@@ -370,22 +370,25 @@ else
                                     <div class="notes-container">
                                         @foreach (Note note in _quote.notes)
                                         {
-                                            <div class="note-row">
-                                                <div class="div-date-container">
-                                                    <label><b>@notesCount)</b> @note.Date</label>
+                                            if (!note.IsDeleted)
+                                            {
+                                                <div class="note-row">
+                                                    <div class="div-date-container">
+                                                        <label><b>@notesCount)</b> @note.Date</label>
+                                                    </div>
+
+                                                    <span class="hyperlink" @onclick="() => DeleteNote(_quote, note)">Delete</span>
+
+                                                    <span class="bar-spacer">|</span>
+                                                    <span class="detail-item">@note.Details</span>
+
+                                                    <span class="bar-spacer">|</span>
+                                                    <label>Author</label>
+                                                    <span>@Author</span>
                                                 </div>
 
-                                                <span class="hyperlink" @onclick="() => DeleteNote(_quote, note)">Delete</span>
-
-                                                <span class="bar-spacer">|</span>
-                                                <span class="detail-item">@note.Details</span>
-
-                                                <span class="bar-spacer">|</span>
-                                                <label>Author</label>
-                                                <span>@Author</span>
-                                            </div>
-
-                                            notesCount--;
+                                                notesCount--;
+                                            }
                                         }
                                     </div>
 
@@ -473,7 +476,7 @@ else
                                 {
                                     <div class="note-row">
                                         <div class="">
-                                            <label><b>@eventsCount)</b> @_event.Date</label>
+                                            <label><b>@eventsCount)</b> @_event.DateTime</label>
                                         </div>
 
                                         <span class="bar-spacer">|</span>
@@ -858,7 +861,8 @@ else
 
         public void DeleteAttachment(Quote quote, Attachment attachment)
         {
-            quote.attachments.Remove(attachment);
+            attachment.IsDeleted = true;
+            //quote.attachments.Remove(attachment);
 
             Event _event = new Event(0, 0);
             _event.Details = "Deleted attachment (" + attachment.MediaDescription + ") from to Quote";
@@ -869,12 +873,14 @@ else
 
             // PopupVisibleDeleteNote = false;
 
-        RefreshTimer();
+            RefreshTimer();
         }
 
         public void DeleteNote(Quote quote, Note note)
         {
-            quote.notes.Remove(note);
+            note.IsDeleted = true;
+
+            // quote.notes.Remove(note);
 
             Event _event = new Event(0, 0);
             _event.Details = "Deleted note (" + note.Details + ") from Quote";
@@ -883,9 +889,9 @@ else
 
             WebServices.UpdateQuote(quote);
 
-            PopupVisibleDeleteNote = false;
+            // PopupVisibleDeleteNote = false;
 
-        RefreshTimer();
+            RefreshTimer();
         }
 
         public void MakeCustomer()

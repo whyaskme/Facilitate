@@ -14,7 +14,7 @@ namespace Facilitate.Libraries.Models
         {
             _id = ObjectId.GenerateNewId();
             _t = "Note";
-            //Date = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture);
+            IsDeleted = false;
             Date = DateTime.UtcNow;
             Summary = "";
             Details = "";
@@ -24,6 +24,7 @@ namespace Facilitate.Libraries.Models
 
         public ObjectId _id { get; set; }
         public string _t { get; set; }
+        public bool IsDeleted { get; set; }
         public DateTime Date { get; set; }
         public string Summary { get; set; }
         public string Details { get; set; }

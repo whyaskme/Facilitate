@@ -18,6 +18,7 @@ namespace Facilitate.Libraries.Models
         {
             _id = ObjectId.GenerateNewId();
             _t = "Attachment";
+            IsDeleted = false;
             Date = DateTime.UtcNow;
             MediaDescription = "";
             MediaUrl = "";
@@ -27,6 +28,7 @@ namespace Facilitate.Libraries.Models
 
         public ObjectId _id { get; set; }
         public string _t { get; set; }
+        public bool IsDeleted { get; set; }
         public DateTime Date { get; set; }
         public string MediaDescription { get; set; }
         public string MediaUrl { get; set; }

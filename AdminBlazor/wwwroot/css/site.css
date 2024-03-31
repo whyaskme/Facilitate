@@ -50,6 +50,10 @@ td {
     left: 5px !important;
 }
 
+.icon-help:hover {
+    cursor: pointer;
+}
+
 .div-date-container {
     border-top: solid 0px #dad7d7 !important;
 /*    position: relative !important;
