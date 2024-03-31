@@ -128,43 +128,6 @@ else
                     <tbody>
                         <tr>
                             <td colspan=3>
-                                <h6>Project</h6>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Sqft</label>
-                                <span class="detail-item">@_quote.totalSquareFeet.ToString("N0")</span>
-                            </td>
-                            <td>
-                                <label>Roofs</label>
-                                <span class="detail-item">@_quote.numberOfIncludedStructures</span>
-                            </td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Name</label>
-                                <span class="detail-item">@_quote.structures[0].name</span>
-                            </td>
-                            <td>
-                                <label>Complexity</label>
-                                <span class="detail-item">@_quote.structures[0].roofComplexity</span>
-                            </td>
-                            <td>
-                                <label>Slope</label>
-                                <span class="detail-item">@_quote.structures[0].slope</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <div class="table-spacer" />
-
-                <table class="table-detail">
-                    <tbody>
-                        <tr>
-                            <td colspan=3>
                                 <h6>Products</h6>
                             </td>
                         </tr>
@@ -231,58 +194,119 @@ else
 
                 <div class="table-spacer" />
 
-                <table class="table-detail">
+                <table>
                     <tbody>
                         <tr>
                             <td colspan=3>
                                 <h6>Project Details</h6>
                             </td>
                         </tr>
-                        <tr>
-                            <td colspan=3>
-                                <table>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <label>Project Manager</label>
-                                                <span class="detail-item">@_quote.projectManager.Name</span>
-                                            </td>
-                                            <td>
-                                                <label>Phone</label>
-                                                <span class="detail-item">@_quote.projectManager.Phone</span>
-                                            </td>
-                                            <td>
-                                                <label>Email</label>
-                                                <a href="mailto:@_quote.projectManager.Email" target="_blank">
-                                                    <span class="detail-item">@_quote.projectManager.Email</span>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                </tbody>
-                                </table>
-                            </td>
-                        </tr>
+                    </tbody>
+                </table>
 
-                        <tr>
-                            <td class="table-button-container">
-                                <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Email Docs</button>
-                            </td>
-                            <td colspan="2" class="detail-colum">
+                <div id="project-container">
 
-                                <h4>Send Documents <span @onclick="@(() => PopupVisibleHelpSendFiles = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
+                    <table class="">
+                        <tbody>
 
-                                <label class="document-label-container">
-                                    Welcome letter
-                                    <input type="checkbox" id="welcomeletter" name="welcomeletter" value="welcomeletter">
-                                </label>
-                                <label class="document-label-container">
-                                    Engagement Agreement
-                                    <input type="checkbox" id="engagementagreement" name="engagementagreement" value="engagementagreement">
-                                </label>
-                                <label class="document-label-container">
-                                    and/or
-                                </label>
-                                <label>
+                            <tr>
+                                <td>
+                                    <label>Sqft</label>
+                                    <span class="detail-item">@_quote.totalSquareFeet.ToString("N0")</span>
+                                </td>
+                                <td>
+                                    <label>Roofs</label>
+                                    <span class="detail-item">@_quote.numberOfIncludedStructures</span>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Name</label>
+                                    <span class="detail-item">@_quote.structures[0].name</span>
+                                </td>
+                                <td>
+                                    <label>Complexity</label>
+                                    <span class="detail-item">@_quote.structures[0].roofComplexity</span>
+                                </td>
+                                <td>
+                                    <label>Slope</label>
+                                    <span class="detail-item">@_quote.structures[0].slope</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan=3>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <label>Manager</label>
+                                                    <span class="detail-item">@_quote.projectManager.Name</span>
+                                                </td>
+                                                <td>
+                                                    <label>Phone</label>
+                                                    <span class="detail-item">@_quote.projectManager.Phone</span>
+                                                </td>
+                                                <td>
+                                                    <label>Email</label>
+                                                    <a href="mailto:@_quote.projectManager.Email" target="_blank">
+                                                        <span class="detail-item">@_quote.projectManager.Email</span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                    </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                    <table class="project-detail-work-panel">
+                        <tbody>
+
+                            <tr>
+                                <td class="table-button-container">
+                                    <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
+                                </td>
+                                <td colspan="2" class="detail-colum">
+
+                                    <h4>Documents <span @onclick="@(() => PopupVisibleHelpSendFiles = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
+
+                                    <label class="document-label-container">
+                                        Welcome letter
+                                        <input type="checkbox" id="welcomeletter" name="welcomeletter" value="welcomeletter">
+                                    </label>
+                                    <label class="document-label-container">
+                                        Engagement Agreement
+                                        <input type="checkbox" id="engagementagreement" name="engagementagreement" value="engagementagreement">
+                                    </label>
+                                    <label class="document-label-container">
+                                        and/or
+                                    </label>
+                                    <label>
+                                        <DxUpload Name="myFile"
+                                            AllowMultiFileUpload="true"
+                                            UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                            SelectedFilesChanged="@SelectedFilesChanged"
+                                            MaxFileSize="15000000"
+                                            AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
+                                            AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
+                                            CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
+                                        </DxUpload>
+                                    </label>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                    <table class="project-detail-work-panel">
+                        <tbody>
+
+                            <tr>
+                                <td class="table-button-container">
                                     <DxUpload Name="myFile"
                                         AllowMultiFileUpload="true"
                                         UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
@@ -292,87 +316,82 @@ else
                                         AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
                                         CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
                                     </DxUpload>
-                                </label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="table-button-container">
-                                <DxUpload Name="myFile"
-                                    AllowMultiFileUpload="true"
-                                    UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
-                                    SelectedFilesChanged="@SelectedFilesChanged"
-                                    MaxFileSize="15000000"
-                                    AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
-                                    AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
-                                    CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
-                                </DxUpload>
-                            </td>
-                            <td colspan="2" class="detail-colum">
+                                </td>
+                                <td colspan="2" class="detail-colum">
 
-                                <h4>File Attachments <span @onclick="@(() => PopupVisibleHelpFileAttachments = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
+                                    <h4>File Attachments <span @onclick="@(() => PopupVisibleHelpFileAttachments = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
 
-                                @{
-                                    var documentCount = _quote.attachments.Count;
-                                    for (int currentIndex = 0; currentIndex < @_quote.attachments.Count; currentIndex++)
-                                    {
-                                        <div class="note-row">
-                                            <div class="div-date-container">
-                                                <label><b>@documentCount)</b> @_quote.attachments[currentIndex].Date</label>
+                                    @{
+                                        var documentCount = _quote.attachments.Count;
+                                        for (int currentIndex = 0; currentIndex < @_quote.attachments.Count; currentIndex++)
+                                        {
+                                            <div class="note-row">
+                                                <div class="div-date-container">
+                                                    <label><b>@documentCount)</b> @_quote.attachments[currentIndex].Date</label>
+                                                </div>
+
+                                                <span id="@_quote.attachments[currentIndex]._id" class="hyperlink" @onclick="@(() => PopupVisibleDeleteFile = true)">Delete</span>
+                                            
+                                                <span class="bar-spacer">|</span>
+                                                <a href="@_quote.attachments[currentIndex].MediaUrl" target="_blank">
+                                                    <span class="detail-item">@_quote.attachments[currentIndex].MediaDescription</span>
+                                                </a>
+                                                <span class="bar-spacer">|</span>
+                                                <label>File Type</label>
+                                                <span>@FileType</span>
+                                                <span class="bar-spacer">|</span>
+                                                <label>Author</label>
+                                                <span>@Author</span>
+                                            </div>
+                                            documentCount--;
+                                        }
+                                    }
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                    <table class="project-detail-work-panel">
+                        <tbody>
+
+                            <tr>
+                                <td class="table-button-container">
+                                    <button class="btn btn-primary doc-select-button" @onclick="@(() => PopupVisibleAddNote = true)">Add Note</button>
+                                </td>
+                                <td colspan="2" class="detail-colum">
+
+                                    <h4>@notesCount File Notes <span @onclick="@(() => PopupVisibleHelpFileNotes = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
+
+                                    <div class="notes-container">
+                                        @foreach (Note note in _quote.notes)
+                                        {
+                                            <div class="note-row">
+                                                <div class="div-date-container">
+                                                    <label><b>@notesCount)</b> @note.Date</label>
+                                                </div>
+
+                                                <span class="hyperlink" @onclick="() => DeleteNote(_quote, note)">Delete</span>
+
+                                                <span class="bar-spacer">|</span>
+                                                <span class="detail-item">@note.Details</span>
+
+                                                <span class="bar-spacer">|</span>
+                                                <label>Author</label>
+                                                <span>@Author</span>
                                             </div>
 
-                                            <span id="@_quote.attachments[currentIndex]._id" class="hyperlink" @onclick="@(() => PopupVisibleDeleteFile = true)">Delete</span>
-                                            
-                                            <span class="bar-spacer">|</span>
-                                            <a href="@_quote.attachments[currentIndex].MediaUrl" target="_blank">
-                                                <span class="detail-item">@_quote.attachments[currentIndex].MediaDescription</span>
-                                            </a>
-                                            <span class="bar-spacer">|</span>
-                                            <label>File Type</label>
-                                            <span>@FileType</span>
-                                            <span class="bar-spacer">|</span>
-                                            <label>Author</label>
-                                            <span>@Author</span>
-                                        </div>
-                                        documentCount--;
-                                    }
-                                }
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="table-button-container">
-                                <button class="btn btn-primary doc-select-button" @onclick="@(() => PopupVisibleAddNote = true)">Add Note</button>
-                            </td>
-                            <td colspan="2" class="detail-colum">
-
-                                <h4>File Notes <span @onclick="@(() => PopupVisibleHelpFileNotes = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
-
-                                <div class="notes-container">
-                                @foreach (Note note in _quote.notes)
-                                {
-                                    <div class="note-row">
-                                        <div class="div-date-container">
-                                            <label><b>@notesCount)</b> @note.Date</label>
-                                        </div>
-
-                                        <span class="hyperlink" @onclick="() => DeleteNote(_quote, note)">Delete</span>
-
-                                        <span class="bar-spacer">|</span>
-                                        <span class="detail-item">@note.Details</span>
-
-                                        <span class="bar-spacer">|</span>
-                                        <label>Author</label>
-                                        <span>@Author</span>
+                                            notesCount--;
+                                        }
                                     </div>
 
-                                    notesCount--;
-                                }
-                                </div>
+                                </td>
+                            </tr>
 
-                            </td>
-                        </tr>
+                        </tbody>
+                    </table>
 
-                    </tbody>
-                </table>
+                </div>
 
                 <div class="table-spacer" />
 

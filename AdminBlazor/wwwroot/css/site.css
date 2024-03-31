@@ -13,20 +13,30 @@ table {
     width: 100% !important;
 }
 
-.table-detail {
-    border-top: solid 0px #ff0000 !important;
-    margin-bottom: 25px !important;
-    padding: 25px !important;
-}
-
 td {
     padding: 5px;
     padding-left: 10px;
-/*    border-bottom: solid 1px #dad7d7 !important;*/
+/*    border: solid 1px #ff0000 !important;*/
+}
+
+#project-container {
+    border: solid 0px #dad7d7 !important;
+    -moz-border-radius: 5px !important;
+    -webkit-border-radius: 5px !important;
+    border-radius: 5px !important;
+    padding: 10px !important;
+/*    position: relative !important;
+    top: 25px !important;*/
+}
+
+.project-detail-work-panel {
+    border-top: dashed 1px #dad7d7 !important;
+    margin-top: 25px !important;
+    padding-top: 5px !important;
 }
 
 .table-spacer {
-    border: solid 1px #dad7d7 !important;
+    border: solid 1px #eee !important;
     border-collapse: collapse !important;
     margin: 25px !important;
     width: 100% !important;
@@ -41,9 +51,9 @@ td {
 }
 
 .div-date-container {
-    border-top: solid 1px #dad7d7 !important;
-    position: relative !important;
-    left: -7px !important;
+    border-top: solid 0px #dad7d7 !important;
+/*    position: relative !important;
+    left: -7px !important;*/
     padding-top: 15px !important;
 }
 
@@ -58,6 +68,10 @@ h4 {
     text-decoration: underline !important;
 }
 
+.hyperlink:hover {
+    cursor: pointer !important;
+}
+
 .link-help-info {
     border: solid 0px #ff0000 !important;
     color: #808080 !important;
@@ -66,7 +80,7 @@ h4 {
 }
 
 .table-button-container {
-    border: solid 1px #dad7d7 !important;
+/*    border-bottom: solid 1px #dad7d7 !important;*/
     text-align: center !important;
     vertical-align: top !important;
     padding: 20px !important;
@@ -121,20 +135,25 @@ h4 {
 .notes-table {
     border: solid 1px #dad7d7 !important;
     border-radius: 5px !important;
-/*    background-color: #ffff00 !important;*/
+    background-color: #ffff00 !important;
     padding: 35px !important;
 }
 
 .notes-container {
-/*    background-color: #ffffff !important;*/
+    /*    background-color: #ffffff !important;*/
     border: solid 0px #dad7d7 !important;
     height: 390px !important;
     overflow: auto !important;
+/*    padding: 25px !important;
+    padding-top: 0px !important;*/
 }
 
 .note-row {
-    border-bottom: dashed 0px #dad7d7 !important;
+    border: solid 1px #dad7d7 !important;
     padding: 10px !important;
+    position: relative !important;
+    top: 10px !important;
+    margin-bottom: 25px !important;
 }
 
 .detail-colum {
