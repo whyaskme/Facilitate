@@ -19,13 +19,22 @@ td {
 /*    border: solid 1px #ff0000 !important;*/
 }
 
+.td-send-label {
+    border: solid 0px #ff0000 !important;
+    width: 250px !important;
+}
+
+.td-send-button {
+    border: solid 0px #ff0000 !important;
+}
+
 .project-container {
     border: solid 0px #dad7d7 !important;
     -moz-border-radius: 5px !important;
     -webkit-border-radius: 5px !important;
     border-radius: 5px !important;
     padding: 10px !important;
-/*    position: relative !important;
+    /*    position: relative !important;
     top: 25px !important;*/
 }
 

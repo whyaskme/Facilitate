@@ -630,30 +630,6 @@ else
 
         selectedQuote.projectManager = pmSummary;
 
-        // Welcome Letter
-        Attachment welcomeLetter = new Attachment();
-        welcomeLetter.MediaDescription = "Welcome to Facilitate.org";
-        welcomeLetter.MediaUrl = "/docs/templates/boilerplate/Welcome Letter.pdf";
-        selectedQuote.attachments.Add(welcomeLetter);
-
-        Event welcomeLetterEvent = new Event(0, 0);
-        welcomeLetterEvent.Details = welcomeLetter.MediaDescription + " sent to " + selectedQuote.email;
-        selectedQuote.events.Add(welcomeLetterEvent);
-
-
-
-        // Facilitate Engagement Agreement
-        Attachment engagementAgreement = new Attachment();
-        engagementAgreement.MediaDescription = "Facilitate Engagement Agreement";
-        engagementAgreement.MediaUrl = "/docs/templates/agreements/Facilitate Engagement Agreement.pdf";
-        selectedQuote.attachments.Add(engagementAgreement);
-
-        Event engagementAgreementEvent = new Event(0, 0);
-        engagementAgreementEvent.Details = engagementAgreement.MediaDescription + " sent to " + selectedQuote.email;
-        selectedQuote.events.Add(engagementAgreementEvent);
-
-
-
         // Workflow and Subsequent Document Requirements
         Attachment workflowRequirements = new Attachment();
         workflowRequirements.MediaDescription = "Workflow and Subsequent Document Requirements";
@@ -664,7 +640,25 @@ else
         workflowRequirementsEvent.Details = workflowRequirements.MediaDescription + " sent to " + selectedQuote.email;
         selectedQuote.events.Add(workflowRequirementsEvent);
 
+        // Facilitate Engagement Agreement
+        Attachment engagementAgreement = new Attachment();
+        engagementAgreement.MediaDescription = "Facilitate Engagement Agreement";
+        engagementAgreement.MediaUrl = "/docs/templates/agreements/Facilitate Engagement Agreement.docx";
+        selectedQuote.attachments.Add(engagementAgreement);
 
+        Event engagementAgreementEvent = new Event(0, 0);
+        engagementAgreementEvent.Details = engagementAgreement.MediaDescription + " sent to " + selectedQuote.email;
+        selectedQuote.events.Add(engagementAgreementEvent);
+
+        // Welcome Letter
+        Attachment welcomeLetter = new Attachment();
+        welcomeLetter.MediaDescription = "Welcome to Facilitate.org";
+        welcomeLetter.MediaUrl = "/docs/templates/boilerplate/Welcome to Facilitate.docx";
+        selectedQuote.attachments.Add(welcomeLetter);
+
+        Event welcomeLetterEvent = new Event(0, 0);
+        welcomeLetterEvent.Details = welcomeLetter.MediaDescription + " sent to " + selectedQuote.email;
+        selectedQuote.events.Add(welcomeLetterEvent);
 
         // Assignment event
         var projectManager = selectedQuote.projectManager;

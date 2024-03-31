@@ -267,7 +267,6 @@ else
 
                     <table class="project-detail-work-panel">
                         <tbody>
-
                             <tr>
                                 <td class="table-button-container">
                                     <DxUpload Name="fileUpload1"
@@ -280,24 +279,15 @@ else
                                               CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
                                     </DxUpload>
                                 </td>
-                                <td colspan="2" class="detail-colum">
-
+                                <td class="td-send-label">
                                     <h6>Send @_quote.firstName Documents <span @onclick="@(() => IsPopupVisibleHelpSendFiles = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h6>
-
-                                    <label class="document-label-container">
-                                        Welcome letter
-                                        <input type="checkbox" id="welcomeletter" name="welcomeletter" value="welcomeletter">
-                                    </label>
-                                    <label class="document-label-container">
-                                        Engagement Agreement
-                                        <input type="checkbox" id="engagementagreement" name="engagementagreement" value="engagementagreement">
-                                    </label>
+                                </td>
+                                <td class="td-send-button">
                                     <label>
                                         <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
                                     </label>
                                 </td>
                             </tr>
-
                         </tbody>
                     </table>
 
@@ -706,7 +696,7 @@ else
     public bool RefreshDisabled { get; set; } = false;
 
     [Parameter]
-    public bool SendDocsDisabled { get; set; } = false;
+    public bool SendDocsDisabled { get; set; } = true;
 
     [Parameter]
     public bool ArchiveLeadsDisabled { get; set; } = true;
@@ -778,6 +768,8 @@ else
     {
         SelectedFilesCount = files.ToList().Count;
         InvokeAsync(StateHasChanged);
+
+        SendDocsDisabled = false;
     }
 
     protected void EmailFiles()
