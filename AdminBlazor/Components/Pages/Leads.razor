@@ -341,7 +341,7 @@ else
 }
 
 <div class="@StatusContainerClass">
-    <button class="@ButtonClass" @onclick="ToggleRefresh">@ButtonText</button>
+    <button class="@ButtonClass" disabled="@RefreshDisabled" @onclick="ToggleRefresh">@ButtonText</button>
     <button class="btn btn-primary" disabled="@CreateLeadDisabled" @onclick="CreateLead">Create 1 Lead</button>
     <button class="btn btn-primary" disabled="@CreateLeadsDisabled" @onclick="CreateLeads">Create @itemsToCreate Leads</button>
 </div>
@@ -355,11 +355,8 @@ else
 <DxPopup
     @bind-Visible="@PopupVisibleAssign"
     ShowFooter="true"
-    HeaderText="Assign Lead"
-   >
+         HeaderText="Please select a Project Manager for assignment">
     <BodyContentTemplate>
-        <div>Please select a Project Manager for assignment</div>
-        <br />
         <div>
             <DxListBox 
                 Data="@ProjectManagers" 
@@ -385,10 +382,8 @@ else
 <DxPopup
     @bind-Visible="@PopupVisibleArchive"
     ShowFooter="true"
-    HeaderText="Archive Lead"
-   >
+         HeaderText="Please type in a reason for Archival below">
     <BodyContentTemplate>
-        <p>Please type in a reason for Archival below.</p>
         <DxMemo @bind-Text="@ArchivalReason" InputId="archive-reason" CssClass="cw-320" />
     </BodyContentTemplate>
     <FooterContentTemplate>
@@ -424,6 +419,22 @@ else
 
     string ArchivalReason { get; set; } = "";
 
+    public void EnableRefreshAndCreateControls(bool bEnable)
+    {
+        if(bEnable)
+        {
+            RefreshDisabled = false;
+            ArchiveLeadsDisabled = false;
+        }
+        else
+        {
+            RefreshDisabled = true;
+            CreateLeadDisabled = true;
+            CreateLeadsDisabled = true;
+            ArchiveLeadsDisabled = true;
+        }
+    }
+
     public void ArchiveLead()
     {
         Grid.CollapseDetailRow(selectedIndex);
@@ -440,6 +451,8 @@ else
         PopupVisibleArchive = false;
 
         ToggleRefresh();
+
+        EnableRefreshAndCreateControls(true);
     }
 
     [Parameter]
@@ -490,6 +503,9 @@ else
     public string ButtonClass { get; set; } = "btn btn-outline-primary btn-refresh-active";
 
     [Parameter]
+    public bool RefreshDisabled { get; set; } = true;
+
+    [Parameter]
     public bool CreateLeadDisabled { get; set; } = true;
 
     [Parameter]
@@ -532,21 +548,20 @@ else
 
     void OnRowClick(GridRowClickEventArgs args)
     {
-        ToggleRefresh();
-
         selectedIndex = args.VisibleIndex;
-
         selectedQuoteId = quotes[selectedIndex]._id;
 
         var selectedDetailExpanded = Grid.IsDetailRowExpanded(selectedIndex);
         if (selectedDetailExpanded)
         {
             Grid.CollapseDetailRow(selectedIndex);
-            ToggleRefresh();
         }
         else
         {
             Grid.ExpandDetailRow(selectedIndex);
+            ToggleRefresh();
+
+            EnableRefreshAndCreateControls(false);
         }
     }
 
@@ -554,6 +569,8 @@ else
     {
         Grid.CollapseDetailRow(selectedIndex);
         ToggleRefresh();
+
+        EnableRefreshAndCreateControls(true);
     }
 
     public void AssignLead()
@@ -605,6 +622,8 @@ else
         PopupVisibleAssign = false;
 
         ToggleRefresh();
+
+        EnableRefreshAndCreateControls(true);
     }
 
     public virtual void ToggleRefresh()
@@ -629,7 +648,7 @@ else
             ArchiveLeadsDisabled = true;
 
             StatusClass = "message-normal";
-            // RefreshStatus = "";
+            RefreshStatus = "";
             ButtonText = "Pause Refresh";
             ButtonClass = "btn btn-outline-primary btn-refresh-active";
 
@@ -637,7 +656,6 @@ else
         }
     }
 
-    // private IEnumerable<Quote>? quotes;
     private List<Quote>? quotes;
 
     public int itemsToCreate = 100;
@@ -658,11 +676,9 @@ else
 
         _timer = new Timer(new TimerCallback(_ =>
         {
-            // RefreshStatus = " Refreshing data...";
             quotes = webServices.GetQuotes("New");
             updateStatus = quotes.Count().ToString("N0");
             StatusContainerClass = "container-action-buttons-show";
-            // RefreshStatus = "";
 
             InvokeAsync(() =>
             {

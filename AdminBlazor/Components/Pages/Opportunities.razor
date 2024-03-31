@@ -29,7 +29,7 @@
 
 @if (quotes == null)
 {
-    <p><em>Loading...</em></p>
+@*     <p><em>Loading...</em></p> *@
 }
 else
 {
@@ -516,10 +516,8 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup
-    @bind-Visible="@PopupVisibleArchive" ShowFooter="true" HeaderText="Archive Lead">
+<DxPopup @bind-Visible="@PopupVisibleArchive" ShowFooter="true" HeaderText="Please type in a reason for Archival below">
     <BodyContentTemplate>
-        <p>Please type in a reason for Archival below.</p>
         <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
     </BodyContentTemplate>
     <FooterContentTemplate>
@@ -555,8 +553,16 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
+<DxLoadingPanel @bind-Visible=@LoadingPanelVisible
+                PositionTarget="body"
+                ApplyBackgroundShading="true"
+                CssClass="w-100">
+</DxLoadingPanel>
+
 
 @code {
+
+    bool LoadingPanelVisible { get; set; } = true;
 
     WebServices webServices = new WebServices();
 
