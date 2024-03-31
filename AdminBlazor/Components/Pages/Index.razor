@@ -38,14 +38,22 @@
     </DxGridLayout>
 </div>
 
+<DxLoadingPanel @bind-Visible=@LoadingPanelVisible
+                PositionTarget="body"
+                ApplyBackgroundShading="true"
+                CssClass="w-100">
+</DxLoadingPanel>
+
 @code {
+
+    bool LoadingPanelVisible { get; set; } = true;
 
     public int countLeads = 0;
     public int countOpportunities = 0;
     public int countCustomers = 0;
     public int countArchives = 0;
 
-    public string updateStatus = "Fetching ";
+    public string updateStatus = "Refreshing";
 
     public Index()
     {
@@ -56,6 +64,8 @@
             InvokeAsync(() =>
             {
                 StateHasChanged();
+
+                LoadingPanelVisible = false;
             });
         }), null, 1000, 1000);
     }

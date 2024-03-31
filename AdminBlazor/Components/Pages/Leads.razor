@@ -400,7 +400,7 @@ else
 
     bool LoadingPanelVisible { get; set; } = true;
 
-    string Author { get; set; } = "unknown";
+    string Author { get; set; } = "Unknown";
 
     WebServices webServices = new WebServices();
 
@@ -530,7 +530,7 @@ else
 
     void OnRowClick(GridRowClickEventArgs args)
     {
-        PauseRefresh();
+        ToggleRefresh();
 
         selectedIndex = args.VisibleIndex;
 
@@ -605,20 +605,6 @@ else
         ToggleRefresh();
     }
 
-    public virtual void PauseRefresh()
-    {
-        CreateLeadDisabled = false;
-        CreateLeadsDisabled = false;
-        ArchiveLeadsDisabled = false;
-
-        ButtonText = "Resume Refresh";
-        ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
-        StatusClass = "message-warning";
-        RefreshStatus = " Auto refresh paused...";
-
-        _timer?.Dispose();
-    }
-
     public virtual void ToggleRefresh()
     {
         if (ButtonText == "Pause Refresh")
@@ -641,7 +627,7 @@ else
             ArchiveLeadsDisabled = true;
 
             StatusClass = "message-normal";
-            RefreshStatus = "";
+            // RefreshStatus = "";
             ButtonText = "Pause Refresh";
             ButtonClass = "btn btn-outline-primary btn-refresh-active";
 
@@ -670,9 +656,11 @@ else
 
         _timer = new Timer(new TimerCallback(_ =>
         {
+            // RefreshStatus = " Refreshing data...";
             quotes = webServices.GetQuotes("New");
             updateStatus = quotes.Count().ToString("N0");
             StatusContainerClass = "container-action-buttons-show";
+            // RefreshStatus = "";
 
             InvokeAsync(() =>
             {
@@ -681,6 +669,7 @@ else
         }), null, 1000, 1000);
 
         LoadingPanelVisible = false;
+        
     }
 
     private void CreateLeads()
