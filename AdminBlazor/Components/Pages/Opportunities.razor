@@ -68,7 +68,7 @@ else
                 <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm:ss tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
                     <DxGridDataColumn Caption="First" FieldName="firstName" />
                     <DxGridDataColumn Caption="Last" FieldName="lastName" />
-@*                     <DxGridDataColumn Caption="Street" FieldName="street" /> *@
+                    <DxGridDataColumn Caption="Street" FieldName="street" />
                     <DxGridDataColumn Caption="City" FieldName="city" />
                     <DxGridDataColumn Caption="State" FieldName="state" />
                     <DxGridDataColumn Caption="Zip" FieldName="zip" />
@@ -83,7 +83,7 @@ else
                 notesCount = _quote.notes.Count;
                 eventsCount = _quote.events.Count;
 
-                <table class="table-detail">
+                <table id="table-homeowner" class="table-detail">
                     <tbody>
                         <tr>
                             <td colspan=3>
@@ -126,7 +126,7 @@ else
 
                 <div class="table-spacer" />
 
-                <table class="table-detail">
+                <table id="table-products" class="table-detail">
                     <tbody>
                         <tr>
                             <td colspan=3>
@@ -196,7 +196,7 @@ else
 
                 <div class="table-spacer" />
 
-                <table>
+                <table id ="table-project-details-header">
                     <tbody>
                         <tr>
                             <td colspan=3>
@@ -206,7 +206,7 @@ else
                     </tbody>
                 </table>
 
-                <div id="project-container">
+                <div id="table-project-details" class="project-container">
 
                     <table class="">
                         <tbody>
@@ -282,7 +282,7 @@ else
                                 </td>
                                 <td colspan="2" class="detail-colum">
 
-                                    <h4>Send @_quote.firstName Documents <span @onclick="@(() => IsPopupVisibleHelpSendFiles = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
+                                    <h6>Send @_quote.firstName Documents <span @onclick="@(() => IsPopupVisibleHelpSendFiles = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h6>
 
                                     <label class="document-label-container">
                                         Welcome letter
@@ -318,16 +318,16 @@ else
                                 </td>
                                 <td colspan="2" class="detail-colum">
 
-                                    <h4>@attachmentsCount File Attachments <span @onclick="@(() => IsPopupVisibleHelpFileAttachments = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
+                                    <h6>@attachmentsCount File Attachments <span @onclick="@(() => IsPopupVisibleHelpFileAttachments = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h6>
 
                                     @{
-                                        <div class="notes-container">
+                                        <div class="item-detail-container">
                                             @foreach (Attachment attachment in _quote.attachments)
                                             {
                                                 if (!attachment.IsDeleted)
                                                 {
                                                     <div class="note-row">
-                                                        <div class="div-date-container">
+                                                        <div>
                                                             <label><b>@attachmentsCount)</b> @attachment.Date</label>
                                                         </div>
 
@@ -365,15 +365,15 @@ else
                                 </td>
                                 <td colspan="2" class="detail-colum">
 
-                                    <h4>@notesCount Notes <span @onclick="@(() => IsPopupVisibleHelpFileNotes = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h4>
+                                    <h6>@notesCount Notes <span @onclick="@(() => IsPopupVisibleHelpFileNotes = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h6>
 
-                                    <div class="notes-container">
+                                    <div class="item-detail-container">
                                         @foreach (Note note in _quote.notes)
                                         {
                                             if (!note.IsDeleted)
                                             {
                                                 <div class="note-row">
-                                                    <div class="div-date-container">
+                                                    <div>
                                                         <label><b>@notesCount)</b> @note.Date</label>
                                                     </div>
 
@@ -402,7 +402,7 @@ else
 
                 <div class="table-spacer" />
 
-                <table class="table-detail">
+                <table id ="table-origin" class="table-detail">
                     <tbody>
                         <tr>
                             <td colspan=3>
@@ -460,18 +460,17 @@ else
 
                 <div class="table-spacer" />
 
-                <table class="table-detail">
+                <table id="table-event-history" class="table-detail">
                     <tbody>
                         <tr>
                             <td colspan="3">
                                 <h6>@eventsCount History Events</h6>
-                                <br />
                             </td>
                         </tr>
 
                         <tr>
                         <td>
-                            <div class="notes-container">
+                            <div class="item-detail-container">
                                 @foreach (Event _event in _quote.events)
                                 {
                                     <div class="note-row">
@@ -498,7 +497,7 @@ else
 
                 <div class="table-spacer" />
 
-                <div class="quote-detail-controls-container">
+                <div id="div-controls-container" class="quote-detail-controls-container">
                     <button class="btn btn-primary" @onclick="@(() => IsPopupVisibleMakeCustomer = true)">Make Customer</button>
                     <button class="btn btn-primary" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
                     <button class="btn btn-primary" @onclick="CloseDetails">Close</button>
@@ -551,17 +550,6 @@ else
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleAddNote = false)" />
     </FooterContentTemplate>
 </DxPopup>
-
-@* <DxPopup @bind-Visible="@IsPopupVisibleAddNote" ShowFooter="true" HeaderText="Add Note">
-    <BodyContentTemplate>
-        <p>Please type in your notes below.</p>
-        <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AddNote" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleAddNote = false)" />
-    </FooterContentTemplate>
-</DxPopup> *@
 
 <DxPopup @bind-Visible="@IsArchivePopupVisible" ShowFooter="true" HeaderText="Please type in a reason for Archival below">
     <BodyContentTemplate>
@@ -619,347 +607,321 @@ else
     public Attachment selectedAttachment { get; set; }
     public Note selectedNote { get; set; }
 
-    public void EnableRefreshAndCreateControls(bool bEnable)
-    {
-        if (bEnable)
-        {
-            RefreshDisabled = false;
-            ArchiveLeadsDisabled = false;
-        }
-        else
-        {
-            RefreshDisabled = true;
-            CreateLeadDisabled = true;
-            CreateLeadsDisabled = true;
-            ArchiveLeadsDisabled = true;
-        }
-    }
-
     bool LoadingPanelVisible { get; set; } = true;
 
     WebServices webServices = new WebServices();
 
     #region Private Properties
 
-        private List<Quote>? quotes;
+    private List<Quote>? quotes;
 
-        int SelectedFilesCount { get; set; }
+    int SelectedFilesCount { get; set; }
 
-        ObjectId SelectedFileId { get; set; }
+    ObjectId SelectedFileId { get; set; }
 
-        IGrid QuoteGrid { get; set; }
+    IGrid QuoteGrid { get; set; }
 
-        IGrid EventGrid { get; set; }
+    IGrid EventGrid { get; set; }
 
-        EntityInstantFeedbackSource InstantFeedbackSource { get; set; }
+    EntityInstantFeedbackSource InstantFeedbackSource { get; set; }
 
-        bool isBulkInsert = false;
+    bool isBulkInsert = false;
 
-        string FileType { get; set; } = ".pdf";
-        string Author { get; set; } = "unknown";
+    string FileType { get; set; } = ".pdf";
+    string Author { get; set; } = "unknown";
 
-        string NoteDetails { get; set; } = "";
+    string NoteDetails { get; set; } = "";
 
     #endregion
 
     #region Public Properties
 
-        [Inject] public IJSRuntime jsRuntime { get; set; }
+    [Inject] public IJSRuntime jsRuntime { get; set; }
 
-        public Timer _timer;
+    public Timer _timer;
 
-        public string ClientIP = "";
-        public string selectedQuoteId = "";
+    public string ClientIP = "";
+    public string selectedQuoteId = "";
 
-        public interface IQueryable : System.Collections.IEnumerable;
+    public interface IQueryable : System.Collections.IEnumerable;
 
-        public int currentItem = 0;
-        public int selectedIndex = 0;
+    public int currentItem = 0;
+    public int selectedIndex = 0;
 
-        public string SubmissionUserIP { get; set; }
+    public string SubmissionUserIP { get; set; }
 
-        public int itemsToCreate = 10;
-        public string updateStatus = "Fetching ";
+    public int itemsToCreate = 10;
+    public string updateStatus = "Fetching ";
 
-        public int attachmentsCount = 0;
-        public int notesCount = 0;
-        public int eventsCount = 0;
+    public int attachmentsCount = 0;
+    public int notesCount = 0;
+    public int eventsCount = 0;
 
     #endregion
 
     #region Popup properties
 
-        bool IsPopupVisibleAddFile { get; set; }
-        bool IsPopupVisibleSelectAttachmentToDelete { get; set; }
+    bool IsPopupVisibleAddFile { get; set; }
+    bool IsPopupVisibleSelectAttachmentToDelete { get; set; }
 
-        bool IsPopupVisibleAddNote { get; set; }
-        bool IsPopupVisibleSelectNoteToDelete { get; set; }
+    bool IsPopupVisibleAddNote { get; set; }
+    bool IsPopupVisibleSelectNoteToDelete { get; set; }
 
-        bool IsPopupVisibleMakeCustomer { get; set; }
-        bool IsArchivePopupVisible { get; set; }
+    bool IsPopupVisibleMakeCustomer { get; set; }
+    bool IsArchivePopupVisible { get; set; }
 
-        bool IsPopupVisibleHelpSendFiles { get; set; }
-        bool IsPopupVisibleHelpFileAttachments { get; set; }
-        bool IsPopupVisibleHelpFileNotes { get; set; }
+    bool IsPopupVisibleHelpSendFiles { get; set; }
+    bool IsPopupVisibleHelpFileAttachments { get; set; }
+    bool IsPopupVisibleHelpFileNotes { get; set; }
 
     #endregion
 
     #region Parameters
 
-        [Parameter]
-        public string DisplayFormat { get; set; }
+    [Parameter]
+    public string DisplayFormat { get; set; }
 
-        [Parameter]
-        public List<string> AcceptedFileTypes { get; set; }
+    [Parameter]
+    public List<string> AcceptedFileTypes { get; set; }
 
-        [Parameter]
-        public GridDetailRowDisplayMode DetailRowDisplayMode { get; set; }
+    [Parameter]
+    public GridDetailRowDisplayMode DetailRowDisplayMode { get; set; }
 
-        [Parameter]
-        public string RefreshStatus { get; set; } = "";
+    [Parameter]
+    public string RefreshStatus { get; set; } = "";
 
-        [Parameter]
-        public string StatusContainerClass { get; set; } = "container-action-buttons-hide";
+    [Parameter]
+    public string StatusContainerClass { get; set; } = "container-action-buttons-hide";
 
-        [Parameter]
-        public string StatusClass { get; set; } = "message-normal";
+    [Parameter]
+    public string StatusClass { get; set; } = "message-normal";
 
-        [Parameter]
-        public string ButtonText { get; set; } = "Pause Refresh";
+    [Parameter]
+    public string ButtonText { get; set; } = "Pause Refresh";
 
-        [Parameter]
-        public string ButtonClass { get; set; } = "btn btn-outline-primary btn-refresh-active";
+    [Parameter]
+    public string ButtonClass { get; set; } = "btn btn-outline-primary btn-refresh-active";
 
-        [Parameter]
-        public bool RefreshDisabled { get; set; } = false;
+    [Parameter]
+    public bool RefreshDisabled { get; set; } = false;
 
-        [Parameter]
-        public bool CreateLeadDisabled { get; set; } = true;
+    [Parameter]
+    public bool SendDocsDisabled { get; set; } = false;
 
-        [Parameter]
-        public bool SendDocsDisabled { get; set; } = false;
+    [Parameter]
+    public bool ArchiveLeadsDisabled { get; set; } = true;
 
-        [Parameter]
-        public bool CreateLeadsDisabled { get; set; } = true;
+    [Parameter]
+    public object SelectedQuoteItem { get; set; }
 
-        [Parameter]
-        public bool ArchiveLeadsDisabled { get; set; } = true;
+    [Parameter]
+    public object SelectedEventItem { get; set; }
 
-        [Parameter]
-        public object SelectedQuoteItem { get; set; }
+    [Parameter]
+    public int VisibleIndex { get; set; }
 
-        [Parameter]
-        public object SelectedEventItem { get; set; }
-
-        [Parameter]
-        public int VisibleIndex { get; set; }
-
-        [Parameter]
-        public bool ClearFilterButtonVisible { get; set; }
+    [Parameter]
+    public bool ClearFilterButtonVisible { get; set; }
 
     #endregion
 
     #region Methods
 
-        protected override void OnInitialized() { }
+    protected override void OnInitialized() { }
 
-        protected override void OnAfterRender(bool firstRender)
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
         {
-            if (firstRender)
-            {
-                RefreshTimer();
-            }
-
-            GetIpAddress();
+            RefreshTimer();
         }
 
-        void OnRowClick(GridRowClickEventArgs args)
-        {
-            selectedIndex = args.VisibleIndex;
-            selectedQuoteId = quotes[selectedIndex]._id;
+        GetIpAddress();
+    }
 
-            var selectedDetailExpanded = QuoteGrid.IsDetailRowExpanded(selectedIndex);
-            if (selectedDetailExpanded)
-            {
-                QuoteGrid.CollapseDetailRow(selectedIndex);
-                //EnableRefreshAndCreateControls(true);
-            }
-            else
-            {
-                QuoteGrid.ExpandDetailRow(selectedIndex);
-                ToggleRefresh();
+    void OnRowClick(GridRowClickEventArgs args)
+    {
+        selectedIndex = args.VisibleIndex;
+        selectedQuote = quotes[selectedIndex];
 
-                EnableRefreshAndCreateControls(false);
-            }
-        }
-
-        public async Task<string> GetIpAddress()
-        {
-            try
-            {
-                SubmissionUserIP = await jsRuntime.InvokeAsync<string>("getIpAddress").ConfigureAwait(true);
-
-                return SubmissionUserIP;
-            }
-            catch (Exception e)
-            {
-                //If your request was blocked by CORS or some extension like uBlock Origin then you will get an exception.
-                return string.Empty;
-            }
-        }
-
-        protected void SelectedFilesChanged(IEnumerable<UploadFileInfo> files)
-        {
-            SelectedFilesCount = files.ToList().Count;
-            InvokeAsync(StateHasChanged);
-        }
-
-        protected void EmailFiles()
-        {
-            var tmpVal = "";
-        }
-
-        protected string GetUploadUrl(string url)
-        {
-            return NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
-        }
-
-        public void ArchiveLead()
+        var selectedDetailExpanded = QuoteGrid.IsDetailRowExpanded(selectedIndex);
+        if (selectedDetailExpanded)
         {
             QuoteGrid.CollapseDetailRow(selectedIndex);
 
-            Note note = new Note();
-            note.Summary = "Opportunity Archived";
-            note.Details = @NoteDetails;
-
-            Quote quote = quotes[selectedIndex];
-            quote.notes.Add(note);
-
-            WebServices.DeleteQuote(selectedQuoteId);
-
-            IsArchivePopupVisible = false;
-
-            ToggleRefresh();
+            PauseRefresh(false);
         }
-
-        public void AddNote()
+        else
         {
-            QuoteGrid.CollapseDetailRow(selectedIndex);
-
-            Note note = new Note();
-            note.Summary = "Note Added";
-            note.Details = @NoteDetails;
-
-            Quote quote = quotes[selectedIndex];
-            quote.notes.Add(note);
-
-            Event _event = new Event(0, 0);
-            _event.Details = "Note (" + note.Details + ") added to Quote";
-
-            quote.status = "Opportunity";
-            quote.events.Add(_event);
-
-            WebServices.UpdateQuote(quotes[selectedIndex]);
-
-            IsPopupVisibleAddNote = false;
-            NoteDetails = "";
-
-            ToggleRefresh();
-
             QuoteGrid.ExpandDetailRow(selectedIndex);
 
-            EnableRefreshAndCreateControls(true);
+            PauseRefresh(true);
         }
+    }
 
-        public void CloseDetails()
+    public async Task<string> GetIpAddress()
+    {
+        try
         {
-            QuoteGrid.CollapseDetailRow(selectedIndex);
-            ToggleRefresh();
-            EnableRefreshAndCreateControls(true);
+            SubmissionUserIP = await jsRuntime.InvokeAsync<string>("getIpAddress").ConfigureAwait(true);
+
+            return SubmissionUserIP;
         }
-
-        public void SelectAttachmentToDelete(Quote quote, Attachment attachment)
+        catch (Exception e)
         {
-            selectedQuote = quote;
-            selectedAttachment = attachment;
-
-            IsPopupVisibleSelectAttachmentToDelete = true;
-
-            RefreshTimer();
+            //If your request was blocked by CORS or some extension like uBlock Origin then you will get an exception.
+            return string.Empty;
         }
+    }
 
-        public void SelectNoteToDelete(Quote quote, Note note)
+    protected void SelectedFilesChanged(IEnumerable<UploadFileInfo> files)
+    {
+        SelectedFilesCount = files.ToList().Count;
+        InvokeAsync(StateHasChanged);
+    }
+
+    protected void EmailFiles()
+    {
+        var tmpVal = "";
+    }
+
+    protected string GetUploadUrl(string url)
+    {
+        return NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
+    }
+
+    public void ArchiveLead()
+    {
+        selectedQuote.status = "Archive";
+
+        QuoteGrid.CollapseDetailRow(selectedIndex);
+
+        Note note = new Note();
+        note.Summary = "Opportunity Archived";
+        note.Details = @NoteDetails;
+
+        selectedQuote.notes.Add(note);
+
+        WebServices.UpdateQuote(selectedQuote);
+
+        IsArchivePopupVisible = false;
+
+        PauseRefresh(false);
+    }
+
+    public void AddNote()
+    {
+        QuoteGrid.CollapseDetailRow(selectedIndex);
+
+        Note note = new Note();
+        note.Summary = "Note Added";
+        note.Details = @NoteDetails;
+
+        selectedQuote.notes.Add(note);
+
+        Event _event = new Event(0, 0);
+        _event.Details = "Note (" + note.Details + ") added to Quote";
+
+        selectedQuote.status = "Opportunity";
+        selectedQuote.events.Add(_event);
+
+        WebServices.UpdateQuote(selectedQuote);
+
+        IsPopupVisibleAddNote = false;
+        NoteDetails = "";
+
+        QuoteGrid.ExpandDetailRow(selectedIndex);
+
+        PauseRefresh(false);
+    }
+
+    public void CloseDetails()
+    {
+        QuoteGrid.CollapseDetailRow(selectedIndex);
+
+        PauseRefresh(false);
+    }
+
+    public void SelectAttachmentToDelete(Quote quote, Attachment attachment)
+    {
+        selectedQuote = quote;
+        selectedAttachment = attachment;
+
+        IsPopupVisibleSelectAttachmentToDelete = true;
+
+        RefreshTimer();
+    }
+
+    public void SelectNoteToDelete(Quote quote, Note note)
+    {
+        selectedQuote = quote;
+        selectedNote = note;
+
+        IsPopupVisibleSelectNoteToDelete = true;
+    }
+
+    public void DeleteSelectedAttachment()
+    {
+        selectedAttachment.IsDeleted = true;
+
+        Event _event = new Event(0, 0);
+        _event.Details = "Deleted attachment (" + selectedAttachment.MediaDescription + ") from Quote";
+
+        selectedQuote.events.Add(_event);
+
+        WebServices.UpdateQuote(selectedQuote);
+
+        RefreshTimer();
+
+        IsPopupVisibleSelectAttachmentToDelete = false;
+
+        attachmentsCount--;
+    }
+
+    public void DeleteSelectedNote()
+    {
+        selectedNote.IsDeleted = true;
+
+        Event _event = new Event(0, 0);
+        _event.Details = "Deleted note (" + selectedNote.Details + ") from Quote";
+
+        selectedQuote.events.Add(_event);
+
+        WebServices.UpdateQuote(selectedQuote);
+
+        RefreshTimer();
+
+        IsPopupVisibleSelectNoteToDelete = false;
+
+        notesCount--;
+    }
+
+    public void MakeCustomer()
+    {
+        selectedQuote.status = "Customer";
+
+        QuoteGrid.CollapseDetailRow(selectedIndex);
+
+        var projectManager = selectedQuote.projectManager;
+
+        Event _event = new Event(0, 0);
+        _event.Details = "Opportunity converted to Customer";
+
+        selectedQuote.events.Add(_event);
+
+        WebServices.UpdateQuote(selectedQuote);
+
+        IsPopupVisibleMakeCustomer = false;
+
+        PauseRefresh(false);
+    }
+
+    public virtual void PauseRefresh(bool isPaused)
+    {
+        if(isPaused)
         {
-            selectedQuote = quote;
-            selectedNote = note;
-
-            IsPopupVisibleSelectNoteToDelete = true;
-        }
-
-        public void DeleteSelectedAttachment()
-        {
-            selectedAttachment.IsDeleted = true;
-
-            Event _event = new Event(0, 0);
-            _event.Details = "Deleted attachment (" + selectedAttachment.MediaDescription + ") from Quote";
-
-            selectedQuote.events.Add(_event);
-
-            WebServices.UpdateQuote(selectedQuote);
-
-            RefreshTimer();
-
-            IsPopupVisibleSelectAttachmentToDelete = false;
-
-            attachmentsCount--;
-        }
-
-        public void DeleteSelectedNote()
-        {
-            selectedNote.IsDeleted = true;
-
-            Event _event = new Event(0, 0);
-            _event.Details = "Deleted note (" + selectedNote.Details + ") from Quote";
-
-            selectedQuote.events.Add(_event);
-
-            WebServices.UpdateQuote(selectedQuote);
-
-            RefreshTimer();
-
-            IsPopupVisibleSelectNoteToDelete = false;
-
-            notesCount--;
-        }
-
-        public void MakeCustomer()
-        {
-            QuoteGrid.CollapseDetailRow(selectedIndex);
-
-            Quote quote = quotes[selectedIndex];
-            quote.status = "Customer";
-
-            var projectManager = quote.projectManager;
-
-            Event _event = new Event(0, 0);
-            _event.Details = "Opportunity converted to Customer";
-
-            quote.events.Add(_event);
-
-            WebServices.UpdateQuote(quotes[selectedIndex]);
-
-            IsPopupVisibleMakeCustomer = false;
-
-            ToggleRefresh();
-
-            EnableRefreshAndCreateControls(true);
-        }
-
-        public virtual void PauseRefresh()
-        {
-            CreateLeadDisabled = false;
-            CreateLeadsDisabled = false;
-            ArchiveLeadsDisabled = false;
+            RefreshDisabled = false;
+            ArchiveLeadsDisabled = true;
 
             ButtonText = "Resume Refresh";
             ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
@@ -968,41 +930,38 @@ else
 
             _timer?.Dispose();
         }
-
-        public virtual void ToggleRefresh()
+        else
         {
-            if (ButtonText == "Pause Refresh")
-            {
-                CreateLeadDisabled = false;
-                CreateLeadsDisabled = false;
-                ArchiveLeadsDisabled = false;
+            RefreshDisabled = false;
+            ArchiveLeadsDisabled = false;
 
-                ButtonText = "Resume Refresh";
-                ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
-                StatusClass = "message-warning";
-                RefreshStatus = " Auto refresh paused...";
+            ButtonText = "Pause Refresh";
+            ButtonClass = "btn btn-outline-primary btn-refresh-active";
+            StatusClass = "message";
+            RefreshStatus = "";
 
-                _timer?.Dispose();
-            }
-            else
-            {
-                CreateLeadDisabled = true;
-                CreateLeadsDisabled = true;
-                ArchiveLeadsDisabled = true;
-
-                StatusClass = "message-normal";
-                RefreshStatus = "";
-                ButtonText = "Pause Refresh";
-                ButtonClass = "btn btn-outline-primary btn-refresh-active";
-
-                RefreshTimer();
-            }
+            RefreshTimer();
         }
+    }
 
-        public void Dispose()
+    public virtual void ToggleRefresh()
+    {
+        if (ButtonText == "Pause Refresh")
         {
-            _timer?.Dispose();           // because you need it here
+            ButtonText = "Resume Refresh";
+            PauseRefresh(true);
         }
+        else
+        {
+            ButtonText = "Pause Refresh";
+            PauseRefresh(false);
+        }
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();           // because you need it here
+    }
 
     private void RefreshTimer()
     {

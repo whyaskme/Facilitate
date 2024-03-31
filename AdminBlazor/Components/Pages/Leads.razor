@@ -40,8 +40,7 @@ else
             <br/><br/>
         </div>
 
-        <DxGrid 
-            @ref="Grid"
+        <DxGrid @ref="QuoteGrid"
             Data="@quotes" 
             KeyFieldName="_id"
 
@@ -68,7 +67,7 @@ else
                 <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm:ss tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
                 <DxGridDataColumn Caption="First" FieldName="firstName" />
                 <DxGridDataColumn Caption="Last" FieldName="lastName" />
-@*                 <DxGridDataColumn Caption="Street" FieldName="street" /> *@
+                <DxGridDataColumn Caption="Street" FieldName="street" />
                 <DxGridDataColumn Caption="City" FieldName="city" />
                 <DxGridDataColumn Caption="State" FieldName="state" />
                 <DxGridDataColumn Caption="Zip" FieldName="zip" />
@@ -304,7 +303,7 @@ else
                         {
                             <tr>
                                 <td colspan="3">
-                                    <div class="div-date-container">@currentEventCount. @_quote.events[currentIndex].DateTime</div>
+                                    <div>@currentEventCount. @_quote.events[currentIndex].DateTime</div>
                                 </td>
                             </tr>
                             <tr>
@@ -328,8 +327,8 @@ else
                             <div class="table-spacer" />
 
                 <div class="quote-detail-controls-container">
-                    <button class="btn btn-primary" @onclick="@(() => PopupVisibleAssign = true)">Assign</button>
-                    <button class="btn btn-primary" @onclick="@(() => PopupVisibleArchive = true)">Archive</button>
+                    <button class="btn btn-primary" @onclick="@(() => IsAssignPopupVisible = true)">Assign</button>
+                    <button class="btn btn-primary" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
                     <button class="btn btn-primary" @onclick="CloseDetails">Close</button>
                 </div>
 
@@ -352,7 +351,7 @@ else
 </DxLoadingPanel>
 
 <DxPopup
-    @bind-Visible="@PopupVisibleAssign"
+    @bind-Visible="@IsAssignPopupVisible"
     ShowFooter="true"
          HeaderText="Please select a Project Manager for assignment">
     <BodyContentTemplate>
@@ -374,25 +373,27 @@ else
     </BodyContentTemplate>
     <FooterContentTemplate>
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleAssign = false)" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsAssignPopupVisible = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
 <DxPopup
-    @bind-Visible="@PopupVisibleArchive"
+    @bind-Visible="@IsArchivePopupVisible"
     ShowFooter="true"
          HeaderText="Please type in a reason for Archival below">
     <BodyContentTemplate>
-        <DxMemo @bind-Text="@ArchivalReason" InputId="archive-reason" CssClass="cw-320" />
+        <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
     </BodyContentTemplate>
     <FooterContentTemplate>
         <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Archive" Click="ArchiveLead" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => PopupVisibleArchive = false)" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsArchivePopupVisible = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
 
 @code {
+
+    public Quote selectedQuote { get; set; }
 
     bool LoadingPanelVisible { get; set; } = true;
 
@@ -416,49 +417,38 @@ else
 
     public List<User>? ProjectManagers;
 
-    string ArchivalReason { get; set; } = "";
-
-    public void EnableRefreshAndCreateControls(bool bEnable)
-    {
-        if(bEnable)
-        {
-            RefreshDisabled = false;
-            ArchiveLeadsDisabled = false;
-        }
-        else
-        {
-            RefreshDisabled = true;
-            CreateLeadDisabled = true;
-            CreateLeadsDisabled = true;
-            ArchiveLeadsDisabled = true;
-        }
-    }
+    string NoteDetails { get; set; } = "";
 
     public void ArchiveLead()
     {
-        Grid.CollapseDetailRow(selectedIndex);
+        QuoteGrid.CollapseDetailRow(selectedIndex);
 
         Note note = new Note();
-        note.Summary = "Lead Archived";
-        note.Details = note.Summary + " - " + @ArchivalReason;
+        note.Summary = selectedQuote.firstName + " " + selectedQuote.lastName + " Archived";
+        note.Details = note.Summary + " - " + @NoteDetails;
 
-        Quote quote = quotes[selectedIndex];
-        quote.notes.Add(note);
+        selectedQuote.status = "Archive";
 
-        WebServices.DeleteQuote(selectedQuoteId);
+        QuoteGrid.CollapseDetailRow(selectedIndex);
 
-        PopupVisibleArchive = false;
+        // Note note = new Note();
+        note.Summary = "Opportunity Archived";
+        note.Details = @NoteDetails;
 
-        ToggleRefresh();
+        selectedQuote.notes.Add(note);
 
-        EnableRefreshAndCreateControls(true);
+        WebServices.UpdateQuote(selectedQuote);
+
+        IsArchivePopupVisible = false;
+
+        PauseRefresh(false);
     }
 
     [Parameter]
     public bool SubmitFormOnClick { get; set; }
 
-    bool PopupVisibleAssign { get; set; }
-    bool PopupVisibleArchive { get; set; }
+    bool IsAssignPopupVisible { get; set; }
+    bool IsArchivePopupVisible { get; set; }
 
     [Inject] public IJSRuntime jsRuntime { get; set; }
 
@@ -522,7 +512,7 @@ else
     [Parameter]
     public bool ClearFilterButtonVisible { get; set; }
 
-    IGrid Grid { get; set; }
+    IGrid QuoteGrid { get; set; }
     EntityInstantFeedbackSource InstantFeedbackSource { get; set; }
 
     public interface IQueryable : System.Collections.IEnumerable;
@@ -545,38 +535,80 @@ else
         GetIpAddress();
     }
 
-    void OnRowClick(GridRowClickEventArgs args)
+    public virtual void PauseRefresh(bool isPaused)
     {
-        selectedIndex = args.VisibleIndex;
-        selectedQuoteId = quotes[selectedIndex]._id;
-
-        var selectedDetailExpanded = Grid.IsDetailRowExpanded(selectedIndex);
-        if (selectedDetailExpanded)
+        if (isPaused)
         {
-            Grid.CollapseDetailRow(selectedIndex);
+            RefreshDisabled = false;
+            ArchiveLeadsDisabled = true;
+
+            ButtonText = "Resume Refresh";
+            ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
+            StatusClass = "message-warning";
+            RefreshStatus = " Auto refresh paused...";
+
+            _timer?.Dispose();
         }
         else
         {
-            Grid.ExpandDetailRow(selectedIndex);
-            ToggleRefresh();
+            RefreshDisabled = false;
+            ArchiveLeadsDisabled = false;
 
-            EnableRefreshAndCreateControls(false);
+            ButtonText = "Pause Refresh";
+            ButtonClass = "btn btn-outline-primary btn-refresh-active";
+            StatusClass = "message";
+            RefreshStatus = "";
+
+            RefreshTimer();
+        }
+    }
+
+    public virtual void ToggleRefresh()
+    {
+        if (ButtonText == "Pause Refresh")
+        {
+            ButtonText = "Resume Refresh";
+            PauseRefresh(true);
+        }
+        else
+        {
+            ButtonText = "Pause Refresh";
+            PauseRefresh(false);
+        }
+    }
+
+    void OnRowClick(GridRowClickEventArgs args)
+    {
+        selectedIndex = args.VisibleIndex;
+        selectedQuote = quotes[selectedIndex];
+
+        var selectedDetailExpanded = QuoteGrid.IsDetailRowExpanded(selectedIndex);
+        if (selectedDetailExpanded)
+        {
+            QuoteGrid.CollapseDetailRow(selectedIndex);
+
+            PauseRefresh(false);
+        }
+        else
+        {
+            QuoteGrid.ExpandDetailRow(selectedIndex);
+
+            PauseRefresh(true);
         }
     }
 
     public void CloseDetails()
     {
-        Grid.CollapseDetailRow(selectedIndex);
-        ToggleRefresh();
+        QuoteGrid.CollapseDetailRow(selectedIndex);
 
-        EnableRefreshAndCreateControls(true);
+        PauseRefresh(false);
     }
 
     public void AssignLead()
     {
-        Grid.CollapseDetailRow(selectedIndex);
+        QuoteGrid.CollapseDetailRow(selectedIndex);
 
-        quotes[selectedIndex].status = "Opportunity";
+        selectedQuote.status = "Opportunity";
 
         var currProjectManager = SelectedProjectManager.ToList()[0];
 
@@ -596,62 +628,55 @@ else
         pmSummary.State = currProjectManager.Profile.Contact.Address[0].State;
         pmSummary.Zip = currProjectManager.Profile.Contact.Address[0].ZipCode;
 
-        quotes[selectedIndex].projectManager = pmSummary;
+        selectedQuote.projectManager = pmSummary;
 
-        // Add an attachment (Initial agreements or any other specified docs)
-        Attachment attachment = new Attachment();
-        attachment.MediaDescription = "Workflow and Subsequent Document Requirements";
-        attachment.MediaUrl = "/docs/templates/agreements/FACILITATE - Workflow and Subsequent Document Requirements.pdf";
+        // Welcome Letter
+        Attachment welcomeLetter = new Attachment();
+        welcomeLetter.MediaDescription = "Welcome to Facilitate.org";
+        welcomeLetter.MediaUrl = "/docs/templates/boilerplate/Welcome Letter.pdf";
+        selectedQuote.attachments.Add(welcomeLetter);
 
-        quotes[selectedIndex].attachments.Add(attachment);
+        Event welcomeLetterEvent = new Event(0, 0);
+        welcomeLetterEvent.Details = welcomeLetter.MediaDescription + " sent to " + selectedQuote.email;
+        selectedQuote.events.Add(welcomeLetterEvent);
 
-        Event docSentEvent = new Event(0, 0);
-        docSentEvent.Details = attachment.MediaDescription + " sent to " + quotes[selectedIndex].email;
-        quotes[selectedIndex].events.Add(docSentEvent);
+
+
+        // Facilitate Engagement Agreement
+        Attachment engagementAgreement = new Attachment();
+        engagementAgreement.MediaDescription = "Facilitate Engagement Agreement";
+        engagementAgreement.MediaUrl = "/docs/templates/agreements/Facilitate Engagement Agreement.pdf";
+        selectedQuote.attachments.Add(engagementAgreement);
+
+        Event engagementAgreementEvent = new Event(0, 0);
+        engagementAgreementEvent.Details = engagementAgreement.MediaDescription + " sent to " + selectedQuote.email;
+        selectedQuote.events.Add(engagementAgreementEvent);
+
+
+
+        // Workflow and Subsequent Document Requirements
+        Attachment workflowRequirements = new Attachment();
+        workflowRequirements.MediaDescription = "Workflow and Subsequent Document Requirements";
+        workflowRequirements.MediaUrl = "/docs/templates/misc/Workflow and Subsequent Document Requirements.pdf";
+        selectedQuote.attachments.Add(workflowRequirements);
+
+        Event workflowRequirementsEvent = new Event(0, 0);
+        workflowRequirementsEvent.Details = workflowRequirements.MediaDescription + " sent to " + selectedQuote.email;
+        selectedQuote.events.Add(workflowRequirementsEvent);
+
+
 
         // Assignment event
-        var projectManager = quotes[selectedIndex].projectManager;
+        var projectManager = selectedQuote.projectManager;
         Event assignmentEvent = new Event(0, 0);
         assignmentEvent.Details = "Lead assigned to Project Manager Id: " + projectManager._id + " (" + projectManager.Name + "), moved to Opportunities and emailed to: " + projectManager.Email;
-        quotes[selectedIndex].events.Add(assignmentEvent);
+        selectedQuote.events.Add(assignmentEvent);
 
-        WebServices.UpdateQuote(quotes[selectedIndex]);
+        WebServices.UpdateQuote(selectedQuote);
 
-        PopupVisibleAssign = false;
+        IsAssignPopupVisible = false;
 
-        ToggleRefresh();
-
-        EnableRefreshAndCreateControls(true);
-    }
-
-    public virtual void ToggleRefresh()
-    {
-        if (ButtonText == "Pause Refresh")
-        {
-            CreateLeadDisabled = false;
-            CreateLeadsDisabled = false;
-            ArchiveLeadsDisabled = false;
-
-            ButtonText = "Resume Refresh";
-            ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
-            StatusClass = "message-warning";
-            RefreshStatus = " Auto refresh paused...";
-
-            _timer?.Dispose();
-        }
-        else
-        {
-            CreateLeadDisabled = true;
-            CreateLeadsDisabled = true;
-            ArchiveLeadsDisabled = true;
-
-            StatusClass = "message-normal";
-            RefreshStatus = "";
-            ButtonText = "Pause Refresh";
-            ButtonClass = "btn btn-outline-primary btn-refresh-active";
-
-            RefreshTimer();
-        }
+        PauseRefresh(false);
     }
 
     private List<Quote>? quotes;
@@ -699,7 +724,9 @@ else
             CreateLead();
         }
 
-        ToggleRefresh();
+        //ToggleRefresh();
+
+        PauseRefresh(false);
 
         isBulkInsert = false;
     }
@@ -868,8 +895,7 @@ else
         }
         finally
         {
-            if (!isBulkInsert)
-                ToggleRefresh();
+            PauseRefresh(false);
         }
     }
     #endregion

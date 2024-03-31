@@ -19,7 +19,7 @@ td {
 /*    border: solid 1px #ff0000 !important;*/
 }
 
-#project-container {
+.project-container {
     border: solid 0px #dad7d7 !important;
     -moz-border-radius: 5px !important;
     -webkit-border-radius: 5px !important;
@@ -52,13 +52,6 @@ td {
 
 .icon-help:hover {
     cursor: pointer;
-}
-
-.div-date-container {
-    border-top: solid 0px #dad7d7 !important;
-/*    position: relative !important;
-    left: -7px !important;*/
-    padding-top: 15px !important;
 }
 
 h4 {
@@ -143,21 +136,29 @@ h4 {
     padding: 35px !important;
 }
 
-.notes-container {
-    /*    background-color: #ffffff !important;*/
-    border: solid 0px #dad7d7 !important;
+.dxbl-grid-detail-cell {
+    border: solid 1px #c0c0c0 !important;
+    background-color: #eee !important;
+}
+
+.item-detail-container {
+    background-color: #fff !important;
+    border: solid 1px #c0c0c0 !important;
+    -moz-border-radius: 5px !important;
+    -webkit-border-radius: 5px !important;
+    border-radius: 5px !important;
     max-height: 390px !important;
     overflow: auto !important;
-/*    padding: 25px !important;
-    padding-top: 0px !important;*/
+    padding: 25px !important;
+    position: relative !important;
+    top: 15px !important;
+    box-shadow: 2px 2px #c0c0c0 !important;
 }
 
 .note-row {
-    border: solid 1px #dad7d7 !important;
+    background-color: #fff !important;
+    border-bottom: dashed 1px #c0c0c0 !important;
     padding: 10px !important;
-    position: relative !important;
-    top: 10px !important;
-    margin-bottom: 15px !important;
 }
 
 .detail-colum {
