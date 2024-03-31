@@ -80,89 +80,92 @@ else
                 var _quote = (Quote)context.DataItem;
 
                 <table>
-                <tbody>
-                    <tr>
-                        <td colspan=4>
-                            <h6>Homeowner</h6>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Name</label>
-                            <span class="detail-item">@_quote.firstName @_quote.lastName</span>
-                        </td>
-                        <td>
-                            <label>Email</label>
+                    <tbody>
+                        <tr>
+                            <td colspan=3>
+                                <h6>Homeowner</h6>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Name</label>
+                                <span class="detail-item">@_quote.firstName @_quote.lastName</span>
+                            </td>
+                            <td>
+                                <label>Email</label>
                                 <a href="mailto:@_quote.email">
-                                <span class="detail-item">@_quote.email</span>
-                            </a>
-                        </td>
-                        <td>
-                            <label>Phone</label>
-                            <span class="detail-item">@_quote.phone</span>
-                        </td>
-                        <td>
-                            <label>IP Address</label>
-                            <a href="https://whatismyipaddress.com/ip/@SubmissionUserIP" target="_blank">
-                                <span class="detail-item">@SubmissionUserIP</span>
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
+                                    <span class="detail-item">@_quote.email</span>
+                                </a>
+                            </td>
+                            <td>
+                                <label>Phone</label>
+                                <span class="detail-item">@_quote.phone</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Address</label>
+                                <a href="https://www.google.com/maps/search/@_quote.street @_quote.city, @_quote.state @_quote.zip" target="_blank">
+                                    @_quote.street @_quote.city, @_quote.state @_quote.zip
+                                </a>
+                            </td>
+                            <td>
+                                <label>IP</label>
+                                <a href="https://whatismyipaddress.com/ip/@SubmissionUserIP" target="_blank">
+                                    <span class="detail-item">@SubmissionUserIP</span>
+                                </a>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tbody>
                 </table>
 
                 <div class="table-spacer" />
 
                 <table>
-                <tbody>
-                    <tr>
-                        <td colspan=3>
-                            <h6>Property</h6>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan=3>
-                            <label>Address</label>
-                            <b>@_quote.street @_quote.city, @_quote.state @_quote.zip</b>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Name</label>
-                            <span class="detail-item">@_quote.structures[0].name</span>
-                        </td>
-                        <td>
-                            <label>Incl Roofs</label>
-                            <span class="detail-item">@_quote.numberOfIncludedStructures</span>
-                        </td>
-                        <td>
-                            <label>Total Sqft</label>
-                            <span class="detail-item">@_quote.totalSquareFeet.ToString("N0")</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Roof Complexity</label>
-                            <span class="detail-item">@_quote.structures[0].roofComplexity</span>
-                        </td>
-                        <td colspan=2>
-                            <label>Slope</label>
-                            <span class="detail-item">@_quote.structures[0].slope</span>
-                        </td>
-                    </tr>
-                </tbody>
+                    <tbody>
+                        <tr>
+                            <td colspan=3>
+                                <h6>Project</h6>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Sqft</label>
+                                <span class="detail-item">@_quote.totalSquareFeet.ToString("N0")</span>
+                            </td>
+                            <td>
+                                <label>Roofs</label>
+                                <span class="detail-item">@_quote.numberOfIncludedStructures</span>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Name</label>
+                                <span class="detail-item">@_quote.structures[0].name</span>
+                            </td>
+                            <td>
+                                <label>Complexity</label>
+                                <span class="detail-item">@_quote.structures[0].roofComplexity</span>
+                            </td>
+                            <td>
+                                <label>Slope</label>
+                                <span class="detail-item">@_quote.structures[0].slope</span>
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
 
                 <div class="table-spacer" />
 
                 <table>
-                <tbody>
-
-                    <tr>
-                        <td colspan=4>
-                            <h6>Products</h6>
-                        </td>
-                    </tr>
+                    <tbody>
+                        <tr>
+                            <td colspan=3>
+                                <h6>Products</h6>
+                            </td>
+                        </tr>
                         @{
                             for (var i = 0; i < @_quote.products.Count; i++)
                             {
@@ -177,54 +180,51 @@ else
                                 {
                                     priceLabel = @_quote.products[i].priceInfo.priceType;
                                 }
+
                                 <tr>
-                            <td>
-                                <label>Name</label>
-                                <span class="detail-item">@_quote.products[i].name</span>
-                            </td>
-                            <td>
-                                <label>Waste Factor</label>
-                                <span class="detail-item">@_quote.products[i].wasteFactorMainRoof</span>
-                            </td>
-                            <td colspan=3>
-                                <label>Price Type</label>
-                                <span class="detail-item">@priceLabel</span>                               
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan=4>
-                                <table>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <label>Total Quote</label>
-                                            <span class="detail-item">$@_quote.products[i].priceInfo.total.ToString("N0")</span>
-                                        </td>
-                                        <td>
-                                            <label>Per Square</label>
-                                            <span class="detail-item">$@_quote.products[i].priceInfo.pricePerSquare</span>
-                                        </td>
-                                        <td>
-                                            <label>Monthly</label>
-                                            <span class="detail-item">$@_quote.products[i].priceInfo.monthly</span>
-                                        </td>
-                                        <td>
-                                            <label>APR</label>
-                                            <span class="detail-item">@_quote.products[i].priceInfo.apr%</span>
-                                        </td>
-                                        <td>
-                                            <label>Months</label>
-                                            <span class="detail-item">@_quote.products[i].priceInfo.months</span>
-                                        </td>
-                                        <td></td>
-                                    </tr>
-                                </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                    }
-                }
-                </tbody>
+                                    <td>
+                                        <label>Name</label>
+                                        <span class="detail-item">@_quote.products[i].name</span>
+                                    </td>
+                                    <td>
+                                        <label>Waste Factor</label>
+                                        <span class="detail-item">@_quote.products[i].wasteFactorMainRoof</span>
+                                    </td>
+                                    <td>
+                                        <label>Price Type</label>
+                                        <span class="detail-item">@priceLabel</span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <label>Total Quote</label>
+                                        <span class="detail-item">$@_quote.products[i].priceInfo.total.ToString("N0")</span>
+                                    </td>
+                                    <td>
+                                        <label>Per Square</label>
+                                        <span class="detail-item">$@_quote.products[i].priceInfo.pricePerSquare</span>
+                                    </td>
+                                    <td>
+                                        <label>Monthly</label>
+                                        <span class="detail-item">$@_quote.products[i].priceInfo.monthly</span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <label>APR</label>
+                                        <span class="detail-item">@_quote.products[i].priceInfo.apr%</span>
+                                    </td>
+                                    <td>
+                                        <label>Months</label>
+                                        <span class="detail-item">@_quote.products[i].priceInfo.months</span>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
                 </table>
 
                 if (_quote.projectManager != null)
@@ -379,85 +379,97 @@ else
                 <div class="table-spacer" />
 
                 <table>
-                <tbody>
-                    <tr>
-                        <td colspan=4>
-                            <h6>Origin</h6>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>RecId</label>
-                            <span class="detail-item">@_quote._id</span>
-                        </td>
-                        <td>
-                            <label>Referrer</label>
-                            <a href="@_quote.externalUrl" target="_blank">
-                                <span class="detail-item">@_quote.externalUrl</span>
-                            </a>
-                        </td>
-                        <td>
-                            <label>SessionId</label>
-                            <span class="detail-item">@_quote.sessionId</span>
-                        </td>
-                        <td>
-                            <label>Market</label>
-                            <span class="detail-item">@_quote.market</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Rep Name</label>
-                            <span class="detail-item">@_quote.repLead</span>
-                        </td>
-                        <td>
-                            <label>Rep Email</label>
-                            <a href="mailto:@_quote.repEmail">
-                                <span class="detail-item">@_quote.repEmail</span>
-                            </a>
-                        </td>
-                        <td>
-                            <label>RoofleId</label>
-                            <span class="detail-item">@_quote.leadId</span>
-                        </td>
-                        <td></td>
-                    </tr>
-                </tbody>
+                    <tbody>
+                        <tr>
+                            <td colspan=3>
+                                <h6>Origin</h6>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <label>Market</label>
+                                <span class="detail-item">@_quote.market</span>
+                            </td>
+                            <td>
+                                <label>Rep Name</label>
+                                <span class="detail-item">@_quote.repLead</span>
+                            </td>
+                            <td>
+                                <label>Rep Email</label>
+                                <a href="mailto:@_quote.repEmail">
+                                    <span class="detail-item">@_quote.repEmail</span>
+                                </a>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <label>RecId</label>
+                                <span class="detail-item">@_quote._id</span>
+                            </td>
+                            <td>
+                                <label>Referrer</label>
+                                <a href="@_quote.externalUrl" target="_blank">
+                                    <span class="detail-item">@_quote.externalUrl</span>
+                                </a>
+                            </td>
+                            <td>
+                                <label>Session</label>
+                                <span class="detail-item">@_quote.sessionId</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <label>RoofleId</label>
+                                <span class="detail-item">@_quote.leadId</span>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+
+                        </tr>
+                    </tbody>
                 </table>
 
                 <div class="table-spacer" />
 
                 <table>
-                <tbody>
-                    <tr>
-                        <td>
-                            <h6>History</h6>
-                        </td>
-                    </tr>
-                    <tr> 
-                        <td>
+                    <tbody>
+                        <tr>
+                            <td colspan="3">
+                                <h6>History</h6>
+                                <br />
+                            </td>
+                        </tr>
 
-                            @{
-                                var currentEventCount = _quote.events.Count;
-                                for (int currentIndex = 0; currentIndex < @_quote.events.Count; currentIndex++)
-                                {
-                                    <tr>
-                                        <td>
-                                            <div class="div-date-container">
-                                            <label><b>@currentEventCount)</b> @_quote.events[currentIndex].Date</label>
-                                            </div>
-                                            <span class="detail-item">@_quote.events[currentIndex].Details</span>
-                                            <span class="bar-spacer">|</span>
-                                            <label>Author</label>
-                                            <span>@Author</span>
-                                        </td>
-                                    </tr>
-                                    currentEventCount--;
-                                }
+                        @{
+                            var currentEventCount = 1;
+                            for (int currentIndex = 0; currentIndex < @_quote.events.Count; currentIndex++)
+                            {
+                                <tr>
+                                    <td colspan="3">
+                                        <div class="div-date-container">@currentEventCount. @_quote.events[currentIndex].DateTime</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @_quote.events[currentIndex].Details
+                                    </td>
+                                    <td>
+                                        <label>Author</label>
+                                        <span>@Author</span>
+                                    </td>
+                                    <td></td>
+                                </tr>
+
+                                currentEventCount++;
                             }
-                        </td>
-                    </tr>
-                </tbody>
+                        }
+
+                    </tbody>
                 </table>
 
                 <div class="table-spacer" />
