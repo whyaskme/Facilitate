@@ -30,7 +30,7 @@
           UploadUrl="@GetUploadUrl("api/FileService/")"
     SelectedFilesChanged="@SelectedFilesChanged"
     MaxFileSize="15000000"
-    CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
+    CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
 </DxUpload>
 
 <DxButton Text="Upload the First File" Click=OnButtonClick />

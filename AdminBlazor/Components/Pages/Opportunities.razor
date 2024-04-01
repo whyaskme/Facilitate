@@ -79,11 +79,13 @@ else
             @{
                 var _quote = (Quote)context.DataItem;
 
+                var _emailTabLabel = "3) Email " + @_quote.firstName + " Documents";
+
                 attachmentsCount = _quote.attachments.Count;
                 notesCount = _quote.notes.Count;
                 eventsCount = _quote.events.Count;
 
-                <table id="table-homeowner" class="table-detail">
+                <table id="table-homeowner-info" class="table-detail">
                     <tbody>
                         <tr>
                             <td colspan=3>
@@ -126,165 +128,149 @@ else
 
                 <div class="table-spacer" />
 
-                <table id="table-products" class="table-detail">
-                    <tbody>
-                        <tr>
-                            <td colspan=3>
-                                <h6>Products</h6>
-                            </td>
-                        </tr>
-                        @{
-                            for (var i = 0; i < @_quote.products.Count; i++)
-                            {
-                                currentItem = i + 1;
+                <DxTabs CssClass="tabs-container">
 
-                                var priceLabel = @_quote.products[i].priceInfo.priceType;
-                                if (priceLabel == "BasicFinancing")
-                                {
-                                    priceLabel = "Basic Financing";
-                                }
-                                else
-                                {
-                                    priceLabel = @_quote.products[i].priceInfo.priceType;
-                                }
+                    <DxTabPage Id="Panel-Details" CssClass="tab-container" Text="1) Project Details">
+                        <table id="Project-Manager" class="">
+                            <tbody>
 
                                 <tr>
                                     <td>
-                                        <label>Product @currentItem) Name</label>
-                                        <span class="detail-item">@_quote.products[i].name</span>
+                                        <label>Project Manager</label>
+                                        <span class="detail-item">@_quote.projectManager.Name</span>
                                     </td>
                                     <td>
-                                        <label>@currentItem) Waste Factor</label>
-                                        <span class="detail-item">@_quote.products[i].wasteFactorMainRoof</span>
+                                        <label>Phone</label>
+                                        <span class="detail-item">@_quote.projectManager.Phone</span>
                                     </td>
                                     <td>
-                                        <label>@currentItem) Price Type</label>
-                                        <span class="detail-item">@priceLabel</span>
+                                        <label>Email</label>
+                                        <a href="mailto:@_quote.projectManager.Email" target="_blank">
+                                            <span class="detail-item">@_quote.projectManager.Email</span>
+                                        </a>
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td>
-                                        <label><b>Total Quote</b></label>
-                                        <span class="detail-item"><b>$@_quote.products[i].priceInfo.total.ToString("N0")</b></span>
+                                        <label>Total Sqft</label>
+                                        <span class="detail-item">@_quote.totalSquareFeet.ToString("N0")</span>
                                     </td>
                                     <td>
-                                        <label>Per Square</label>
-                                        <span class="detail-item">$@_quote.products[i].priceInfo.pricePerSquare</span>
-                                    </td>
-                                    <td>
-                                        <label>Monthly</label>
-                                        <span class="detail-item">$@_quote.products[i].priceInfo.monthly</span>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <label>APR</label>
-                                        <span class="detail-item">@_quote.products[i].priceInfo.apr%</span>
-                                    </td>
-                                    <td>
-                                        <label>Months</label>
-                                        <span class="detail-item">@_quote.products[i].priceInfo.months</span>
+                                        <label>Included Roofs</label>
+                                        <span class="detail-item">@_quote.numberOfIncludedStructures</span>
                                     </td>
                                     <td></td>
                                 </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
 
-                <div class="table-spacer" />
+                                @{
+                                    currentItem = 0;
 
-                <table id ="table-project-details-header">
-                    <tbody>
-                        <tr>
-                            <td colspan=3>
-                                <h6>Project Details</h6>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                                    for (var i = 0; i < @_quote.structures.Count; i++)
+                                    {
+                                        currentItem = i + 1;
 
-                <div id="table-project-details" class="project-container">
-
-                    <table class="">
-                        <tbody>
-
-                            <tr>
-                                <td>
-                                    <label>Project Manager</label>
-                                    <span class="detail-item">@_quote.projectManager.Name</span>
-                                </td>
-                                <td>
-                                    <label>Phone</label>
-                                    <span class="detail-item">@_quote.projectManager.Phone</span>
-                                </td>
-                                <td>
-                                    <label>Email</label>
-                                    <a href="mailto:@_quote.projectManager.Email" target="_blank">
-                                        <span class="detail-item">@_quote.projectManager.Email</span>
-                                    </a>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>
-                                    <label><b>Total Sqft</b></label>
-                                    <span class="detail-item"><b>@_quote.totalSquareFeet.ToString("N0")</b></span>
-                                </td>
-                                <td>
-                                    <label><b>Included Roofs</b></label>
-                                    <span class="detail-item"><b>@_quote.numberOfIncludedStructures</b></span>
-                                </td>
-                                <td></td>
-                            </tr>
-
-                            @{
-                                currentItem = 0;
-
-                                for (var i = 0; i < @_quote.structures.Count; i++)
-                                {
-                                    currentItem = i + 1;
-
-                                    <tr>
-                                        <td>
-                                            <label>Roof @currentItem) Name</label>
-                                            <span class="detail-item">@_quote.structures[i].name</span>
-                                        </td>
-                                        <td>
-                                            <label>@currentItem) Complexity</label>
-                                            <span class="detail-item">@_quote.structures[i].roofComplexity</span>
-                                        </td>
-                                        <td>
-                                            <label>@currentItem) Slope</label>
-                                            <span class="detail-item">@_quote.structures[i].slope</span>
-                                        </td>
-                                    </tr>
+                                        <tr>
+                                            <td>
+                                                <label>Roof @currentItem) Name</label>
+                                                <span class="detail-item">@_quote.structures[i].name</span>
+                                            </td>
+                                            <td>
+                                                <label>@currentItem) Complexity</label>
+                                                <span class="detail-item">@_quote.structures[i].roofComplexity</span>
+                                            </td>
+                                            <td>
+                                                <label>@currentItem) Slope</label>
+                                                <span class="detail-item">@_quote.structures[i].slope</span>
+                                            </td>
+                                        </tr>
+                                    }
                                 }
-                            }
 
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </DxTabPage>
 
-                    <div id="panel-send-documents" class="project-detail-work-panel">
-                        <h6>Email @_quote.firstName Documents</h6>
+                    <DxTabPage Id="Panel-Products" Text="2) Selected Products">
+                            <table>
+                                <tbody>
+                                    @{
+                                        for (var i = 0; i < @_quote.products.Count; i++)
+                                        {
+                                            currentItem = i + 1;
+
+                                            var priceLabel = @_quote.products[i].priceInfo.priceType;
+                                            if (priceLabel == "BasicFinancing")
+                                            {
+                                                priceLabel = "Basic Financing";
+                                            }
+                                            else
+                                            {
+                                                priceLabel = @_quote.products[i].priceInfo.priceType;
+                                            }
+
+                                            <tr>
+                                                <td>
+                                                    <label>Product @currentItem) Name</label>
+                                                    <span class="detail-item">@_quote.products[i].name</span>
+                                                </td>
+                                                <td>
+                                                    <label>@currentItem) Waste Factor</label>
+                                                    <span class="detail-item">@_quote.products[i].wasteFactorMainRoof</span>
+                                                </td>
+                                                <td>
+                                                    <label>@currentItem) Price Type</label>
+                                                    <span class="detail-item">@priceLabel</span>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    <label>Total Quote</label>
+                                                    <span class="detail-item">$@_quote.products[i].priceInfo.total.ToString("N0")</span>
+                                                </td>
+                                                <td>
+                                                    <label>Per Square</label>
+                                                    <span class="detail-item">$@_quote.products[i].priceInfo.pricePerSquare</span>
+                                                </td>
+                                                <td>
+                                                    <label>Monthly</label>
+                                                    <span class="detail-item">$@_quote.products[i].priceInfo.monthly</span>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    <label>APR</label>
+                                                    <span class="detail-item">@_quote.products[i].priceInfo.apr%</span>
+                                                </td>
+                                                <td>
+                                                    <label>Months</label>
+                                                    <span class="detail-item">@_quote.products[i].priceInfo.months</span>
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                    </DxTabPage>
+
+                    <DxTabPage Id="Panel-Documents" Text="@_emailTabLabel">
                         <DxUpload Name="fileUpload1"
-                                  SelectButtonText="Upload"
-                                  AllowMultiFileUpload="true"
-                                  UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
-                                  SelectedFilesChanged="@SelectedFilesChanged"
-                                  MaxFileSize="15000000"
-                                  AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
-                                  AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
-                                  CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
+                                    SelectButtonText="Upload"
+                                    AllowMultiFileUpload="true"
+                                    UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                    SelectedFilesChanged="@SelectedFilesChanged"
+                                    MaxFileSize="15000000"
+                                    AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
+                                    AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
+                                    CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
                         </DxUpload>
                         <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
-                    </div>
+                    </DxTabPage>
 
-                    <div id="panel-attachments" class="project-detail-work-panel">
-                        <h6>@attachmentsCount File Attachments </h6>
-
+                    <DxTabPage Id="Panel-Attachments" Text="4) File Attachments">
                         <DxUpload Name="fileUpload2"
                                     SelectButtonText="Upload"
                                     AllowMultiFileUpload="true"
@@ -293,155 +279,140 @@ else
                                     MaxFileSize="15000000"
                                     AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
                                     AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
-                                    CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
+                                    CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
                         </DxUpload>
 
-                        <div>
-                            @{
-                                <div class="item-detail-container">
-                                    @foreach (Attachment attachment in _quote.attachments)
-                                    {
-                                        if (!attachment.IsDeleted)
-                                        {
-                                            <div class="note-row">
-                                                <div>
-                                                    <label><b>@attachmentsCount)</b> @attachment.Date</label>
-                                                </div>
-
-                                                <span class="hyperlink" @onclick="() => SelectAttachmentToDelete(_quote, attachment)">Delete</span>
-
-                                                <span class="bar-spacer">|</span>
-                                                <a href="@attachment.MediaUrl" target="_blank">
-                                                    <span class="detail-item">@attachment.MediaDescription</span>
-                                                </a>
-                                                <span class="bar-spacer">|</span>
-                                                <label>File Type</label>
-                                                <span>@FileType</span>
-                                                <span class="bar-spacer">|</span>
-                                                <label>Author</label>
-                                                <span>@Author</span>
-                                            </div>
-
-                                            attachmentsCount--;
-                                        }
-                                    }
-                                </div>
-                            }
-                        </div>
-
-                    </div>
-
-                    <div id="panel-notes" class="project-detail-work-panel">
-                        <h6>@notesCount Notes </h6>
-
-                        <button class="btn btn-primary doc-select-button add-note-button" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
-
-                        <div class="item-detail-container">
-                            @foreach (Note note in _quote.notes)
-                            {
-                                if (!note.IsDeleted)
-                                {
-                                    <div class="note-row">
-                                        <div>
-                                            <label><b>@notesCount)</b> @note.Date</label>
-                                        </div>
-
-                                        <span class="hyperlink" @onclick="() => SelectNoteToDelete(_quote, note)">Delete</span>
-
-                                        <span class="bar-spacer">|</span>
-                                        <span class="detail-item">@note.Details</span>
-
-                                        <span class="bar-spacer">|</span>
-                                        <label>Author</label>
-                                        <span>@Author</span>
-                                    </div>
-
-                                    notesCount--;
-                                }
-                            }
-                        </div>
-
-                    </div>
-
-                    <div id="panel-events" class="project-detail-work-panel">
-                        <h6>@eventsCount History Events</h6>
-                        <div class="item-detail-container">
-                            @foreach (Event _event in _quote.events)
+                        @foreach (Attachment attachment in _quote.attachments)
+                        {
+                            if (!attachment.IsDeleted)
                             {
                                 <div class="note-row">
-                                    <div class="">
-                                        <label><b>@eventsCount)</b> @_event.DateTime</label>
+                                    <div>
+                                        <label>@attachmentsCount) @attachment.Date</label>
                                     </div>
 
+                                    <span class="hyperlink" @onclick="() => SelectAttachmentToDelete(_quote, attachment)">Delete</span>
+
                                     <span class="bar-spacer">|</span>
-                                    <span class="detail-item">@_event.Details</span>
+                                    <a href="@attachment.MediaUrl" target="_blank">
+                                        <span class="detail-item">@attachment.MediaDescription</span>
+                                    </a>
+                                    <span class="bar-spacer">|</span>
+                                    <label>File Type</label>
+                                    <span>@FileType</span>
+                                    <span class="bar-spacer">|</span>
+                                    <label>Author</label>
+                                    <span>@Author</span>
+                                </div>
+
+                                attachmentsCount--;
+                            }
+                        }
+                    </DxTabPage>
+
+                    <DxTabPage Id="Panel-Notes" Text="Notes">
+                        <button class="btn btn-primary doc-select-button add-item-button" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
+                        @foreach (Note note in _quote.notes)
+                        {
+                            if (!note.IsDeleted)
+                            {
+                                <div class="note-row">
+                                    <div>
+                                        <label>@notesCount) @note.Date</label>
+                                    </div>
+
+                                    <span class="hyperlink" @onclick="() => SelectNoteToDelete(_quote, note)">Delete</span>
+
+                                    <span class="bar-spacer">|</span>
+                                    <span class="detail-item">@note.Details</span>
 
                                     <span class="bar-spacer">|</span>
                                     <label>Author</label>
                                     <span>@Author</span>
                                 </div>
 
-                                eventsCount--;
+                                notesCount--;
                             }
-                        </div>
-                    </div>
+                        }
+                    </DxTabPage>
 
-                </div>
+                    <DxTabPage Id="Panel-History" Text="History">
+                        @foreach (Event _event in _quote.events)
+                        {
+                            <div class="note-row">
+                                <div class="">
+                                    <label>@eventsCount) @_event.DateTime</label>
+                                </div>
 
-                <div id="panel-origin" class="project-detail-work-panel">
-                    <table id="table-origin" class="table-detail">
-                        <tbody>
+                                <span class="bar-spacer">|</span>
+                                <span class="detail-item">@_event.Details</span>
 
-                            <tr>
-                                <td>
-                                    <label>Market</label>
-                                    <span class="detail-item">@_quote.market</span>
-                                </td>
-                                <td>
-                                    <label>Rep Name</label>
-                                    <span class="detail-item">@_quote.repLead</span>
-                                </td>
-                                <td>
-                                    <label>Rep Email</label>
-                                    <a href="mailto:@_quote.repEmail">
-                                        <span class="detail-item">@_quote.repEmail</span>
-                                    </a>
-                                </td>
-                            </tr>
+                                <span class="bar-spacer">|</span>
+                                <label>Author</label>
+                                <span>@Author</span>
+                            </div>
 
-                            <tr>
-                                <td>
-                                    <label>RecId</label>
-                                    <span class="detail-item">@_quote._id</span>
-                                </td>
-                                <td>
-                                    <label>Referrer</label>
-                                    <a href="@_quote.externalUrl" target="_blank">
-                                        <span class="detail-item">@_quote.externalUrl</span>
-                                    </a>
-                                </td>
-                                <td>
-                                    <label>Session</label>
-                                    <span class="detail-item">@_quote.sessionId</span>
-                                </td>
-                            </tr>
+                            eventsCount--;
+                        }
+                    </DxTabPage>
 
-                            <tr>
-                                <td>
-                                    <label>RefId</label>
-                                    <span class="detail-item">@_quote.leadId</span>
-                                </td>
-                                <td>
-                                    <label>Created</label>
-                                    <span class="detail-item">@_quote.timestamp</span>
-                                </td>
-                                <td>
-                                </td>
+                    <DxTabPage Id="Panel-Origination" Text="Origination">
+                        <table id="table-origin" class="table-detail">
+                            <tbody>
 
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                                <tr>
+                                    <td>
+                                        <label>Market</label>
+                                        <span class="detail-item">@_quote.market</span>
+                                    </td>
+                                    <td>
+                                        <label>Rep Name</label>
+                                        <span class="detail-item">@_quote.repLead</span>
+                                    </td>
+                                    <td>
+                                        <label>Rep Email</label>
+                                        <a href="mailto:@_quote.repEmail">
+                                            <span class="detail-item">@_quote.repEmail</span>
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <label>RecId</label>
+                                        <span class="detail-item">@_quote._id</span>
+                                    </td>
+                                    <td>
+                                        <label>Referrer</label>
+                                        <a href="@_quote.externalUrl" target="_blank">
+                                            <span class="detail-item">@_quote.externalUrl</span>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <label>Session</label>
+                                        <span class="detail-item">@_quote.sessionId</span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <label>RefId</label>
+                                        <span class="detail-item">@_quote.leadId</span>
+                                    </td>
+                                    <td>
+                                        <label>Created</label>
+                                        <span class="detail-item">@_quote.timestamp</span>
+                                    </td>
+                                    <td>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </DxTabPage>
+
+                </DxTabs>
+
 
                 <div id="div-controls-container" class="quote-detail-controls-container">
                     <button class="btn btn-primary" @onclick="@(() => IsPopupVisibleMakeCustomer = true)">Make Customer</button>
