@@ -116,7 +116,7 @@ else
                             <td>
                                 <label>IP</label>
                                 <a href="https://whatismyipaddress.com/ip/@SubmissionUserIP" target="_blank">
-                                    <span class="detail-item">@SubmissionUserIP</span>
+                                    <span class="detail-item">Location</span>
                                 </a>
                             </td>
                             <td></td>
@@ -740,9 +740,12 @@ else
             QuoteGrid.CollapseDetailRow(selectedIndex);
 
             PauseRefresh(false);
+
+            RefreshDisabled = false;
         }
         else
         {
+            QuoteGrid.CollapseAllDetailRows();
             QuoteGrid.ExpandDetailRow(selectedIndex);
 
             PauseRefresh(true);
@@ -779,7 +782,9 @@ else
 
     protected string GetUploadUrl(string url)
     {
-        return NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
+        var absoluteUri = NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
+
+        return absoluteUri;
     }
 
     public void ArchiveLead()
@@ -814,7 +819,6 @@ else
         Event _event = new Event(0, 0);
         _event.Details = "Note (" + note.Details + ") added to Quote";
 
-        selectedQuote.status = "Opportunity";
         selectedQuote.events.Add(_event);
 
         WebServices.UpdateQuote(selectedQuote);
@@ -897,7 +901,7 @@ else
         var projectManager = selectedQuote.projectManager;
 
         Event _event = new Event(0, 0);
-        _event.Details = "Opportunity converted to Customer";
+        _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Customer";
 
         selectedQuote.events.Add(_event);
 
@@ -910,11 +914,11 @@ else
 
     public virtual void PauseRefresh(bool isPaused)
     {
+        RefreshDisabled = isPaused;
+        ArchiveLeadsDisabled = isPaused;
+
         if(isPaused)
         {
-            RefreshDisabled = false;
-            ArchiveLeadsDisabled = true;
-
             ButtonText = "Resume Refresh";
             ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
             StatusClass = "message-warning";
@@ -924,9 +928,6 @@ else
         }
         else
         {
-            RefreshDisabled = false;
-            ArchiveLeadsDisabled = false;
-
             ButtonText = "Pause Refresh";
             ButtonClass = "btn btn-outline-primary btn-refresh-active";
             StatusClass = "message";
@@ -940,14 +941,14 @@ else
     {
         if (ButtonText == "Pause Refresh")
         {
-            ButtonText = "Resume Refresh";
             PauseRefresh(true);
         }
         else
         {
-            ButtonText = "Pause Refresh";
             PauseRefresh(false);
         }
+
+        RefreshDisabled = false;
     }
 
     public void Dispose()

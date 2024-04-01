@@ -111,7 +111,7 @@ else
                         <td>
                             <label>IP</label>
                             <a href="https://whatismyipaddress.com/ip/@SubmissionUserIP" target="_blank">
-                                <span class="detail-item">@SubmissionUserIP</span>
+                                <span class="detail-item">Location</span>
                             </a>
                         </td>
                         <td></td>
@@ -537,10 +537,17 @@ else
 
     public virtual void PauseRefresh(bool isPaused)
     {
+        RefreshDisabled = isPaused;
+
+        CreateLeadDisabled = isPaused;
+        CreateLeadsDisabled = isPaused;
+
         if (isPaused)
         {
             RefreshDisabled = false;
-            ArchiveLeadsDisabled = true;
+
+            CreateLeadDisabled = false;
+            CreateLeadsDisabled = false;
 
             ButtonText = "Resume Refresh";
             ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
@@ -551,8 +558,8 @@ else
         }
         else
         {
-            RefreshDisabled = false;
-            ArchiveLeadsDisabled = false;
+            CreateLeadDisabled = true;
+            CreateLeadsDisabled = true;
 
             ButtonText = "Pause Refresh";
             ButtonClass = "btn btn-outline-primary btn-refresh-active";
@@ -567,14 +574,14 @@ else
     {
         if (ButtonText == "Pause Refresh")
         {
-            ButtonText = "Resume Refresh";
             PauseRefresh(true);
         }
         else
         {
-            ButtonText = "Pause Refresh";
             PauseRefresh(false);
         }
+
+        RefreshDisabled = false;
     }
 
     void OnRowClick(GridRowClickEventArgs args)
@@ -591,9 +598,14 @@ else
         }
         else
         {
+            QuoteGrid.CollapseAllDetailRows();
             QuoteGrid.ExpandDetailRow(selectedIndex);
 
             PauseRefresh(true);
+
+            RefreshDisabled = true;
+            CreateLeadDisabled = true;
+            CreateLeadsDisabled = true;
         }
     }
 
@@ -609,6 +621,10 @@ else
         QuoteGrid.CollapseDetailRow(selectedIndex);
 
         selectedQuote.status = "Opportunity";
+
+        Event statusChanged = new Event(0, 0);
+        statusChanged.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Opportunity";
+        selectedQuote.events.Add(statusChanged);
 
         var currProjectManager = SelectedProjectManager.ToList()[0];
 
@@ -678,8 +694,6 @@ else
     public int itemsToCreate = 100;
     public string updateStatus = "Fetching ";
 
-    bool isBulkInsert = false;
-
     public Timer _timer;
 
     public void Dispose()
@@ -708,9 +722,7 @@ else
 
     private void CreateLeads()
     {
-        List<Quote> quotes = new List<Quote>();
-
-        isBulkInsert = true;
+        Quote quote = new Quote();
 
         for (var i = 0; i < itemsToCreate; i++)
         {
@@ -718,11 +730,23 @@ else
             CreateLead();
         }
 
-        //ToggleRefresh();
+        var results = string.Empty;
+
+        try
+        {
+            WebServices.CreateQuote(quote);
+            results = "POSTED";
+        }
+        catch (Exception ex)
+        {
+            results = ex.Message;
+        }
+        finally
+        {
+            PauseRefresh(false);
+        }
 
         PauseRefresh(false);
-
-        isBulkInsert = false;
     }
 
     private void ArchiveLeads()

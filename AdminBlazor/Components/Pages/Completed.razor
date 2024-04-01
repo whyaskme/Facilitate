@@ -1,4 +1,4 @@
-﻿@page "/archives"
+﻿@page "/completed"
 
 @using AdminBlazor.Data
 @using DevExpress.Data
@@ -14,8 +14,8 @@
 
 @inject NavigationManager NavigationManager
 
-<PageTitle>Archives</PageTitle>
-<h1>@updateStatus Archives <span id="update-status" class="@StatusClass">@RefreshStatus</span></h1>
+<PageTitle>Completions</PageTitle>
+<h1>@updateStatus Completions <span id="update-status" class="@StatusClass">@RefreshStatus</span></h1>
 
 <script>
     window.getIpAddress = () => {
@@ -908,7 +908,7 @@ else
         RefreshDisabled = isPaused;
         ArchiveLeadsDisabled = isPaused;
 
-        if (isPaused)
+        if(isPaused)
         {
             ButtonText = "Resume Refresh";
             ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
@@ -953,7 +953,7 @@ else
 
         _timer = new Timer(new TimerCallback(_ =>
         {
-            quotes = webServices.GetQuotes("Archve");
+            quotes = webServices.GetQuotes("Complete");
             updateStatus = quotes.Count().ToString("N0");
             StatusContainerClass = "container-action-buttons-show";
 

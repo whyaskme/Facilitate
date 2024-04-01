@@ -24,6 +24,7 @@
                         <span class="summary-item">Leads: <b>@countLeads.ToString("N0")</b></span>
                         <span class="summary-item">Opportunities: <b>@countOpportunities.ToString("N0")</b></span>
                         <span class="summary-item">Customers: <b>@countCustomers.ToString("N0")</b></span>
+                        <span class="summary-item">Completions: <b>@countCompleted.ToString("N0")</b></span>
                         <span class="summary-item">Archives: <b>@countArchives.ToString("N0")</b></span>
                     </div>
 
@@ -51,6 +52,7 @@
     public int countLeads = 0;
     public int countOpportunities = 0;
     public int countCustomers = 0;
+    public int countCompleted = 0;
     public int countArchives = 0;
 
     public string updateStatus = "Refreshing";
@@ -77,6 +79,7 @@
         countLeads = WebServices.GetQuoteCount("New");
         countOpportunities = WebServices.GetQuoteCount("Opportunity");
         countCustomers = WebServices.GetQuoteCount("Customer");
+        countCompleted = WebServices.GetQuoteCount("Complete");
         countArchives = WebServices.GetQuoteCount("Archive");
     }
 }

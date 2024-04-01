@@ -13,10 +13,21 @@ table {
     width: 100% !important;
 }
 
+.dxbl-grid-table tr:hover {
+    cursor: pointer !important;
+/*    background-color: #d3b1fa !important;*/
+}
+
+.dxbl-grid-selected-row,
+.dxbl-grid-selected-row:hover {
+    background-color: #543678 !important;
+    color: #ffffff !important;
+}
+
 td {
     padding: 5px;
     padding-left: 10px;
-/*    border: solid 1px #ff0000 !important;*/
+    /*    border: solid 1px #ff0000 !important;*/
 }
 
 .td-send-label {
