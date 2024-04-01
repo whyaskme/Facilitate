@@ -268,10 +268,11 @@ else
                                     </label>
                                 </td>
                                 <td class="td-send-label">
-                                    <h6>Send Documents <span @onclick="@(() => IsPopupVisibleHelpSendFiles = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h6>
+                                    <h6>Send Documents</h6>
                                 </td>
                                 <td class="td-send-button">
                                     <DxUpload Name="fileUpload1"
+                                              SelectButtonText="Upload"
                                               AllowMultiFileUpload="true"
                                               UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
                                               SelectedFilesChanged="@SelectedFilesChanged"
@@ -291,6 +292,7 @@ else
                             <tr>
                                 <td class="table-button-container">
                                     <DxUpload Name="fileUpload2"
+                                              SelectButtonText="Upload"
                                               AllowMultiFileUpload="true"
                                               UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
                                               SelectedFilesChanged="@SelectedFilesChanged"

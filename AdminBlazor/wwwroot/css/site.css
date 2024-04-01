@@ -13,9 +13,17 @@ table {
     width: 100% !important;
 }
 
+.dxuc-button-container
+{
+    border: solid 0px #ff0000 !important;
+    position: relative !important;
+    top: 5px !important;
+    left: -15px !important;
+}
+
 .dxbl-grid-table tr:hover {
     cursor: pointer !important;
-/*    background-color: #d3b1fa !important;*/
+    /*    background-color: #d3b1fa !important;*/
 }
 
 .dxbl-grid-selected-row,
@@ -112,11 +120,16 @@ h4 {
     padding-left: 15px !important;
     padding-right: 15px !important;
     position: relative !important;
-    top: 0px !important;
+    top: 10px !important;
     left: 0px !important;
     width: 100px !important;
     min-width: 100px !important;
     max-width: 100px !important;
+}
+
+.add-note-button {
+    border: solid 0px #ff0000 !important;
+    margin-bottom: 10px !important;
 }
 
 .dxuc-select-button {

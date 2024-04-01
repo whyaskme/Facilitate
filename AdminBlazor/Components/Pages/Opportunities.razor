@@ -265,128 +265,101 @@ else
                         </tbody>
                     </table>
 
-                    <table class="project-detail-work-panel">
-                        <tbody>
-                            <tr>
-                                <td class="table-button-container">
-                                    <label>
-                                        <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
-                                    </label>
-                                </td>
-                                <td class="td-send-label">
-                                    <h6>Send Documents <span @onclick="@(() => IsPopupVisibleHelpSendFiles = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h6>
-                                </td>
-                                <td class="td-send-button">
-                                    <DxUpload Name="fileUpload1"
-                                              AllowMultiFileUpload="true"
-                                              UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
-                                              SelectedFilesChanged="@SelectedFilesChanged"
-                                              MaxFileSize="15000000"
-                                              AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
-                                              AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
-                                              CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
-                                    </DxUpload>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div id="panel-send-documents" class="project-detail-work-panel">
+                        <h6>Send @_quote.firstName Documents</h6>
+                        <DxUpload Name="fileUpload1"
+                                  SelectButtonText="Upload"
+                                  AllowMultiFileUpload="true"
+                                  UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                  SelectedFilesChanged="@SelectedFilesChanged"
+                                  MaxFileSize="15000000"
+                                  AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
+                                  AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
+                                  CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
+                        </DxUpload>
+                        <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
+                    </div>
 
-                    <table class="project-detail-work-panel">
-                        <tbody>
+                    <div id="panel-attachments" class="project-detail-work-panel">
+                        <h6>@attachmentsCount File Attachments </h6>
 
-                            <tr>
-                                <td class="table-button-container">
-                                    <DxUpload Name="fileUpload2"
-                                        AllowMultiFileUpload="true"
-                                        UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
-                                        SelectedFilesChanged="@SelectedFilesChanged"
-                                        MaxFileSize="15000000"
-                                        AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
-                                        AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
-                                        CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
-                                    </DxUpload>
-                                </td>
-                                <td colspan="2" class="detail-colum">
+                        <DxUpload Name="fileUpload2"
+                                    SelectButtonText="Upload"
+                                    AllowMultiFileUpload="true"
+                                    UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                    SelectedFilesChanged="@SelectedFilesChanged"
+                                    MaxFileSize="15000000"
+                                    AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
+                                    AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
+                                    CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
+                        </DxUpload>
 
-                                    <h6>@attachmentsCount File Attachments <span @onclick="@(() => IsPopupVisibleHelpFileAttachments = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h6>
-
-                                    @{
-                                        <div class="item-detail-container">
-                                            @foreach (Attachment attachment in _quote.attachments)
-                                            {
-                                                if (!attachment.IsDeleted)
-                                                {
-                                                    <div class="note-row">
-                                                        <div>
-                                                            <label><b>@attachmentsCount)</b> @attachment.Date</label>
-                                                        </div>
-
-                                                        <span class="hyperlink" @onclick="() => SelectAttachmentToDelete(_quote, attachment)">Delete</span>
-
-                                                        <span class="bar-spacer">|</span>
-                                                        <a href="@attachment.MediaUrl" target="_blank">
-                                                            <span class="detail-item">@attachment.MediaDescription</span>
-                                                        </a>
-                                                        <span class="bar-spacer">|</span>
-                                                        <label>File Type</label>
-                                                        <span>@FileType</span>
-                                                        <span class="bar-spacer">|</span>
-                                                        <label>Author</label>
-                                                        <span>@Author</span>
-                                                    </div>
-
-                                                    attachmentsCount--;
-                                                }
-                                            }
-                                        </div>
-                                    }
-                                </td>
-                            </tr>
-
-                        </tbody>
-                    </table>
-
-                    <table class="project-detail-work-panel">
-                        <tbody>
-
-                            <tr>
-                                <td class="table-button-container">
-                                    <button class="btn btn-primary doc-select-button" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
-                                </td>
-                                <td colspan="2" class="detail-colum">
-
-                                    <h6>@notesCount Notes <span @onclick="@(() => IsPopupVisibleHelpFileNotes = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h6>
-
-                                    <div class="item-detail-container">
-                                        @foreach (Note note in _quote.notes)
+                        <div>
+                            @{
+                                <div class="item-detail-container">
+                                    @foreach (Attachment attachment in _quote.attachments)
+                                    {
+                                        if (!attachment.IsDeleted)
                                         {
-                                            if (!note.IsDeleted)
-                                            {
-                                                <div class="note-row">
-                                                    <div>
-                                                        <label><b>@notesCount)</b> @note.Date</label>
-                                                    </div>
-
-                                                    <span class="hyperlink" @onclick="() => SelectNoteToDelete(_quote, note)">Delete</span>
-
-                                                    <span class="bar-spacer">|</span>
-                                                    <span class="detail-item">@note.Details</span>
-
-                                                    <span class="bar-spacer">|</span>
-                                                    <label>Author</label>
-                                                    <span>@Author</span>
+                                            <div class="note-row">
+                                                <div>
+                                                    <label><b>@attachmentsCount)</b> @attachment.Date</label>
                                                 </div>
 
-                                                notesCount--;
-                                            }
+                                                <span class="hyperlink" @onclick="() => SelectAttachmentToDelete(_quote, attachment)">Delete</span>
+
+                                                <span class="bar-spacer">|</span>
+                                                <a href="@attachment.MediaUrl" target="_blank">
+                                                    <span class="detail-item">@attachment.MediaDescription</span>
+                                                </a>
+                                                <span class="bar-spacer">|</span>
+                                                <label>File Type</label>
+                                                <span>@FileType</span>
+                                                <span class="bar-spacer">|</span>
+                                                <label>Author</label>
+                                                <span>@Author</span>
+                                            </div>
+
+                                            attachmentsCount--;
                                         }
+                                    }
+                                </div>
+                            }
+                        </div>
+
+                    </div>
+
+                    <div id="panel-notes" class="project-detail-work-panel">
+                        <h6>@notesCount Notes </h6>
+
+                        <button class="btn btn-primary doc-select-button add-note-button" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
+
+                        <div class="item-detail-container">
+                            @foreach (Note note in _quote.notes)
+                            {
+                                if (!note.IsDeleted)
+                                {
+                                    <div class="note-row">
+                                        <div>
+                                            <label><b>@notesCount)</b> @note.Date</label>
+                                        </div>
+
+                                        <span class="hyperlink" @onclick="() => SelectNoteToDelete(_quote, note)">Delete</span>
+
+                                        <span class="bar-spacer">|</span>
+                                        <span class="detail-item">@note.Details</span>
+
+                                        <span class="bar-spacer">|</span>
+                                        <label>Author</label>
+                                        <span>@Author</span>
                                     </div>
 
-                                </td>
-                            </tr>
+                                    notesCount--;
+                                }
+                            }
+                        </div>
 
-                        </tbody>
-                    </table>
+                    </div>
 
                 </div>
 
