@@ -13,16 +13,35 @@ table {
     width: 100% !important;
 }
 
+.row {
+    border: solid 0px #ff0000 !important;
+    margin-top: 5px !important;
+}
+
+.items-roof {
+    border-top: solid 1px #dad7d7 !important;
+    position: relative !important;
+    top: 20px !important;
+    padding-top: 20px !important;
+}
+
+.product-container {
+    border: solid 0px #ff0000 !important;
+    padding: 15px;
+}
+
 .tabs-container {
     border: solid 1px #c0c0c0 !important;
+/*    padding: 25px !important;*/
 }
 
 .dxbl-tabs-content {
     background-color: #ffffff !important;
     border-top: solid 1px #c0c0c0 !important;
-    height: 250px !important;
-    padding: 25px !important;
+    height: 300px !important;
     overflow: auto !important;
+    padding: 25px !important;
+    padding-top: 35px !important;
 }
 
 .dxuc-button-container {
@@ -75,7 +94,7 @@ td {
 }
 
 .table-spacer {
-    border: solid 1px #eee !important;
+    border: solid 0px #eee !important;
     border-collapse: collapse !important;
     margin-top: 25px !important;
     width: 100% !important;

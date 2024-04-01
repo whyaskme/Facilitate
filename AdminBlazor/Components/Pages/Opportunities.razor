@@ -130,130 +130,135 @@ else
 
                 <DxTabs CssClass="tabs-container">
 
-                    <DxTabPage Id="Panel-Details" CssClass="tab-container" Text="1) Project Details">
-                        <table id="Project-Manager" class="">
-                            <tbody>
+                    <DxTabPage Id="Panel-Project-Manager" CssClass="tab-container" Text="1) Project Details">
 
-                                <tr>
-                                    <td>
-                                        <label>Project Manager</label>
-                                        <span class="detail-item">@_quote.projectManager.Name</span>
-                                    </td>
-                                    <td>
-                                        <label>Phone</label>
-                                        <span class="detail-item">@_quote.projectManager.Phone</span>
-                                    </td>
-                                    <td>
-                                        <label>Email</label>
-                                        <a href="mailto:@_quote.projectManager.Email" target="_blank">
-                                            <span class="detail-item">@_quote.projectManager.Email</span>
-                                        </a>
-                                    </td>
-                                </tr>
+                        <div class="container">
 
-                                <tr>
-                                    <td>
-                                        <label>Total Sqft</label>
-                                        <span class="detail-item">@_quote.totalSquareFeet.ToString("N0")</span>
-                                    </td>
-                                    <td>
-                                        <label>Included Roofs</label>
-                                        <span class="detail-item">@_quote.numberOfIncludedStructures</span>
-                                    </td>
-                                    <td></td>
-                                </tr>
+                            <div class="row">
+                                <div class="col">
+                                    <label>Project Manager</label>
+                                    <span class="detail-item">@_quote.projectManager.Name</span>
+                                </div>
+                                <div class="col">
+                                    <label>Phone</label>
+                                    <span class="detail-item">@_quote.projectManager.Phone</span>
+                                </div>
+                                <div class="col">
+                                    <label>Email</label>
+                                    <a href="mailto:@_quote.projectManager.Email" target="_blank">
+                                        <span class="detail-item">@_quote.projectManager.Email</span>
+                                    </a>
+                                </div>
+                            </div>
 
+                            <div class="table-spacer" />
+
+                            <div class="row">
+                                <div class="col">
+                                    <label>Total Sqft</label>
+                                    <span class="detail-item">@_quote.totalSquareFeet.ToString("N0")</span>
+                                </div>
+                                <div class="col">
+                                    <label>Included Roofs</label>
+                                    <span class="detail-item">@_quote.numberOfIncludedStructures</span>
+                                </div>
+                                <div class="col">
+                                </div>
+                            </div>
+
+                            <div class="row items-roof">
                                 @{
-                                    currentItem = 0;
+                                    currentItemIndex = 0;
 
                                     for (var i = 0; i < @_quote.structures.Count; i++)
                                     {
-                                        currentItem = i + 1;
+                                        currentItemIndex = i + 1;
 
-                                        <tr>
-                                            <td>
-                                                <label>Roof @currentItem) Name</label>
-                                                <span class="detail-item">@_quote.structures[i].name</span>
-                                            </td>
-                                            <td>
-                                                <label>@currentItem) Complexity</label>
-                                                <span class="detail-item">@_quote.structures[i].roofComplexity</span>
-                                            </td>
-                                            <td>
-                                                <label>@currentItem) Slope</label>
-                                                <span class="detail-item">@_quote.structures[i].slope</span>
-                                            </td>
-                                        </tr>
+                                        <label>
+                                            <b>Roof @currentItemIndex</b>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label>Name</label>
+                                                    <span class="detail-item">@_quote.structures[i].name</span>
+                                                </div>
+                                                <div class="col">
+                                                    <label>Complexity</label>
+                                                    <span class="detail-item">@_quote.structures[i].roofComplexity</span>
+                                                </div>
+                                                <div class="col">
+                                                    <label>Slope</label>
+                                                    <span class="detail-item">@_quote.structures[i].slope</span>
+                                                </div>
+                                            </div>
+                                        </label>
                                     }
                                 }
-
-                            </tbody>
-                        </table>
+                            </div>
+                        </div>
                     </DxTabPage>
 
-                    <DxTabPage Id="Panel-Products" Text="2) Selected Products">
-                            <table>
-                                <tbody>
-                                    @{
-                                        for (var i = 0; i < @_quote.products.Count; i++)
-                                        {
-                                            currentItem = i + 1;
+                    <DxTabPage Id="Panel-Products" Text="2) Products Quoted">
 
-                                            var priceLabel = @_quote.products[i].priceInfo.priceType;
-                                            if (priceLabel == "BasicFinancing")
-                                            {
-                                                priceLabel = "Basic Financing";
-                                            }
-                                            else
-                                            {
-                                                priceLabel = @_quote.products[i].priceInfo.priceType;
-                                            }
+                        <div class="container">
+                            @{
+                                for (var i = 0; i < @_quote.products.Count; i++)
+                                {
+                                    currentItemIndex = i + 1;
 
-                                            <tr>
-                                                <td>
-                                                    <label>Product @currentItem) Name</label>
-                                                    <span class="detail-item">@_quote.products[i].name</span>
-                                                </td>
-                                                <td>
-                                                    <label>@currentItem) Waste Factor</label>
-                                                    <span class="detail-item">@_quote.products[i].wasteFactorMainRoof</span>
-                                                </td>
-                                                <td>
-                                                    <label>@currentItem) Price Type</label>
-                                                    <span class="detail-item">@priceLabel</span>
-                                                </td>
-                                            </tr>
+                                    var priceLabel = @_quote.products[i].priceInfo.priceType;
+                                    if (priceLabel == "BasicFinancing")
+                                        priceLabel = "Basic";
+                                    else
+                                        priceLabel = @_quote.products[i].priceInfo.priceType;
 
-                                            <tr>
-                                                <td>
-                                                    <label>Total Quote</label>
-                                                    <span class="detail-item">$@_quote.products[i].priceInfo.total.ToString("N0")</span>
-                                                </td>
-                                                <td>
-                                                    <label>Per Square</label>
-                                                    <span class="detail-item">$@_quote.products[i].priceInfo.pricePerSquare</span>
-                                                </td>
-                                                <td>
-                                                    <label>Monthly</label>
-                                                    <span class="detail-item">$@_quote.products[i].priceInfo.monthly</span>
-                                                </td>
-                                            </tr>
+                                    <h6>Product @currentItemIndex</h6>
 
-                                            <tr>
-                                                <td>
-                                                    <label>APR</label>
-                                                    <span class="detail-item">@_quote.products[i].priceInfo.apr%</span>
-                                                </td>
-                                                <td>
-                                                    <label>Months</label>
-                                                    <span class="detail-item">@_quote.products[i].priceInfo.months</span>
-                                                </td>
-                                                <td></td>
-                                            </tr>
-                                        }
-                                    }
-                                </tbody>
-                            </table>
+                                    <div class="row">
+                                        <div class="col">
+                                            <label>Name</label>
+                                            <span class="detail-item">@_quote.products[i].name</span>
+                                        </div>
+                                        <div class="col">
+                                            <label>Waste Factor</label>
+                                            <span class="detail-item">@_quote.products[i].wasteFactorMainRoof</span>
+                                        </div>
+                                        <div class="col">
+                                            <label>Price Type</label>
+                                            <span class="detail-item">@priceLabel</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <label>Total Quote</label>
+                                            <span class="detail-item">$@_quote.products[i].priceInfo.total</span>
+                                        </div>
+                                        <div class="col">
+                                            <label>Per Square</label>
+                                            <span class="detail-item">$@_quote.products[i].priceInfo.pricePerSquare</span>
+                                        </div>
+                                        <div class="col">
+                                            <label>Monthly</label>
+                                            <span class="detail-item">$@_quote.products[i].priceInfo.monthly</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <label>APR</label>
+                                            <span class="detail-item">@_quote.products[i].priceInfo.apr%</span>
+                                        </div>
+                                        <div class="col">
+                                            <label>Months</label>
+                                            <span class="detail-item">@_quote.products[i].priceInfo.months</span>
+                                        </div>
+                                        <div class="col">
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+
                     </DxTabPage>
 
                     <DxTabPage Id="Panel-Documents" Text="@_emailTabLabel">
@@ -562,7 +567,7 @@ else
 
     public interface IQueryable : System.Collections.IEnumerable;
 
-    public int currentItem = 0;
+    public int currentItemIndex = 0;
     public int selectedIndex = 0;
 
     public string SubmissionUserIP { get; set; }
