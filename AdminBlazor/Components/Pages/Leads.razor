@@ -78,6 +78,9 @@ else
             @{
                 var _quote = (Quote)context.DataItem;
 
+                notesCount = _quote.notes.Count;
+                eventsCount = _quote.events.Count;
+
                 <table class="table-detail">
                 <tbody>
                     <tr>
@@ -228,103 +231,115 @@ else
 
                 <div class="table-spacer" />
 
-                <table class="table-detail">
-                <tbody>
-                    <tr>
-                        <td colspan=3>
-                            <h6>Origin</h6>
-                        </td>
-                    </tr>
+                <div id="panel-notes" class="project-detail-work-panel">
+                    <h6>@notesCount Notes </h6>
 
-                        <tr>
-                            <td>
-                                <label>Market</label>
-                                <span class="detail-item">@_quote.market</span>
-                            </td>
-                            <td>
-                                <label>Rep Name</label>
-                                <span class="detail-item">@_quote.repLead</span>
-                            </td>
-                            <td>
-                                <label>Rep Email</label>
-                                <a href="mailto:@_quote.repEmail">
-                                    <span class="detail-item">@_quote.repEmail</span>
-                                </a>
-                            </td>
-                        </tr>
+                    <button class="btn btn-primary doc-select-button add-note-button" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
 
-                    <tr>
-                        <td>
-                            <label>RecId</label>
-                            <span class="detail-item">@_quote._id</span>
-                        </td>
-                        <td>
-                            <label>Referrer</label>
-                            <a href="@_quote.externalUrl" target="_blank">
-                                <span class="detail-item">@_quote.externalUrl</span>
-                            </a>
-                        </td>
-                        <td>
-                            <label>Session</label>
-                            <span class="detail-item">@_quote.sessionId</span>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <label>RoofleId</label>
-                            <span class="detail-item">@_quote.leadId</span>
-                        </td>
-                        <td>
-
-                        </td>
-                        <td>
-
-                        </td>
-
-                    </tr>
-                </tbody>
-                </table>
-
-                <div class="table-spacer" />
-
-                <table class="table-detail">
-                <tbody>
-                    <tr>
-                        <td colspan="3">
-                            <h6>History</h6>
-                            <br />
-                        </td>
-                    </tr>
-
-                    @{
-                        var currentEventCount = 1;
-                        for (int currentIndex = 0; currentIndex < @_quote.events.Count; currentIndex++)
+                    <div class="item-detail-container">
+                        @foreach (Note note in _quote.notes)
                         {
-                            <tr>
-                                <td colspan="3">
-                                    <div>@currentEventCount. @_quote.events[currentIndex].DateTime</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    @_quote.events[currentIndex].Details
-                                </td>
-                                <td>
+                            if (!note.IsDeleted)
+                            {
+                                <div class="note-row">
+                                    <div>
+                                        <label><b>@notesCount)</b> @note.Date</label>
+                                    </div>
+
+                                    <span class="hyperlink" @onclick="() => SelectNoteToDelete(_quote, note)">Delete</span>
+
+                                    <span class="bar-spacer">|</span>
+                                    <span class="detail-item">@note.Details</span>
+
+                                    <span class="bar-spacer">|</span>
                                     <label>Author</label>
                                     <span>@Author</span>
-                                </td>
-                                <td></td>
-                            </tr>
-                                
-                            currentEventCount++;
+                                </div>
+
+                                notesCount--;
+                            }
                         }
-                    }
+                    </div>
 
-                </tbody>
-                </table>
+                </div>
 
-                            <div class="table-spacer" />
+                <div id="panel-events" class="project-detail-work-panel">
+                    <h6>@eventsCount History Events</h6>
+                    <div class="item-detail-container">
+                        @foreach (Event _event in _quote.events)
+                        {
+                            <div class="note-row">
+                                <div class="">
+                                    <label><b>@eventsCount)</b> @_event.DateTime</label>
+                                </div>
+
+                                <span class="bar-spacer">|</span>
+                                <span class="detail-item">@_event.Details</span>
+
+                                <span class="bar-spacer">|</span>
+                                <label>Author</label>
+                                <span>@Author</span>
+                            </div>
+
+                            eventsCount--;
+                        }
+                    </div>
+                </div>
+
+                <div id="panel-origin" class="project-detail-work-panel">
+                    <table id="table-origin" class="table-detail">
+                        <tbody>
+
+                            <tr>
+                                <td>
+                                    <label>Market</label>
+                                    <span class="detail-item">@_quote.market</span>
+                                </td>
+                                <td>
+                                    <label>Rep Name</label>
+                                    <span class="detail-item">@_quote.repLead</span>
+                                </td>
+                                <td>
+                                    <label>Rep Email</label>
+                                    <a href="mailto:@_quote.repEmail">
+                                        <span class="detail-item">@_quote.repEmail</span>
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label>RecId</label>
+                                    <span class="detail-item">@_quote._id</span>
+                                </td>
+                                <td>
+                                    <label>Referrer</label>
+                                    <a href="@_quote.externalUrl" target="_blank">
+                                        <span class="detail-item">@_quote.externalUrl</span>
+                                    </a>
+                                </td>
+                                <td>
+                                    <label>Session</label>
+                                    <span class="detail-item">@_quote.sessionId</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label>RefId</label>
+                                    <span class="detail-item">@_quote.leadId</span>
+                                </td>
+                                <td>
+                                    <label>Created</label>
+                                    <span class="detail-item">@_quote.timestamp</span>
+                                </td>
+                                <td>
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
                 <div class="quote-detail-controls-container">
                     <button class="btn btn-primary" @onclick="@(() => IsAssignPopupVisible = true)">Assign</button>
@@ -343,6 +358,17 @@ else
     <button class="btn btn-primary" disabled="@CreateLeadDisabled" @onclick="CreateLead">Create 1 Lead</button>
     <button class="btn btn-primary" disabled="@CreateLeadsDisabled" @onclick="CreateLeads">Create @itemsToCreate Leads</button>
 </div>
+
+<DxPopup @bind-Visible="@IsPopupVisibleAddNote" ShowFooter="true" HeaderText="Add Note">
+    <BodyContentTemplate>
+        <p>Please type in your notes below.</p>
+        <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AddNote" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleAddNote = false)" />
+    </FooterContentTemplate>
+</DxPopup>
 
 <DxLoadingPanel @bind-Visible=@LoadingPanelVisible
                 PositionTarget="body"
@@ -393,6 +419,22 @@ else
 
 @code {
 
+    public int attachmentsCount = 0;
+    public int notesCount = 0;
+    public int eventsCount = 0;
+
+    public Note selectedNote { get; set; }
+
+
+
+    public void SelectNoteToDelete(Quote quote, Note note)
+    {
+        selectedQuote = quote;
+        selectedNote = note;
+
+        IsPopupVisibleSelectNoteToDelete = true;
+    }
+
     public Quote selectedQuote { get; set; }
 
     bool LoadingPanelVisible { get; set; } = true;
@@ -412,7 +454,9 @@ else
     {
         SelectedProjectManager = selectedProjectManager;
     }
+    bool IsPopupVisibleAddNote { get; set; }
 
+    bool IsPopupVisibleSelectNoteToDelete { get; set; }
     AdminBlazor.Data.MemberService memberService = new AdminBlazor.Data.MemberService();
 
     public List<User>? ProjectManagers;
@@ -439,6 +483,31 @@ else
         WebServices.UpdateQuote(selectedQuote);
 
         IsArchivePopupVisible = false;
+
+        PauseRefresh(false);
+    }
+
+    public void AddNote()
+    {
+        QuoteGrid.CollapseDetailRow(selectedIndex);
+
+        Note note = new Note();
+        note.Summary = "Note Added";
+        note.Details = @NoteDetails;
+
+        selectedQuote.notes.Add(note);
+
+        Event _event = new Event(0, 0);
+        _event.Details = "Note (" + note.Details + ") added to Quote";
+
+        selectedQuote.events.Add(_event);
+
+        WebServices.UpdateQuote(selectedQuote);
+
+        IsPopupVisibleAddNote = false;
+        NoteDetails = "";
+
+        QuoteGrid.ExpandDetailRow(selectedIndex);
 
         PauseRefresh(false);
     }
