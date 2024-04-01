@@ -58,9 +58,9 @@ td {
 }
 
 .project-detail-work-panel {
-    border-top: solid 1px #c0c0c0 !important;
+    border-top: solid 1px #dad7d7 !important;
     margin-top: 35px !important;
-    padding: 25px !important;
+    padding: 15px !important;
 }
 
 .table-spacer {
@@ -257,8 +257,10 @@ h6 {
 }
 
 .quote-detail-controls-container {
-    padding-top: 25px !important;
+    position: relative !important;
+    padding: 75px !important;
     text-align: center !important;
+    border: solid 0px #ff0000 !important;
 }
 
 .dxbl-scroll-viewer {
