@@ -482,7 +482,6 @@ else
                 <div class="table-spacer" />
 
                 <div id="div-controls-container" class="quote-detail-controls-container">
-                    <button class="btn btn-primary" @onclick="@(() => IsPopupVisibleMakeCustomer = true)">Make Customer</button>
                     <button class="btn btn-primary" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
                     <button class="btn btn-primary" @onclick="CloseDetails">Close</button>
                 </div>
@@ -785,10 +784,15 @@ else
         QuoteGrid.CollapseDetailRow(selectedIndex);
 
         Note note = new Note();
-        note.Summary = "Opportunity Archived";
+        note.Summary = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
         note.Details = @NoteDetails;
 
         selectedQuote.notes.Add(note);
+
+        Event _event = new Event(0, 0);
+        _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
+
+        selectedQuote.events.Add(_event);
 
         WebServices.UpdateQuote(selectedQuote);
 

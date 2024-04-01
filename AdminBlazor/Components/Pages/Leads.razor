@@ -421,21 +421,20 @@ else
 
     public void ArchiveLead()
     {
-        QuoteGrid.CollapseDetailRow(selectedIndex);
-
-        Note note = new Note();
-        note.Summary = selectedQuote.firstName + " " + selectedQuote.lastName + " Archived";
-        note.Details = note.Summary + " - " + @NoteDetails;
-
         selectedQuote.status = "Archive";
 
         QuoteGrid.CollapseDetailRow(selectedIndex);
 
-        // Note note = new Note();
-        note.Summary = "Opportunity Archived";
+        Note note = new Note();
+        note.Summary = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
         note.Details = @NoteDetails;
 
         selectedQuote.notes.Add(note);
+
+        Event _event = new Event(0, 0);
+        _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
+
+        selectedQuote.events.Add(_event);
 
         WebServices.UpdateQuote(selectedQuote);
 
@@ -618,6 +617,8 @@ else
 
     public void AssignLead()
     {
+        LoadingPanelVisible = true;
+
         QuoteGrid.CollapseDetailRow(selectedIndex);
 
         selectedQuote.status = "Opportunity";
@@ -683,6 +684,8 @@ else
         selectedQuote.events.Add(assignmentEvent);
 
         WebServices.UpdateQuote(selectedQuote);
+
+        //LoadingPanelVisible = false;
 
         IsAssignPopupVisible = false;
 

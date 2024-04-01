@@ -231,76 +231,45 @@ else
                                 </td>
                             </tr>
 
-                            <tr>
-                                <td colspan=3>
-                                    <table>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <label>Manager</label>
-                                                    <span class="detail-item">@_quote.projectManager.Name</span>
-                                                </td>
-                                                <td>
-                                                    <label>Phone</label>
-                                                    <span class="detail-item">@_quote.projectManager.Phone</span>
-                                                </td>
-                                                <td>
-                                                    <label>Email</label>
-                                                    <a href="mailto:@_quote.projectManager.Email" target="_blank">
-                                                        <span class="detail-item">@_quote.projectManager.Email</span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
+                            @{
+
+                                if(@_quote.projectManager != null)
+                                {
+                                    <tr>
+                                        <td colspan=3>
+                                            <table>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <label>Manager</label>
+                                                            <span class="detail-item">@_quote.projectManager.Name</span>
+                                                        </td>
+                                                        <td>
+                                                            <label>Phone</label>
+                                                            <span class="detail-item">@_quote.projectManager.Phone</span>
+                                                        </td>
+                                                        <td>
+                                                            <label>Email</label>
+                                                            <a href="mailto:@_quote.projectManager.Email" target="_blank">
+                                                                <span class="detail-item">@_quote.projectManager.Email</span>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                }
+                            }
 
                         </tbody>
                     </table>
 
                     <table class="project-detail-work-panel">
                         <tbody>
-                            <tr>
-                                <td class="table-button-container">
-                                    <label>
-                                        <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
-                                    </label>
-                                </td>
-                                <td class="td-send-label">
-                                    <h6>Send Documents <span @onclick="@(() => IsPopupVisibleHelpSendFiles = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h6>
-                                </td>
-                                <td class="td-send-button">
-                                    <DxUpload Name="fileUpload1"
-                                              AllowMultiFileUpload="true"
-                                              UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
-                                              SelectedFilesChanged="@SelectedFilesChanged"
-                                              MaxFileSize="15000000"
-                                              AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
-                                              AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
-                                              CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
-                                    </DxUpload>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <table class="project-detail-work-panel">
-                        <tbody>
 
                             <tr>
-                                <td class="table-button-container">
-                                    <DxUpload Name="fileUpload2"
-                                              AllowMultiFileUpload="true"
-                                              UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
-                                              SelectedFilesChanged="@SelectedFilesChanged"
-                                              MaxFileSize="15000000"
-                                              AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
-                                              AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
-                                              CssClass="@(SelectedFilesCount > 0 ? "w-100" : string.Empty)">
-                                    </DxUpload>
-                                </td>
-                                <td colspan="2" class="detail-colum">
+                                <td class="detail-colum">
 
                                     <h6>@attachmentsCount File Attachments <span @onclick="@(() => IsPopupVisibleHelpFileAttachments = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h6>
 
@@ -314,10 +283,6 @@ else
                                                         <div>
                                                             <label><b>@attachmentsCount)</b> @attachment.Date</label>
                                                         </div>
-
-                                                        <span class="hyperlink" @onclick="() => SelectAttachmentToDelete(_quote, attachment)">Delete</span>
-
-                                                        <span class="bar-spacer">|</span>
                                                         <a href="@attachment.MediaUrl" target="_blank">
                                                             <span class="detail-item">@attachment.MediaDescription</span>
                                                         </a>
@@ -344,10 +309,7 @@ else
                         <tbody>
 
                             <tr>
-                                <td class="table-button-container">
-                                    <button class="btn btn-primary doc-select-button" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
-                                </td>
-                                <td colspan="2" class="detail-colum">
+                                <td class="detail-colum">
 
                                     <h6>@notesCount Notes <span @onclick="@(() => IsPopupVisibleHelpFileNotes = true)" class="link-help-info"><img src="images/icons/Help.png" class="icon-help" /></span></h6>
 
@@ -361,9 +323,6 @@ else
                                                         <label><b>@notesCount)</b> @note.Date</label>
                                                     </div>
 
-                                                    <span class="hyperlink" @onclick="() => SelectNoteToDelete(_quote, note)">Delete</span>
-
-                                                    <span class="bar-spacer">|</span>
                                                     <span class="detail-item">@note.Details</span>
 
                                                     <span class="bar-spacer">|</span>
@@ -478,14 +437,6 @@ else
 
                     </tbody>
                 </table>
-
-                <div class="table-spacer" />
-
-                <div id="div-controls-container" class="quote-detail-controls-container">
-                    <button class="btn btn-primary" @onclick="@(() => IsPopupVisibleMakeCustomer = true)">Make Customer</button>
-                    <button class="btn btn-primary" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
-                    <button class="btn btn-primary" @onclick="CloseDetails">Close</button>
-                </div>
 
             }
         </DetailRowTemplate>
@@ -785,10 +736,15 @@ else
         QuoteGrid.CollapseDetailRow(selectedIndex);
 
         Note note = new Note();
-        note.Summary = "Opportunity Archived";
+        note.Summary = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
         note.Details = @NoteDetails;
 
         selectedQuote.notes.Add(note);
+
+        Event _event = new Event(0, 0);
+        _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
+
+        selectedQuote.events.Add(_event);
 
         WebServices.UpdateQuote(selectedQuote);
 
@@ -953,7 +909,7 @@ else
 
         _timer = new Timer(new TimerCallback(_ =>
         {
-            quotes = webServices.GetQuotes("Archve");
+            quotes = webServices.GetQuotes("Archive");
             updateStatus = quotes.Count().ToString("N0");
             StatusContainerClass = "container-action-buttons-show";
 
