@@ -3,253 +3,257 @@
 @using AdminBlazor.Data
 @using DevExpress.Data
 @using DevExpress.Data.Linq
-@using Facilitate.Libraries.Models
-@using MongoDB.Bson
+@using Facilitate.Libraries.Models;
+@using MongoDB.Bson;
 
-@using Microsoft.AspNetCore.Mvc
-
-@using Json.Net
+@using Json.Net;
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
 @inject WebServices WebServices
 
+@inject NavigationManager NavigationManager
+
 <PageTitle>Leads</PageTitle>
 <h1>@updateStatus Leads <span id="update-status" class="@StatusClass">@RefreshStatus</span></h1>
 
 <script>
-  window.getIpAddress = () => {
-    return fetch('https://jsonip.com/')
-      .then((response) => response.json())
-      .then((data) => {
-        return data.ip
-      })
-  }
+    window.getIpAddress = () => {
+        return fetch('https://jsonip.com/')
+            .then((response) => response.json())
+            .then((data) => {
+                return data.ip
+            })
+    }
 </script>
 
 @if (quotes == null)
 {
-@*     <p><em>Loading...</em></p> *@
+    @*     <p><em>Loading...</em></p> *@
 }
 else
 {
-        <div>
-            Select row to expand details. Click column headers to sort. Type and hit enter in any empty cell to search that column. 
-            <br/><br/>
-            If you have grouped columns below, drag and drop the column back into the grid header to restore. 
-            <br/><br/>
-        </div>
+    <div>
+        Select row to expand details. Click column headers to sort. Type and hit enter in any empty cell to search that column.
+        <br /><br />
+        If you have grouped columns below, drag and drop the column back into the grid header to restore.
+        <br /><br />
+    </div>
 
-        <DxGrid @ref="QuoteGrid"
-            Data="@quotes" 
+    <DxGrid @ref="QuoteGrid"
+            Data="@quotes"
             KeyFieldName="_id"
-
-            PageSize="10" 
-            PagerPosition="GridPagerPosition.Bottom" 
+            PageSize="10"
+            PagerPosition="GridPagerPosition.Bottom"
             ShowGroupPanel="true"
             AutoExpandAllGroupRows="true"
             ShowFilterRow="true"
             CssClass="mw-1100"
-
             RowClick="OnRowClick"
-
             AllowSelectRowByClick="true"
             SelectionMode="GridSelectionMode.Single"
-
-            @bind-SelectedDataItem="@SelectedDataItem"
-
+            @bind-SelectedDataItem="@SelectedQuoteItem"
             TextWrapEnabled="true"
             PagerNavigationMode="PagerNavigationMode.InputBox"
             PageSizeSelectorVisible="true"
             PageSizeSelectorAllRowsItemVisible="false"
             KeyboardNavigationEnabled="true">
-            <Columns>
-                <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm:ss tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
-                <DxGridDataColumn Caption="First" FieldName="firstName" />
-                <DxGridDataColumn Caption="Last" FieldName="lastName" />
-                <DxGridDataColumn Caption="Street" FieldName="street" />
-                <DxGridDataColumn Caption="City" FieldName="city" />
-                <DxGridDataColumn Caption="State" FieldName="state" />
-                <DxGridDataColumn Caption="Zip" FieldName="zip" />
-                @* <DxGridDataColumn Caption="SqFt" TextAlignment="GridTextAlignment.Left" FieldName="totalSquareFeet" /> *@
-            </Columns>
+        <Columns>
+            <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm:ss tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+            <DxGridDataColumn Caption="First" FieldName="firstName" />
+            <DxGridDataColumn Caption="Last" FieldName="lastName" />
+            <DxGridDataColumn Caption="Street" FieldName="street" />
+            <DxGridDataColumn Caption="City" FieldName="city" />
+            <DxGridDataColumn Caption="State" FieldName="state" />
+            <DxGridDataColumn Caption="Zip" FieldName="zip" />
+            <DxGridDataColumn Caption="Manager" TextAlignment="GridTextAlignment.Left" FieldName="projectManager.Name" />
+        </Columns>
 
-            <DetailRowTemplate>
+        <DetailRowTemplate>
             @{
                 var _quote = (Quote)context.DataItem;
 
+                var _emailTabLabel = "Email " + @_quote.firstName + " Documents";
+
+                roofsCount = _quote.structures.Count;
+                if (roofsCount <= 1)
+                    roofsCountLabel = roofsCount.ToString() + " Roof Quoted";
+                else
+                    roofsCountLabel = roofsCount.ToString() + " Roofs Quoted";
+
+                productsCount = _quote.products.Count;
+                if (productsCount <= 1)
+                    productsCountLabel = productsCount.ToString() + " Product Quoted";
+                else
+                    productsCountLabel = productsCount.ToString() + " Products Quoted";
+
+                attachmentsCount = _quote.attachments.Count;
                 notesCount = _quote.notes.Count;
                 eventsCount = _quote.events.Count;
 
-                <table class="table-detail">
-                <tbody>
-                    <tr>
-                        <td colspan=3>
-                            <h6>Homeowner</h6>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Name</label>
-                            <span class="detail-item">@_quote.firstName @_quote.lastName</span>
-                        </td>
-                        <td>
-                            <label>Email</label>
-                            <a href="mailto:@_quote.email">
-                                <span class="detail-item">@_quote.email</span>
-                            </a>
-                        </td>
-                        <td>
-                            <label>Phone</label>
-                            <span class="detail-item">@_quote.phone</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Address</label>
-                            <a href="https://www.google.com/maps/search/@_quote.street @_quote.city, @_quote.state @_quote.zip" target="_blank">
-                                @_quote.street @_quote.city, @_quote.state @_quote.zip
-                            </a>
-                        </td>
-                        <td>
-                            <label>IP</label>
-                            <a href="https://whatismyipaddress.com/ip/@SubmissionUserIP" target="_blank">
-                                <span class="detail-item">Location</span>
-                            </a>
-                        </td>
-                        <td></td>
-                    </tr>
-                </tbody>
-                </table>
+                <h6>Homeowner</h6>
+                <div class="row">
+                    <div class="col">
+                        <label>Name</label>
+                        <span>@_quote.firstName @_quote.lastName</span>
+                    </div>
+                    <div class="col">
+                        <label>Email</label>
+                        <a href="mailto:@_quote.email">
+                            <span>@_quote.email</span>
+                        </a>
+                    </div>
+                    <div class="col">
+                        <label>Phone</label>
+                        <span>@_quote.phone</span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <label>Address</label>
+                        <a href="https://www.google.com/maps/search/@_quote.street @_quote.city, @_quote.state @_quote.zip" target="_blank">
+                            @_quote.street @_quote.city, @_quote.state @_quote.zip
+                        </a>
+                    </div>
+                    <div class="col">
+                        <label>IP</label>
+                        <a href="https://whatismyipaddress.com/ip/@SubmissionUserIP" target="_blank">
+                            <span>Location</span>
+                        </a>
+                    </div>
+                    <div class="col"></div>
+                </div>
 
                 <div class="table-spacer" />
 
-                <table class="table-detail">
-                <tbody>
-                    <tr>
-                        <td colspan=3>
-                            <h6>Project</h6>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Sqft</label>
-                            <span class="detail-item">@_quote.totalSquareFeet.ToString("N0")</span>
-                        </td>
-                        <td>
-                            <label>Roofs</label>
-                            <span class="detail-item">@_quote.numberOfIncludedStructures</span>
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Name</label>
-                            <span class="detail-item">@_quote.structures[0].name</span>
-                        </td>
-                        <td>
-                            <label>Complexity</label>
-                            <span class="detail-item">@_quote.structures[0].roofComplexity</span>
-                        </td>
-                        <td>
-                            <label>Slope</label>
-                            <span class="detail-item">@_quote.structures[0].slope</span>
-                        </td>
-                    </tr>
-                </tbody>
-                </table>
+                <DxTabs CssClass="tabs-container">
 
-                <div class="table-spacer" />
+                    <DxTabPage Id="Panel-Project-Manager" CssClass="tab-container" Text="@roofsCountLabel">
 
-                <table class="table-detail">
-                <tbody>
-                    <tr>
-                        <td colspan=3>
-                            <h6>Products</h6>
-                        </td>
-                    </tr>
-                        @{
-                            for (var i = 0; i < @_quote.products.Count; i++)
-                            {
-                                currentItem = i + 1;
+                        <div class="container">
 
-                                var priceLabel = @_quote.products[i].priceInfo.priceType;
-                                if (priceLabel == "BasicFinancing")
-                                {
-                                    priceLabel = "Basic Financing";
+                            <div class="row">
+                                <div class="col">
+                                    <label>Total Sqft</label>
+                                    <span><b>@_quote.totalSquareFeet.ToString("N0")</b></span>
+                                </div>
+                                <div class="col">
+                                    <label>Included Roofs</label>
+                                    <span><b>@_quote.numberOfIncludedStructures</b></span>
+                                </div>
+                                <div class="col">
+                                </div>
+                            </div>
+
+                            <div class="row item-details-container">
+                                @{
+                                    currentItemIndex = 0;
+
+                                    for (var i = 0; i < @_quote.structures.Count; i++)
+                                    {
+                                        currentItemIndex = i + 1;
+
+                                        <b>Roof #@currentItemIndex</b>
+                                        <div class="row">
+                                            <div class="col">
+                                                <label>Name</label>
+                                                <span>@_quote.structures[i].name</span>
+                                            </div>
+                                            <div class="col">
+                                                <label>Complexity</label>
+                                                <span>@_quote.structures[i].roofComplexity</span>
+                                            </div>
+                                            <div class="col">
+                                                <label>Slope</label>
+                                                <span>@_quote.structures[i].slope</span>
+                                            </div>
+                                        </div>
+                                    }
                                 }
-                                else
+                            </div>
+                        </div>
+                    </DxTabPage>
+
+                    <DxTabPage Id="Panel-Products" Text="@productsCountLabel">
+
+                        <div class="container">
+                            @{
+                                for (var i = 0; i < @_quote.products.Count; i++)
                                 {
-                                    priceLabel = @_quote.products[i].priceInfo.priceType;
+                                    currentItemIndex = i + 1;
+
+                                    var priceLabel = @_quote.products[i].priceInfo.priceType;
+                                    if (priceLabel == "BasicFinancing")
+                                        priceLabel = "Basic";
+                                    else
+                                        priceLabel = @_quote.products[i].priceInfo.priceType;
+
+                                    <b>Product #@currentItemIndex</b>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <label>Name</label>
+                                            <span>@_quote.products[i].name</span>
+                                        </div>
+                                        <div class="col">
+                                            <label>Waste Factor</label>
+                                            <span>@_quote.products[i].wasteFactorMainRoof</span>
+                                        </div>
+                                        <div class="col">
+                                            <label>Price Type</label>
+                                            <span>@priceLabel</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <label>Total Quote</label>
+                                            <span>$@_quote.products[i].priceInfo.total</span>
+                                        </div>
+                                        <div class="col">
+                                            <label>Per Square</label>
+                                            <span>$@_quote.products[i].priceInfo.pricePerSquare</span>
+                                        </div>
+                                        <div class="col">
+                                            <label>Monthly</label>
+                                            <span>$@_quote.products[i].priceInfo.monthly</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <label>APR</label>
+                                            <span>@_quote.products[i].priceInfo.apr%</span>
+                                        </div>
+                                        <div class="col">
+                                            <label>Months</label>
+                                            <span>@_quote.products[i].priceInfo.months</span>
+                                        </div>
+                                        <div class="col">
+                                        </div>
+                                    </div>
                                 }
-
-                                <tr>
-                                    <td>
-                                        <label>Name</label>
-                                        <span class="detail-item">@_quote.products[i].name</span>
-                                    </td>
-                                    <td>
-                                        <label>Waste Factor</label>
-                                        <span class="detail-item">@_quote.products[i].wasteFactorMainRoof</span>
-                                    </td>
-                                    <td>
-                                        <label>Price Type</label>
-                                        <span class="detail-item">@priceLabel</span>                               
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <label>Total Quote</label>
-                                        <span class="detail-item">$@_quote.products[i].priceInfo.total.ToString("N0")</span>
-                                    </td>
-                                    <td>
-                                        <label>Per Square</label>
-                                        <span class="detail-item">$@_quote.products[i].priceInfo.pricePerSquare</span>
-                                    </td>
-                                    <td>
-                                        <label>Monthly</label>
-                                        <span class="detail-item">$@_quote.products[i].priceInfo.monthly</span>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <label>APR</label>
-                                        <span class="detail-item">@_quote.products[i].priceInfo.apr%</span>
-                                    </td>
-                                    <td>
-                                        <label>Months</label>
-                                        <span class="detail-item">@_quote.products[i].priceInfo.months</span>
-                                    </td>
-                                    <td></td>
-                                </tr>
                             }
-                        }
-                </tbody>
-                </table>
+                        </div>
 
-                <div class="table-spacer" />
+                    </DxTabPage>
 
-                <div id="panel-notes" class="project-detail-work-panel">
-                    <h6>@notesCount Notes </h6>
-
-                    <button class="btn btn-primary doc-select-button add-item-button" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
-
-                    <div class="item-detail-container">
+                    <DxTabPage Id="Panel-Notes" Text="Notes">
+                        <button class="btn btn-primary doc-select-button add-item-button" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
                         @foreach (Note note in _quote.notes)
                         {
                             if (!note.IsDeleted)
                             {
                                 <div class="note-row">
                                     <div>
-                                        <label><b>@notesCount)</b> @note.Date</label>
+                                        <label>@notesCount) @note.Date</label>
                                     </div>
 
                                     <span class="hyperlink" @onclick="() => SelectNoteToDelete(_quote, note)">Delete</span>
 
                                     <span class="bar-spacer">|</span>
-                                    <span class="detail-item">@note.Details</span>
+                                    <span>@note.Details</span>
 
                                     <span class="bar-spacer">|</span>
                                     <label>Author</label>
@@ -259,22 +263,18 @@ else
                                 notesCount--;
                             }
                         }
-                    </div>
+                    </DxTabPage>
 
-                </div>
-
-                <div id="panel-events" class="project-detail-work-panel">
-                    <h6>@eventsCount History Events</h6>
-                    <div class="item-detail-container">
+                    <DxTabPage Id="Panel-History" Text="History">
                         @foreach (Event _event in _quote.events)
                         {
                             <div class="note-row">
                                 <div class="">
-                                    <label><b>@eventsCount)</b> @_event.DateTime</label>
+                                    <label>@eventsCount) @_event.DateTime</label>
                                 </div>
 
                                 <span class="bar-spacer">|</span>
-                                <span class="detail-item">@_event.Details</span>
+                                <span>@_event.Details</span>
 
                                 <span class="bar-spacer">|</span>
                                 <label>Author</label>
@@ -283,63 +283,64 @@ else
 
                             eventsCount--;
                         }
-                    </div>
-                </div>
+                    </DxTabPage>
 
-                <div id="panel-origin" class="project-detail-work-panel">
-                    <table id="table-origin" class="table-detail">
-                        <tbody>
+                    <DxTabPage Id="Panel-Origination" Text="Origination">
+                        <table id="table-origin" class="table-detail">
+                            <tbody>
 
-                            <tr>
-                                <td>
-                                    <label>Market</label>
-                                    <span class="detail-item">@_quote.market</span>
-                                </td>
-                                <td>
-                                    <label>Rep Name</label>
-                                    <span class="detail-item">@_quote.repLead</span>
-                                </td>
-                                <td>
-                                    <label>Rep Email</label>
-                                    <a href="mailto:@_quote.repEmail">
-                                        <span class="detail-item">@_quote.repEmail</span>
-                                    </a>
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td>
+                                        <label>Market</label>
+                                        <span>@_quote.market</span>
+                                    </td>
+                                    <td>
+                                        <label>Rep Name</label>
+                                        <span>@_quote.repLead</span>
+                                    </td>
+                                    <td>
+                                        <label>Rep Email</label>
+                                        <a href="mailto:@_quote.repEmail">
+                                            <span>@_quote.repEmail</span>
+                                        </a>
+                                    </td>
+                                </tr>
 
-                            <tr>
-                                <td>
-                                    <label>RecId</label>
-                                    <span class="detail-item">@_quote._id</span>
-                                </td>
-                                <td>
-                                    <label>Referrer</label>
-                                    <a href="@_quote.externalUrl" target="_blank">
-                                        <span class="detail-item">@_quote.externalUrl</span>
-                                    </a>
-                                </td>
-                                <td>
-                                    <label>Session</label>
-                                    <span class="detail-item">@_quote.sessionId</span>
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td>
+                                        <label>RecId</label>
+                                        <span>@_quote._id</span>
+                                    </td>
+                                    <td>
+                                        <label>Referrer</label>
+                                        <a href="@_quote.externalUrl" target="_blank">
+                                            <span>@_quote.externalUrl</span>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <label>Session</label>
+                                        <span>@_quote.sessionId</span>
+                                    </td>
+                                </tr>
 
-                            <tr>
-                                <td>
-                                    <label>RefId</label>
-                                    <span class="detail-item">@_quote.leadId</span>
-                                </td>
-                                <td>
-                                    <label>Created</label>
-                                    <span class="detail-item">@_quote.timestamp</span>
-                                </td>
-                                <td>
-                                </td>
+                                <tr>
+                                    <td>
+                                        <label>RefId</label>
+                                        <span>@_quote.leadId</span>
+                                    </td>
+                                    <td>
+                                        <label>Created</label>
+                                        <span>@_quote.timestamp</span>
+                                    </td>
+                                    <td>
+                                    </td>
 
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </DxTabPage>
+
+                </DxTabs>
 
                 <div class="quote-detail-controls-container">
                     <button class="btn btn-primary" @onclick="@(() => IsAssignPopupVisible = true)">Assign</button>
@@ -348,16 +349,43 @@ else
                 </div>
 
             }
-            </DetailRowTemplate>
+        </DetailRowTemplate>
 
-        </DxGrid>
+    </DxGrid>
 }
 
-<div class="@StatusContainerClass">
-    <button class="@ButtonClass" disabled="@RefreshDisabled" @onclick="ToggleRefresh">@ButtonText</button>
-    <button class="btn btn-primary" disabled="@CreateLeadDisabled" @onclick="CreateLead">Create 1 Lead</button>
-    <button class="btn btn-primary" disabled="@CreateLeadsDisabled" @onclick="CreateLeads">Create @itemsToCreate Leads</button>
-</div>
+<DxPopup @bind-Visible="@IsAssignPopupVisible"
+         ShowFooter="true"
+         HeaderText="Please select a Project Manager for assignment">
+    <BodyContentTemplate>
+        <DxListBox Data="@ProjectManagers"
+                   @bind-Values="@Values"
+                   SelectedItemsChanged="@((IEnumerable<User> values) => SelectedProjectManagerChanged(values))"
+                   SelectionMode="ListBoxSelectionMode.Single"
+                   ShowCheckboxes="true">
+            <Columns>
+                <DxListEditorColumn FieldName="Profile.FirstName" Caption="First" />
+                <DxListEditorColumn FieldName="Profile.LastName" Caption="Last" />
+                <DxListEditorColumn FieldName="Email" Caption="Email" />
+                <DxListEditorColumn FieldName="_id" Visible="false" Caption="Id" />
+            </Columns>
+        </DxListBox>
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsAssignPopupVisible = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxPopup @bind-Visible="@IsPopupVisibleSelectNoteToDelete" ShowFooter="true" HeaderText="Delete Note">
+    <BodyContentTemplate>
+        Are you sure you want to delete "@selectedNote.Details"?
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteSelectedNote" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleSelectNoteToDelete = false)" />
+    </FooterContentTemplate>
+</DxPopup>
 
 <DxPopup @bind-Visible="@IsPopupVisibleAddNote" ShowFooter="true" HeaderText="Add Note">
     <BodyContentTemplate>
@@ -370,43 +398,7 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
-<DxLoadingPanel @bind-Visible=@LoadingPanelVisible
-                PositionTarget="body"
-                ApplyBackgroundShading="true"
-                CssClass="w-100">
-</DxLoadingPanel>
-
-<DxPopup
-    @bind-Visible="@IsAssignPopupVisible"
-    ShowFooter="true"
-         HeaderText="Please select a Project Manager for assignment">
-    <BodyContentTemplate>
-        <div>
-            <DxListBox 
-                Data="@ProjectManagers" 
-                @bind-Values="@Values"
-                SelectedItemsChanged="@((IEnumerable<User> values) => SelectedProjectManagerChanged(values))"
-                SelectionMode="ListBoxSelectionMode.Single"
-                ShowCheckboxes="true">
-                <Columns>
-                    <DxListEditorColumn FieldName="Profile.FirstName" Caption="First" />
-                    <DxListEditorColumn FieldName="Profile.LastName" Caption="Last" />
-                    <DxListEditorColumn FieldName="Email" Caption="Email" />
-                    <DxListEditorColumn FieldName="_id" Visible="false" Caption="Id" />
-                </Columns>
-            </DxListBox>
-        </div>
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsAssignPopupVisible = false)" />
-    </FooterContentTemplate>
-</DxPopup>
-
-<DxPopup
-    @bind-Visible="@IsArchivePopupVisible"
-    ShowFooter="true"
-         HeaderText="Please type in a reason for Archival below">
+<DxPopup @bind-Visible="@IsArchivePopupVisible" ShowFooter="true" HeaderText="Please type in a reason for Archival below">
     <BodyContentTemplate>
         <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
     </BodyContentTemplate>
@@ -416,130 +408,151 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
+<DxPopup @bind-Visible="@IsPopupVisibleHelpSendFiles" ShowFooter="true" HeaderText="Send Documents Help?">
+    <BodyContentTemplate>
+        <p>Send Documents details...</p>
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpSendFiles = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxPopup @bind-Visible="@IsPopupVisibleHelpFileAttachments" ShowFooter="true" HeaderText="File Attachments Help?">
+    <BodyContentTemplate>
+        <p>File Attachments details...</p>
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpFileAttachments = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxPopup @bind-Visible="@IsPopupVisibleHelpFileNotes" ShowFooter="true" HeaderText="File Notes Help?">
+    <BodyContentTemplate>
+        <p>File Notes details...</p>
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpFileNotes = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxLoadingPanel @bind-Visible=@LoadingPanelVisible
+                PositionTarget="body"
+                ApplyBackgroundShading="true"
+                CssClass="w-100">
+</DxLoadingPanel>
+
+<div class="@StatusContainerClass">
+    <button class="@ButtonClass" disabled="@RefreshDisabled" @onclick="ToggleRefresh">@ButtonText</button>
+    <button class="btn btn-primary" disabled="@CreateLeadDisabled" @onclick="CreateLead">Create 1 Lead</button>
+    <button class="btn btn-primary" disabled="@CreateLeadsDisabled" @onclick="CreateLeads">Create @itemsToCreate Leads</button>
+</div>
+
 
 @code {
 
-    public int attachmentsCount = 0;
-    public int notesCount = 0;
-    public int eventsCount = 0;
-
-    public Note selectedNote { get; set; }
-
-
-
-    public void SelectNoteToDelete(Quote quote, Note note)
-    {
-        selectedQuote = quote;
-        selectedNote = note;
-
-        IsPopupVisibleSelectNoteToDelete = true;
-    }
-
-    public Quote selectedQuote { get; set; }
-
-    bool LoadingPanelVisible { get; set; } = true;
-
-    string Author { get; set; } = "Unknown";
-
-    WebServices webServices = new WebServices();
+    public int noteCount = 0;
 
     IEnumerable<string> Values { get; set; }
 
-    IEnumerable<User> SelectedProjectManager { get; set; }
+    public Quote selectedQuote { get; set; }
+    public Attachment selectedAttachment { get; set; }
+    public Note selectedNote { get; set; }
 
-    [Parameter]
-    public EventCallback<IEnumerable<User>> SelectedItemsChanged { get; set; }
+    bool LoadingPanelVisible { get; set; } = true;
+
+    IEnumerable<User> SelectedProjectManager { get; set; }
+    public List<User>? ProjectManagers;
+
+    WebServices webServices = new WebServices();
+
+    AdminBlazor.Data.MemberService memberService = new AdminBlazor.Data.MemberService();
 
     void SelectedProjectManagerChanged(IEnumerable<User> selectedProjectManager)
     {
         SelectedProjectManager = selectedProjectManager;
     }
-    bool IsPopupVisibleAddNote { get; set; }
 
-    bool IsPopupVisibleSelectNoteToDelete { get; set; }
-    AdminBlazor.Data.MemberService memberService = new AdminBlazor.Data.MemberService();
+    #region Private Properties
 
-    public List<User>? ProjectManagers;
+    private List<Quote>? quotes;
+
+    int SelectedFilesCount { get; set; }
+
+    ObjectId SelectedFileId { get; set; }
+
+    IGrid QuoteGrid { get; set; }
+
+    IGrid EventGrid { get; set; }
+
+    EntityInstantFeedbackSource InstantFeedbackSource { get; set; }
+
+    bool isBulkInsert = false;
+
+    string FileType { get; set; } = ".pdf";
+    string Author { get; set; } = "unknown";
 
     string NoteDetails { get; set; } = "";
 
-    public void ArchiveLead()
-    {
-        selectedQuote.status = "Archive";
+    #endregion
 
-        QuoteGrid.CollapseDetailRow(selectedIndex);
-
-        Note note = new Note();
-        note.Summary = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
-        note.Details = @NoteDetails;
-
-        selectedQuote.notes.Add(note);
-
-        Event _event = new Event(0, 0);
-        _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
-
-        selectedQuote.events.Add(_event);
-
-        WebServices.UpdateQuote(selectedQuote);
-
-        IsArchivePopupVisible = false;
-
-        PauseRefresh(false);
-    }
-
-    public void AddNote()
-    {
-        QuoteGrid.CollapseDetailRow(selectedIndex);
-
-        Note note = new Note();
-        note.Summary = "Note Added";
-        note.Details = @NoteDetails;
-
-        selectedQuote.notes.Add(note);
-
-        Event _event = new Event(0, 0);
-        _event.Details = "Note (" + note.Details + ") added to Quote";
-
-        selectedQuote.events.Add(_event);
-
-        WebServices.UpdateQuote(selectedQuote);
-
-        IsPopupVisibleAddNote = false;
-        NoteDetails = "";
-
-        QuoteGrid.ExpandDetailRow(selectedIndex);
-
-        PauseRefresh(false);
-    }
-
-    [Parameter]
-    public bool SubmitFormOnClick { get; set; }
-
-    bool IsAssignPopupVisible { get; set; }
-    bool IsArchivePopupVisible { get; set; }
+    #region Public Properties
 
     [Inject] public IJSRuntime jsRuntime { get; set; }
 
-    [Parameter]
-    public string DisplayFormat { get; set; }
+    public Timer _timer;
 
     public string ClientIP = "";
     public string selectedQuoteId = "";
 
-    public async Task<string> GetIpAddress()
-    {
-        try
-        {
-            SubmissionUserIP = await jsRuntime.InvokeAsync<string>("getIpAddress").ConfigureAwait(true);
+    public interface IQueryable : System.Collections.IEnumerable;
 
-            return SubmissionUserIP;
-        }
-        catch (Exception e)
-        {
-            //If your request was blocked by CORS or some extension like uBlock Origin then you will get an exception.
-            return string.Empty;
-        }
-    }
+    public int currentItemIndex = 0;
+    public int selectedIndex = 0;
+
+    public string SubmissionUserIP { get; set; }
+
+    public int itemsToCreate = 10;
+    public string updateStatus = "Fetching ";
+
+    public int roofsCount = 0;
+    public int productsCount = 0;
+
+    public string roofsCountLabel = "";
+    public string productsCountLabel = "";
+
+    public int attachmentsCount = 0;
+    public int notesCount = 0;
+    public int eventsCount = 0;
+
+    #endregion
+
+    #region Popup properties
+
+    bool IsPopupVisibleAddFile { get; set; }
+    bool IsPopupVisibleSelectAttachmentToDelete { get; set; }
+
+    bool IsAssignPopupVisible { get; set; }
+
+    bool IsPopupVisibleAddNote { get; set; }
+    bool IsPopupVisibleSelectNoteToDelete { get; set; }
+
+    bool IsPopupVisibleMakeCustomer { get; set; }
+    bool IsAssignmentPopupVisible { get; set; }
+    bool IsArchivePopupVisible { get; set; }
+
+    bool IsPopupVisibleHelpSendFiles { get; set; }
+    bool IsPopupVisibleHelpFileAttachments { get; set; }
+    bool IsPopupVisibleHelpFileNotes { get; set; }
+
+    #endregion
+
+    #region Parameters
+
+    [Parameter]
+    public string DisplayFormat { get; set; }
+
+    [Parameter]
+    public List<string> AcceptedFileTypes { get; set; }
 
     [Parameter]
     public GridDetailRowDisplayMode DetailRowDisplayMode { get; set; }
@@ -569,10 +582,16 @@ else
     public bool CreateLeadsDisabled { get; set; } = true;
 
     [Parameter]
+    public bool SendDocsDisabled { get; set; } = true;
+
+    [Parameter]
     public bool ArchiveLeadsDisabled { get; set; } = true;
 
     [Parameter]
-    public object SelectedDataItem { get; set; }
+    public object SelectedQuoteItem { get; set; }
+
+    [Parameter]
+    public object SelectedEventItem { get; set; }
 
     [Parameter]
     public int VisibleIndex { get; set; }
@@ -580,17 +599,11 @@ else
     [Parameter]
     public bool ClearFilterButtonVisible { get; set; }
 
-    IGrid QuoteGrid { get; set; }
-    EntityInstantFeedbackSource InstantFeedbackSource { get; set; }
+    #endregion
 
-    public interface IQueryable : System.Collections.IEnumerable;
+    #region Methods
 
-    public int currentItem = 0;
-    public int selectedIndex = 0;
-
-    public string SubmissionUserIP { get; set; }
-
-    protected override void OnInitialized(){}
+    protected override void OnInitialized() { }
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -601,55 +614,6 @@ else
         }
 
         GetIpAddress();
-    }
-
-    public virtual void PauseRefresh(bool isPaused)
-    {
-        RefreshDisabled = isPaused;
-
-        CreateLeadDisabled = isPaused;
-        CreateLeadsDisabled = isPaused;
-
-        if (isPaused)
-        {
-            RefreshDisabled = false;
-
-            CreateLeadDisabled = false;
-            CreateLeadsDisabled = false;
-
-            ButtonText = "Resume Refresh";
-            ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
-            StatusClass = "message-warning";
-            RefreshStatus = " Auto refresh paused...";
-
-            _timer?.Dispose();
-        }
-        else
-        {
-            CreateLeadDisabled = true;
-            CreateLeadsDisabled = true;
-
-            ButtonText = "Pause Refresh";
-            ButtonClass = "btn btn-outline-primary btn-refresh-active";
-            StatusClass = "message";
-            RefreshStatus = "";
-
-            RefreshTimer();
-        }
-    }
-
-    public virtual void ToggleRefresh()
-    {
-        if (ButtonText == "Pause Refresh")
-        {
-            PauseRefresh(true);
-        }
-        else
-        {
-            PauseRefresh(false);
-        }
-
-        RefreshDisabled = false;
     }
 
     void OnRowClick(GridRowClickEventArgs args)
@@ -663,6 +627,8 @@ else
             QuoteGrid.CollapseDetailRow(selectedIndex);
 
             PauseRefresh(false);
+
+            RefreshDisabled = false;
         }
         else
         {
@@ -670,18 +636,22 @@ else
             QuoteGrid.ExpandDetailRow(selectedIndex);
 
             PauseRefresh(true);
-
-            RefreshDisabled = true;
-            CreateLeadDisabled = true;
-            CreateLeadsDisabled = true;
         }
     }
 
-    public void CloseDetails()
+    public async Task<string> GetIpAddress()
     {
-        QuoteGrid.CollapseDetailRow(selectedIndex);
+        try
+        {
+            SubmissionUserIP = await jsRuntime.InvokeAsync<string>("getIpAddress").ConfigureAwait(true);
 
-        PauseRefresh(false);
+            return SubmissionUserIP;
+        }
+        catch (Exception e)
+        {
+            //If your request was blocked by CORS or some extension like uBlock Origin then you will get an exception.
+            return string.Empty;
+        }
     }
 
     public void AssignLead()
@@ -761,35 +731,81 @@ else
         PauseRefresh(false);
     }
 
-    private List<Quote>? quotes;
-
-    public int itemsToCreate = 100;
-    public string updateStatus = "Fetching ";
-
-    public Timer _timer;
-
-    public void Dispose()
+    public void ArchiveLead()
     {
-        _timer?.Dispose();           // because you need it here
+        selectedQuote.status = "Archive";
+
+        QuoteGrid.CollapseDetailRow(selectedIndex);
+
+        Note note = new Note();
+        note.Summary = "Opportunity Archived";
+        note.Details = @NoteDetails;
+
+        selectedQuote.notes.Add(note);
+
+        WebServices.UpdateQuote(selectedQuote);
+
+        IsArchivePopupVisible = false;
+
+        PauseRefresh(false);
     }
 
-    private void RefreshTimer()
+    public void AddNote()
     {
-        LoadingPanelVisible = true;
+        QuoteGrid.CollapseDetailRow(selectedIndex);
 
-        _timer = new Timer(new TimerCallback(_ =>
-        {
-            quotes = webServices.GetQuotes("New");
-            updateStatus = quotes.Count().ToString("N0");
-            StatusContainerClass = "container-action-buttons-show";
+        Note note = new Note();
+        note.Summary = "Note Added";
+        note.Details = @NoteDetails;
 
-            InvokeAsync(() =>
-            {
-                StateHasChanged();
-            });
-        }), null, 1000, 1000);
+        selectedQuote.notes.Add(note);
 
-        LoadingPanelVisible = false; 
+        Event _event = new Event(0, 0);
+        _event.Details = "Note (" + note.Details + ") added to Quote";
+
+        selectedQuote.events.Add(_event);
+
+        WebServices.UpdateQuote(selectedQuote);
+
+        IsPopupVisibleAddNote = false;
+        NoteDetails = "";
+
+        QuoteGrid.ExpandDetailRow(selectedIndex);
+
+        PauseRefresh(false);
+    }
+
+    public void CloseDetails()
+    {
+        QuoteGrid.CollapseDetailRow(selectedIndex);
+
+        PauseRefresh(false);
+    }
+
+    public void SelectNoteToDelete(Quote quote, Note note)
+    {
+        selectedQuote = quote;
+        selectedNote = note;
+
+        IsPopupVisibleSelectNoteToDelete = true;
+    }
+
+    public void DeleteSelectedNote()
+    {
+        selectedNote.IsDeleted = true;
+
+        Event _event = new Event(0, 0);
+        _event.Details = "Deleted note (" + selectedNote.Details + ") from Quote";
+
+        selectedQuote.events.Add(_event);
+
+        WebServices.UpdateQuote(selectedQuote);
+
+        RefreshTimer();
+
+        IsPopupVisibleSelectNoteToDelete = false;
+
+        notesCount--;
     }
 
     private void CreateLeads()
@@ -821,12 +837,6 @@ else
         PauseRefresh(false);
     }
 
-    private void ArchiveLeads()
-    {
-        updateStatus = "Deleting...";
-    }
-
-    #region Create 1 Lead
     private void CreateLead()
     {
         updateStatus = "Creating ";
@@ -960,7 +970,7 @@ else
         var latitude = 0;
         var longitude = 0;
 
-        Event _event = new Event(0,0);
+        Event _event = new Event(0, 0);
         _event.Name = "New Quote";
         _event.DateTime = DateTime.UtcNow;
         _event.Reference.ReferenceId = ObjectId.Parse(quote._id);
@@ -988,5 +998,79 @@ else
             PauseRefresh(false);
         }
     }
+
+    public virtual void PauseRefresh(bool isPaused)
+    {
+        RefreshDisabled = isPaused;
+
+        CreateLeadDisabled = isPaused;
+        CreateLeadsDisabled = isPaused;
+
+        if (isPaused)
+        {
+            RefreshDisabled = false;
+
+            CreateLeadDisabled = false;
+            CreateLeadsDisabled = false;
+
+            ButtonText = "Resume Refresh";
+            ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
+            StatusClass = "message-warning";
+            RefreshStatus = " Auto refresh paused...";
+
+            _timer?.Dispose();
+        }
+        else
+        {
+            CreateLeadDisabled = true;
+            CreateLeadsDisabled = true;
+
+            ButtonText = "Pause Refresh";
+            ButtonClass = "btn btn-outline-primary btn-refresh-active";
+            StatusClass = "message";
+            RefreshStatus = "";
+
+            RefreshTimer();
+        }
+    }
+
+    public virtual void ToggleRefresh()
+    {
+        if (ButtonText == "Pause Refresh")
+        {
+            PauseRefresh(true);
+        }
+        else
+        {
+            PauseRefresh(false);
+        }
+
+        RefreshDisabled = false;
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();           // because you need it here
+    }
+
+    private void RefreshTimer()
+    {
+        LoadingPanelVisible = true;
+
+        _timer = new Timer(new TimerCallback(_ =>
+        {
+            quotes = webServices.GetQuotes("New");
+            updateStatus = quotes.Count().ToString("N0");
+            StatusContainerClass = "container-action-buttons-show";
+
+            InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
+        }), null, 1000, 1000);
+
+        LoadingPanelVisible = false;
+    }
+
     #endregion
 }
