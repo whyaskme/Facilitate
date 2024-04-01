@@ -79,94 +79,100 @@ else
             @{
                 var _quote = (Quote)context.DataItem;
 
-                var _emailTabLabel = "3) Email " + @_quote.firstName + " Documents";
+                var _emailTabLabel = "Email " + @_quote.firstName + " Documents";
+
+                roofsCount = _quote.structures.Count;
+                if(roofsCount <= 1)
+                    roofsCountLabel = roofsCount.ToString() + " Roof Quoted";
+                else
+                    roofsCountLabel = roofsCount.ToString() + " Roofs Quoted";
+
+                productsCount = _quote.products.Count;
+                if(productsCount <= 1)
+                    productsCountLabel = productsCount.ToString() + " Product Quoted";
+                else
+                    productsCountLabel = productsCount.ToString() + " Products Quoted";
 
                 attachmentsCount = _quote.attachments.Count;
                 notesCount = _quote.notes.Count;
                 eventsCount = _quote.events.Count;
 
-                <table id="table-homeowner-info" class="table-detail">
-                    <tbody>
-                        <tr>
-                            <td colspan=3>
-                                <h6>Homeowner</h6>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Name</label>
-                                <span class="detail-item">@_quote.firstName @_quote.lastName</span>
-                            </td>
-                            <td>
-                                <label>Email</label>
-                                <a href="mailto:@_quote.email">
-                                    <span class="detail-item">@_quote.email</span>
-                                </a>
-                            </td>
-                            <td>
-                                <label>Phone</label>
-                                <span class="detail-item">@_quote.phone</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Address</label>
-                                <a href="https://www.google.com/maps/search/@_quote.street @_quote.city, @_quote.state @_quote.zip" target="_blank">
-                                    @_quote.street @_quote.city, @_quote.state @_quote.zip
-                                </a>
-                            </td>
-                            <td>
-                                <label>IP</label>
-                                <a href="https://whatismyipaddress.com/ip/@SubmissionUserIP" target="_blank">
-                                    <span class="detail-item">Location</span>
-                                </a>
-                            </td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <h6>Homeowner</h6>
+                <div class="row">
+                    <div class="col">
+                        <label>Name</label>
+                        <span>@_quote.firstName @_quote.lastName</span>
+                    </div>
+                    <div class="col">
+                        <label>Email</label>
+                        <a href="mailto:@_quote.email">
+                            <span>@_quote.email</span>
+                        </a>
+                    </div>
+                    <div class="col">
+                        <label>Phone</label>
+                        <span>@_quote.phone</span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <label>Address</label>
+                        <a href="https://www.google.com/maps/search/@_quote.street @_quote.city, @_quote.state @_quote.zip" target="_blank">
+                            @_quote.street @_quote.city, @_quote.state @_quote.zip
+                        </a>
+                    </div>
+                    <div class="col">
+                        <label>IP</label>
+                        <a href="https://whatismyipaddress.com/ip/@SubmissionUserIP" target="_blank">
+                            <span>Location</span>
+                        </a>
+                    </div>
+                    <div class="col"></div>
+                </div>
+
+                <div class="table-spacer" />
+
+                <h6>Project Manager</h6>
+                <div id="project-manager" class="row">
+                    <div class="col">
+                        <label>Name</label>
+                        <span>@_quote.projectManager.Name</span>
+                    </div>
+                    <div class="col">
+                        <label>Phone</label>
+                        <span>@_quote.projectManager.Phone</span>
+                    </div>
+                    <div class="col">
+                        <label>Email</label>
+                        <a href="mailto:@_quote.projectManager.Email" target="_blank">
+                            <span>@_quote.projectManager.Email</span>
+                        </a>
+                    </div>
+                </div>
 
                 <div class="table-spacer" />
 
                 <DxTabs CssClass="tabs-container">
 
-                    <DxTabPage Id="Panel-Project-Manager" CssClass="tab-container" Text="1) Project Details">
+                    <DxTabPage Id="Panel-Project-Manager" CssClass="tab-container" Text="@roofsCountLabel">
 
                         <div class="container">
 
                             <div class="row">
                                 <div class="col">
-                                    <label>Project Manager</label>
-                                    <span class="detail-item">@_quote.projectManager.Name</span>
-                                </div>
-                                <div class="col">
-                                    <label>Phone</label>
-                                    <span class="detail-item">@_quote.projectManager.Phone</span>
-                                </div>
-                                <div class="col">
-                                    <label>Email</label>
-                                    <a href="mailto:@_quote.projectManager.Email" target="_blank">
-                                        <span class="detail-item">@_quote.projectManager.Email</span>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="table-spacer" />
-
-                            <div class="row">
-                                <div class="col">
                                     <label>Total Sqft</label>
-                                    <span class="detail-item">@_quote.totalSquareFeet.ToString("N0")</span>
+                                    <span><b>@_quote.totalSquareFeet.ToString("N0")</b></span>
                                 </div>
                                 <div class="col">
                                     <label>Included Roofs</label>
-                                    <span class="detail-item">@_quote.numberOfIncludedStructures</span>
+                                    <span><b>@_quote.numberOfIncludedStructures</b></span>
                                 </div>
                                 <div class="col">
                                 </div>
                             </div>
 
-                            <div class="row items-roof">
+                            <div class="row item-details-container">
                                 @{
                                     currentItemIndex = 0;
 
@@ -174,30 +180,28 @@ else
                                     {
                                         currentItemIndex = i + 1;
 
-                                        <label>
-                                            <b>Roof @currentItemIndex</b>
-                                            <div class="row">
-                                                <div class="col">
-                                                    <label>Name</label>
-                                                    <span class="detail-item">@_quote.structures[i].name</span>
-                                                </div>
-                                                <div class="col">
-                                                    <label>Complexity</label>
-                                                    <span class="detail-item">@_quote.structures[i].roofComplexity</span>
-                                                </div>
-                                                <div class="col">
-                                                    <label>Slope</label>
-                                                    <span class="detail-item">@_quote.structures[i].slope</span>
-                                                </div>
+                                        <b>Roof @currentItemIndex</b>
+                                        <div class="row">
+                                            <div class="col">
+                                                <label>Name</label>
+                                                <span>@_quote.structures[i].name</span>
                                             </div>
-                                        </label>
+                                            <div class="col">
+                                                <label>Complexity</label>
+                                                <span>@_quote.structures[i].roofComplexity</span>
+                                            </div>
+                                            <div class="col">
+                                                <label>Slope</label>
+                                                <span>@_quote.structures[i].slope</span>
+                                            </div>
+                                        </div>
                                     }
                                 }
                             </div>
                         </div>
                     </DxTabPage>
 
-                    <DxTabPage Id="Panel-Products" Text="2) Products Quoted">
+                    <DxTabPage Id="Panel-Products" Text="@productsCountLabel">
 
                         <div class="container">
                             @{
@@ -211,46 +215,46 @@ else
                                     else
                                         priceLabel = @_quote.products[i].priceInfo.priceType;
 
-                                    <h6>Product @currentItemIndex</h6>
+                                    <b>Product @currentItemIndex</b>
 
                                     <div class="row">
                                         <div class="col">
                                             <label>Name</label>
-                                            <span class="detail-item">@_quote.products[i].name</span>
+                                            <span>@_quote.products[i].name</span>
                                         </div>
                                         <div class="col">
                                             <label>Waste Factor</label>
-                                            <span class="detail-item">@_quote.products[i].wasteFactorMainRoof</span>
+                                            <span>@_quote.products[i].wasteFactorMainRoof</span>
                                         </div>
                                         <div class="col">
                                             <label>Price Type</label>
-                                            <span class="detail-item">@priceLabel</span>
+                                            <span>@priceLabel</span>
                                         </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="col">
                                             <label>Total Quote</label>
-                                            <span class="detail-item">$@_quote.products[i].priceInfo.total</span>
+                                            <span>$@_quote.products[i].priceInfo.total</span>
                                         </div>
                                         <div class="col">
                                             <label>Per Square</label>
-                                            <span class="detail-item">$@_quote.products[i].priceInfo.pricePerSquare</span>
+                                            <span>$@_quote.products[i].priceInfo.pricePerSquare</span>
                                         </div>
                                         <div class="col">
                                             <label>Monthly</label>
-                                            <span class="detail-item">$@_quote.products[i].priceInfo.monthly</span>
+                                            <span>$@_quote.products[i].priceInfo.monthly</span>
                                         </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="col">
                                             <label>APR</label>
-                                            <span class="detail-item">@_quote.products[i].priceInfo.apr%</span>
+                                            <span>@_quote.products[i].priceInfo.apr%</span>
                                         </div>
                                         <div class="col">
                                             <label>Months</label>
-                                            <span class="detail-item">@_quote.products[i].priceInfo.months</span>
+                                            <span>@_quote.products[i].priceInfo.months</span>
                                         </div>
                                         <div class="col">
                                         </div>
@@ -275,7 +279,7 @@ else
                         <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
                     </DxTabPage>
 
-                    <DxTabPage Id="Panel-Attachments" Text="4) File Attachments">
+                    <DxTabPage Id="Panel-Attachments" Text="Attachments">
                         <DxUpload Name="fileUpload2"
                                     SelectButtonText="Upload"
                                     AllowMultiFileUpload="true"
@@ -300,7 +304,7 @@ else
 
                                     <span class="bar-spacer">|</span>
                                     <a href="@attachment.MediaUrl" target="_blank">
-                                        <span class="detail-item">@attachment.MediaDescription</span>
+                                        <span>@attachment.MediaDescription</span>
                                     </a>
                                     <span class="bar-spacer">|</span>
                                     <label>File Type</label>
@@ -329,7 +333,7 @@ else
                                     <span class="hyperlink" @onclick="() => SelectNoteToDelete(_quote, note)">Delete</span>
 
                                     <span class="bar-spacer">|</span>
-                                    <span class="detail-item">@note.Details</span>
+                                    <span>@note.Details</span>
 
                                     <span class="bar-spacer">|</span>
                                     <label>Author</label>
@@ -350,7 +354,7 @@ else
                                 </div>
 
                                 <span class="bar-spacer">|</span>
-                                <span class="detail-item">@_event.Details</span>
+                                <span>@_event.Details</span>
 
                                 <span class="bar-spacer">|</span>
                                 <label>Author</label>
@@ -368,16 +372,16 @@ else
                                 <tr>
                                     <td>
                                         <label>Market</label>
-                                        <span class="detail-item">@_quote.market</span>
+                                        <span>@_quote.market</span>
                                     </td>
                                     <td>
                                         <label>Rep Name</label>
-                                        <span class="detail-item">@_quote.repLead</span>
+                                        <span>@_quote.repLead</span>
                                     </td>
                                     <td>
                                         <label>Rep Email</label>
                                         <a href="mailto:@_quote.repEmail">
-                                            <span class="detail-item">@_quote.repEmail</span>
+                                            <span>@_quote.repEmail</span>
                                         </a>
                                     </td>
                                 </tr>
@@ -385,28 +389,28 @@ else
                                 <tr>
                                     <td>
                                         <label>RecId</label>
-                                        <span class="detail-item">@_quote._id</span>
+                                        <span>@_quote._id</span>
                                     </td>
                                     <td>
                                         <label>Referrer</label>
                                         <a href="@_quote.externalUrl" target="_blank">
-                                            <span class="detail-item">@_quote.externalUrl</span>
+                                            <span>@_quote.externalUrl</span>
                                         </a>
                                     </td>
                                     <td>
                                         <label>Session</label>
-                                        <span class="detail-item">@_quote.sessionId</span>
+                                        <span>@_quote.sessionId</span>
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td>
                                         <label>RefId</label>
-                                        <span class="detail-item">@_quote.leadId</span>
+                                        <span>@_quote.leadId</span>
                                     </td>
                                     <td>
                                         <label>Created</label>
-                                        <span class="detail-item">@_quote.timestamp</span>
+                                        <span>@_quote.timestamp</span>
                                     </td>
                                     <td>
                                     </td>
@@ -574,6 +578,12 @@ else
 
     public int itemsToCreate = 10;
     public string updateStatus = "Fetching ";
+
+    public int roofsCount = 0;
+    public int productsCount = 0;
+
+    public string roofsCountLabel = "";
+    public string productsCountLabel = "";
 
     public int attachmentsCount = 0;
     public int notesCount = 0;
