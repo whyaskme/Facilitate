@@ -20,7 +20,8 @@ namespace Facilitate.Libraries.Models
             DateCreated = DateTime.UtcNow;
 
             isCompleted = false;
-            DateCompleted = DateTime.MinValue;
+            //DateCompleted = DateTime.MinValue;
+            //CompletionDetails = string.Empty;
 
             Summary = string.Empty;
             Details = string.Empty;
@@ -35,6 +36,7 @@ namespace Facilitate.Libraries.Models
 
         public bool isCompleted { get; set; }
         public DateTime? DateCompleted { get; set; }
+        public string CompletionDetails { get; set; }
 
         public string Summary { get; set; }
         public string Details { get; set; }

@@ -471,16 +471,19 @@ else
                     <DxTabs Id="tabs-Warranty-Info" CssClass="tabs-container">
 
                         @{
+                            var claimCount = 0;
+                            var claimLabel = "";
+
                             foreach (Warranty warranty in @_quote.warranties)
                             {
                                 switch (warranty.Type)
                                 {
                                     case "Assertion":
-                                        <DxTabPage Id="Panel-Warranty-Assertion" CssClass="tab-container" Text="Warranty Assertion">
+                                        <DxTabPage Id="Panel-Warranty-Assertion" CssClass="tab-container" Text="Coverage Statement">
                                             <div class="row">
                                                 <div class="col">
                                                     <label>Date</label>
-                                                    <span>@warranty.Date</span>
+                                                    <span>@warranty.DateCreated</span>
                                                 </div>
                                                 <div class="col">
                                                     <label>Summary</label>
@@ -494,11 +497,14 @@ else
                                         </DxTabPage>
                                         break;
                                     case "Claim":
-                                        <DxTabPage Id="Panel-Warranty-Claim" CssClass="tab-container" Text="Warranty Claim">
+                                        claimCount++;
+                                        claimLabel = "Claim " + claimCount;
+
+                                        <DxTabPage Id="Panel-Warranty-Claim" CssClass="tab-container" Text="@claimLabel">
                                             <div class="row">
                                                 <div class="col">
                                                     <label>Claim Date</label>
-                                                    <span>@warranty.Date</span>
+                                                    <span>@warranty.DateCreated</span>
                                                 </div>
                                                 <div class="col">
                                                     <label>Summary</label>
@@ -507,6 +513,20 @@ else
                                                 <div class="col">
                                                     <label>Claim Reason</label>
                                                     <span>@warranty.Details</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label>Completed?</label>
+                                                    <span>@warranty.isCompleted</span>
+                                                </div>
+                                                <div class="col">
+                                                    <label>Date Completed</label>
+                                                    <span>@warranty.DateCompleted</span>
+                                                </div>
+                                                <div class="col">
+                                                    <label>Completion Notes</label>
+                                                    <span>@warranty.CompletionDetails</span>
                                                 </div>
                                             </div>
                                         </DxTabPage>

@@ -496,6 +496,8 @@ else
 
                 if (@_quote.warranties.Count > 0)
                 {
+                    var claimsInitialized = false;
+
                     <br />
 
                     <h6>Warranty Info</h6>
@@ -503,16 +505,19 @@ else
                     <DxTabs Id="tabs-Warranty-Info" CssClass="tabs-container">
 
                         @{
+                            var claimCount = 0;
+                            var claimLabel = "";
+
                             foreach (Warranty warranty in @_quote.warranties)
                             {
                                 switch(warranty.Type)
                                 {
                                     case "Assertion":
-                                        <DxTabPage Id="Panel-Warranty-Assertion" CssClass="tab-container" Text="Warranty Assertion">
+                                        <DxTabPage Id="Panel-Warranty-Assertion" CssClass="tab-container" Text="Coverage Statement">
                                             <div class="row">
                                                 <div class="col">
                                                     <label>Date</label>
-                                                    <span>@warranty.Date</span>
+                                                    <span>@warranty.DateCreated</span>
                                                 </div>
                                                 <div class="col">
                                                     <label>Summary</label>
@@ -526,22 +531,39 @@ else
                                         </DxTabPage>
                                         break;
                                     case "Claim":
-                                        <DxTabPage Id="Panel-Warranty-Claim" CssClass="tab-container" Text="Warranty Claim">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <label>Claim Date</label>
-                                                    <span>@warranty.Date</span>
+                                        claimCount++;
+                                        claimLabel = "Claim " + claimCount;
+
+                                        <DxTabPage Id="Panel-Warranty-Claim" CssClass="tab-container" Text="@claimLabel">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label>Claim Date</label>
+                                                        <span>@warranty.DateCreated</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>Summary</label>
+                                                        <span>@warranty.Summary</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>Claim Reason</label>
+                                                        <span>@warranty.Details</span>
+                                                    </div>
                                                 </div>
-                                                <div class="col">
-                                                    <label>Summary</label>
-                                                    <span>@warranty.Summary</span>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label>Completed?</label>
+                                                        <span>@warranty.isCompleted</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>Date Completed</label>
+                                                        <span>@warranty.DateCompleted</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>Completion Notes</label>
+                                                        <span>@warranty.CompletionDetails</span>
+                                                    </div>
                                                 </div>
-                                                <div class="col">
-                                                    <label>Claim Reason</label>
-                                                    <span>@warranty.Details</span>
-                                                </div>
-                                            </div>
-                                        </DxTabPage>
+                                            </DxTabPage>
                                         break;
                                 }
                             }
@@ -970,6 +992,16 @@ else
         selectedQuote.status = "Archive";
 
         QuoteGrid.CollapseDetailRow(selectedIndex);
+
+        foreach (Warranty warranty in selectedQuote.warranties)
+        {
+            if (warranty.Type == "Claim")
+            {
+                warranty.isCompleted = true;
+                warranty.DateCompleted = DateTime.UtcNow;
+                warranty.CompletionDetails = @NoteDetails;
+            }
+        }
 
         var projectManager = selectedQuote.projectManager;
 
