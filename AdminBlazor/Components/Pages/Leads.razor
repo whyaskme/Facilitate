@@ -384,7 +384,7 @@ else
         </DxListBox>
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
+        <DxButton CssClass="popup-button my-1 ms-2" Enabled="@IsAssignButtonEnabled" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsAssignPopupVisible = false)" />
     </FooterContentTemplate>
 </DxPopup>
@@ -461,6 +461,7 @@ else
 
 
 @code {
+    public bool IsAssignButtonEnabled = false;
 
     public int noteCount = 0;
 
@@ -482,6 +483,11 @@ else
     void SelectedProjectManagerChanged(IEnumerable<User> selectedProjectManager)
     {
         SelectedProjectManager = selectedProjectManager;
+
+        if(SelectedProjectManager.Count() > 0)
+            IsAssignButtonEnabled = true;
+        else
+            IsAssignButtonEnabled = false;
     }
 
     #region Private Properties
@@ -739,6 +745,7 @@ else
         //LoadingPanelVisible = false;
 
         IsAssignPopupVisible = false;
+        IsAssignButtonEnabled = false;
 
         PauseRefresh(false);
     }

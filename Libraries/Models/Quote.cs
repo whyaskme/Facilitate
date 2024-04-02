@@ -59,6 +59,7 @@ namespace Facilitate.Libraries.Models
             notes = new List<Note>();
             projectManager = null;
             events = new List<Event>();
+            warranties = new List<Warranty>();
     }
 
         public string _id { get; set; }
@@ -102,6 +103,7 @@ namespace Facilitate.Libraries.Models
         public List<Attachment>? attachments { get; set; }
         public List<Note>? notes { get; set; }
         public virtual List<Event>? events { get; set; }
+        public virtual List<Warranty>? warranties { get; set; }
 
         #region Implementation of IEnumerable
         List<Quote> quotes;

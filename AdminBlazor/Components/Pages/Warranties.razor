@@ -493,6 +493,64 @@ else
                     </DxTabPage>
 
                 </DxTabs>
+
+                if (@_quote.warranties.Count > 0)
+                {
+                    <br />
+
+                    <h6>Warranty Info</h6>
+                    <br />
+                    <DxTabs Id="tabs-Warranty-Info" CssClass="tabs-container">
+
+                        @{
+                            foreach (Warranty warranty in @_quote.warranties)
+                            {
+                                switch(warranty.Type)
+                                {
+                                    case "Assertion":
+                                        <DxTabPage Id="Panel-Warranty-Assertion" CssClass="tab-container" Text="Warranty Assertion">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label>Date</label>
+                                                    <span>@warranty.Date</span>
+                                                </div>
+                                                <div class="col">
+                                                    <label>Summary</label>
+                                                    <span>@warranty.Summary</span>
+                                                </div>
+                                                <div class="col">
+                                                    <label>Details</label>
+                                                    <span>@warranty.Details</span>
+                                                </div>
+                                            </div>
+                                        </DxTabPage>
+                                        break;
+                                    case "Claim":
+                                        <DxTabPage Id="Panel-Warranty-Claim" CssClass="tab-container" Text="Warranty Claim">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label>Claim Date</label>
+                                                    <span>@warranty.Date</span>
+                                                </div>
+                                                <div class="col">
+                                                    <label>Summary</label>
+                                                    <span>@warranty.Summary</span>
+                                                </div>
+                                                <div class="col">
+                                                    <label>Claim Reason</label>
+                                                    <span>@warranty.Details</span>
+                                                </div>
+                                            </div>
+                                        </DxTabPage>
+                                        break;
+                                }
+                            }
+                        }
+
+                    </DxTabs>
+
+                    <br />
+                }
             }
         </DetailRowTemplate>
 

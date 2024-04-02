@@ -803,8 +803,17 @@ else
 
         Event _event = new Event(0, 0);
         _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
-
         selectedQuote.events.Add(_event);
+
+        Warranty warranty = new Warranty();
+        warranty.Type = "Assertion";
+        warranty.Summary = "Standard Facilitate Warranty";
+        warranty.Details = "What is Facilitate's standard warranty we are going to offer here???";
+        selectedQuote.warranties.Add(warranty);
+
+        Event warrantyEvent = new Event(0, 0);
+        warrantyEvent.Details = " Standard Facilitate Warranty " + warranty.Type + " applied to Customer";
+        selectedQuote.events.Add(warrantyEvent);
 
         WebServices.UpdateQuote(selectedQuote);
 
