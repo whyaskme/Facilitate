@@ -1,4 +1,4 @@
-﻿@page "/customers"
+﻿@page "/warranties"
 
 @using AdminBlazor.Data
 @using DevExpress.Data
@@ -14,8 +14,8 @@
 
 @inject NavigationManager NavigationManager
 
-<PageTitle>Customers</PageTitle>
-<h1>@updateStatus Customers <span id="update-status" class="@StatusClass">@RefreshStatus</span></h1>
+<PageTitle>Warranties</PageTitle>
+<h1>@updateStatus Warranties <span id="update-status" class="@StatusClass">@RefreshStatus</span></h1>
 
 <script>
     window.getIpAddress = () => {
@@ -94,6 +94,12 @@ else
                 notesCount = _quote.notes.Count;
                 eventsCount = _quote.events.Count;
 
+                <div class="row make-warranty-claim-button">
+                    <div class="col">
+                        <button class="@WarrantyButtonClass" @onclick="@(() => IsPopupVisibleCloseWarrantyClaim = true)">Close Warranty Claim</button>
+                    </div>
+                </div>
+
                 <h6>Homeowner</h6>
                 <div class="row">
                     <div class="col">
@@ -130,31 +136,34 @@ else
 
                 <div class="table-spacer" />
 
-                <h6>Project Details</h6>
-                <div class="row">
-                    <div class="col">
-                        <label>Manager</label>
-                        <span class="detail-item">@_quote.projectManager.Name</span>
+                if (@_quote.projectManager != null)
+                {
+                    <h6>Project Details</h6>
+                    <div class="row">
+                        <div class="col">
+                            <label>Manager</label>
+                            <span class="detail-item">@_quote.projectManager.Name</span>
+                        </div>
+                        <div class="col">
+                            <label>Phone</label>
+                            <span class="detail-item">@_quote.projectManager.Phone</span>
+                        </div>
+                        <div class="col">
+                            <label>Email</label>
+                            <a href="mailto:@_quote.projectManager.Email" target="_blank">
+                                <span class="detail-item">@_quote.projectManager.Email</span>
+                            </a>
+                        </div>
+                        <div class="col">
+                            <label>Market</label>
+                            <a href="https://www.google.com/maps/search/@_quote.projectManager.City, @_quote.projectManager.State @_quote.projectManager.Zip" target="_blank">
+                                @_quote.projectManager.City, @_quote.projectManager.State
+                            </a>
+                        </div>
                     </div>
-                    <div class="col">
-                        <label>Phone</label>
-                        <span class="detail-item">@_quote.projectManager.Phone</span>
-                    </div>
-                    <div class="col">
-                        <label>Email</label>
-                        <a href="mailto:@_quote.projectManager.Email" target="_blank">
-                            <span class="detail-item">@_quote.projectManager.Email</span>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <label>Market</label>
-                        <a href="https://www.google.com/maps/search/@_quote.projectManager.City, @_quote.projectManager.State @_quote.projectManager.Zip" target="_blank">
-                            @_quote.projectManager.City, @_quote.projectManager.State
-                        </a>
-                    </div>
-                </div>
 
-                <br />
+                    <br />
+                }
 
                 <DxTabs CssClass="tabs-container">
 
@@ -280,32 +289,7 @@ else
 
                     </DxTabPage>
 
-                    <DxTabPage Id="Panel-Send-Files" Text="@_emailTabLabel">
-                        <DxUpload Name="fileUpload1"
-                                  SelectButtonText="Upload"
-                                  AllowMultiFileUpload="true"
-                                  UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
-                                  SelectedFilesChanged="@SelectedFilesChanged"
-                                  MaxFileSize="15000000"
-                                  AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
-                                  AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
-                                  CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
-                        </DxUpload>
-                        <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
-                    </DxTabPage>
-
                     <DxTabPage Id="Panel-Attach-Files" Text="Attachments">
-                        <DxUpload Name="fileUpload2"
-                                  SelectButtonText="Upload"
-                                  AllowMultiFileUpload="true"
-                                  UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
-                                  SelectedFilesChanged="@SelectedFilesChanged"
-                                  MaxFileSize="15000000"
-                                  AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
-                                  AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
-                                  CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
-                        </DxUpload>
-
                         @foreach (Attachment attachment in _quote.attachments)
                         {
                             if (!attachment.IsDeleted)
@@ -315,9 +299,6 @@ else
                                         <label>@attachmentsCount) @attachment.Date</label>
                                     </div>
 
-                                    <span class="hyperlink" @onclick="() => SelectAttachmentToDelete(_quote, attachment)">Delete</span>
-
-                                    <span class="bar-spacer">|</span>
                                     <a href="@attachment.MediaUrl" target="_blank">
                                         <span>@attachment.MediaDescription</span>
                                     </a>
@@ -335,7 +316,6 @@ else
                     </DxTabPage>
 
                     <DxTabPage Id="Panel-Notes" Text="Notes">
-                        <button class="btn btn-primary doc-select-button add-item-button" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
                         @foreach (Note note in _quote.notes)
                         {
                             if (!note.IsDeleted)
@@ -345,9 +325,6 @@ else
                                         <label>@notesCount) @note.Date</label>
                                     </div>
 
-                                    <span class="hyperlink" @onclick="() => SelectNoteToDelete(_quote, note)">Delete</span>
-
-                                    <span class="bar-spacer">|</span>
                                     <span>@note.Details</span>
 
                                     <span class="bar-spacer">|</span>
@@ -436,6 +413,7 @@ else
                     </DxTabPage>
 
                 </DxTabs>
+
                 <br />
 
                 <h6>Customer Qualifications</h6>
@@ -483,12 +461,6 @@ else
                     </DxTabPage>
 
                 </DxTabs>
-
-                <div id="div-controls-container" class="quote-detail-controls-container">
-                    <button class="btn btn-primary" @onclick="@(() => IsPopupVisibleCompleteCustomer = true)">Complete Customer</button>
-                    <button class="btn btn-primary" @onclick="CloseDetails">Close</button>
-                </div>
-
             }
         </DetailRowTemplate>
 
@@ -515,13 +487,14 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup @bind-Visible="@IsPopupVisibleCompleteCustomer" ShowFooter="true" HeaderText="Complete Customer">
+<DxPopup @bind-Visible="@IsPopupVisibleCloseWarrantyClaim" ShowFooter="true" HeaderText="Close Warranty Claim?">
     <BodyContentTemplate>
-        If this is fully qualified to Complete Customer criteria, then click Save.
+        <p>Has this Warranty Claim been completed?</p>
+        <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="CompleteCustomer" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleCompleteCustomer = false)" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="CloseWarrantyClaim" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleCloseWarrantyClaim = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -586,7 +559,15 @@ else
 
 @code {
 
+    public int currentItemIndex = 0;
+
     public int noteCount = 0;
+
+    public int roofsCount = 0;
+    public int productsCount = 0;
+
+    public string roofsCountLabel = "";
+    public string productsCountLabel = "";
 
     public Quote selectedQuote { get; set; }
     public Attachment selectedAttachment { get; set; }
@@ -603,8 +584,6 @@ else
     int SelectedFilesCount { get; set; }
 
     ObjectId SelectedFileId { get; set; }
-
-    public int currentItemIndex = 0;
 
     IGrid QuoteGrid { get; set; }
 
@@ -644,12 +623,6 @@ else
     public int notesCount = 0;
     public int eventsCount = 0;
 
-    public int roofsCount = 0;
-    public int productsCount = 0;
-
-    public string roofsCountLabel = "";
-    public string productsCountLabel = "";
-
     #endregion
 
     #region Popup properties
@@ -660,7 +633,7 @@ else
     bool IsPopupVisibleAddNote { get; set; }
     bool IsPopupVisibleSelectNoteToDelete { get; set; }
 
-    bool IsPopupVisibleCompleteCustomer { get; set; }
+    bool IsPopupVisibleCloseWarrantyClaim { get; set; }
     bool IsArchivePopupVisible { get; set; }
 
     bool IsPopupVisibleHelpSendFiles { get; set; }
@@ -694,6 +667,9 @@ else
 
     [Parameter]
     public string ButtonClass { get; set; } = "btn btn-outline-primary btn-refresh-active";
+
+    [Parameter]
+    public string WarrantyButtonClass { get; set; } = "btn btn-outline-primary btn-warning";
 
     [Parameter]
     public bool RefreshDisabled { get; set; } = false;
@@ -835,7 +811,7 @@ else
 
         QuoteGrid.ExpandDetailRow(selectedIndex);
 
-        PauseRefresh(true);
+        PauseRefresh(false);
     }
 
     public void CloseDetails()
@@ -899,22 +875,29 @@ else
         notesCount--;
     }
 
-    public void CompleteCustomer()
+    public void CloseWarrantyClaim()
     {
-        selectedQuote.status = "Complete";
+        selectedQuote.status = "Archive";
 
         QuoteGrid.CollapseDetailRow(selectedIndex);
 
         var projectManager = selectedQuote.projectManager;
 
+        Note note = new Note();
+        note.Summary = "Note Added (Close Warranty Claim)";
+        note.Details = @NoteDetails;
+
+        selectedQuote.notes.Add(note);
+
         Event _event = new Event(0, 0);
-        _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Completed Customer";
+        _event.Details = "Warranty Claim moved back to Archive";
 
         selectedQuote.events.Add(_event);
 
         WebServices.UpdateQuote(selectedQuote);
 
-        IsPopupVisibleCompleteCustomer = false;
+        IsPopupVisibleCloseWarrantyClaim = false;
+        NoteDetails = "";
 
         PauseRefresh(false);
     }
@@ -969,7 +952,7 @@ else
 
         _timer = new Timer(new TimerCallback(_ =>
         {
-            quotes = webServices.GetQuotes("Customer");
+            quotes = webServices.GetQuotes("Warranty");
             updateStatus = quotes.Count().ToString("N0");
             StatusContainerClass = "container-action-buttons-show";
 

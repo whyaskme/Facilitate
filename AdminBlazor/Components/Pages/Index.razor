@@ -26,6 +26,7 @@
                         <span class="summary-item"><a href="/customers">Customers:</a> <b>@countCustomers.ToString("N0")</b></span>
                         <span class="summary-item"><a href="/completed">Completions:</a> <b>@countCompleted.ToString("N0")</b></span>
                         <span class="summary-item"><a href="/archives">Archives:</a> <b>@countArchives.ToString("N0")</b></span>
+                        <span class="summary-item"><a href="/warranties">Warranties:</a> <b>@countWarranties.ToString("N0")</b></span>
                     </div>
 
                     <div class="welcome-title-content">
@@ -54,6 +55,7 @@
     public int countCustomers = 0;
     public int countCompleted = 0;
     public int countArchives = 0;
+    public int countWarranties = 0;
 
     public string updateStatus = "Refreshing";
 
@@ -81,5 +83,6 @@
         countCustomers = WebServices.GetQuoteCount("Customer");
         countCompleted = WebServices.GetQuoteCount("Complete");
         countArchives = WebServices.GetQuoteCount("Archive");
+        countWarranties = WebServices.GetQuoteCount("Warranty");
     }
 }

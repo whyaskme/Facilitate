@@ -94,12 +94,13 @@ else
                 notesCount = _quote.notes.Count;
                 eventsCount = _quote.events.Count;
 
-                <h6>Homeowner</h6>
-                <div class="row">
+                <div class="row make-warranty-claim-button">
                     <div class="col">
                         <button class="@ButtonClass" @onclick="@(() => IsPopupVisibleMakeWarrantyClaim = true)">Make Warranty Claim</button>
                     </div>
                 </div>
+
+                <h6>Homeowner</h6>
                 <div class="row">
                     <div class="col">
                         <label>Name</label>
@@ -416,6 +417,7 @@ else
                 <br />
 
                 <h6>Customer Qualifications</h6>
+                <br />
                 <DxTabs Id="tabs-Customer-Qualifications" CssClass="tabs-container">
 
                     <DxTabPage Id="Panel-Customer-Qualifications-Mission-Statement-Acknowledgment" CssClass="tab-container" Text="Mission Statement Acknowledgment">
@@ -485,9 +487,9 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup @bind-Visible="@IsPopupVisibleMakeWarrantyClaim" ShowFooter="true" HeaderText="Make Customer">
+<DxPopup @bind-Visible="@IsPopupVisibleMakeWarrantyClaim" ShowFooter="true" HeaderText="Make a Warranty Claim?">
     <BodyContentTemplate>
-        <p>Why are you making a Warranty Clain on this archived project?</p>
+        <p>Why are you making a Warranty Claim on this archived project?</p>
         <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
     </BodyContentTemplate>
     <FooterContentTemplate>
@@ -872,11 +874,17 @@ else
 
     public void MakeWarrantyClaim()
     {
-        selectedQuote.status = "Archive-Warranty";
+        selectedQuote.status = "Warranty";
 
         QuoteGrid.CollapseDetailRow(selectedIndex);
 
         var projectManager = selectedQuote.projectManager;
+
+        Note note = new Note();
+        note.Summary = "Note Added (Make Warranty Claim)";
+        note.Details = @NoteDetails;
+
+        selectedQuote.notes.Add(note);
 
         Event _event = new Event(0, 0);
         _event.Details = "Archive converted to Warranty Claim";
@@ -886,6 +894,7 @@ else
         WebServices.UpdateQuote(selectedQuote);
 
         IsPopupVisibleMakeWarrantyClaim = false;
+        NoteDetails = "";
 
         PauseRefresh(false);
     }

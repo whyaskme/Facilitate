@@ -13,6 +13,17 @@ table {
     width: 100% !important;
 }
 
+.btn-warning{
+    background-color: #b10505 !important;
+    color: #ffffff !important;
+}
+
+.make-warranty-claim-button {
+    border-bottom: solid 1px #ff0000 !important;
+    text-align: center !important;
+    padding: 25px !important;
+}
+
 .row {
     border: solid 0px #ff0000 !important;
     margin-top: 5px !important;
