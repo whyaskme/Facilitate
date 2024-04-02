@@ -41,6 +41,9 @@ namespace Facilitate.Libraries.Models
             market = string.Empty;
             externalUrl = string.Empty;
             timestamp = DateTime.UtcNow;
+
+            totalQuote = 0;
+
             numberOfStructures = 0;
             numberOfIncludedStructures = 0;
             totalSquareFeet = 0;
@@ -77,6 +80,8 @@ namespace Facilitate.Libraries.Models
         public string market { get; set; }
         public string externalUrl { get; set; }
         public DateTime timestamp { get; set; }
+
+        public double totalQuote { get; set; }
 
         public int numberOfStructures { get; set; }
         public int numberOfIncludedStructures { get; set; }

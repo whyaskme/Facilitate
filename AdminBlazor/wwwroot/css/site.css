@@ -19,10 +19,9 @@ table {
 }
 
 .item-details-container {
-    border-top: solid 1px #dad7d7 !important;
-    position: relative !important;
-    top: 20px !important;
-    padding-top: 20px !important;
+    border-bottom: dashed 1px #c0c0c0 !important;
+    margin-bottom: 10px !important;
+    padding-bottom: 10px !important;
 }
 
 .product-container {

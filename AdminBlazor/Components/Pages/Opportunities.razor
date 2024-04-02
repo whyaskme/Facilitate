@@ -66,13 +66,16 @@ else
             KeyboardNavigationEnabled="true">
             <Columns>
                 <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm:ss tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
-                    <DxGridDataColumn Caption="First" FieldName="firstName" />
-                    <DxGridDataColumn Caption="Last" FieldName="lastName" />
-                    <DxGridDataColumn Caption="Street" FieldName="street" />
-                    <DxGridDataColumn Caption="City" FieldName="city" />
-                    <DxGridDataColumn Caption="State" FieldName="state" />
-                    <DxGridDataColumn Caption="Zip" FieldName="zip" />
-                <DxGridDataColumn Caption="Manager" TextAlignment="GridTextAlignment.Left" FieldName="projectManager.Name" />
+                <DxGridDataColumn Caption="First" FieldName="firstName" />
+                <DxGridDataColumn Caption="Last" FieldName="lastName" />
+                <DxGridDataColumn Caption="Street" FieldName="street" />
+                <DxGridDataColumn Caption="City" FieldName="city" />
+                <DxGridDataColumn Caption="State" FieldName="state" />
+                <DxGridDataColumn Caption="Zip" FieldName="zip" />
+                <DxGridDataColumn Width="50" Caption="Roofs" FieldName="numberOfIncludedStructures" />
+                <DxGridDataColumn Width="75" Caption="SqFt" FieldName="totalSquareFeet" />
+                <DxGridDataColumn Width="100" Caption="Quote" DisplayFormat="C" FieldName="totalQuote" />
+                <DxGridDataColumn Caption="Manager" FieldName="projectManager.Name" />
             </Columns>
 
             <DetailRowTemplate>
