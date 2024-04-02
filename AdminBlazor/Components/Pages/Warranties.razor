@@ -165,7 +165,7 @@ else
                     <br />
                 }
 
-                <DxTabs CssClass="tabs-container">
+                <DxTabs Id="tabs-Project-Details" CssClass="tabs-container">
 
                     <DxTabPage Id="Panel-Project-Manager" CssClass="tab-container" Text="@roofsCountLabel">
 
@@ -289,7 +289,32 @@ else
 
                     </DxTabPage>
 
+                    <DxTabPage Id="Panel-Send-Files" Text="@_emailTabLabel">
+                        <DxUpload Name="fileUpload1"
+                                  SelectButtonText="Upload"
+                                  AllowMultiFileUpload="true"
+                                  UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                  SelectedFilesChanged="@SelectedFilesChanged"
+                                  MaxFileSize="15000000"
+                                  AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
+                                  AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
+                                  CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
+                        </DxUpload>
+                        <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
+                    </DxTabPage>
+
                     <DxTabPage Id="Panel-Attach-Files" Text="Attachments">
+                        <DxUpload Name="fileUpload2"
+                                  SelectButtonText="Upload"
+                                  AllowMultiFileUpload="true"
+                                  UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                  SelectedFilesChanged="@SelectedFilesChanged"
+                                  MaxFileSize="15000000"
+                                  AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
+                                  AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
+                                  CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
+                        </DxUpload>
+
                         @foreach (Attachment attachment in _quote.attachments)
                         {
                             if (!attachment.IsDeleted)
@@ -299,6 +324,9 @@ else
                                         <label>@attachmentsCount) @attachment.Date</label>
                                     </div>
 
+                                    <span class="hyperlink" @onclick="() => SelectAttachmentToDelete(_quote, attachment)">Delete</span>
+
+                                    <span class="bar-spacer">|</span>
                                     <a href="@attachment.MediaUrl" target="_blank">
                                         <span>@attachment.MediaDescription</span>
                                     </a>
@@ -316,6 +344,7 @@ else
                     </DxTabPage>
 
                     <DxTabPage Id="Panel-Notes" Text="Notes">
+                        <button class="btn btn-primary doc-select-button add-item-button" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
                         @foreach (Note note in _quote.notes)
                         {
                             if (!note.IsDeleted)
@@ -325,6 +354,9 @@ else
                                         <label>@notesCount) @note.Date</label>
                                     </div>
 
+                                    <span class="hyperlink" @onclick="() => SelectNoteToDelete(_quote, note)">Delete</span>
+
+                                    <span class="bar-spacer">|</span>
                                     <span>@note.Details</span>
 
                                     <span class="bar-spacer">|</span>
