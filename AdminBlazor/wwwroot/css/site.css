@@ -93,9 +93,10 @@ td {
 }
 
 .table-spacer {
-    border: solid 0px #eee !important;
+    border-top: solid 1px #c0c0c0 !important;
     border-collapse: collapse !important;
     margin-top: 25px !important;
+    padding-top: 25px !important;
     width: 100% !important;
 }
 

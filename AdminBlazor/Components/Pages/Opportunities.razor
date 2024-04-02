@@ -136,6 +136,32 @@ else
 
                 <div class="table-spacer" />
 
+                <h6>Project Details</h6>
+                <div class="row">
+                    <div class="col">
+                        <label>Manager</label>
+                        <span class="detail-item">@_quote.projectManager.Name</span>
+                    </div>
+                    <div class="col">
+                        <label>Phone</label>
+                        <span class="detail-item">@_quote.projectManager.Phone</span>
+                    </div>
+                    <div class="col">
+                        <label>Email</label>
+                        <a href="mailto:@_quote.projectManager.Email" target="_blank">
+                            <span class="detail-item">@_quote.projectManager.Email</span>
+                        </a>
+                    </div>
+                    <div class="col">
+                        <label>Home Market</label>
+                        <a href="https://www.google.com/maps/search/@_quote.projectManager.City, @_quote.projectManager.State @_quote.projectManager.Zip" target="_blank">
+                            @_quote.projectManager.City, @_quote.projectManager.State
+                        </a>
+                    </div>
+                </div>
+
+                <br />
+
                 <DxTabs CssClass="tabs-container">
 
                     <DxTabPage Id="Panel-Project-Manager" CssClass="tab-container" Text="@roofsCountLabel">

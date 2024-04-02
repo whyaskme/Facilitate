@@ -66,9 +66,9 @@ else
             <DxGridDataColumn Caption="City" FieldName="city" />
             <DxGridDataColumn Caption="State" FieldName="state" />
             <DxGridDataColumn Caption="Zip" FieldName="zip" />
-@*             <DxGridDataColumn Width="50" Caption="Roofs" FieldName="numberOfIncludedStructures" />
+            <DxGridDataColumn Width="50" Caption="Roofs" FieldName="numberOfIncludedStructures" />
             <DxGridDataColumn Width="75" Caption="SqFt" FieldName="totalSquareFeet" />
-            <DxGridDataColumn Width="100" Caption="Quote" DisplayFormat="C" FieldName="totalQuote" /> *@
+            <DxGridDataColumn Width="100" Caption="Quote" DisplayFormat="C" FieldName="totalQuote" />
             <DxGridDataColumn Caption="Manager" TextAlignment="GridTextAlignment.Left" FieldName="projectManager.Name" />
         </Columns>
 
@@ -127,6 +127,32 @@ else
                     </div>
                     <div class="col"></div>
                 </div>
+
+                <h6>Project Details</h6>
+                <div class="row">
+                    <div class="col">
+                        <label>Manager</label>
+                        <span class="detail-item">@_quote.projectManager.Name</span>
+                    </div>
+                    <div class="col">
+                        <label>Phone</label>
+                        <span class="detail-item">@_quote.projectManager.Phone</span>
+                    </div>
+                    <div class="col">
+                        <label>Email</label>
+                        <a href="mailto:@_quote.projectManager.Email" target="_blank">
+                            <span class="detail-item">@_quote.projectManager.Email</span>
+                        </a>
+                    </div>
+                    <div class="col">
+                        <label>Home Market</label>
+                        <a href="https://www.google.com/maps/search/@_quote.projectManager.City, @_quote.projectManager.State @_quote.projectManager.Zip" target="_blank">
+                            @_quote.projectManager.City, @_quote.projectManager.State
+                        </a>
+                    </div>
+                </div>
+
+                <br />
 
                 <div class="table-spacer" />
 
