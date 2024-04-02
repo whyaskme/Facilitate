@@ -66,6 +66,9 @@ else
             <DxGridDataColumn Caption="City" FieldName="city" />
             <DxGridDataColumn Caption="State" FieldName="state" />
             <DxGridDataColumn Caption="Zip" FieldName="zip" />
+@*             <DxGridDataColumn Width="50" Caption="Roofs" FieldName="numberOfIncludedStructures" />
+            <DxGridDataColumn Width="75" Caption="SqFt" FieldName="totalSquareFeet" />
+            <DxGridDataColumn Width="100" Caption="Quote" DisplayFormat="C" FieldName="totalQuote" /> *@
             <DxGridDataColumn Caption="Manager" TextAlignment="GridTextAlignment.Left" FieldName="projectManager.Name" />
         </Columns>
 
@@ -535,7 +538,15 @@ else
 
 @code {
 
+    public int currentItemIndex = 0;
+
     public int noteCount = 0;
+
+    public int roofsCount = 0;
+    public int productsCount = 0;
+
+    public string roofsCountLabel = "";
+    public string productsCountLabel = "";
 
     public Quote selectedQuote { get; set; }
     public Attachment selectedAttachment { get; set; }
