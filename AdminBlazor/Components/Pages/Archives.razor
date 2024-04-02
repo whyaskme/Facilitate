@@ -80,9 +80,9 @@ else
 
                 roofsCount = _quote.structures.Count;
                 if (roofsCount <= 1)
-                    roofsCountLabel = roofsCount.ToString() + " Roof Quoted";
+                    roofsCountLabel = roofsCount.ToString() + " Roof Project";
                 else
-                    roofsCountLabel = roofsCount.ToString() + " Roofs Quoted";
+                    roofsCountLabel = roofsCount.ToString() + " Roof Projects";
 
                 productsCount = _quote.products.Count;
                 if (productsCount <= 1)
@@ -149,7 +149,7 @@ else
                             </a>
                         </div>
                         <div class="col">
-                            <label>Home Market</label>
+                            <label>Market</label>
                             <a href="https://www.google.com/maps/search/@_quote.projectManager.City, @_quote.projectManager.State @_quote.projectManager.Zip" target="_blank">
                                 @_quote.projectManager.City, @_quote.projectManager.State
                             </a>
@@ -166,6 +166,10 @@ else
                         <div class="container">
 
                             <div class="row item-details-container">
+                                <div class="col">
+                                    <label>Total Quote</label>
+                                    <span><b>@_quote.totalQuote.ToString("C")</b></span>
+                                </div>
                                 <div class="col">
                                     <label>Total Sqft</label>
                                     <span><b>@_quote.totalSquareFeet.ToString("N0")</b></span>
@@ -247,15 +251,15 @@ else
                                         <div class="row">
                                             <div class="col">
                                                 <label>Total Quote</label>
-                                                <span>$@_quote.products[i].priceInfo.total.ToString("N0")</span>
+                                                <span>@_quote.products[i].priceInfo.total.ToString("C")</span>
                                             </div>
                                             <div class="col">
                                                 <label>Per Square</label>
-                                                <span>$@_quote.products[i].priceInfo.pricePerSquare.ToString("N0")</span>
+                                                <span>@_quote.products[i].priceInfo.pricePerSquare.ToString("C")</span>
                                             </div>
                                             <div class="col">
                                                 <label>Monthly</label>
-                                                <span>$@_quote.products[i].priceInfo.monthly.ToString("N0")</span>
+                                                <span>@_quote.products[i].priceInfo.monthly.ToString("C")</span>
                                             </div>
                                         </div>
 
