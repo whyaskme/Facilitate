@@ -78,20 +78,20 @@ else
                 <DxGridDataColumn Caption="Manager" FieldName="projectManager.Name" />
             </Columns>
 
-            <DetailRowTemplate>
+        <DetailRowTemplate>
             @{
                 var _quote = (Quote)context.DataItem;
 
                 var _emailTabLabel = "Email " + @_quote.firstName + " Documents";
 
                 roofsCount = _quote.structures.Count;
-                if(roofsCount <= 1)
+                if (roofsCount <= 1)
                     roofsCountLabel = roofsCount.ToString() + " Roof Quoted";
                 else
                     roofsCountLabel = roofsCount.ToString() + " Roofs Quoted";
 
                 productsCount = _quote.products.Count;
-                if(productsCount <= 1)
+                if (productsCount <= 1)
                     productsCountLabel = productsCount.ToString() + " Product Quoted";
                 else
                     productsCountLabel = productsCount.ToString() + " Products Quoted";
@@ -136,46 +136,26 @@ else
 
                 <div class="table-spacer" />
 
-                <h6>Project Manager</h6>
-                <div id="project-manager" class="row">
-                    <div class="col">
-                        <label>Name</label>
-                        <span>@_quote.projectManager.Name</span>
-                    </div>
-                    <div class="col">
-                        <label>Phone</label>
-                        <span>@_quote.projectManager.Phone</span>
-                    </div>
-                    <div class="col">
-                        <label>Email</label>
-                        <a href="mailto:@_quote.projectManager.Email" target="_blank">
-                            <span>@_quote.projectManager.Email</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="table-spacer" />
-
                 <DxTabs CssClass="tabs-container">
 
                     <DxTabPage Id="Panel-Project-Manager" CssClass="tab-container" Text="@roofsCountLabel">
 
                         <div class="container">
 
-                            <div class="row">
+                            <div class="row item-details-container">
                                 <div class="col">
                                     <label>Total Sqft</label>
                                     <span><b>@_quote.totalSquareFeet.ToString("N0")</b></span>
                                 </div>
                                 <div class="col">
                                     <label>Included Roofs</label>
-                                    <span><b>@_quote.numberOfIncludedStructures</b></span>
+                                    <span><b>@_quote.numberOfIncludedStructures.ToString("N0")</b></span>
                                 </div>
                                 <div class="col">
                                 </div>
                             </div>
 
-                            <div class="row item-details-container">
+                            <div class="row">
                                 @{
                                     currentItemIndex = 0;
 
@@ -184,10 +164,14 @@ else
                                         currentItemIndex = i + 1;
 
                                         <b>Roof #@currentItemIndex</b>
-                                        <div class="row">
+                                        <div class="row item-details-container">
                                             <div class="col">
                                                 <label>Name</label>
                                                 <span>@_quote.structures[i].name</span>
+                                            </div>
+                                            <div class="col">
+                                                <label>SqFt</label>
+                                                <span>@_quote.structures[i].squareFeet.ToString("N0")</span>
                                             </div>
                                             <div class="col">
                                                 <label>Complexity</label>
@@ -220,47 +204,51 @@ else
 
                                     <b>Product #@currentItemIndex</b>
 
-                                    <div class="row">
-                                        <div class="col">
-                                            <label>Name</label>
-                                            <span>@_quote.products[i].name</span>
-                                        </div>
-                                        <div class="col">
-                                            <label>Waste Factor</label>
-                                            <span>@_quote.products[i].wasteFactorMainRoof</span>
-                                        </div>
-                                        <div class="col">
-                                            <label>Price Type</label>
-                                            <span>@priceLabel</span>
-                                        </div>
-                                    </div>
+                                    <div class="item-details-container">
 
-                                    <div class="row">
-                                        <div class="col">
-                                            <label>Total Quote</label>
-                                            <span>$@_quote.products[i].priceInfo.total</span>
+                                        <div class="row">
+                                            <div class="col">
+                                                <label>Name</label>
+                                                <span>@_quote.products[i].name</span>
+                                            </div>
+                                            <div class="col">
+                                                <label>Waste Factor</label>
+                                                <span>@_quote.products[i].wasteFactorMainRoof</span>
+                                            </div>
+                                            <div class="col">
+                                                <label>Price Type</label>
+                                                <span>@priceLabel</span>
+                                            </div>
                                         </div>
-                                        <div class="col">
-                                            <label>Per Square</label>
-                                            <span>$@_quote.products[i].priceInfo.pricePerSquare</span>
-                                        </div>
-                                        <div class="col">
-                                            <label>Monthly</label>
-                                            <span>$@_quote.products[i].priceInfo.monthly</span>
-                                        </div>
-                                    </div>
 
-                                    <div class="row">
-                                        <div class="col">
-                                            <label>APR</label>
-                                            <span>@_quote.products[i].priceInfo.apr%</span>
+                                        <div class="row">
+                                            <div class="col">
+                                                <label>Total Quote</label>
+                                                <span>$@_quote.products[i].priceInfo.total.ToString("N0")</span>
+                                            </div>
+                                            <div class="col">
+                                                <label>Per Square</label>
+                                                <span>$@_quote.products[i].priceInfo.pricePerSquare.ToString("N0")</span>
+                                            </div>
+                                            <div class="col">
+                                                <label>Monthly</label>
+                                                <span>$@_quote.products[i].priceInfo.monthly.ToString("N0")</span>
+                                            </div>
                                         </div>
-                                        <div class="col">
-                                            <label>Months</label>
-                                            <span>@_quote.products[i].priceInfo.months</span>
+
+                                        <div class="row">
+                                            <div class="col">
+                                                <label>APR</label>
+                                                <span>@_quote.products[i].priceInfo.apr%</span>
+                                            </div>
+                                            <div class="col">
+                                                <label>Months</label>
+                                                <span>@_quote.products[i].priceInfo.months</span>
+                                            </div>
+                                            <div class="col">
+                                            </div>
                                         </div>
-                                        <div class="col">
-                                        </div>
+
                                     </div>
                                 }
                             }
@@ -268,30 +256,30 @@ else
 
                     </DxTabPage>
 
-                    <DxTabPage Id="Panel-Documents" Text="@_emailTabLabel">
+                    <DxTabPage Id="Panel-Send-Files" Text="@_emailTabLabel">
                         <DxUpload Name="fileUpload1"
-                                    SelectButtonText="Upload"
-                                    AllowMultiFileUpload="true"
-                                    UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
-                                    SelectedFilesChanged="@SelectedFilesChanged"
-                                    MaxFileSize="15000000"
-                                    AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
-                                    AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
-                                    CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
+                                  SelectButtonText="Upload"
+                                  AllowMultiFileUpload="true"
+                                  UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                  SelectedFilesChanged="@SelectedFilesChanged"
+                                  MaxFileSize="15000000"
+                                  AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
+                                  AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
+                                  CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
                         </DxUpload>
                         <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
                     </DxTabPage>
 
-                    <DxTabPage Id="Panel-Attachments" Text="Attachments">
+                    <DxTabPage Id="Panel-Attach-Files" Text="Attachments">
                         <DxUpload Name="fileUpload2"
-                                    SelectButtonText="Upload"
-                                    AllowMultiFileUpload="true"
-                                    UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
-                                    SelectedFilesChanged="@SelectedFilesChanged"
-                                    MaxFileSize="15000000"
-                                    AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
-                                    AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
-                                    CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
+                                  SelectButtonText="Upload"
+                                  AllowMultiFileUpload="true"
+                                  UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                  SelectedFilesChanged="@SelectedFilesChanged"
+                                  MaxFileSize="15000000"
+                                  AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
+                                  AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
+                                  CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
                         </DxUpload>
 
                         @foreach (Attachment attachment in _quote.attachments)
@@ -425,15 +413,14 @@ else
 
                 </DxTabs>
 
-
-                <div id="div-controls-container" class="quote-detail-controls-container">
+                <div class="quote-detail-controls-container">
                     <button class="btn btn-primary" @onclick="@(() => IsPopupVisibleMakeCustomer = true)">Make Customer</button>
                     <button class="btn btn-primary" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
                     <button class="btn btn-primary" @onclick="CloseDetails">Close</button>
                 </div>
 
             }
-            </DetailRowTemplate>
+        </DetailRowTemplate>
 
         </DxGrid>
 }
