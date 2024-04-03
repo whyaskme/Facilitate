@@ -20,7 +20,7 @@
     <span class="summary-item">
         <span class="stat-count"><b>@leaderboardStats.TotalQuoteCount.ToString("N0") Quotes</b></span>
         <span class="stat-count">@leaderboardStats.TotalQuoteValue.ToString("C0")</span>
-        <span class="stat-count">(@leaderboardStats.TotalQuoteSqFt.ToString("N0") sqft)</span>
+        <span class="stat-count"><span class="value-sqft-separator">&raquo;</span>@leaderboardStats.TotalQuoteSqFt.ToString("N0")sqft</span>
     </span>
     <span class="summary-item">
         <a href="/leads">Leads</a>
@@ -59,7 +59,7 @@
     <span id="update-status" class="@StatusClass">@RefreshStatus</span>
     <span class="stats-container-header">
         <span class="">@leaderboardStats.WarrantyValue.ToString("C0")</span>
-        <span class="">(@leaderboardStats.WarrantySqFt.ToString("N0") sqft)</span>
+        <span class=""><span class="value-sqft-separator">&raquo;</span>@leaderboardStats.WarrantySqFt.ToString("N0")sqft</span>
     </span>
 </h1>
 
@@ -968,14 +968,17 @@ else
 
         selectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(selectedQuote);
-
         IsPopupVisibleAddNote = false;
         NoteDetails = "";
 
+        WebServices.UpdateQuote(selectedQuote);
+
+        RefreshTimer();
+        quotes = webServices.GetQuotes("New");
+
         QuoteGrid.ExpandDetailRow(selectedIndex);
 
-        PauseRefresh(false);
+        PauseRefresh(true);
     }
 
     public void CloseDetails()

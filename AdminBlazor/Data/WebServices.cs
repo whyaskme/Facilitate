@@ -98,31 +98,64 @@ namespace AdminBlazor.Data
             return null;
         }
 
-        // GET api/<WebServices>/5
-        [HttpGet("{id}")]
-        public string GetQuote(int id)
+        public Quote GetQuote(Quote selectedQuote)
         {
-            return "value";
+            List<Attachment> unSortedFiles = new List<Attachment>();
+            List<Note> unSortedNotes = new List<Note>();
+            List<Event> unSortedEvents = new List<Event>();
+
+            try
+            {
+                client = new MongoClient(mongoUri);
+                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
+
+                var builder = Builders<Quote>.Filter;
+                var filter = builder.Eq(f => f._id, selectedQuote._id);
+
+                selectedQuote = (Quote)collection.Find(filter);
+
+                selectedQuote = SortItemsByDateDesc(selectedQuote);
+
+
+                return selectedQuote;
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
+            return null;
         }
 
-        // POST api/<WebServices>
-        [HttpPost]
-        public void PostQuote([FromBody] string value)
+        public string CreateQuote(Quote quote)
         {
-        }
+            try
+            {
+                client = new MongoClient(mongoUri);
 
-        // PUT api/<WebServices>/5
-        [HttpPut("{id}")]
-        public void PutQuote(int id, [FromBody] string value)
-        {
+                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
+                collection.InsertOne(quote);
+
+                resultMsg = "Added Quote!";
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
+            return resultMsg;
         }
 
         [HttpPut("{quote}")]
         public Quote UpdateQuote(Quote quote)
         {
             string quoteId = quote._id;
-
-            quote = SortItemsByDateDesc(quote);
 
             quote.lastUpdated = DateTime.UtcNow;
 
@@ -144,6 +177,9 @@ namespace AdminBlazor.Data
             {
 
             }
+
+            //quote = SortItemsByDateDesc(quote);
+
             return quote;
         }
 
@@ -272,27 +308,24 @@ namespace AdminBlazor.Data
             return originalList.OrderByDescending(x => x.Date).ToList();
         }
 
-        public string CreateQuote(Quote quote)
-        {
-            try
-            {
-                client = new MongoClient(mongoUri);
+        //// GET api/<WebServices>/5
+        //[HttpGet("{id}")]
+        //public string GetQuote(int id)
+        //{
+        //    return "value";
+        //}
 
-                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
-                collection.InsertOne(quote);
+        //// POST api/<WebServices>
+        //[HttpPost]
+        //public void PostQuote([FromBody] string value)
+        //{
+        //}
 
-                resultMsg = "Added Quote!";
-            }
-            catch (Exception ex)
-            {
-                resultMsg = ex.Message;
-            }
-            finally
-            {
-
-            }
-            return resultMsg;
-        }
+        //// PUT api/<WebServices>/5
+        //[HttpPut("{id}")]
+        //public void PutQuote(int id, [FromBody] string value)
+        //{
+        //}
 
         //[HttpDelete("{quoteId}, {quote}")]
         //public string DeleteQuote(string quoteId)
