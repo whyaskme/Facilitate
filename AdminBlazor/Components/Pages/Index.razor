@@ -22,12 +22,36 @@
                     <div class="welcome-title-header">Welcome to Facilitate Platform Administration</div>
 
                     <div class="quotes-leaderboard">
-                        <span class="summary-item"><a href="/leads">Leads:</a> <b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
-                        <span class="summary-item"><a href="/opportunities">Opportunities:</a> <b>@leaderboardStats.OpportunityCount.ToString("N0")</b></span>
-                        <span class="summary-item"><a href="/customers">Customers:</a> <b>@leaderboardStats.CustomerCount.ToString("N0")</b></span>
-                        <span class="summary-item"><a href="/completed">Completions:</a> <b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
-                        <span class="summary-item"><a href="/archives">Archives:</a> <b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
-                        <span class="summary-item"><a href="/warranties">Warranties:</a> <b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
+                        <span class="summary-item"><a href="/leads">Leads</a> 
+                            <span class="stat-count">@leaderboardStats.LeadCount.ToString("N0")</span> 
+                            <span class="stat-count">@leaderboardStats.LeadValue.ToString("C")</span>
+                            <span class="">@leaderboardStats.LeadSqFt.ToString("N0")ft</span>
+                        </span>
+                        <span class="summary-item"><a href="/opportunities">Opportunities</a> 
+                            <span class="stat-count">@leaderboardStats.OpportunityCount.ToString("N0")</span> 
+                            <span class="stat-count">@leaderboardStats.OpportunityValue.ToString("C")</span>
+                            <span class="">@leaderboardStats.OpportunitySqFt.ToString("N0")ft</span>
+                        </span>
+                        <span class="summary-item"><a href="/customers">Customers</a> 
+                            <span class="stat-count">@leaderboardStats.CustomerCount.ToString("N0")</span> 
+                            <span class="stat-count">@leaderboardStats.CustomerValue.ToString("C")</span> 
+                            <span class="">@leaderboardStats.CustomerSqFt.ToString("N0")ft</span>
+                        </span>
+                        <span class="summary-item"><a href="/completed">Completions</a> 
+                            <span class="stat-count">@leaderboardStats.CompletionCount.ToString("N0")</span> 
+                            <span class="stat-count">@leaderboardStats.CompletionValue.ToString("C")</span> 
+                            <span class="">@leaderboardStats.CompletionSqFt.ToString("N0")ft</span>
+                        </span>
+                        <span class="summary-item"><a href="/archives">Archives</a> 
+                            <span class="stat-count">@leaderboardStats.ArchiveCount.ToString("N0")</span> 
+                            <span class="stat-count">@leaderboardStats.ArchiveValue.ToString("C")</span> 
+                            <span class="">@leaderboardStats.ArchiveSqFt.ToString("N0")ft</span>
+                        </span>
+                        <span class="summary-item"><a href="/warranties">Warranties</a> 
+                            <span class="stat-count">@leaderboardStats.WarrantyCount.ToString("N0")</span> 
+                            <span class="stat-count">@leaderboardStats.WarrantyValue.ToString("C")</span> 
+                            <span class="">@leaderboardStats.WarrantySqFt.ToString("N0")ft</span>
+                        </span>
                     </div>
 
                     <div class="welcome-title-content">
@@ -49,7 +73,7 @@
 
 @code {
 
-    public QuoteStat leaderboardStats;
+    public QuoteLeaderboard leaderboardStats;
 
     protected override void OnInitialized()
     {

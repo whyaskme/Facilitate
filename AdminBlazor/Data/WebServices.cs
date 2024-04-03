@@ -225,20 +225,39 @@ namespace AdminBlazor.Data
             return 0;
         }
 
-        public QuoteStat GetLeaderBoardStats()
+        public QuoteLeaderboard GetLeaderBoardStats()
         {
-            QuoteStat quoteStat = new QuoteStat();
+            QuoteLeaderboard quoteStat = new QuoteLeaderboard();
 
             try
             {
                 client = new MongoClient(mongoUri);
                 collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
 
-                quoteStat.LeadCount = collection.CountDocuments("Archive");
-                quoteStat.OpportunityCount = collection.CountDocuments("New");
-                quoteStat.CustomerCount = collection.CountDocuments("In Progress");
-                quoteStat.CompletionCount = collection.CountDocuments("Completed");
-                quoteStat.ArchiveCount = collection.CountDocuments("Completed");
+                var builder = Builders<Quote>.Filter;
+                var filter = builder.Eq(f => f.status, "New");
+                quoteStat.LeadCount = collection.CountDocuments(filter);
+                quoteStat.LeadValue = 0;
+
+                filter = builder.Eq(f => f.status, "Opportunity");
+                quoteStat.OpportunityCount = collection.CountDocuments(filter);
+                quoteStat.OpportunityCount = 0;
+
+                filter = builder.Eq(f => f.status, "Customer");
+                quoteStat.CustomerCount = collection.CountDocuments(filter);
+                quoteStat.CustomerCount = 0;
+
+                filter = builder.Eq(f => f.status, "Complete");
+                quoteStat.CompletionCount = collection.CountDocuments(filter);
+                quoteStat.CompletionCount = 0;
+
+                filter = builder.Eq(f => f.status, "Archive");
+                quoteStat.ArchiveCount = collection.CountDocuments(filter);
+                quoteStat.ArchiveCount = 0;
+
+                filter = builder.Eq(f => f.status, "Warranty");
+                quoteStat.WarrantyCount = collection.CountDocuments(filter);
+                quoteStat.WarrantyCount = 0;
             }
             catch (Exception ex)
             {
