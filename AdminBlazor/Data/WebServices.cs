@@ -241,23 +241,23 @@ namespace AdminBlazor.Data
 
                 filter = builder.Eq(f => f.status, "Opportunity");
                 quoteStat.OpportunityCount = collection.CountDocuments(filter);
-                quoteStat.OpportunityCount = 0;
+                quoteStat.OpportunityValue = 0;
 
                 filter = builder.Eq(f => f.status, "Customer");
                 quoteStat.CustomerCount = collection.CountDocuments(filter);
-                quoteStat.CustomerCount = 0;
+                quoteStat.CustomerValue = 0;
 
                 filter = builder.Eq(f => f.status, "Complete");
                 quoteStat.CompletionCount = collection.CountDocuments(filter);
-                quoteStat.CompletionCount = 0;
+                quoteStat.CompletionValue = 0;
 
                 filter = builder.Eq(f => f.status, "Archive");
                 quoteStat.ArchiveCount = collection.CountDocuments(filter);
-                quoteStat.ArchiveCount = 0;
+                quoteStat.ArchiveValue = 0;
 
                 filter = builder.Eq(f => f.status, "Warranty");
                 quoteStat.WarrantyCount = collection.CountDocuments(filter);
-                quoteStat.WarrantyCount = 0;
+                quoteStat.WarrantyValue = 0;
             }
             catch (Exception ex)
             {

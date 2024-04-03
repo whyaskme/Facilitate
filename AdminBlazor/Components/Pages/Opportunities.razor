@@ -15,14 +15,43 @@
 @inject NavigationManager NavigationManager
 
 <PageTitle>Opportunities</PageTitle>
-
 <div class="quotes-leaderboard">
-    <span class="summary-item"><a href="/leads">Leads</a> <span class="stat-count">@leaderboardStats.LeadCount.ToString("N0")</span> @leaderboardStats.LeadValue.ToString("C")</span>
-    <span class="summary-item"><a href="/opportunities">Opportunities</a> <span class="stat-count">@leaderboardStats.OpportunityCount.ToString("N0")</span> @leaderboardStats.OpportunityValue.ToString("C")</span>
-    <span class="summary-item"><a href="/customers">Customers</a> <span class="stat-count">@leaderboardStats.CustomerCount.ToString("N0")</span> @leaderboardStats.CustomerValue.ToString("C")</span>
-    <span class="summary-item"><a href="/completed">Completions</a> <span class="stat-count">@leaderboardStats.CompletionCount.ToString("N0")</span> @leaderboardStats.CompletionValue.ToString("C")</span>
-    <span class="summary-item"><a href="/archives">Archives</a> <span class="stat-count">@leaderboardStats.ArchiveCount.ToString("N0")</span> @leaderboardStats.ArchiveValue.ToString("C")</span>
-    <span class="summary-item"><a href="/warranties">Warranties</a> <span class="stat-count">@leaderboardStats.WarrantyCount.ToString("N0")</span> @leaderboardStats.WarrantyValue.ToString("C")</span>
+    <span class="summary-item">
+        <a href="/leads">Leads</a>
+        <span class="stat-count"><b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
+        <span class="stat-count">@leaderboardStats.LeadValue.ToString("C")</span>
+        <span class="stat-count">@leaderboardStats.LeadSqFt.ToString("N0")ft</span>
+    </span>
+    <span class="summary-item">
+        <a href="/opportunities">Opportunities</a>
+        <span class="stat-count"><b>@leaderboardStats.OpportunityCount.ToString("N0")</b></span>
+        <span class="stat-count">@leaderboardStats.OpportunityValue.ToString("C")</span>
+        <span class="stat-count">@leaderboardStats.OpportunitySqFt.ToString("N0")ft</span>
+    </span>
+    <span class="summary-item">
+        <a href="/customers">Customers</a>
+        <span class="stat-count"><b>@leaderboardStats.CustomerCount.ToString("N0")</b></span>
+        <span class="stat-count">@leaderboardStats.CustomerValue.ToString("C")</span>
+        <span class="stat-count">@leaderboardStats.CustomerSqFt.ToString("N0")ft</span>
+    </span>
+    <span class="summary-item">
+        <a href="/completed">Completions</a>
+        <span class="stat-count"><b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
+        <span class="stat-count">@leaderboardStats.CompletionValue.ToString("C")</span>
+        <span class="stat-count">@leaderboardStats.CompletionSqFt.ToString("N0")ft</span>
+    </span>
+    <span class="summary-item">
+        <a href="/archives">Archives</a>
+        <span class="stat-count"><b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
+        <span class="stat-count">@leaderboardStats.ArchiveValue.ToString("C")</span>
+        <span class="stat-count">@leaderboardStats.ArchiveSqFt.ToString("N0")ft</span>
+    </span>
+    <span class="summary-item">
+        <a href="/warranties">Warranties</a>
+        <span class="stat-count"><b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
+        <span class="stat-count">@leaderboardStats.WarrantyValue.ToString("C")</span>
+        <span class="stat-count">@leaderboardStats.WarrantySqFt.ToString("N0")ft</span>
+    </span>
 </div>
 
 <h1>@updateStatus Opportunities <span id="update-status" class="@StatusClass">@RefreshStatus</span></h1>
