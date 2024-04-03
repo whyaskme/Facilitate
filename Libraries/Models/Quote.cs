@@ -42,6 +42,7 @@ namespace Facilitate.Libraries.Models
             externalUrl = string.Empty;
             timestamp = DateTime.UtcNow;
 
+            lastUpdated = DateTime.UtcNow;
             totalQuote = 0;
 
             numberOfStructures = 0;
@@ -82,6 +83,7 @@ namespace Facilitate.Libraries.Models
         public string externalUrl { get; set; }
         public DateTime timestamp { get; set; }
 
+        public DateTime lastUpdated { get; set; }
         public double totalQuote { get; set; }
 
         public int numberOfStructures { get; set; }

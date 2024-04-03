@@ -36,5 +36,9 @@ namespace Facilitate.Libraries.Models
         public long WarrantyCount { get; set; }
         public int WarrantySqFt { get; set; }
         public double WarrantyValue { get; set; }
+
+        public long TotalQuoteCount { get; set; }
+        public long TotalQuoteSqFt { get; set; }
+        public double TotalQuoteValue { get; set; }
     }
 }

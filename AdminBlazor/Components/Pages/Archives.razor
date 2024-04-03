@@ -52,6 +52,12 @@
         <span class="stat-count">@leaderboardStats.WarrantyValue.ToString("C")</span>
         <span class="stat-count">@leaderboardStats.WarrantySqFt.ToString("N0")ft</span>
     </span>
+    <span class="summary-item">
+        <b>Total</b>
+        <span class="">@leaderboardStats.TotalQuoteCount.ToString("N0") Quotes</span>
+        <span class="">@leaderboardStats.TotalQuoteValue.ToString("C")</span>
+        <span class="">@leaderboardStats.TotalQuoteSqFt.ToString("N0")ft</span>
+    </span>
 </div>
 
 <h1>@updateStatus Archives <span id="update-status" class="@StatusClass">@RefreshStatus</span></h1>
@@ -98,7 +104,8 @@ else
             PageSizeSelectorAllRowsItemVisible="false"
             KeyboardNavigationEnabled="true">
         <Columns>
-            <DxGridDataColumn Caption="Date" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm:ss tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+            <DxGridDataColumn Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+            <DxGridDataColumn Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
             <DxGridDataColumn Caption="First" FieldName="firstName" />
             <DxGridDataColumn Caption="Last" FieldName="lastName" />
             <DxGridDataColumn Caption="Street" FieldName="street" />

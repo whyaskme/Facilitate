@@ -51,6 +51,7 @@ namespace AdminBlazor.Data
 
                     // Convert to local time
                     sortedQuotes[i].timestamp = sortedQuotes[i].timestamp.ToLocalTime();
+                    sortedQuotes[i].lastUpdated = sortedQuotes[i].lastUpdated.ToLocalTime();
 
                     for (var j = 0; j < sortedQuotes[i].attachments.Count; j++)
                     {
@@ -120,6 +121,8 @@ namespace AdminBlazor.Data
         public string UpdateQuote(Quote quote)
         {
             string quoteId = quote._id;
+
+            quote.lastUpdated = DateTime.UtcNow;
 
             try
             {
@@ -258,6 +261,10 @@ namespace AdminBlazor.Data
                 filter = builder.Eq(f => f.status, "Warranty");
                 quoteStat.WarrantyCount = collection.CountDocuments(filter);
                 quoteStat.WarrantyValue = 0;
+
+                quoteStat.TotalQuoteValue = quoteStat.LeadValue + quoteStat.OpportunityValue + quoteStat.CustomerValue + quoteStat.CompletionValue + quoteStat.ArchiveValue + quoteStat.WarrantyValue;
+                quoteStat.TotalQuoteCount = quoteStat.LeadCount + quoteStat.OpportunityCount + quoteStat.CustomerCount + quoteStat.CompletionCount + quoteStat.ArchiveCount + quoteStat.WarrantyCount;
+                quoteStat.TotalQuoteSqFt = quoteStat.LeadSqFt + quoteStat.OpportunitySqFt + quoteStat.CustomerSqFt + quoteStat.CompletionSqFt + quoteStat.ArchiveSqFt + quoteStat.WarrantySqFt;
             }
             catch (Exception ex)
             {
