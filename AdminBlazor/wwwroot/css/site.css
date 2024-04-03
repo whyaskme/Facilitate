@@ -24,10 +24,10 @@ table {
 
 .stat-count {
     border-right: solid 0px #dad7d7 !important;
-    padding-left: 3px !important;
-    padding-right: 3px !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
     font-weight: normal;
-    font-style: italic;
+    font-style: normal;
     color: #808080;
 }
 

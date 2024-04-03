@@ -15,7 +15,15 @@
 @inject NavigationManager NavigationManager
 
 <PageTitle>Opportunities</PageTitle>
+
 <div class="quotes-leaderboard">
+    <span class="summary-item">
+        <b>Leaderboard</b>
+        <span class="">@leaderboardStats.TotalQuoteCount.ToString("N0") Quotes</span>
+        <span class="">@leaderboardStats.TotalQuoteValue.ToString("C")</span>
+        <span class="">@leaderboardStats.TotalQuoteSqFt.ToString("N0")ft</span>
+        &nbsp;&raquo;&nbsp;
+    </span>
     <span class="summary-item">
         <a href="/leads">Leads</a>
         <span class="stat-count"><b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
@@ -52,13 +60,8 @@
         <span class="stat-count">@leaderboardStats.WarrantyValue.ToString("C")</span>
         <span class="stat-count">@leaderboardStats.WarrantySqFt.ToString("N0")ft</span>
     </span>
-    <span class="summary-item">
-        <b>Total</b>
-        <span class="">@leaderboardStats.TotalQuoteCount.ToString("N0") Quotes</span>
-        <span class="">@leaderboardStats.TotalQuoteValue.ToString("C")</span>
-        <span class="">@leaderboardStats.TotalQuoteSqFt.ToString("N0")ft</span>
-    </span>
 </div>
+
 <h1>@updateStatus Opportunities <span id="update-status" class="@StatusClass">@RefreshStatus</span></h1>
 
 <script>

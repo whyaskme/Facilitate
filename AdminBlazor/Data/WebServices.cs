@@ -232,6 +232,8 @@ namespace AdminBlazor.Data
         {
             QuoteLeaderboard quoteStat = new QuoteLeaderboard();
 
+            int avgRoofJob = 12500;
+
             try
             {
                 client = new MongoClient(mongoUri);
@@ -240,27 +242,27 @@ namespace AdminBlazor.Data
                 var builder = Builders<Quote>.Filter;
                 var filter = builder.Eq(f => f.status, "New");
                 quoteStat.LeadCount = collection.CountDocuments(filter);
-                quoteStat.LeadValue = 0;
+                quoteStat.LeadValue = quoteStat.LeadCount * avgRoofJob;
 
                 filter = builder.Eq(f => f.status, "Opportunity");
                 quoteStat.OpportunityCount = collection.CountDocuments(filter);
-                quoteStat.OpportunityValue = 0;
+                quoteStat.OpportunityValue = quoteStat.OpportunityCount * avgRoofJob;
 
                 filter = builder.Eq(f => f.status, "Customer");
                 quoteStat.CustomerCount = collection.CountDocuments(filter);
-                quoteStat.CustomerValue = 0;
+                quoteStat.CustomerValue = quoteStat.CustomerCount * avgRoofJob;
 
                 filter = builder.Eq(f => f.status, "Complete");
                 quoteStat.CompletionCount = collection.CountDocuments(filter);
-                quoteStat.CompletionValue = 0;
+                quoteStat.CompletionValue = quoteStat.CompletionCount * avgRoofJob;
 
                 filter = builder.Eq(f => f.status, "Archive");
                 quoteStat.ArchiveCount = collection.CountDocuments(filter);
-                quoteStat.ArchiveValue = 0;
+                quoteStat.ArchiveValue = quoteStat.ArchiveCount * avgRoofJob;
 
                 filter = builder.Eq(f => f.status, "Warranty");
                 quoteStat.WarrantyCount = collection.CountDocuments(filter);
-                quoteStat.WarrantyValue = 0;
+                quoteStat.WarrantyValue = quoteStat.WarrantyCount * avgRoofJob;
 
                 quoteStat.TotalQuoteValue = quoteStat.LeadValue + quoteStat.OpportunityValue + quoteStat.CustomerValue + quoteStat.CompletionValue + quoteStat.ArchiveValue + quoteStat.WarrantyValue;
                 quoteStat.TotalQuoteCount = quoteStat.LeadCount + quoteStat.OpportunityCount + quoteStat.CustomerCount + quoteStat.CompletionCount + quoteStat.ArchiveCount + quoteStat.WarrantyCount;
