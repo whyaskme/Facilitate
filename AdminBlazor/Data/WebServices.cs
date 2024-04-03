@@ -230,43 +230,56 @@ namespace AdminBlazor.Data
 
         public QuoteLeaderboard GetLeaderBoardStats()
         {
-            QuoteLeaderboard quoteStat = new QuoteLeaderboard();
-
-            int avgRoofJob = 12500;
+            QuoteLeaderboard quoteLeaderboard = new QuoteLeaderboard();
 
             try
             {
                 client = new MongoClient(mongoUri);
                 collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
 
-                var builder = Builders<Quote>.Filter;
-                var filter = builder.Eq(f => f.status, "New");
-                quoteStat.LeadCount = collection.CountDocuments(filter);
-                quoteStat.LeadValue = quoteStat.LeadCount * avgRoofJob;
+                var countsByQuoteStatus = collection.Aggregate()
+                          .Group(
+                              x => x.status,
+                              g => new QuoteStat
+                              {
+                                  QuoteType = g.Key,
+                                  QuoteCount = g.Count(),
+                                  QuoteValue = g.Sum(x => x.totalQuote)
+                              }).ToList();
 
-                filter = builder.Eq(f => f.status, "Opportunity");
-                quoteStat.OpportunityCount = collection.CountDocuments(filter);
-                quoteStat.OpportunityValue = quoteStat.OpportunityCount * avgRoofJob;
-
-                filter = builder.Eq(f => f.status, "Customer");
-                quoteStat.CustomerCount = collection.CountDocuments(filter);
-                quoteStat.CustomerValue = quoteStat.CustomerCount * avgRoofJob;
-
-                filter = builder.Eq(f => f.status, "Complete");
-                quoteStat.CompletionCount = collection.CountDocuments(filter);
-                quoteStat.CompletionValue = quoteStat.CompletionCount * avgRoofJob;
-
-                filter = builder.Eq(f => f.status, "Archive");
-                quoteStat.ArchiveCount = collection.CountDocuments(filter);
-                quoteStat.ArchiveValue = quoteStat.ArchiveCount * avgRoofJob;
-
-                filter = builder.Eq(f => f.status, "Warranty");
-                quoteStat.WarrantyCount = collection.CountDocuments(filter);
-                quoteStat.WarrantyValue = quoteStat.WarrantyCount * avgRoofJob;
-
-                quoteStat.TotalQuoteValue = quoteStat.LeadValue + quoteStat.OpportunityValue + quoteStat.CustomerValue + quoteStat.CompletionValue + quoteStat.ArchiveValue + quoteStat.WarrantyValue;
-                quoteStat.TotalQuoteCount = quoteStat.LeadCount + quoteStat.OpportunityCount + quoteStat.CustomerCount + quoteStat.CompletionCount + quoteStat.ArchiveCount + quoteStat.WarrantyCount;
-                quoteStat.TotalQuoteSqFt = quoteStat.LeadSqFt + quoteStat.OpportunitySqFt + quoteStat.CustomerSqFt + quoteStat.CompletionSqFt + quoteStat.ArchiveSqFt + quoteStat.WarrantySqFt;
+                foreach (var item in countsByQuoteStatus)
+                {
+                    if (item.QuoteType == "New")
+                    {
+                        quoteLeaderboard.LeadCount = item.QuoteCount;
+                        quoteLeaderboard.LeadValue = item.QuoteValue;
+                    }
+                    else if (item.QuoteType == "Opportunity")
+                    {
+                        quoteLeaderboard.OpportunityCount = item.QuoteCount;
+                        quoteLeaderboard.OpportunityValue = item.QuoteValue;
+                    }
+                    else if (item.QuoteType == "Customer")
+                    {
+                        quoteLeaderboard.CustomerCount = item.QuoteCount;
+                        quoteLeaderboard.CustomerValue = item.QuoteValue;
+                    }
+                    else if (item.QuoteType == "Complete")
+                    {
+                        quoteLeaderboard.CompletionCount = item.QuoteCount;
+                        quoteLeaderboard.CompletionValue = item.QuoteValue;
+                    }
+                    else if (item.QuoteType == "Archive")
+                    {
+                        quoteLeaderboard.ArchiveCount = item.QuoteCount;
+                        quoteLeaderboard.ArchiveValue = item.QuoteValue;
+                    }
+                    else if (item.QuoteType == "Warranty")
+                    {
+                        quoteLeaderboard.WarrantyCount = item.QuoteCount;
+                        quoteLeaderboard.WarrantyValue = item.QuoteValue;
+                    }
+                }   
             }
             catch (Exception ex)
             {
@@ -276,7 +289,11 @@ namespace AdminBlazor.Data
             {
 
             }
-            return quoteStat;
+
+            quoteLeaderboard.TotalQuoteCount = quoteLeaderboard.LeadCount + quoteLeaderboard.OpportunityCount + quoteLeaderboard.CustomerCount + quoteLeaderboard.CompletionCount + quoteLeaderboard.ArchiveCount + quoteLeaderboard.WarrantyCount;
+            quoteLeaderboard.TotalQuoteValue = quoteLeaderboard.LeadValue + quoteLeaderboard.OpportunityValue + quoteLeaderboard.CustomerValue + quoteLeaderboard.CompletionValue + quoteLeaderboard.ArchiveValue + quoteLeaderboard.WarrantyValue;
+
+            return quoteLeaderboard;
         }
 
         public List<Event> SortEventsByDateDesc(List<Event> originalList)

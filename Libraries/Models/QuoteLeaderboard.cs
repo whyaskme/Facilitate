@@ -11,7 +11,7 @@ namespace Facilitate.Libraries.Models
         public long LeadCount { get; set; }
         public int LeadSqFt { get; set; }
         public double LeadValue { get; set; }
-        
+        public string LeadLabel { get; set; }
 
         public long OpportunityCount { get; set; }
         public int OpportunitySqFt { get; set; }
