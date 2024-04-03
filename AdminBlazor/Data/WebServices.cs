@@ -118,9 +118,11 @@ namespace AdminBlazor.Data
         }
 
         [HttpPut("{quote}")]
-        public string UpdateQuote(Quote quote)
+        public Quote UpdateQuote(Quote quote)
         {
             string quoteId = quote._id;
+
+            quote = SortItemsByDateDesc(quote);
 
             quote.lastUpdated = DateTime.UtcNow;
 
@@ -142,65 +144,7 @@ namespace AdminBlazor.Data
             {
 
             }
-            return resultMsg;
-        }
-
-        public string CreateQuote(Quote quote)
-        {
-            try
-            {
-                client = new MongoClient(mongoUri);
-
-                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
-                collection.InsertOne(quote);
-
-                resultMsg = "Added Quote!";
-            }
-            catch (Exception ex)
-            {
-                resultMsg = ex.Message;
-            }
-            finally
-            {
-
-            }
-            return resultMsg;
-        }
-
-        [HttpDelete("{quoteId}, {quote}")]
-        public string DeleteQuote(string quoteId)
-        {
-            try
-            {
-                // This is a soft delete > move to archive.
-                client = new MongoClient(mongoUri);
-                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
-
-                // Get the selected quote for update
-                var builder = Builders<Quote>.Filter;
-                var filter = builder.Eq(f => f._id, quoteId);
-
-                var sortedelectedQuote = collection.Find(filter).ToList()[0];
-
-                Event _event = new Event(0, 0);
-                _event.Details = sortedelectedQuote.status + " moved to Archive";
-
-                sortedelectedQuote.status = "Archive";
-                sortedelectedQuote.events.Add(_event);
-
-                var result = collection.ReplaceOne(filter, sortedelectedQuote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
-
-                resultMsg = "Archived!";
-            }
-            catch (Exception ex)
-            {
-                resultMsg = ex.Message;
-            }
-            finally
-            {
-
-            }
-            return resultMsg;
+            return quote;
         }
 
         public int GetQuoteCount(string status)
@@ -304,6 +248,15 @@ namespace AdminBlazor.Data
             return quoteLeaderboard;
         }
 
+        public Quote SortItemsByDateDesc(Quote quote)
+        {
+            quote.attachments = SortFilesByDateDesc(quote.attachments);
+            quote.notes = SortNotesByDateDesc(quote.notes);
+            quote.events = SortEventsByDateDesc(quote.events);
+
+            return quote;
+        }
+
         public List<Event> SortEventsByDateDesc(List<Event> originalList)
         {
             return originalList.OrderByDescending(x => x.DateTime).ToList();
@@ -318,5 +271,63 @@ namespace AdminBlazor.Data
         {
             return originalList.OrderByDescending(x => x.Date).ToList();
         }
+
+        public string CreateQuote(Quote quote)
+        {
+            try
+            {
+                client = new MongoClient(mongoUri);
+
+                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
+                collection.InsertOne(quote);
+
+                resultMsg = "Added Quote!";
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
+            return resultMsg;
+        }
+
+        //[HttpDelete("{quoteId}, {quote}")]
+        //public string DeleteQuote(string quoteId)
+        //{
+        //    try
+        //    {
+        //        // This is a soft delete > move to archive.
+        //        client = new MongoClient(mongoUri);
+        //        collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
+
+        //        // Get the selected quote for update
+        //        var builder = Builders<Quote>.Filter;
+        //        var filter = builder.Eq(f => f._id, quoteId);
+
+        //        var sortedelectedQuote = collection.Find(filter).ToList()[0];
+
+        //        Event _event = new Event(0, 0);
+        //        _event.Details = sortedelectedQuote.status + " moved to Archive";
+
+        //        sortedelectedQuote.status = "Archive";
+        //        sortedelectedQuote.events.Add(_event);
+
+        //        var result = collection.ReplaceOne(filter, sortedelectedQuote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+
+        //        resultMsg = "Archived!";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        resultMsg = ex.Message;
+        //    }
+        //    finally
+        //    {
+
+        //    }
+        //    return resultMsg;
+        //}
     }
 }

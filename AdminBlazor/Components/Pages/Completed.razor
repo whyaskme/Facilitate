@@ -19,38 +19,38 @@
 <div class="quotes-leaderboard">
     <span class="summary-item">
         <span class="stat-count"><b>@leaderboardStats.TotalQuoteCount.ToString("N0") Quotes</b></span>
-        <span class="stat-count">@leaderboardStats.TotalQuoteValue.ToString("C")</span>
+        <span class="stat-count">@leaderboardStats.TotalQuoteValue.ToString("C0")</span>
         <span class="stat-count">(@leaderboardStats.TotalQuoteSqFt.ToString("N0") sqft)</span>
     </span>
     <span class="summary-item">
         <a href="/leads">Leads</a>
         <span class="stat-count"><b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
-        <span class="stat-count">@leaderboardStats.LeadValue.ToString("C")</span>
+        <span class="stat-count">@leaderboardStats.LeadValue.ToString("C0")</span>
     </span>
     <span class="summary-item">
         <a href="/opportunities">Opportunities</a>
         <span class="stat-count"><b>@leaderboardStats.OpportunityCount.ToString("N0")</b></span>
-        <span class="stat-count">@leaderboardStats.OpportunityValue.ToString("C")</span>
+        <span class="stat-count">@leaderboardStats.OpportunityValue.ToString("C0")</span>
     </span>
     <span class="summary-item">
         <a href="/customers">Customers</a>
         <span class="stat-count"><b>@leaderboardStats.CustomerCount.ToString("N0")</b></span>
-        <span class="stat-count">@leaderboardStats.CustomerValue.ToString("C")</span>
+        <span class="stat-count">@leaderboardStats.CustomerValue.ToString("C0")</span>
     </span>
     <span class="summary-item">
         <a href="/completed">Completions</a>
         <span class="stat-count"><b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
-        <span class="stat-count">@leaderboardStats.CompletionValue.ToString("C")</span>
+        <span class="stat-count">@leaderboardStats.CompletionValue.ToString("C0")</span>
     </span>
     <span class="summary-item">
         <a href="/archives">Archives</a>
         <span class="stat-count"><b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
-        <span class="stat-count">@leaderboardStats.ArchiveValue.ToString("C")</span>
+        <span class="stat-count">@leaderboardStats.ArchiveValue.ToString("C0")</span>
     </span>
     <span class="summary-item">
         <a href="/warranties">Warranties</a>
         <span class="stat-count"><b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
-        <span class="stat-count">@leaderboardStats.WarrantyValue.ToString("C")</span>
+        <span class="stat-count">@leaderboardStats.WarrantyValue.ToString("C0")</span>
     </span>
 </div>
 
@@ -58,7 +58,7 @@
     @updateStatus Completions
     <span id="update-status" class="@StatusClass">@RefreshStatus</span>
     <span class="stats-container-header">
-        <span class="">@leaderboardStats.CompletionValue.ToString("C")</span>
+        <span class="">@leaderboardStats.CompletionValue.ToString("C0")</span>
         <span class="">(@leaderboardStats.CompletionSqFt.ToString("N0") sqft)</span>
     </span>
 </h1>
@@ -115,7 +115,7 @@ else
             <DxGridDataColumn Caption="Zip" FieldName="zip" />
             <DxGridDataColumn Width="50" Caption="Roofs" FieldName="numberOfIncludedStructures" />
             <DxGridDataColumn Width="75" Caption="SqFt" FieldName="totalSquareFeet" />
-            <DxGridDataColumn Width="100" Caption="Quote" DisplayFormat="C" FieldName="totalQuote" />
+            <DxGridDataColumn Width="100" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
             <DxGridDataColumn Caption="Manager" TextAlignment="GridTextAlignment.Left" FieldName="projectManager.Name" />
         </Columns>
 
@@ -212,7 +212,7 @@ else
                             <div class="row item-details-container">
                                 <div class="col">
                                     <label>Total Quote</label>
-                                    <span><b>@_quote.totalQuote.ToString("C")</b></span>
+                                    <span><b>@_quote.totalQuote.ToString("C0")</b></span>
                                 </div>
                                 <div class="col">
                                     <label>Total Sqft</label>
@@ -295,15 +295,15 @@ else
                                         <div class="row">
                                             <div class="col">
                                                 <label>Total Quote</label>
-                                                <span>@_quote.products[i].priceInfo.total.ToString("C")</span>
+                                                <span>@_quote.products[i].priceInfo.total.ToString("C0")</span>
                                             </div>
                                             <div class="col">
                                                 <label>Per Square</label>
-                                                <span>@_quote.products[i].priceInfo.pricePerSquare.ToString("C")</span>
+                                                <span>@_quote.products[i].priceInfo.pricePerSquare.ToString("C0")</span>
                                             </div>
                                             <div class="col">
                                                 <label>Monthly</label>
-                                                <span>@_quote.products[i].priceInfo.monthly.ToString("C")</span>
+                                                <span>@_quote.products[i].priceInfo.monthly.ToString("C0")</span>
                                             </div>
                                         </div>
 
