@@ -20,13 +20,14 @@
             <DxGridLayoutItem Area="header" CssClass="welcome-title">
                 <Template>
                     <div class="welcome-title-header">Welcome to Facilitate Platform Administration</div>
-                    <div class="summary-panel">
-                        <span class="summary-item"><a href="/leads">Leads:</a> <b>@countLeads.ToString("N0")</b></span>
-                        <span class="summary-item"><a href="/opportunities">Opportunities:</a> <b>@countOpportunities.ToString("N0")</b></span>
-                        <span class="summary-item"><a href="/customers">Customers:</a> <b>@countCustomers.ToString("N0")</b></span>
-                        <span class="summary-item"><a href="/completed">Completions:</a> <b>@countCompleted.ToString("N0")</b></span>
-                        <span class="summary-item"><a href="/archives">Archives:</a> <b>@countArchives.ToString("N0")</b></span>
-                        <span class="summary-item"><a href="/warranties">Warranties:</a> <b>@countWarranties.ToString("N0")</b></span>
+
+                    <div class="quotes-leaderboard">
+                        <span class="summary-item"><a href="/leads">Leads:</a> <b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
+                        <span class="summary-item"><a href="/opportunities">Opportunities:</a> <b>@leaderboardStats.OpportunityCount.ToString("N0")</b></span>
+                        <span class="summary-item"><a href="/customers">Customers:</a> <b>@leaderboardStats.CustomerCount.ToString("N0")</b></span>
+                        <span class="summary-item"><a href="/completed">Completions:</a> <b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
+                        <span class="summary-item"><a href="/archives">Archives:</a> <b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
+                        <span class="summary-item"><a href="/warranties">Warranties:</a> <b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
                     </div>
 
                     <div class="welcome-title-content">
@@ -48,14 +49,14 @@
 
 @code {
 
-    bool LoadingPanelVisible { get; set; } = true;
+    public QuoteStat leaderboardStats;
 
-    public int countLeads = 0;
-    public int countOpportunities = 0;
-    public int countCustomers = 0;
-    public int countCompleted = 0;
-    public int countArchives = 0;
-    public int countWarranties = 0;
+    protected override void OnInitialized()
+    {
+        leaderboardStats = WebServices.GetLeaderBoardStats();
+    }
+
+    bool LoadingPanelVisible { get; set; } = true;
 
     public string updateStatus = "Refreshing";
 
@@ -63,7 +64,7 @@
     {
         var timer = new Timer(new TimerCallback(_ =>
         {
-            GetLeadCount();
+            leaderboardStats = WebServices.GetLeaderBoardStats();
 
             InvokeAsync(() =>
             {
@@ -76,13 +77,4 @@
 
     private IEnumerable<Quote>? quotes;
 
-    private void GetLeadCount()
-    {
-        countLeads = WebServices.GetQuoteCount("New");
-        countOpportunities = WebServices.GetQuoteCount("Opportunity");
-        countCustomers = WebServices.GetQuoteCount("Customer");
-        countCompleted = WebServices.GetQuoteCount("Complete");
-        countArchives = WebServices.GetQuoteCount("Archive");
-        countWarranties = WebServices.GetQuoteCount("Warranty");
-    }
 }

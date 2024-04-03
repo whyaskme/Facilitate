@@ -15,6 +15,16 @@
 @inject NavigationManager NavigationManager
 
 <PageTitle>Warranties</PageTitle>
+
+<div class="quotes-leaderboard">
+    <span class="summary-item"><a href="/leads">Leads:</a> <b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
+    <span class="summary-item"><a href="/opportunities">Opportunities:</a> <b>@leaderboardStats.OpportunityCount.ToString("N0")</b></span>
+    <span class="summary-item"><a href="/customers">Customers:</a> <b>@leaderboardStats.CustomerCount.ToString("N0")</b></span>
+    <span class="summary-item"><a href="/completed">Completions:</a> <b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
+    <span class="summary-item"><a href="/archives">Archives:</a> <b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
+    <span class="summary-item"><a href="/warranties">Warranties:</a> <b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
+</div>
+
 <h1>@updateStatus Warranties <span id="update-status" class="@StatusClass">@RefreshStatus</span></h1>
 
 <script>
@@ -671,6 +681,13 @@ else
 
 @code {
 
+    public QuoteStat leaderboardStats;
+
+    protected override void OnInitialized()
+    {
+        leaderboardStats = WebServices.GetLeaderBoardStats();
+    }
+
     public int currentItemIndex = 0;
 
     public int noteCount = 0;
@@ -807,8 +824,6 @@ else
     #endregion
 
     #region Methods
-
-    protected override void OnInitialized() { }
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -1070,6 +1085,8 @@ else
 
     private void RefreshTimer()
     {
+        leaderboardStats = WebServices.GetLeaderBoardStats();
+
         LoadingPanelVisible = true;
 
         _timer = new Timer(new TimerCallback(_ =>

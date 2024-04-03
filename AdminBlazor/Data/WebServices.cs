@@ -225,6 +225,32 @@ namespace AdminBlazor.Data
             return 0;
         }
 
+        public QuoteStat GetLeaderBoardStats()
+        {
+            QuoteStat quoteStat = new QuoteStat();
+
+            try
+            {
+                client = new MongoClient(mongoUri);
+                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
+
+                quoteStat.LeadCount = collection.CountDocuments("Archive");
+                quoteStat.OpportunityCount = collection.CountDocuments("New");
+                quoteStat.CustomerCount = collection.CountDocuments("In Progress");
+                quoteStat.CompletionCount = collection.CountDocuments("Completed");
+                quoteStat.ArchiveCount = collection.CountDocuments("Completed");
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
+            return quoteStat;
+        }
+
         public List<Event> SortEventsByDateDesc(List<Event> originalList)
         {
             return originalList.OrderByDescending(x => x.DateTime).ToList();
