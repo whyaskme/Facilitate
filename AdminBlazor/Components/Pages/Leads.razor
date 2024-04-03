@@ -18,10 +18,9 @@
 
 <div class="quotes-leaderboard">
     <span class="summary-item">
-        
         <span class="stat-count"><b>@leaderboardStats.TotalQuoteCount.ToString("N0") Quotes</b></span>
-        <span class="stat-count"><b>@leaderboardStats.TotalQuoteValue.ToString("C")</b></span>
-        
+        <span class="stat-count">@leaderboardStats.TotalQuoteValue.ToString("C")</span>
+        <span class="stat-count">(@leaderboardStats.TotalQuoteSqFt.ToString("N0") sqft)</span>
     </span>
     <span class="summary-item">
         <a href="/leads">Leads</a>
@@ -55,7 +54,13 @@
     </span>
 </div>
 
-<h1>@updateStatus Leads <span id="update-status" class="@StatusClass">@RefreshStatus</span></h1>
+<h1>@updateStatus Leads 
+    <span id="update-status" class="@StatusClass">@RefreshStatus</span>
+    <span class="stats-container-header">
+        <span class="">@leaderboardStats.LeadValue.ToString("C")</span>
+        <span class="">(@leaderboardStats.TotalQuoteSqFt.ToString("N0") sqft)</span>
+    </span>
+</h1>
 
 <script>
     window.getIpAddress = () => {
@@ -980,18 +985,21 @@ else
             switch (i)
             {
                 case 1:
+                    structure.initialSquareFeet = rnd.Next(1000, 5000);
                     structure.isIncluded = true;
                     structure.name = "Main Roof";
                     structure.roofComplexity = "Complex";
                     structure.slope = "steep";
                     break;
                 case 2:
+                    structure.initialSquareFeet = rnd.Next(500, 1000);
                     structure.isIncluded = true;
                     structure.name = "Garage Roof";
                     structure.roofComplexity = "Simple";
                     structure.slope = "medium";
                     break;
                 default:
+                    structure.initialSquareFeet = rnd.Next(250, 1000);
                     structure.isIncluded = false;
                     structure.name = "Misc Roof";
                     structure.roofComplexity = "Compound";
@@ -999,7 +1007,6 @@ else
                     break;
             }
 
-            structure.initialSquareFeet = rnd.Next(1000, 9999);
             structure.squareFeet = structure.initialSquareFeet;
 
             totalSquareFeet += structure.initialSquareFeet;

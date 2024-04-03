@@ -18,10 +18,9 @@
 
 <div class="quotes-leaderboard">
     <span class="summary-item">
-        
         <span class="stat-count"><b>@leaderboardStats.TotalQuoteCount.ToString("N0") Quotes</b></span>
-        <span class="stat-count"><b>@leaderboardStats.TotalQuoteValue.ToString("C")</b></span>
-        
+        <span class="stat-count">@leaderboardStats.TotalQuoteValue.ToString("C")</span>
+        <span class="stat-count">(@leaderboardStats.TotalQuoteSqFt.ToString("N0") sqft)</span>
     </span>
     <span class="summary-item">
         <a href="/leads">Leads</a>
@@ -55,7 +54,14 @@
     </span>
 </div>
 
-<h1>@updateStatus Warranties <span id="update-status" class="@StatusClass">@RefreshStatus</span></h1>
+<h1>
+    @updateStatus Warranties
+    <span id="update-status" class="@StatusClass">@RefreshStatus</span>
+    <span class="stats-container-header">
+        <span class="">@leaderboardStats.WarrantyValue.ToString("C")</span>
+        <span class="">(@leaderboardStats.WarrantySqFt.ToString("N0") sqft)</span>
+    </span>
+</h1>
 
 <script>
     window.getIpAddress = () => {

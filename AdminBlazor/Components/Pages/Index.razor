@@ -6,6 +6,7 @@
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
 @inject WebServices WebServices
+@* @inject Leaderboard Leaderboard *@
 
 <PageTitle>Welcome to Facilitate Platform Administration</PageTitle>
 
@@ -23,10 +24,9 @@
 
                     <div class="quotes-leaderboard">
                         <span class="summary-item">
-                            
                             <span class="stat-count"><b>@leaderboardStats.TotalQuoteCount.ToString("N0") Quotes</b></span>
-                            <span class="stat-count"><b>@leaderboardStats.TotalQuoteValue.ToString("C")</b></span>
-                            
+                            <span class="stat-count">@leaderboardStats.TotalQuoteValue.ToString("C")</span>
+                            <span class="stat-count">(@leaderboardStats.TotalQuoteSqFt.ToString("N0") sqft)</span>
                         </span>
                         <span class="summary-item">
                             <a href="/leads">Leads</a>

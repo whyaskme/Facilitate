@@ -13,6 +13,15 @@ table {
     width: 100% !important;
 }
 
+.stats-container-header {
+    border: solid 0px #ff0000 !important;
+    float: right !important;
+    color: #808080;
+    font-size: 0.7em;
+    padding: 75px;
+    padding-top: 35px;
+}
+
 .quotes-leaderboard {
     background-color: #eee !important;
     border: solid 0px #808080 !important;

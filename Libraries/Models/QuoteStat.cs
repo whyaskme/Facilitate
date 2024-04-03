@@ -11,5 +11,6 @@ namespace Facilitate.Libraries.Models
         public string QuoteType { get; set; }
         public long QuoteCount { get; set; }
         public double QuoteValue { get; set; }
+        public long QuoteSqFt { get; set; }
     }
 }

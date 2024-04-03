@@ -244,7 +244,8 @@ namespace AdminBlazor.Data
                               {
                                   QuoteType = g.Key,
                                   QuoteCount = g.Count(),
-                                  QuoteValue = g.Sum(x => x.totalQuote)
+                                  QuoteValue = g.Sum(x => x.totalQuote),
+                                  QuoteSqFt = g.Sum(x => x.totalSquareFeet)
                               }).ToList();
 
                 foreach (var item in countsByQuoteStatus)
@@ -253,31 +254,37 @@ namespace AdminBlazor.Data
                     {
                         quoteLeaderboard.LeadCount = item.QuoteCount;
                         quoteLeaderboard.LeadValue = item.QuoteValue;
+                        quoteLeaderboard.LeadSqFt = item.QuoteSqFt;
                     }
                     else if (item.QuoteType == "Opportunity")
                     {
                         quoteLeaderboard.OpportunityCount = item.QuoteCount;
                         quoteLeaderboard.OpportunityValue = item.QuoteValue;
+                        quoteLeaderboard.OpportunitySqFt = item.QuoteSqFt;
                     }
                     else if (item.QuoteType == "Customer")
                     {
                         quoteLeaderboard.CustomerCount = item.QuoteCount;
                         quoteLeaderboard.CustomerValue = item.QuoteValue;
+                        quoteLeaderboard.CustomerSqFt = item.QuoteSqFt;
                     }
                     else if (item.QuoteType == "Complete")
                     {
                         quoteLeaderboard.CompletionCount = item.QuoteCount;
                         quoteLeaderboard.CompletionValue = item.QuoteValue;
+                        quoteLeaderboard.CompletionSqFt = item.QuoteSqFt;
                     }
                     else if (item.QuoteType == "Archive")
                     {
                         quoteLeaderboard.ArchiveCount = item.QuoteCount;
                         quoteLeaderboard.ArchiveValue = item.QuoteValue;
+                        quoteLeaderboard.ArchiveSqFt = item.QuoteSqFt;
                     }
                     else if (item.QuoteType == "Warranty")
                     {
                         quoteLeaderboard.WarrantyCount = item.QuoteCount;
                         quoteLeaderboard.WarrantyValue = item.QuoteValue;
+                        quoteLeaderboard.WarrantySqFt = item.QuoteSqFt;
                     }
                 }   
             }
@@ -292,6 +299,7 @@ namespace AdminBlazor.Data
 
             quoteLeaderboard.TotalQuoteCount = quoteLeaderboard.LeadCount + quoteLeaderboard.OpportunityCount + quoteLeaderboard.CustomerCount + quoteLeaderboard.CompletionCount + quoteLeaderboard.ArchiveCount + quoteLeaderboard.WarrantyCount;
             quoteLeaderboard.TotalQuoteValue = quoteLeaderboard.LeadValue + quoteLeaderboard.OpportunityValue + quoteLeaderboard.CustomerValue + quoteLeaderboard.CompletionValue + quoteLeaderboard.ArchiveValue + quoteLeaderboard.WarrantyValue;
+            quoteLeaderboard.TotalQuoteSqFt = quoteLeaderboard.LeadSqFt + quoteLeaderboard.OpportunitySqFt + quoteLeaderboard.CustomerSqFt + quoteLeaderboard.CompletionSqFt + quoteLeaderboard.ArchiveSqFt + quoteLeaderboard.WarrantySqFt;
 
             return quoteLeaderboard;
         }
