@@ -307,7 +307,7 @@ else
                                         <label>@notesCount) @note.Date</label>
                                     </div>
 
-                                    <span class="hyperlink" @onclick="() => SelectNoteToDelete(_quote, note)">Delete</span>
+                                    <span class="hyperlink-warning" @onclick="() => SelectNoteToDelete(_quote, note)">Delete</span>
 
                                     <span class="bar-spacer">|</span>
                                     <span>@note.Details</span>
@@ -514,8 +514,6 @@ else
         leaderboardStats = WebServices.GetLeaderBoardStats();
     }
 
-    public bool IsAssignButtonEnabled = false;
-
     public int noteCount = 0;
 
     IEnumerable<string> Values { get; set; }
@@ -526,12 +524,13 @@ else
 
     bool LoadingPanelVisible { get; set; } = true;
 
-    IEnumerable<User> SelectedProjectManager { get; set; }
-    public List<User>? ProjectManagers;
-
     WebServices webServices = new WebServices();
 
-    AdminBlazor.Data.MemberService memberService = new AdminBlazor.Data.MemberService();
+    MemberService memberService = new MemberService();
+
+    public bool IsAssignButtonEnabled = false;
+    IEnumerable<User> SelectedProjectManager { get; set; }
+    public List<User>? ProjectManagers;
 
     void SelectedProjectManagerChanged(IEnumerable<User> selectedProjectManager)
     {
@@ -599,10 +598,10 @@ else
 
     #region Popup properties
 
+    bool IsAssignPopupVisible { get; set; }
+
     bool IsPopupVisibleAddFile { get; set; }
     bool IsPopupVisibleSelectAttachmentToDelete { get; set; }
-
-    bool IsAssignPopupVisible { get; set; }
 
     bool IsPopupVisibleAddNote { get; set; }
     bool IsPopupVisibleSelectNoteToDelete { get; set; }

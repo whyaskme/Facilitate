@@ -188,7 +188,7 @@ else
                     <h6>Project Details</h6>
                     <div class="row">
                         <div class="col">
-                            <label>Manager</label>
+                            <a class="hyperlink-manager-assignment" @onclick="@(() => IsAssignPopupVisible = true)">Manager Assignment</a>
                             <span class="detail-item">@_quote.projectManager.Name</span>
                         </div>
                         <div class="col">
@@ -371,7 +371,7 @@ else
                                         <label>@attachmentsCount) @attachment.Date</label>
                                     </div>
 
-                                    <span class="hyperlink" @onclick="() => SelectAttachmentToDelete(_quote, attachment)">Delete</span>
+                                    <span class="hyperlink-warning" @onclick="() => SelectAttachmentToDelete(_quote, attachment)">Delete</span>
 
                                     <span class="bar-spacer">|</span>
                                     <a href="@attachment.MediaUrl" target="_blank">
@@ -401,7 +401,7 @@ else
                                         <label>@notesCount) @note.Date</label>
                                     </div>
 
-                                    <span class="hyperlink" @onclick="() => SelectNoteToDelete(_quote, note)">Delete</span>
+                                    <span class="hyperlink-warning" @onclick="() => SelectNoteToDelete(_quote, note)">Delete</span>
 
                                     <span class="bar-spacer">|</span>
                                     <span>@note.Details</span>
@@ -626,6 +626,29 @@ else
     </DxGrid>
 }
 
+<DxPopup @bind-Visible="@IsAssignPopupVisible"
+         ShowFooter="true"
+         HeaderText="Please select a Project Manager for assignment">
+    <BodyContentTemplate>
+        <DxListBox Data="@ProjectManagers"
+                   @bind-Values="@Values"
+                   SelectedItemsChanged="@((IEnumerable<User> values) => SelectedProjectManagerChanged(values))"
+                   SelectionMode="ListBoxSelectionMode.Single"
+                   ShowCheckboxes="true">
+            <Columns>
+                <DxListEditorColumn FieldName="Profile.FirstName" Caption="First" />
+                <DxListEditorColumn FieldName="Profile.LastName" Caption="Last" />
+                <DxListEditorColumn FieldName="Email" Caption="Email" />
+                <DxListEditorColumn FieldName="_id" Visible="false" Caption="Id" />
+            </Columns>
+        </DxListBox>
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" Enabled="@IsAssignButtonEnabled" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsAssignPopupVisible = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
 <DxPopup @bind-Visible="@IsPopupVisibleSelectAttachmentToDelete" ShowFooter="true" HeaderText="Delete File">
     <BodyContentTemplate>
         Are you sure you want to delete "@selectedAttachment.MediaDescription"?
@@ -729,6 +752,8 @@ else
 
     public int noteCount = 0;
 
+    IEnumerable<string> Values { get; set; }
+
     public int roofsCount = 0;
     public int productsCount = 0;
 
@@ -742,6 +767,12 @@ else
     bool LoadingPanelVisible { get; set; } = true;
 
     WebServices webServices = new WebServices();
+
+    MemberService memberService = new MemberService();
+
+    public bool IsAssignButtonEnabled = false;
+    IEnumerable<User> SelectedProjectManager { get; set; }
+    public List<User>? ProjectManagers;
 
     #region Private Properties
 
@@ -792,6 +823,8 @@ else
     #endregion
 
     #region Popup properties
+
+    bool IsAssignPopupVisible { get; set; }
 
     bool IsPopupVisibleAddFile { get; set; }
     bool IsPopupVisibleSelectAttachmentToDelete { get; set; }
@@ -862,10 +895,21 @@ else
 
     #region Methods
 
+    void SelectedProjectManagerChanged(IEnumerable<User> selectedProjectManager)
+    {
+        SelectedProjectManager = selectedProjectManager;
+
+        if (SelectedProjectManager.Count() > 0)
+            IsAssignButtonEnabled = true;
+        else
+            IsAssignButtonEnabled = false;
+    }
+
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
         {
+            ProjectManagers = memberService.GetMembers(Constants.UserRoles.ProjectManager);
             RefreshTimer();
         }
 
@@ -926,6 +970,84 @@ else
         var absoluteUri = NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
 
         return absoluteUri;
+    }
+
+    public void AssignLead()
+    {
+        LoadingPanelVisible = true;
+
+        QuoteGrid.CollapseDetailRow(selectedIndex);
+
+        selectedQuote.status = "Opportunity";
+
+        Event statusChanged = new Event(0, 0);
+        statusChanged.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Opportunity";
+        selectedQuote.events.Add(statusChanged);
+
+        var currProjectManager = SelectedProjectManager.ToList()[0];
+
+        var pmEmail = currProjectManager.Profile.Contact.Email[0].UserName;
+        pmEmail += "@" + currProjectManager.Profile.Contact.Email[0].Domain;
+
+        var pmPhone = "(" + currProjectManager.Profile.Contact.Phone[0].AreaCode.ToString() + ")";
+        pmPhone += " " + currProjectManager.Profile.Contact.Phone[0].Exchange.ToString();
+        pmPhone += "-" + currProjectManager.Profile.Contact.Phone[0].Number.ToString();
+
+        ProjectManagerSummary pmSummary = new ProjectManagerSummary();
+        pmSummary._id = currProjectManager._id;
+        pmSummary.Name = currProjectManager.Profile.FirstName + " " + currProjectManager.Profile.LastName;
+        pmSummary.Email = pmEmail;
+        pmSummary.Phone = pmPhone;
+        pmSummary.City = currProjectManager.Profile.Contact.Address[0].City;
+        pmSummary.State = currProjectManager.Profile.Contact.Address[0].State;
+        pmSummary.Zip = currProjectManager.Profile.Contact.Address[0].ZipCode;
+
+        selectedQuote.projectManager = pmSummary;
+
+        // Workflow and Subsequent Document Requirements
+        Attachment workflowRequirements = new Attachment();
+        workflowRequirements.MediaDescription = "Workflow and Subsequent Document Requirements";
+        workflowRequirements.MediaUrl = "/docs/templates/misc/Workflow and Subsequent Document Requirements.pdf";
+        selectedQuote.attachments.Add(workflowRequirements);
+
+        Event workflowRequirementsEvent = new Event(0, 0);
+        workflowRequirementsEvent.Details = workflowRequirements.MediaDescription + " sent to " + selectedQuote.email;
+        selectedQuote.events.Add(workflowRequirementsEvent);
+
+        // Facilitate Engagement Agreement
+        Attachment engagementAgreement = new Attachment();
+        engagementAgreement.MediaDescription = "Facilitate Engagement Agreement";
+        engagementAgreement.MediaUrl = "/docs/templates/agreements/Facilitate Engagement Agreement.docx";
+        selectedQuote.attachments.Add(engagementAgreement);
+
+        Event engagementAgreementEvent = new Event(0, 0);
+        engagementAgreementEvent.Details = engagementAgreement.MediaDescription + " sent to " + selectedQuote.email;
+        selectedQuote.events.Add(engagementAgreementEvent);
+
+        // Welcome Letter
+        Attachment welcomeLetter = new Attachment();
+        welcomeLetter.MediaDescription = "Welcome to Facilitate.org";
+        welcomeLetter.MediaUrl = "/docs/templates/boilerplate/Welcome to Facilitate.docx";
+        selectedQuote.attachments.Add(welcomeLetter);
+
+        Event welcomeLetterEvent = new Event(0, 0);
+        welcomeLetterEvent.Details = welcomeLetter.MediaDescription + " sent to " + selectedQuote.email;
+        selectedQuote.events.Add(welcomeLetterEvent);
+
+        // Assignment event
+        var projectManager = selectedQuote.projectManager;
+        Event assignmentEvent = new Event(0, 0);
+        assignmentEvent.Details = "Lead assigned to Project Manager Id: " + projectManager._id + " (" + projectManager.Name + "), moved to Opportunities and emailed to: " + projectManager.Email;
+        selectedQuote.events.Add(assignmentEvent);
+
+        WebServices.UpdateQuote(selectedQuote);
+
+        //LoadingPanelVisible = false;
+
+        IsAssignPopupVisible = false;
+        IsAssignButtonEnabled = false;
+
+        PauseRefresh(false);
     }
 
     public void ArchiveLead()
