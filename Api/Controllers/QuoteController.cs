@@ -39,6 +39,15 @@ namespace Facilitate.Api.Controllers
             _logger = logger;
         }
 
+        // POST api/<QuoteController>
+        [HttpPost]
+        public string Post([FromBody] string value)
+        {
+            var response = "Successfully created Quote";
+
+            return response;
+        }
+
         // GET: api/<QuoteController>
         [HttpGet]
         public IEnumerable<Quote> Get(string status)
@@ -112,12 +121,6 @@ namespace Facilitate.Api.Controllers
         public string Get(int id)
         {
             return "value";
-        }
-
-        // POST api/<QuoteController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
         }
 
         // PUT api/<QuoteController>/5
