@@ -46,6 +46,14 @@ builder.Services.AddIdentityMongoDbProvider<MongoUser, MongoRole>(identity =>
         // other options
     });
 
+builder.Services.AddScoped(sp =>
+    new HttpClient
+    {
+        BaseAddress = new Uri(builder.Configuration["FrontendUrl"] ?? "https://localhost:7235")
+    });
+
+builder.Services.AddHttpClient();
+
 var app = builder.Build();
 
 app.UseCors("externalRequests");

@@ -6,13 +6,15 @@
 @using Facilitate.Libraries.Models;
 @using MongoDB.Bson;
 
-@using Json.Net;
+@* @using Json.Net; *@
+@using System.Text.Json;
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
 @inject WebServices WebServices
 
 @inject NavigationManager NavigationManager
+@inject IHttpClientFactory ClientFactory
 
 <PageTitle>Leads</PageTitle>
 
@@ -506,6 +508,41 @@ else
 
 
 @code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        HttpClient httpClient = ClientFactory.CreateClient();
+        var client = httpClient;
+
+        // var request = new HttpRequestMessage(HttpMethod.Get,"https://api.github.com/repos/dotnet/AspNetCore.Docs/branches");
+        // request.Headers.Add("Accept", "application/vnd.github.v3+json");
+        // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
+
+        var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7235/api/Quote/status=new");
+        request.Headers.Add("Accept", "application/json");
+
+        try
+        {
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                using var responseStream = await response.Content.ReadAsStreamAsync();
+
+                var quotes = await JsonSerializer.DeserializeAsync<IEnumerable<Quote>>(responseStream);
+
+                var tmpVal = "";
+            }
+            else
+            {
+
+            }
+        }
+        catch (Exception ex)
+        {
+            //logger.LogError(ex, "Error occurred calling the GitHub API.");
+        }
+    }
 
     public QuoteLeaderboard leaderboardStats;
 

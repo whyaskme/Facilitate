@@ -134,6 +134,10 @@ namespace AdminBlazor.Data
         {
             try
             {
+                // Post the Quote to Api
+
+
+
                 client = new MongoClient(mongoUri);
 
                 collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
