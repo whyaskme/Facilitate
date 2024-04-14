@@ -41,11 +41,59 @@ namespace Facilitate.Api.Controllers
 
         // POST api/<QuoteController>
         [HttpPost]
-        public string Post([FromBody] string value)
+        public string Post([FromBody] QuoteRoofleSubmission roofleSubmission)
         {
-            var response = "Successfully created Quote";
+            Quote quote = new Quote();
 
-            return response;
+            quote.address = roofleSubmission.address;
+            quote.fullAddress = roofleSubmission.fullAddress;
+            quote.street = roofleSubmission.street;
+            quote.city = roofleSubmission.city;
+            quote.state = roofleSubmission.state;
+            quote.zip = roofleSubmission.zip;
+
+            quote.firstName = roofleSubmission.firstName;
+            quote.lastName = roofleSubmission.lastName;
+            quote.email = roofleSubmission.email;
+            quote.phone = roofleSubmission.phone;
+            quote.market = roofleSubmission.market;
+            quote.externalUrl = roofleSubmission.externalUrl;
+            quote.timestamp = DateTime.UtcNow;
+
+            quote.numberOfStructures = roofleSubmission.numberOfStructures;
+            quote.numberOfIncludedStructures = roofleSubmission.numberOfIncludedStructures;
+            quote.totalSquareFeet = roofleSubmission.totalSquareFeet;
+
+            quote.repLead = roofleSubmission.repLead;
+            quote.repEmail = roofleSubmission.repEmail;
+            quote.leadId = roofleSubmission.leadId;
+
+            quote.products = roofleSubmission.products;
+            quote.structures = roofleSubmission.structures;
+
+            quote.mainRoofTotalSquareFeet = roofleSubmission.mainRoofTotalSquareFeet;
+            quote.totalInitialSquareFeet = roofleSubmission.totalInitialSquareFeet;
+            quote.sessionId = roofleSubmission.sessionId;
+
+            try
+            {
+                // Post the Quote to Api
+                client = new MongoClient(mongoUri);
+
+                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
+                collection.InsertOne(quote);
+
+                resultMsg = "Added Quote!";
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
+            return resultMsg;
         }
 
         // GET: api/<QuoteController>

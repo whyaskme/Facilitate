@@ -23,37 +23,31 @@ namespace Facilitate.Libraries.Models
     {
         public QuoteRoofleSubmission()
         {
-            //_id = ObjectId.GenerateNewId().ToString();
-            //_t = "Quote";
-
-            address = string.Empty;
-            fullAddress = string.Empty;
-            street = string.Empty;
-            city = string.Empty;
-            state = string.Empty;
-            zip = string.Empty;
-            firstName = string.Empty;
-            lastName = string.Empty;
-            email = string.Empty;
-            phone = string.Empty;
-            market = string.Empty;
-            externalUrl = string.Empty;
-            timestamp = DateTime.UtcNow;
-            numberOfStructures = 0;
-            numberOfIncludedStructures = 0;
-            totalSquareFeet = 0;
-            mainRoofTotalSquareFeet = 0;
-            totalInitialSquareFeet = 0;
-            sessionId = string.Empty;
-            structures = new List<Structure>();
-            repLead = string.Empty;
-            repEmail = string.Empty;
-            leadId = 0;
-            products = new List<Product>();
-    }
-
-        //public string _id { get; set; }
-        //public string _t { get; set; }
+            //address = string.Empty;
+            //fullAddress = string.Empty;
+            //street = string.Empty;
+            //city = string.Empty;
+            //state = string.Empty;
+            //zip = string.Empty;
+            //firstName = string.Empty;
+            //lastName = string.Empty;
+            //email = string.Empty;
+            //phone = string.Empty;
+            //market = string.Empty;
+            //externalUrl = string.Empty;
+            //timestamp = DateTime.UtcNow;
+            //numberOfStructures = 0;
+            //numberOfIncludedStructures = 0;
+            //totalSquareFeet = 0;
+            //mainRoofTotalSquareFeet = 0;
+            //totalInitialSquareFeet = 0;
+            //sessionId = string.Empty;
+            //structures = new List<Structure>();
+            //repLead = string.Empty;
+            //repEmail = string.Empty;
+            //leadId = 0;
+            //products = new List<Product>();
+        }
 
         public string address { get; set; }
         public string fullAddress { get; set; }
