@@ -97,6 +97,7 @@ namespace Facilitate.Api.Controllers
         }
 
         // GET: api/<QuoteController>
+        [Produces("application/json")]
         [HttpGet]
         public IEnumerable<Quote> Get(string status)
         {
@@ -165,6 +166,7 @@ namespace Facilitate.Api.Controllers
         }
 
         // GET api/<QuoteController>/5
+        [Produces("application/json")]
         [HttpGet("{id}")]
         public string Get(int id)
         {
@@ -172,12 +174,14 @@ namespace Facilitate.Api.Controllers
         }
 
         // PUT api/<QuoteController>/5
+        [Produces("application/json")]
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
         }
 
         // DELETE api/<QuoteController>/5
+        [Produces("application/json")]
         [HttpDelete("{id}")]
         public void Delete(int id)
         {

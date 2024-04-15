@@ -26,36 +26,88 @@ Welcome to your new app.
 
 @code
 {
-    public List<Quote> quotes = new List<Quote>();
+    //public List<Quote> quotes = new List<Quote>();
     public List<Quote> quoteList = new List<Quote>();
+
+    public string apiResponse;
 
     public Home()
     {
-        OnGetIncidentsAsync();
+        GetQuoteList("customer");
 
-        this.quotes = quoteList;
+        var tmpVal = quoteList;
     }
 
-    public async Task<List<Quote>> OnGetIncidentsAsync()
+    public List<Quote> GetQuoteListNew(string _status)
     {
-        //var apiUrl = "http://localhost:8080/api/quote?status=new";
+        //var apiUrl = "http://localhost:8080/api/quote?status=" + _status;
+        var apiUrl = "https://api.facilitate.org/api/quote?status=" + _status;
 
-        var apiUrl = "https://api.facilitate.org/api/quote?status=archive";
-
-        using (var httpClient = new HttpClient())
+        try
         {
-            using (HttpResponseMessage response = await httpClient.GetAsync(apiUrl))
+            var httpClient = new HttpClient()
             {
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                quoteList = JsonConvert.DeserializeObject<List<Quote>>(apiResponse);
+                BaseAddress = new Uri(apiUrl)
+            };
 
-                foreach (Quote quote in quoteList)
+            httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            var quotes = httpClient.GetFromJsonAsync<List<Quote>>(apiUrl);
+
+            var tmpVal = "";
+
+            // using (var httpClient = new HttpClient())
+            // {
+            //     using (HttpResponseMessage response = await httpClient.GetAsync(apiUrl))
+            //     {
+            //         apiResponse = await response.Content.ReadAsStringAsync();
+            //         //quoteList = JsonConvert.DeserializeObject<List<Quote>>(apiResponse);
+
+            //         quoteList = JsonConvert.DeserializeObject<List<Quote>>(apiResponse);
+
+            //         foreach (Quote quote in quoteList)
+            //         {
+            //             var QuoteId = quote._id;
+            //         }
+
+            //         var tmpVal = "";
+            //     }
+            // }
+        }
+        catch (Exception ex)
+        {
+            var tmpVal = ex.Message;
+        }
+        return quoteList;
+    }
+
+    public async Task<List<Quote>> GetQuoteList(string _status)
+    {
+        //var apiUrl = "http://localhost:8080/api/quote?status=" + _status;
+        var apiUrl = "https://api.facilitate.org/api/quote?status=" + _status;
+
+        try
+        {
+            using (var httpClient = new HttpClient())
+            {
+                using (HttpResponseMessage response = await httpClient.GetAsync(apiUrl))
                 {
-                    var QuoteId = quote._id;
-                }
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    //quoteList = JsonConvert.DeserializeObject<List<Quote>>(apiResponse);
 
-                var tmpVal = "";
+                    List<Quote> quotes = await httpClient.GetFromJsonAsync<List<Quote>>(apiUrl);
+
+                    foreach (var quote in quotes)
+                    {
+                        var QuoteId = "";
+                    }
+
+                    var tmpVal = "";
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            var tmpVal = ex.Message;
         }
         return quoteList;
     }
