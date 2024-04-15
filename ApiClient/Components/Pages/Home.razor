@@ -24,10 +24,11 @@
 
 Welcome to your new app.
 
-
+@* if(@quoteList != null)
+{
     <p>@quoteList.Count</p>
-
-
+} *@
+    
 @code
 {
     public List<Quote> quoteList = new List<Quote>();
