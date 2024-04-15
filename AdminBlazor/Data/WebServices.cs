@@ -4,13 +4,20 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using static Facilitate.Libraries.Models.Constants.Messaging;
 
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using ServiceStack;
+using System.Drawing.Text;
+
 namespace AdminBlazor.Data
 {
-    [Route("api/[controller]")]
+    //[Route("api/[controller]")]
     [ApiController]
     public class WebServices : ControllerBase
     {
         Utils utils = new Utils();
+
+        public HttpClient apiClient = new HttpClient();
 
         string dbName = "Facilitate";
         string collectionName = "Quote";
@@ -25,17 +32,39 @@ namespace AdminBlazor.Data
         IMongoCollection<Quote> collection;
         private CancellationToken _cancellationToken;
 
+        public List<Quote> quoteList = new List<Quote>();
+
+        public async Task<List<Quote>> CallQuoteApi(string status)
+        {
+            status = utils.TitleCaseString(status);
+
+            //var quoteList = apiClient.BaseAddress = new Uri("http://localhost:8080/api/quote?status=new");
+            var apiUrl = apiClient.BaseAddress = new Uri("https://api.facilitate.org/api/quote?status=" + status);
+
+            //var quotes = await apiClient.GetAsync(apiUrl);
+            var quotes = await apiClient.GetFromJsonAsync<Quote>(apiUrl);
+
+            return null;
+        }
+
         // GET: api/<WebServices>
         //[HttpGet]
-        [Route("GetQuotes")]
+        //[Route("GetQuotes")]
         public List<Quote> GetQuotes(string status)
         {
             List<Attachment> unSortedFiles = new List<Attachment>();
             List<Note> unSortedNotes = new List<Note>();
             List<Event> unSortedEvents = new List<Event>();
 
+            var quotesList = CallQuoteApi("New");
+
             try
             {
+                // Make an Api call to get the Quotes
+                var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:8080/api/quote?status=new");
+                //request.Headers.Add("Accept", "application/json");
+                //request.Headers.Add("User-Agent", "HttpClientFactory");
+
                 client = new MongoClient(mongoUri);
                 collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
 

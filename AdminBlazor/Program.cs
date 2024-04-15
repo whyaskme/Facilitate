@@ -49,7 +49,7 @@ builder.Services.AddIdentityMongoDbProvider<MongoUser, MongoRole>(identity =>
 builder.Services.AddScoped(sp =>
     new HttpClient
     {
-        BaseAddress = new Uri(builder.Configuration["FrontendUrl"] ?? "https://localhost:7235")
+        BaseAddress = new Uri(builder.Configuration["FrontendUrl"] ?? "https://localhost:8080")
     });
 
 builder.Services.AddHttpClient();
