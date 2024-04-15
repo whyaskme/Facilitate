@@ -51,10 +51,8 @@ Welcome to your new app.
 
     public async Task<List<Quote>> GetQuoteList(string _status)
     {
-        var apiUrl = "http://localhost:8080/api/Quote?status=" + _status;
-
-        //apiUrl = "https://localhost:7235/api/Quote?status=" + _status;
-        apiUrl = "https://api.facilitate.org/api/Quote?status=" + _status;
+        //var apiUrl = "http://localhost:8080/api/Quote?status=" + _status;
+        var apiUrl = "https://api.facilitate.org/api/Quote?status=" + _status;
 
         try
         {

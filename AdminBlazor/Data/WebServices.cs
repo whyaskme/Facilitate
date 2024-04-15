@@ -60,28 +60,14 @@ namespace AdminBlazor.Data
             return null;
         }
 
-        // GET: api/<WebServices>
-        //[HttpGet]
-        //[Route("GetQuotes")]
         public List<Quote> GetQuotes(string status)
         {
             List<Attachment> unSortedFiles = new List<Attachment>();
             List<Note> unSortedNotes = new List<Note>();
             List<Event> unSortedEvents = new List<Event>();
 
-            //var quotesList = GetQuoteList("New");
-
-            var apiUrl = apiClient.BaseAddress = new Uri("https://api.facilitate.org/api/quote?status=" + status);
-
-            //var quotes = apiClient.GetAsync(apiUrl);
-
             try
             {
-                // Make an Api call to get the Quotes
-                var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:8080/api/quote?status=new");
-                //request.Headers.Add("Accept", "application/json");
-                //request.Headers.Add("User-Agent", "HttpClientFactory");
-
                 client = new MongoClient(mongoUri);
                 collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
 
