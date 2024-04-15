@@ -51,14 +51,14 @@ Welcome to your new app.
 
     public async Task<List<Quote>> GetQuoteList(string _status)
     {
-        //var apiUrl = "http://localhost:8080/api/Quote?status=" + _status;
-        var apiUrl = "https://api.facilitate.org/api/Quote?status=" + _status;
+        //var apiUrl = "http://localhost:8080/api/quote?status=" + _status;
+        var apiUrl = "https://api.facilitate.org/api/quote?status=" + _status;
 
         try
         {
             using (var httpClient = new HttpClient())
             {
-                httpClient.DefaultRequestHeaders.Add("Key", "Value");
+                //httpClient.DefaultRequestHeaders.Add("Key", "Value");
 
                 using (HttpResponseMessage response = await httpClient.GetAsync(apiUrl))
                 {
