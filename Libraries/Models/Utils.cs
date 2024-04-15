@@ -701,7 +701,7 @@ namespace Facilitate.Libraries.Models
         public Event GetEvent(ObjectId eventId)
         {
             var myEventList = new List<Event>();
-            var myEvent = new Event(0,0);
+            var myEvent = new Event();
 
             try
             {

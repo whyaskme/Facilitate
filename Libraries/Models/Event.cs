@@ -12,7 +12,7 @@ namespace Facilitate.Libraries.Models
 {
     public class Event
     {
-        public Event(Double latitude, Double longitude)
+        public Event()
         {
             _id = ObjectId.GenerateNewId().ToString();
             _t = "Event";

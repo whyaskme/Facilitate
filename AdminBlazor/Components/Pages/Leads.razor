@@ -799,7 +799,7 @@ else
 
         selectedQuote.status = "Opportunity";
 
-        Event statusChanged = new Event(0, 0);
+        Event statusChanged = new Event();
         statusChanged.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Opportunity";
         selectedQuote.events.Add(statusChanged);
 
@@ -829,7 +829,7 @@ else
         workflowRequirements.MediaUrl = "/docs/templates/misc/Workflow and Subsequent Document Requirements.pdf";
         selectedQuote.attachments.Add(workflowRequirements);
 
-        Event workflowRequirementsEvent = new Event(0, 0);
+        Event workflowRequirementsEvent = new Event();
         workflowRequirementsEvent.Details = workflowRequirements.MediaDescription + " sent to " + selectedQuote.email;
         selectedQuote.events.Add(workflowRequirementsEvent);
 
@@ -839,7 +839,7 @@ else
         engagementAgreement.MediaUrl = "/docs/templates/agreements/Facilitate Engagement Agreement.docx";
         selectedQuote.attachments.Add(engagementAgreement);
 
-        Event engagementAgreementEvent = new Event(0, 0);
+        Event engagementAgreementEvent = new Event();
         engagementAgreementEvent.Details = engagementAgreement.MediaDescription + " sent to " + selectedQuote.email;
         selectedQuote.events.Add(engagementAgreementEvent);
 
@@ -849,13 +849,13 @@ else
         welcomeLetter.MediaUrl = "/docs/templates/boilerplate/Welcome to Facilitate.docx";
         selectedQuote.attachments.Add(welcomeLetter);
 
-        Event welcomeLetterEvent = new Event(0, 0);
+        Event welcomeLetterEvent = new Event();
         welcomeLetterEvent.Details = welcomeLetter.MediaDescription + " sent to " + selectedQuote.email;
         selectedQuote.events.Add(welcomeLetterEvent);
 
         // Assignment event
         var projectManager = selectedQuote.projectManager;
-        Event assignmentEvent = new Event(0, 0);
+        Event assignmentEvent = new Event();
         assignmentEvent.Details = "Lead assigned to Project Manager Id: " + projectManager._id + " (" + projectManager.Name + "), moved to Opportunities and emailed to: " + projectManager.Email;
         selectedQuote.events.Add(assignmentEvent);
 
@@ -899,7 +899,7 @@ else
 
         selectedQuote.notes.Add(note);
 
-        Event _event = new Event(0, 0);
+        Event _event = new Event();
         _event.Details = "Note (" + note.Details + ") added to Quote";
 
         selectedQuote.events.Add(_event);
@@ -936,7 +936,7 @@ else
     {
         selectedNote.IsDeleted = true;
 
-        Event _event = new Event(0, 0);
+        Event _event = new Event();
         _event.Details = "Deleted note (" + selectedNote.Details + ") from Quote";
 
         selectedQuote.events.Add(_event);
@@ -1153,7 +1153,7 @@ else
         var latitude = 0;
         var longitude = 0;
 
-        Event _event = new Event(0, 0);
+        Event _event = new Event();
         _event.Name = "New Quote";
         _event.DateTime = DateTime.UtcNow;
         _event.Details = "New quote referred by Roofle";

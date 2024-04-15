@@ -389,7 +389,7 @@ namespace AdminBlazor.Data
 
         //        var sortedelectedQuote = collection.Find(filter).ToList()[0];
 
-        //        Event _event = new Event(0, 0);
+        //        Event _event = new Event();
         //        _event.Details = sortedelectedQuote.status + " moved to Archive";
 
         //        sortedelectedQuote.status = "Archive";

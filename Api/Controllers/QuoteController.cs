@@ -45,6 +45,15 @@ namespace Facilitate.Api.Controllers
         {
             Quote quote = new Quote();
 
+            if(roofleSubmission.products[0].priceInfo.total != null)
+            {
+                quote.totalQuote = roofleSubmission.products[0].priceInfo.total;
+            }
+            else
+            {
+                quote.totalQuote = 0;
+            }
+
             quote.address = roofleSubmission.address;
             quote.fullAddress = roofleSubmission.fullAddress;
             quote.street = roofleSubmission.street;
@@ -74,6 +83,13 @@ namespace Facilitate.Api.Controllers
             quote.mainRoofTotalSquareFeet = roofleSubmission.mainRoofTotalSquareFeet;
             quote.totalInitialSquareFeet = roofleSubmission.totalInitialSquareFeet;
             quote.sessionId = roofleSubmission.sessionId;
+
+            Event _event = new Event();
+            _event.Name = "New Quote";
+            _event.DateTime = DateTime.UtcNow;
+            _event.Details = "New quote referred by Roofle";
+
+            quote.events.Add(_event);
 
             try
             {
