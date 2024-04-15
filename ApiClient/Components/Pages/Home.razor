@@ -1,0 +1,62 @@
+﻿@page "/"
+
+@using Facilitate.Libraries.Models;
+@using MongoDB.Bson;
+
+@using System.Text.Json;
+
+@attribute [StreamRendering(true)]
+@rendermode InteractiveServer
+
+@inject NavigationManager NavigationManager
+
+@using Json.Net;
+@using JsonConverter = System.Text.Json.Serialization.JsonConverter;
+@using System.Net.Http;
+@using Newtonsoft.Json;
+@using System.Threading.Tasks;
+@using System.Collections.Generic;
+@using System.Web;
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+@code
+{
+    public List<Quote> quotes = new List<Quote>();
+    public List<Quote> quoteList = new List<Quote>();
+
+    public Home()
+    {
+        OnGetIncidentsAsync();
+
+        this.quotes = quoteList;
+    }
+
+    public async Task<List<Quote>> OnGetIncidentsAsync()
+    {
+        //var apiUrl = "http://localhost:8080/api/quote?status=new";
+
+        var apiUrl = "https://api.facilitate.org/api/quote?status=archive";
+
+        using (var httpClient = new HttpClient())
+        {
+            using (HttpResponseMessage response = await httpClient.GetAsync(apiUrl))
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                quoteList = JsonConvert.DeserializeObject<List<Quote>>(apiResponse);
+
+                foreach (Quote quote in quoteList)
+                {
+                    var QuoteId = quote._id;
+                }
+
+                var tmpVal = "";
+            }
+        }
+        return quoteList;
+    }
+}

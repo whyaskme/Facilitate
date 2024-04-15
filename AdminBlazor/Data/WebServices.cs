@@ -42,7 +42,20 @@ namespace AdminBlazor.Data
             var apiUrl = apiClient.BaseAddress = new Uri("https://api.facilitate.org/api/quote?status=" + status);
 
             //var quotes = await apiClient.GetAsync(apiUrl);
-            var quotes = await apiClient.GetFromJsonAsync<Quote>(apiUrl);
+            var quotes = await apiClient.GetFromJsonAsync<List<Quote>>(apiUrl);
+
+            return quotes;
+        }
+
+        public List<Quote> GetQuoteList(string status)
+        {
+            status = utils.TitleCaseString(status);
+
+            //var quoteList = apiClient.BaseAddress = new Uri("http://localhost:8080/api/quote?status=new");
+            var apiUrl = apiClient.BaseAddress = new Uri("https://api.facilitate.org/api/quote?status=" + status);
+
+            var quotes = apiClient.GetAsync(apiUrl);
+            //var quotes = apiClient.GetFromJsonAsync<Quote>(apiUrl);
 
             return null;
         }
@@ -56,7 +69,11 @@ namespace AdminBlazor.Data
             List<Note> unSortedNotes = new List<Note>();
             List<Event> unSortedEvents = new List<Event>();
 
-            var quotesList = CallQuoteApi("New");
+            //var quotesList = GetQuoteList("New");
+
+            var apiUrl = apiClient.BaseAddress = new Uri("https://api.facilitate.org/api/quote?status=" + status);
+
+            //var quotes = apiClient.GetAsync(apiUrl);
 
             try
             {

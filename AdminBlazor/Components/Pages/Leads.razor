@@ -15,6 +15,7 @@
 
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory ClientFactory
+@inject HttpClient httpClient
 
 <PageTitle>Leads</PageTitle>
 
@@ -710,6 +711,38 @@ else
 
     #region Methods
 
+    private List<Quote> _quoteList = new List<Quote>();
+
+    public void GetQuotes()
+    {
+        //_quoteList = httpClient.GetFromJsonAsync<List<Quote>>("https://localhost:7235/api/Quote/status=new");
+
+        var httpRequestMessage = new HttpRequestMessage()
+            {
+                Method = new HttpMethod("GET"),
+                RequestUri = new Uri("https://localhost:7235/api/Quote/status=new"),
+            };
+
+        httpRequestMessage.Headers.Add("Accept", "application/json");
+        httpRequestMessage.Headers.Add("User-Agent", "HttpClientFactory");
+
+        // httpRequestMessage.Properties[BrowserHttpMessageHandler.FetchArgs] = new
+        // {
+        //     referrer = "foo-bar"
+        // };
+
+        var response = httpClient.SendAsync(httpRequestMessage);
+        // var content = response.Content.ReadAsStringAsync();
+
+        // _quoteList = JsonSerializer.Deserialize<List<Quote>>(content);
+
+        var tmpVal = "";
+
+        //_quoteList = Json.Deserialize<List<Quote>>(content);
+
+        //return _quoteList;
+    }
+
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
@@ -717,7 +750,6 @@ else
             ProjectManagers = memberService.GetMembers(Constants.UserRoles.ProjectManager);
             RefreshTimer();
         }
-
         GetIpAddress();
     }
 
@@ -1207,6 +1239,10 @@ else
     private void RefreshTimer()
     {
         LoadingPanelVisible = true;
+
+        GetQuotes();
+
+        var tmpQoutes = _quoteList;
 
         _timer = new Timer(new TimerCallback(_ =>
         {
