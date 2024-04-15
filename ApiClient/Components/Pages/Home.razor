@@ -24,6 +24,10 @@
 
 Welcome to your new app.
 
+
+    <p>@quoteList.Count</p>
+
+
 @code
 {
     //public List<Quote> quotes = new List<Quote>();
@@ -31,11 +35,25 @@ Welcome to your new app.
 
     public string apiResponse;
 
-    public Home()
-    {
-        GetQuoteList("customer");
+    // public Home()
+    // {
+    //     var tmpVal = GetQuoteList("customer");
 
-        var tmpVal = quoteList;
+    //     var tmpVal2 = quoteList;
+    // }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var tmpVal = await GetQuoteList("new");
+
+            var tmpVal2 = quoteList;
+        }
+        catch (Exception ex)
+        {
+            //logger.LogError(ex, "Error occurred calling the GitHub API.");
+        }
     }
 
     public List<Quote> GetQuoteListNew(string _status)
@@ -82,26 +100,28 @@ Welcome to your new app.
 
     public async Task<List<Quote>> GetQuoteList(string _status)
     {
-        //var apiUrl = "http://localhost:8080/api/quote?status=" + _status;
-        var apiUrl = "https://api.facilitate.org/api/quote?status=" + _status;
+        var apiUrl = "https://localhost:7235/api/Quote?status=" + _status;
+
+        //apiUrl = "https://localhost:7235/api/Quote?status=" + _status;
+        //apiUrl = "https://api.facilitate.org/api/quote?status=" + _status;
 
         try
         {
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Add("Key", "Value");
+
                 using (HttpResponseMessage response = await httpClient.GetAsync(apiUrl))
                 {
-                    apiResponse = await response.Content.ReadAsStringAsync();
-                    //quoteList = JsonConvert.DeserializeObject<List<Quote>>(apiResponse);
-
-                    List<Quote> quotes = await httpClient.GetFromJsonAsync<List<Quote>>(apiUrl);
-
-                    foreach (var quote in quotes)
+                    if (response.IsSuccessStatusCode)
                     {
-                        var QuoteId = "";
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+
+                        quoteList = JsonConvert.DeserializeObject<List<Quote>>(apiResponse);
+
+                        return quoteList;
                     }
 
-                    var tmpVal = "";
                 }
             }
         }

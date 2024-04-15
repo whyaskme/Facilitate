@@ -10,27 +10,24 @@ using MongoDB.Driver;
 
 namespace Facilitate.Libraries.Models
 {
-    public class Event : Base
+    public class Event
     {
         public Event(Double latitude, Double longitude)
         {
-            _id = ObjectId.GenerateNewId();
+            _id = ObjectId.GenerateNewId().ToString();
             _t = "Event";
 
             Name = string.Empty;
             TypeId = 0;
             DateTime = DateTime.UtcNow;
-
-            Reference = new Reference(ObjectId.Empty, 0);
             Details = "None";
-
-            Location = new Location(_id, "", "", latitude, longitude);
         }
 
+        public string _id { get; set; }
+        public string _t { get; set; }
+        public string Name { get; set; }
         public int TypeId { get; set; }
         public DateTime DateTime { get; set; }
-        public Reference Reference { get; set; }
         public string Details { get; set; }
-        public Location Location { get; set; }
     }
 }

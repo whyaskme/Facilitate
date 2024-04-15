@@ -707,7 +707,7 @@ namespace Facilitate.Libraries.Models
             {
                 CreateDbConnection("Event", "Events");
 
-                myEventList = _mongoEventCollection.Find(s => s._id == eventId).ToListAsync().Result;
+                myEventList = _mongoEventCollection.Find(s => s._id == eventId.ToString()).ToListAsync().Result;
                 foreach (var currentAd in myEventList)
                 {
                     myEvent = currentAd;
