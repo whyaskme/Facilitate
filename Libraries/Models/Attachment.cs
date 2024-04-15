@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using MongoDB.Bson;
-using Newtonsoft.Json;
-using Newtonsoft.Json;
+﻿using MongoDB.Bson;
 
 namespace Facilitate.Libraries.Models
 {

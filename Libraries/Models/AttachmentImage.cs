@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using MongoDB.Bson;
-using Newtonsoft.Json;
-using Newtonsoft.Json;
+﻿using MongoDB.Bson;
 
 namespace Facilitate.Libraries.Models
 {
@@ -18,7 +8,7 @@ namespace Facilitate.Libraries.Models
         {
             _id = ObjectId.GenerateNewId();
             _t = "ImageAttachment";
-            Date = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture);
+            Date = DateTime.UtcNow.ToString();
             Media = ""; // ConfigurationManager.AppSettings["ServiceHost"] + ConfigurationManager.AppSettings["TimePopImageUrl"];
         }
 

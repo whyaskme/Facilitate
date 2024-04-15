@@ -14,11 +14,11 @@ using MongoDB.Bson;
 
 namespace Facilitate.Libraries.Models
 {
-    public class Market : Base
+    public class Market// : Base
     {
         public Market()
         {
-            _t = "Market";
+            //_t = "Market";
 
             DatePublished = DateTime.UtcNow;
             DateModified = DateTime.UtcNow;

@@ -964,23 +964,23 @@ namespace Facilitate.Libraries.Models
             return cityCount.ToString();
         }
 
-        public string GetMarketCount()
-        {
-            var marketCount = 0;
+        //public string GetMarketCount()
+        //{
+        //    var marketCount = 0;
 
-            CreateDbConnection("Market", "Markets");
+        //    CreateDbConnection("Market", "Markets");
 
-            var sort = Builders<BsonDocument>.Sort.Ascending("Name");
+        //    var sort = Builders<BsonDocument>.Sort.Ascending("Name");
 
-            var marketCollection = _mongoMarketCollection.Find(s => s._t == "Market").ToListAsync().Result;
+        //    var marketCollection = _mongoMarketCollection.Find(s => s._t == "Market").ToListAsync().Result;
 
-            foreach (Market currentMarket in marketCollection)
-            {
-                marketCount++;
-            }
+        //    foreach (Market currentMarket in marketCollection)
+        //    {
+        //        marketCount++;
+        //    }
 
-            return marketCount.ToString();
-        }
+        //    return marketCount.ToString();
+        //}
 
         public string GeoLocationByUserIp(string userIp)
         {

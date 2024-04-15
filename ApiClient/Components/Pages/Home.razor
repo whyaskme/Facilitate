@@ -30,17 +30,9 @@ Welcome to your new app.
 
 @code
 {
-    //public List<Quote> quotes = new List<Quote>();
     public List<Quote> quoteList = new List<Quote>();
 
     public string apiResponse;
-
-    // public Home()
-    // {
-    //     var tmpVal = GetQuoteList("customer");
-
-    //     var tmpVal2 = quoteList;
-    // }
 
     protected override async Task OnInitializedAsync()
     {
@@ -56,54 +48,12 @@ Welcome to your new app.
         }
     }
 
-    public List<Quote> GetQuoteListNew(string _status)
-    {
-        //var apiUrl = "http://localhost:8080/api/quote?status=" + _status;
-        var apiUrl = "https://api.facilitate.org/api/quote?status=" + _status;
-
-        try
-        {
-            var httpClient = new HttpClient()
-            {
-                BaseAddress = new Uri(apiUrl)
-            };
-
-            httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-            var quotes = httpClient.GetFromJsonAsync<List<Quote>>(apiUrl);
-
-            var tmpVal = "";
-
-            // using (var httpClient = new HttpClient())
-            // {
-            //     using (HttpResponseMessage response = await httpClient.GetAsync(apiUrl))
-            //     {
-            //         apiResponse = await response.Content.ReadAsStringAsync();
-            //         //quoteList = JsonConvert.DeserializeObject<List<Quote>>(apiResponse);
-
-            //         quoteList = JsonConvert.DeserializeObject<List<Quote>>(apiResponse);
-
-            //         foreach (Quote quote in quoteList)
-            //         {
-            //             var QuoteId = quote._id;
-            //         }
-
-            //         var tmpVal = "";
-            //     }
-            // }
-        }
-        catch (Exception ex)
-        {
-            var tmpVal = ex.Message;
-        }
-        return quoteList;
-    }
-
     public async Task<List<Quote>> GetQuoteList(string _status)
     {
-        var apiUrl = "https://localhost:7235/api/Quote?status=" + _status;
+        var apiUrl = "http://localhost:8080/api/Quote?status=" + _status;
 
         //apiUrl = "https://localhost:7235/api/Quote?status=" + _status;
-        //apiUrl = "https://api.facilitate.org/api/quote?status=" + _status;
+        apiUrl = "https://api.facilitate.org/api/Quote?status=" + _status;
 
         try
         {

@@ -78,14 +78,6 @@ namespace Facilitate.Libraries.Models
         public int mainRoofTotalSquareFeet { get; set; }
         public int totalInitialSquareFeet { get; set; }
         public string sessionId { get; set; }
-
-        #region Implementation of IEnumerable
-        List<Quote> quotes;
-        //public IEnumerator<Quote> GetEnumerator()
-        //{
-        //    return quotes.GetEnumerator();
-        //}
-        #endregion
     }
 
 }
