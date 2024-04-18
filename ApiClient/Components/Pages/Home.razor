@@ -43,6 +43,8 @@ Welcome to your new app.
         {
             var newQuote = CreateLead();
 
+            apiResponse = await PostQuote(newQuote);
+
             var tmpVal = await GetQuoteList("new");
 
             var tmpVal2 = quoteList;
@@ -53,35 +55,22 @@ Welcome to your new app.
         }
     }
 
-    public string PostQuote()
+    public async Task<string> PostQuote(QuoteRoofleSubmission quoteRoofleSubmission)
     {
         try
         {
-            var _quote = CreateLead();
-
-            using (var httpClient = new HttpClient())
+            var httpClient = new HttpClient()
             {
-                httpClient.DefaultRequestHeaders.Add("RequestType", "GetQuotes");
+                BaseAddress = new Uri(apiUrl)
+            };
 
-                // using (HttpResponseMessage response = await httpClient.GetAsync(apiUrl))
-                // {
-                //     if (response.IsSuccessStatusCode)
-                //     {
-                //         string apiResponse = await response.Content.ReadAsStringAsync();
+            await httpClient.PostAsJsonAsync(apiUrl, quoteRoofleSubmission);
 
-                //         quoteList = JsonConvert.DeserializeObject<List<Quote>>(apiResponse);
-
-                //         return quoteList;
-                //     }
-
-                // }
-
-                apiResponse = "success";
-            }
+            apiResponse = "Success";
         }
         catch (Exception ex)
         {
-            var tmpVal = ex.Message;
+            var apiResponse = ex.Message;
         }
 
         return apiResponse;
