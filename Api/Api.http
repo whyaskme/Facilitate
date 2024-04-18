@@ -1,6 +1,6 @@
 @Api_HostAddress = http://localhost:5049
 
-GET {{Api_HostAddress}}/Quotes/
+GET {{Api_HostAddress}}/api/Quote/
 Accept: application/json
 
 ###

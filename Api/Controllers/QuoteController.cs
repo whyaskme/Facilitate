@@ -9,6 +9,7 @@ using static Facilitate.Libraries.Models.Constants.Messaging;
 namespace Facilitate.Api.Controllers
 {
     [Route("api/[controller]")]
+    //[Route("[controller]")]
     [ApiController]
     public class QuoteController : ControllerBase
     {
@@ -28,6 +29,8 @@ namespace Facilitate.Api.Controllers
         IMongoCollection<Quote> collection;
         private CancellationToken _cancellationToken;
 
+        List<Quote> sortedQuotes = new List<Quote>();
+
         List<Attachment> unSortedFiles = new List<Attachment>();
         List<Note> unSortedNotes = new List<Note>();
         List<Event> unSortedEvents = new List<Event>();
@@ -40,6 +43,7 @@ namespace Facilitate.Api.Controllers
         }
 
         // POST api/<QuoteController>
+        //[Produces("application/json")]
         [HttpPost]
         public string Post([FromBody] QuoteRoofleSubmission roofleSubmission)
         {
@@ -114,8 +118,10 @@ namespace Facilitate.Api.Controllers
 
         // GET: api/<QuoteController>
         [Produces("application/json")]
-        [HttpGet]
-        public IEnumerable<Quote> Get(string status)
+        [ProducesResponseType<Product>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet(Name = "Get")]
+        public IActionResult Get(string status)
         {
             status = utils.TitleCaseString(status);
 
@@ -127,7 +133,7 @@ namespace Facilitate.Api.Controllers
                 var builder = Builders<Quote>.Filter;
                 var filter = builder.Eq(f => f.status, status);
 
-                var sortedQuotes = collection.Find(filter).SortByDescending(e => e.timestamp).ToList();
+                sortedQuotes = collection.Find(filter).SortByDescending(e => e.timestamp).ToList();
 
                 for (var i = 0; i < sortedQuotes.Count; i++)
                 {
@@ -167,7 +173,7 @@ namespace Facilitate.Api.Controllers
                     sortedQuotes[i].events = SortEventsByDateDesc(unSortedEvents);
                 }
 
-                return sortedQuotes;
+                //return sortedQuotes;
             }
             catch (Exception ex)
             {
@@ -178,30 +184,31 @@ namespace Facilitate.Api.Controllers
 
             }
 
-            return null;
+            //return sortedQuotes;
+            return sortedQuotes == null ? NotFound() : Ok(sortedQuotes);
         }
 
         // GET api/<QuoteController>/5
-        [Produces("application/json")]
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+        //[Produces("application/json")]
+        //[HttpGet("{id}")]
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
 
         // PUT api/<QuoteController>/5
-        [Produces("application/json")]
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        //[Produces("application/json")]
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody] string value)
+        //{
+        //}
 
         // DELETE api/<QuoteController>/5
-        [Produces("application/json")]
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //[Produces("application/json")]
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //}
 
         private List<Event> SortEventsByDateDesc(List<Event> originalList)
         {
