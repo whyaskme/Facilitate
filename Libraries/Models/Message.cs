@@ -24,7 +24,7 @@ namespace Facilitate.Libraries.Models
             Body = string.Empty;
             ToEmail = string.Empty;
             ToName = string.Empty;
-            Location = new Location(ObjectId.Empty, "", "", 0.00, 0.00);
+            //Location = new Location(ObjectId.Empty, "", "", 0.00, 0.00);
 
             Status = Constants.Messaging.Status.None;
         }
@@ -40,7 +40,7 @@ namespace Facilitate.Libraries.Models
         public String Body { get; set; }
         public String ToEmail { get; set; }
         public String ToName { get; set; }
-        public Location Location { get; set; }
+        //public Location Location { get; set; }
         public Int16 Status { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Facilitate.Desktop.Models;
+
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -21,11 +22,12 @@ namespace Desktop_Client
     {
         static HttpClient client = new HttpClient();
 
-        //public List<Quote> quoteList = new List<Quote>();
+        public List<Quote> quoteList = new List<Quote>();
 
         public string apiResponse;
-        public string apiUrl = "http://localhost:8080/api/Quote";
-        //public string apiUrl = "https://api.facilitate.org/api/Quote";
+
+        //public string apiUrl = "http://localhost:8080/api/Quote";
+        public string apiUrl = "https://api.facilitate.org/api/Quote";
 
         public Form1()
         {
@@ -38,16 +40,21 @@ namespace Desktop_Client
         {
             try
             {
-                using (var client = new HttpClient())
+                using (var httpClient = new HttpClient())
                 {
-                    using (var response = await client.GetAsync(apiUrl + "?status=new"))
+                    //httpClient.DefaultRequestHeaders.Add("RequestType", "GetQuotes");
+
+                    using (HttpResponseMessage response = await httpClient.GetAsync(apiUrl + "?status=new"))
                     {
                         if (response.IsSuccessStatusCode)
                         {
-                            var fileJsonString = await response.Content.ReadAsStringAsync();
+                            string apiResponse = await response.Content.ReadAsStringAsync();
 
-                            var tmp2 = "";
+                            quoteList = JsonConvert.DeserializeObject<List<Quote>>(apiResponse);
+
+                            var tmpVal = "";
                         }
+
                     }
                 }
             }

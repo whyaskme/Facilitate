@@ -24,7 +24,7 @@ namespace Facilitate.Libraries.Models
             NotificationTitle = string.Empty;
             NotificationText = string.Empty;
 
-            Location = new Location(UserId, "", "", latitude, longitude);
+            //Location = new Location(UserId, "", "", latitude, longitude);
         }
         public ObjectId UserId { get; set; }
         public DateTime DateTime { get; set; }
@@ -32,6 +32,6 @@ namespace Facilitate.Libraries.Models
         public string NotificationTicker { get; set; }
         public string NotificationTitle { get; set; }
         public string NotificationText { get; set; }
-        public Location Location { get; set; }
+        //public Location Location { get; set; }
     }
 }

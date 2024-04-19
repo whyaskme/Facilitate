@@ -979,8 +979,6 @@ else
 
         QuoteGrid.CollapseDetailRow(selectedIndex);
 
-        selectedQuote.status = "Opportunity";
-
         Event statusChanged = new Event();
         statusChanged.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Opportunity";
         selectedQuote.events.Add(statusChanged);
