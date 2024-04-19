@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,12 +19,13 @@ namespace Desktop_Client
 {
     public partial class Form1 : Form
     {
+        static HttpClient client = new HttpClient();
 
         //public List<Quote> quoteList = new List<Quote>();
 
         public string apiResponse;
-        //public string apiUrl = "http://localhost:8080/api/Quote?status=new";
-        public string apiUrl = "https://api.facilitate.org/api/Quote?status=new";
+        public string apiUrl = "http://localhost:8080/api/Quote";
+        //public string apiUrl = "https://api.facilitate.org/api/Quote";
 
         public Form1()
         {
@@ -38,7 +40,7 @@ namespace Desktop_Client
             {
                 using (var client = new HttpClient())
                 {
-                    using (var response = await client.GetAsync(apiUrl))
+                    using (var response = await client.GetAsync(apiUrl + "?status=new"))
                     {
                         if (response.IsSuccessStatusCode)
                         {
@@ -58,6 +60,7 @@ namespace Desktop_Client
         private void button1_Click(object sender, EventArgs e)
         {
             // Create lead
+            PostQuote();
             var tmpVal = "";
         }
 
@@ -66,30 +69,34 @@ namespace Desktop_Client
             GetQuoteList();
         }
 
-        public string PostQuote()
+        public async Task<string> PostQuote()
         {
             QuoteRoofleSubmission quoteRoofleSubmission = new QuoteRoofleSubmission();
+            
+            string returnUri = "";
+            //apiUrl += "?status=new";
 
-            string responseFromServer = "";
-
-            WebRequest request = WebRequest.Create(apiUrl);
-            request.Method = "POST";
-            request.ContentType = "application/x-www-form-urlencoded";
-            request.ContentLength = quoteRoofleSubmission.ToString().Length;
-
-            using (var stream = request.GetRequestStream())
+            try
             {
-                //stream.Write(quoteRoofleSubmission.ToString().ToUtf8Bytes(), 0, quoteRoofleSubmission.ToString().Length);
-                //stream.Write(quoteRoofleSubmission.ToString(), 0, quoteRoofleSubmission.ToString().Length);
+                var httpClient = new HttpClient()
+                {
+                    BaseAddress = new Uri(apiUrl)
+                };
+
+                HttpResponseMessage response = await httpClient.PostAsJsonAsync(apiUrl, quoteRoofleSubmission);
+
+                response.EnsureSuccessStatusCode();
+
+                returnUri = response.Headers.Location.ToString();
+
+                apiResponse = "Success";
+            }
+            catch (Exception ex)
+            {
+                apiResponse = ex.Message;
             }
 
-            WebResponse response = request.GetResponse();
-            using (var reader = new StreamReader(response.GetResponseStream()))
-            {
-                responseFromServer = reader.ReadToEnd();
-            }
-
-            return responseFromServer;
+            return apiResponse;
         }
 
         //public static byte[] SerializeToUtf8Bytes(object? value, System.Text.Json.Serialization.Metadata.JsonTypeInfo jsonTypeInfo);

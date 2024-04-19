@@ -34,8 +34,11 @@ Welcome to your new app.
     public List<Quote> quoteList = new List<Quote>();
 
     public string apiResponse;
-    //public string apiUrl = "http://localhost:8080/api/Quote?status=new";
-    public string apiUrl = "https://api.facilitate.org/api/Quote?status=new";
+
+    //public string apiUrl = "http://localhost:8080/api/Quote";
+    public string apiUrl = "http://localhost:7235/api/Quote";
+
+    //public string apiUrl = "https://api.facilitate.org/api/Quote";
 
     protected override async Task OnInitializedAsync()
     {
@@ -64,13 +67,24 @@ Welcome to your new app.
                 BaseAddress = new Uri(apiUrl)
             };
 
-            await httpClient.PostAsJsonAsync(apiUrl, quoteRoofleSubmission);
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync(apiUrl, quoteRoofleSubmission);
 
-            apiResponse = "Success";
+            // return URI of the created resource.
+            if (response.IsSuccessStatusCode)
+            {
+                if (response.Headers.Location != null)
+                {
+                    apiResponse = response.Headers.Location.ToString();
+                }
+                else
+                {
+                    apiResponse = "Success";
+                }
+            }
         }
         catch (Exception ex)
         {
-            var apiResponse = ex.Message;
+            apiResponse = ex.Message;
         }
 
         return apiResponse;
@@ -83,9 +97,6 @@ Welcome to your new app.
         nameGenders.Add("female");
 
         QuoteRoofleSubmission quote = new QuoteRoofleSubmission();
-        // quote.status = "New";
-
-        // quote.ipAddress = "127.0.0.1";
 
         Utils utils = new Utils();
 
@@ -242,19 +253,6 @@ Welcome to your new app.
             quote.products.Add(product);
         }
 
-        // quote.totalQuote = quoteTotal;
-
-        // var deviceType = "Desktop";
-        // var latitude = 0;
-        // var longitude = 0;
-
-        // Event _event = new Event();
-        // _event.Name = "New Quote";
-        // _event.DateTime = DateTime.UtcNow;
-        // _event.Details = "New quote referred by Roofle";
-
-        //quote.events.Add(_event);
-
         return quote;
     }
 
@@ -264,9 +262,9 @@ Welcome to your new app.
         {
             using (var httpClient = new HttpClient())
             {
-                httpClient.DefaultRequestHeaders.Add("RequestType", "GetQuotes");
+                //httpClient.DefaultRequestHeaders.Add("RequestType", "GetQuotes");
 
-                using (HttpResponseMessage response = await httpClient.GetAsync(apiUrl))
+                using (HttpResponseMessage response = await httpClient.GetAsync(apiUrl + "?status=" + _status))
                 {
                     if (response.IsSuccessStatusCode)
                     {

@@ -44,12 +44,14 @@ namespace Facilitate.Api.Controllers
 
         // POST api/<QuoteController>
         //[Produces("application/json")]
+        [ProducesResponseType<String>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost]
-        public string Post([FromBody] QuoteRoofleSubmission roofleSubmission)
+        public IActionResult Post([FromBody] QuoteRoofleSubmission roofleSubmission)
         {
             Quote quote = new Quote();
 
-            if(roofleSubmission.products[0].priceInfo.total != null)
+            if (roofleSubmission.products[0].priceInfo.total != null)
             {
                 quote.totalQuote = roofleSubmission.products[0].priceInfo.total;
             }
@@ -103,22 +105,23 @@ namespace Facilitate.Api.Controllers
                 collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
                 collection.InsertOne(quote);
 
-                resultMsg = "Added Quote!";
+                resultMsg = "Added QuoteId: " + quote._id;
             }
             catch (Exception ex)
             {
                 resultMsg = ex.Message;
+                return BadRequest(resultMsg);
             }
             finally
             {
 
             }
-            return resultMsg;
+            return Ok(resultMsg);
         }
 
         // GET: api/<QuoteController>
         [Produces("application/json")]
-        [ProducesResponseType<Product>(StatusCodes.Status200OK)]
+        [ProducesResponseType<IEnumerable<Quote>>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet(Name = "Get")]
         public IActionResult Get(string status)
@@ -172,19 +175,17 @@ namespace Facilitate.Api.Controllers
                     sortedQuotes[i].notes = SortNotesByDateDesc(unSortedNotes);
                     sortedQuotes[i].events = SortEventsByDateDesc(unSortedEvents);
                 }
-
-                //return sortedQuotes;
             }
             catch (Exception ex)
             {
                 resultMsg = ex.Message;
+                return BadRequest(resultMsg);
             }
             finally
             {
 
             }
 
-            //return sortedQuotes;
             return sortedQuotes == null ? NotFound() : Ok(sortedQuotes);
         }
 
