@@ -906,23 +906,24 @@ else
         statusChanged.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Opportunity";
         selectedQuote.events.Add(statusChanged);
 
-        var currProjectManager = SelectedProjectManager.ToList()[0];
+        var previousProjectManager = selectedQuote.projectManager;
+        var selectedProjectManager = SelectedProjectManager.ToList()[0];
 
-        var pmEmail = currProjectManager.Profile.Contact.Email[0].UserName;
-        pmEmail += "@" + currProjectManager.Profile.Contact.Email[0].Domain;
+        var pmEmail = selectedProjectManager.Profile.Contact.Email[0].UserName;
+        pmEmail += "@" + selectedProjectManager.Profile.Contact.Email[0].Domain;
 
-        var pmPhone = "(" + currProjectManager.Profile.Contact.Phone[0].AreaCode.ToString() + ")";
-        pmPhone += " " + currProjectManager.Profile.Contact.Phone[0].Exchange.ToString();
-        pmPhone += "-" + currProjectManager.Profile.Contact.Phone[0].Number.ToString();
+        var pmPhone = "(" + selectedProjectManager.Profile.Contact.Phone[0].AreaCode.ToString() + ")";
+        pmPhone += " " + selectedProjectManager.Profile.Contact.Phone[0].Exchange.ToString();
+        pmPhone += "-" + selectedProjectManager.Profile.Contact.Phone[0].Number.ToString();
 
         ProjectManagerSummary pmSummary = new ProjectManagerSummary();
-        pmSummary._id = currProjectManager._id;
-        pmSummary.Name = currProjectManager.Profile.FirstName + " " + currProjectManager.Profile.LastName;
+        pmSummary._id = selectedProjectManager._id;
+        pmSummary.Name = selectedProjectManager.Profile.FirstName + " " + selectedProjectManager.Profile.LastName;
         pmSummary.Email = pmEmail;
         pmSummary.Phone = pmPhone;
-        pmSummary.City = currProjectManager.Profile.Contact.Address[0].City;
-        pmSummary.State = currProjectManager.Profile.Contact.Address[0].State;
-        pmSummary.Zip = currProjectManager.Profile.Contact.Address[0].ZipCode;
+        pmSummary.City = selectedProjectManager.Profile.Contact.Address[0].City;
+        pmSummary.State = selectedProjectManager.Profile.Contact.Address[0].State;
+        pmSummary.Zip = selectedProjectManager.Profile.Contact.Address[0].ZipCode;
 
         selectedQuote.projectManager = pmSummary;
 
@@ -959,7 +960,16 @@ else
         // Assignment event
         var projectManager = selectedQuote.projectManager;
         Event assignmentEvent = new Event();
-        assignmentEvent.Details = "Lead assigned to Project Manager Id: " + projectManager._id + " (" + projectManager.Name + "), moved to Opportunities and emailed to: " + projectManager.Email;
+
+        if (previousProjectManager != null)
+        {
+            // Current PM to replace
+            assignmentEvent.Details = "Project Manager Id: " + previousProjectManager._id + " (" + previousProjectManager.Name + "), replaced by Project Manager Id: " + projectManager._id + " (" + projectManager.Name + ") and emailed to: " + projectManager.Email;
+        }
+        else{
+            assignmentEvent.Details = "Lead assigned to Project Manager Id: " + projectManager._id + " (" + projectManager.Name + "), moved to Opportunities and emailed to: " + projectManager.Email;
+        }
+        
         selectedQuote.events.Add(assignmentEvent);
 
         WebServices.UpdateQuote(selectedQuote);
