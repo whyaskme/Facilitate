@@ -7,28 +7,28 @@ namespace Facilitate.Desktop.Models
     {
         public QuoteRoofleSubmission()
         {
-            address = string.Empty;
-            fullAddress = string.Empty;
-            street = string.Empty;
-            city = string.Empty;
-            state = string.Empty;
-            zip = string.Empty;
-            firstName = string.Empty;
-            lastName = string.Empty;
-            email = string.Empty;
-            phone = string.Empty;
-            market = string.Empty;
-            externalUrl = string.Empty;
+            address = "123 My Street";
+            fullAddress = "123 My Street Austin, Tx 78753";
+            street = "123 My Street";
+            city = "Austin";
+            state = "Tx";
+            zip = "78753";
+            firstName = "John";
+            lastName = "Tester";
+            email = "john@tester.com";
+            phone = "555-555-1212";
+            market = "Austin";
+            externalUrl = "Roofle.com";
             timestamp = DateTime.UtcNow;
-            numberOfStructures = 0;
-            numberOfIncludedStructures = 0;
-            totalSquareFeet = 0;
-            mainRoofTotalSquareFeet = 0;
-            totalInitialSquareFeet = 0;
-            sessionId = string.Empty;
+            numberOfStructures = 1;
+            numberOfIncludedStructures = 1;
+            totalSquareFeet = 1475;
+            mainRoofTotalSquareFeet = 1475;
+            totalInitialSquareFeet = 1475;
+            sessionId = "87go^%DUssye56536";
             structures = new List<Structure>();
-            repLead = string.Empty;
-            repEmail = string.Empty;
+            repLead = "Marc Spitz";
+            repEmail = "marc@spitz.com";
             leadId = 0;
             products = new List<Product>();
         }
