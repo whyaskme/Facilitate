@@ -28,6 +28,11 @@
 
             <Authorized>
                 <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="Quotes/Leads">
+                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> Quotes
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
                     <NavLink class="nav-link" href="Account/Manage">
                         <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
                     </NavLink>
@@ -47,11 +52,6 @@
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="Account/Login">
                         <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Login
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Quotes/Leads">
-                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> Quotes
                     </NavLink>
                 </div>
             </NotAuthorized>
