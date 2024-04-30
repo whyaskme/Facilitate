@@ -15,4 +15,9 @@
     <PackageReference Include="SendGrid" Version="9.29.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Api\Facilitate.Api.csproj" />
+    <ProjectReference Include="..\..\Libraries\Facilitate.Libraries.csproj" />
+  </ItemGroup>
+
 </Project>

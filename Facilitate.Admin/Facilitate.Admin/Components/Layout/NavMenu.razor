@@ -4,7 +4,9 @@
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">Facilitate.Admin</a>
+        <a class="navbar-brand" href="">
+            <img src="/images/logos/White Transparent.png" class="logo" />
+        </a>
     </div>
 </div>
 
@@ -12,29 +14,10 @@
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-@*         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="auth">
-                <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Auth Required
-            </NavLink>
-        </div> *@
 
         <AuthorizeView>
 
             <Authorized>
-                <div class="nav-item px-3">
-                    @*                     <NavLink class="nav-link" href="Account/Manage">
-                    <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
-                    </NavLink> *@
-                    <NavLink class="nav-link" href="Account/Manage">
-                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> My Account
-                    </NavLink>
-                </div>
                 <div class="nav-item px-3">
                     <form action="Account/Logout" method="post">
                         <AntiforgeryToken />
@@ -45,8 +28,25 @@
                     </form>
                 </div>
                 <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="Account/Manage">
+                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> My Account
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
                     <NavLink class="nav-link" href="Quotes/Leads">
                         <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> Quotes
+                    </NavLink>
+                </div>
+
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" target="_blank" href="https://facilitate.org">
+                        <span class="bi" aria-hidden="true"></span> Facilitate.org
+                    </NavLink>
+                </div>
+
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" target="_blank" href="https://api.facilitate.org/swagger">
+                        <span class="bi" aria-hidden="true"></span> Web Api
                     </NavLink>
                 </div>
             </Authorized>
@@ -61,17 +61,6 @@
 
         </AuthorizeView>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" target="_blank" href="https://facilitate.org">
-                <span class="bi" aria-hidden="true"></span> Facilitate.org
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" target="_blank" href="https://api.facilitate.org/swagger">
-                <span class="bi" aria-hidden="true"></span> Web Api
-            </NavLink>
-        </div>
     </nav>
 </div>
 

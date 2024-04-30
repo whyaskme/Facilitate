@@ -1,19 +1,81 @@
+@import url('open.iconic/font/css/open-iconic-bootstrap.min.css');
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    height: 100%;
+    overflow: hidden;
+}
+
+.nav-link {
+    border: solid 0px #ff0000 !important;
+/*    background-color: #eee !important;*/
+}
+
+.nav-pills a {
+    border: solid 0px #ff0000 !important;
+    background-color: #eee !important;
+    margin-bottom: 10px !important;
+    color: #0a2464 !important;
+}
+
+.nav-pills a.active,
+.nav-pills a.active :hover 
+{
+    background-color: #0a2464 !important;
+    color: #fff !important;
+    border: solid 0px #ff0000 !important;
+    background-color: #0a2464 !important;
+}
+
+h1 {
+    font-size: 1.5em;
+}
+
+h2{
+    font-size: 1.4em;
+}
+
+h3 {
+    font-size: 1.5em;
+    margin-bottom: 25px !important;
+}
+
+h4 {
+    font-size: 1.2em;
+}
+
+h5 {
+    font-size: 1.1em;
+}
+
+h6 {
+    font-size: 1.0em;
 }
 
 .not-authorized {
     color: #ff0000 !important;
 }
 
-a, .btn-link {
-    color: #006bb7;
+.logo {
+    width: 150px !important;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    margin-bottom: 25px !important;
 }
 
-.btn-primary {
+a, .btn-link,
+a:hover, .btn-link:hover
+{
+    color: #0a2464;
+}
+
+.btn-primary,
+.btn-primary:hover {
     color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    background-color: #0a2464;
+    border-color: #0a2464;
+    margin-bottom: 25px !important;
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -52,17 +114,6 @@ h1:focus {
 
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
-}
-
-@import url('open.iconic/font/css/open-iconic-bootstrap.min.css');
-
-html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}
-
-html, body {
-    height: 100%;
-    overflow: hidden;
 }
 
 table {

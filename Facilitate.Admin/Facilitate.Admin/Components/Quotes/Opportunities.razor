@@ -1,11 +1,13 @@
 ﻿@page "/Quotes/Opportunities"
 
+@using Facilitate.Admin.Data
+@using Facilitate.Libraries.Models;
+
 @using System.ComponentModel.DataAnnotations
 @using System.Text
 @using System.Text.Encodings.Web
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
-@using Facilitate.Admin.Data
 
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserStore<ApplicationUser> UserStore
@@ -17,55 +19,53 @@
 
 <PageTitle>Opportunities</PageTitle>
 
-<div class="quotes-leaderboard">
-    <span class="summary-item">
-        <span class="stat-count"><b>0 Quotes</b></span>
-        <span class="stat-count">0</span>
-        <span class="stat-count"><span class="value-sqft-separator">&raquo;</span>0sqft</span>
-    </span>
-    <span class="summary-item">
-        <a href="/quotes/leads">Leads</a>
-        <span class="stat-count"><b>0</b></span>
-        <span class="stat-count">0</span>
-    </span>
-    <span class="summary-item">
-        <a href="/quotes/opportunities">Opportunities</a>
-        <span class="stat-count"><b>0</b></span>
-        <span class="stat-count">0</span>
-    </span>
-    <span class="summary-item">
-        <a href="/quotes/customers">Customers</a>
-        <span class="stat-count"><b>0</b></span>
-        <span class="stat-count">0</span>
-    </span>
-    <span class="summary-item">
-        <a href="/quotes/completed">Completions</a>
-        <span class="stat-count"><b>0</b></span>
-        <span class="stat-count">0</span>
-    </span>
-    <span class="summary-item">
-        <a href="/quotes/warranties">Warranties</a>
-        <span class="stat-count"><b>0</b></span>
-        <span class="stat-count">0</span>
-    </span>
-    <span class="summary-item">
-        <a href="/quotes/archives">Archives</a>
-        <span class="stat-count"><b>0</b></span>
-        <span class="stat-count">0</span>
-    </span>
-</div>
-
 <h3>Opportunities</h3>
 
 <AuthorizeView>
 
     <Authorized>
-
+        <div class="quotes-leaderboard">
+            <span class="summary-item">
+                <span class="stat-count"><b>0 Quotes</b></span>
+                <span class="stat-count">0</span>
+                <span class="stat-count"><span class="value-sqft-separator">&raquo;</span>0sqft</span>
+            </span>
+            <span class="summary-item">
+                <a href="/quotes/leads">Leads</a>
+                <span class="stat-count"><b>0</b></span>
+                <span class="stat-count">0</span>
+            </span>
+            <span class="summary-item">
+                <a href="/quotes/opportunities">Opportunities</a>
+                <span class="stat-count"><b>0</b></span>
+                <span class="stat-count">0</span>
+            </span>
+            <span class="summary-item">
+                <a href="/quotes/customers">Customers</a>
+                <span class="stat-count"><b>0</b></span>
+                <span class="stat-count">0</span>
+            </span>
+            <span class="summary-item">
+                <a href="/quotes/completed">Completions</a>
+                <span class="stat-count"><b>0</b></span>
+                <span class="stat-count">0</span>
+            </span>
+            <span class="summary-item">
+                <a href="/quotes/warranties">Warranties</a>
+                <span class="stat-count"><b>0</b></span>
+                <span class="stat-count">0</span>
+            </span>
+            <span class="summary-item">
+                <a href="/quotes/archives">Archives</a>
+                <span class="stat-count"><b>0</b></span>
+                <span class="stat-count">0</span>
+            </span>
+        </div>
     </Authorized>
 
     <NotAuthorized>
         <div class="nav-item px-3 not-authorized">
-            You are NOT authorized to access this function!
+            You must be logged in to access this system!
         </div>
     </NotAuthorized>
 
