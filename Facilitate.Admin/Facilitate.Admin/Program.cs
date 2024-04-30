@@ -28,7 +28,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+var requireConfirmedAccount = false;
+var requireConfirmedEmail = false;
+var requireConfirmedPhoneNumber = false;
+
+builder.Services.AddIdentityCore<ApplicationUser>(options =>
+        {
+            options.SignIn.RequireConfirmedAccount = requireConfirmedAccount;
+            options.SignIn.RequireConfirmedEmail = requireConfirmedEmail;
+            options.SignIn.RequireConfirmedPhoneNumber = requireConfirmedPhoneNumber;
+        }
+    )
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager()
     .AddDefaultTokenProviders();
