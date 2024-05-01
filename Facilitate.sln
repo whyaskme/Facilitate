@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminBlazor", "AdminBlazor\AdminBlazor.csproj", "{A73D07C1-E418-4695-A3D7-1504EEFFBC92}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Facilitate.Libraries", "Libraries\Facilitate.Libraries.csproj", "{BD7AC219-2C75-42E8-88EE-DA39BEE044A9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Facilitate.Api", "Api\Facilitate.Api.csproj", "{E9B16894-9043-4992-9C7D-9A5C572FCE79}"
@@ -17,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A73D07C1-E418-4695-A3D7-1504EEFFBC92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A73D07C1-E418-4695-A3D7-1504EEFFBC92}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A73D07C1-E418-4695-A3D7-1504EEFFBC92}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A73D07C1-E418-4695-A3D7-1504EEFFBC92}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BD7AC219-2C75-42E8-88EE-DA39BEE044A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BD7AC219-2C75-42E8-88EE-DA39BEE044A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD7AC219-2C75-42E8-88EE-DA39BEE044A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
