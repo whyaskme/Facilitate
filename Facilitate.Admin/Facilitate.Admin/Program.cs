@@ -119,17 +119,30 @@ try
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
         ApplicationUser adminUser = new ApplicationUser();
-        adminUser.Email = "admin123@facilitate.org";
+        adminUser.Email = "admin@facilitate.org";
         adminUser.UserName = adminUser.Email;
 
-        var result = await userManager.CreateAsync(adminUser, "!Facilitate2024#");
-        if (!result.Succeeded)
-        {
-            identityErrors = result.Errors;
-            return;
-        }
+        var adminPwd = "!Facilitate2024#";
 
-        userManager.AddToRoleAsync(adminUser, "System Admin");
+        // Check if this admin already exists
+        var existingAdmin = await userManager.FindByEmailAsync(adminUser.Email);
+        if(existingAdmin == null)
+        {
+            var result = await userManager.CreateAsync(adminUser, adminPwd);
+            if (!result.Succeeded)
+            {
+                identityErrors = result.Errors;
+                return;
+            }
+
+            // Add user to roles
+            await userManager.AddToRoleAsync(adminUser, "System Admin");
+            await userManager.AddToRoleAsync(adminUser, "Site Admin");
+            await userManager.AddToRoleAsync(adminUser, "Group Admin");
+            await userManager.AddToRoleAsync(adminUser, "Project Manager");
+            await userManager.AddToRoleAsync(adminUser, "Vendor");
+            await userManager.AddToRoleAsync(adminUser, "Member");
+        }
     }
 }
 catch(Exception ex)
