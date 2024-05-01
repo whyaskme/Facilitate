@@ -18,10 +18,12 @@
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserStore<ApplicationUser> UserStore
 @inject SignInManager<ApplicationUser> SignInManager
-@inject IEmailSender<ApplicationUser> EmailSender
-@inject ILogger<Register> Logger
+
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+
+@inject IEmailSender<ApplicationUser> EmailSender
+@inject ILogger<Register> Logger
 
 @inject RoleManager<IdentityRole> roleManager
 
@@ -37,8 +39,10 @@
                 SelectedItemsChanged="@((IEnumerable<ApplicationUser> values) => SelectedProjectManagerChanged(values))"
                 SelectionMode="ListBoxSelectionMode.Single">
             <Columns>
+
             <DxListEditorColumn FieldName="Id" Caption="Id" />
             <DxListEditorColumn FieldName="Email" Caption="Email" />
+
             </Columns>
         </DxListBox>
     </div>
@@ -92,19 +96,19 @@
 
     protected override void OnInitialized()
     {
-        GetUserRoles();
+        //GetUserRoles();
 
-        GetManagers();
+        //GetManagers();
     }
 
-    public void GetManagers()
+    public async Task GetManagers()
     {
         try
         {
             ProjectManagers = UserManager.Users.ToList();
             foreach (var user in ProjectManagers)
             {
-                UserManager.AddToRoleAsync(user, "System Admin");
+                await UserManager.AddToRoleAsync(user, "System Admin");
             }
         }
         catch(Exception ex)
@@ -128,15 +132,24 @@
         var user = CreateUser();
 
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+
         var emailStore = GetEmailStore();
         await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-        var result = await UserManager.CreateAsync(user, Input.Password);
 
+        var result = await UserManager.CreateAsync(user, Input.Password);
         if (!result.Succeeded)
         {
             identityErrors = result.Errors;
             return;
         }
+
+        // Add user to roles
+        await UserManager.AddToRoleAsync(user, "System Admin");
+        await UserManager.AddToRoleAsync(user, "Site Admin");
+        await UserManager.AddToRoleAsync(user, "Group Admin");
+        await UserManager.AddToRoleAsync(user, "Project Manager");
+        await UserManager.AddToRoleAsync(user, "Vendor");
+        await UserManager.AddToRoleAsync(user, "Member");
 
         Logger.LogInformation("User created a new account with password.");
 

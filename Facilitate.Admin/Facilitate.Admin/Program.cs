@@ -38,8 +38,7 @@ builder.Services.AddAuthentication(options =>
     .AddIdentityCookies();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 var requireConfirmedAccount = false;
@@ -97,6 +96,8 @@ app.MapRazorComponents<App>()
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
 
+IEnumerable<IdentityError>? identityErrors;
+
 try
 {
     using (var scope = app.Services.CreateScope())
@@ -111,15 +112,24 @@ try
                 await roleManager.CreateAsync(roleRole);
             }
         }
+    }
 
-        //ApplicationUser adminUser = new ApplicationUser();
-        //adminUser.UserName = "joe@test.org";
-        //adminUser.Email = adminUser.UserName;
+    using (var scope = app.Services.CreateScope())
+    {
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-        //var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-        //userManager.CreateAsync(adminUser);
+        ApplicationUser adminUser = new ApplicationUser();
+        adminUser.Email = "admin123@facilitate.org";
+        adminUser.UserName = adminUser.Email;
 
-        //userManager.AddToRoleAsync(adminUser, "System Admin");
+        var result = await userManager.CreateAsync(adminUser, "!Facilitate2024#");
+        if (!result.Succeeded)
+        {
+            identityErrors = result.Errors;
+            return;
+        }
+
+        userManager.AddToRoleAsync(adminUser, "System Admin");
     }
 }
 catch(Exception ex)
