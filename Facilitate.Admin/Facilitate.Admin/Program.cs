@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -22,6 +25,33 @@ builder.Services.AddAuthentication(options =>
         options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
     })
     .AddIdentityCookies();
+
+//builder.Services.AddAuthentication()
+//   .AddGoogle(options =>
+//   {
+//       IConfigurationSection googleAuthNSection =
+//       config.GetSection("Authentication:Google");
+//       options.ClientId = googleAuthNSection["ClientId"];
+//       options.ClientSecret = googleAuthNSection["ClientSecret"];
+//   })
+//   .AddFacebook(options =>
+//   {
+//       IConfigurationSection FBAuthNSection =
+//       config.GetSection("Authentication:FB");
+//       options.ClientId = FBAuthNSection["ClientId"];
+//       options.ClientSecret = FBAuthNSection["ClientSecret"];
+//   })
+//   .AddMicrosoftAccount(microsoftOptions =>
+//   {
+//       microsoftOptions.ClientId = config["Authentication:Microsoft:ClientId"];
+//       microsoftOptions.ClientSecret = config["Authentication:Microsoft:ClientSecret"];
+//   })
+//   .AddTwitter(twitterOptions =>
+//   {
+//       twitterOptions.ConsumerKey = config["Authentication:Twitter:ConsumerAPIKey"];
+//       twitterOptions.ConsumerSecret = config["Authentication:Twitter:ConsumerSecret"];
+//       twitterOptions.RetrieveUserDetails = true;
+//   });
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

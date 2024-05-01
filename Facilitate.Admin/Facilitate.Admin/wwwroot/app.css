@@ -6,9 +6,14 @@ html, body {
     overflow: hidden;
 }
 
+.homepage-contractor {
+    border: solid 0px #ff0000 !important;
+    width: 100% !important;
+}
+
 .nav-link {
     border: solid 0px #ff0000 !important;
-/*    background-color: #eee !important;*/
+    /*    background-color: #eee !important;*/
 }
 
 .nav-pills a {
