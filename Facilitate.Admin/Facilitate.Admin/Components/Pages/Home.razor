@@ -1,70 +1,49 @@
 ﻿@page "/"
 
-@using Facilitate.Admin.Data
+@using Facilitate.Admin.Data;
 @using Facilitate.Libraries.Models;
 
-@using System.ComponentModel.DataAnnotations
-@using System.Text
-@using System.Text.Encodings.Web
-@using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.WebUtilities
+@using MongoDB.Bson;
+@* @using Json.Net; *@
+
+@using System.Text.Json;
+
+@using DevExpress.Blazor;
+@using DevExpress.Data;
+@using DevExpress.Data.Linq;
+
+@attribute [StreamRendering(true)]
+@rendermode InteractiveServer
+@inject WebServices WebServices
+
+@inject NavigationManager NavigationManager
+@inject IHttpClientFactory ClientFactory
+@inject HttpClient httpClient
+
+@inject NavigationManager navMan
 
 <PageTitle>Welcome to Facilitate Platform Administration</PageTitle>
 
-<h3>Welcome to Facilitate's Platform Administration</h3>
-
 <AuthorizeView>
-
-    <Authorized>
-        <div class="quotes-leaderboard">
-            <span class="summary-item">
-                <span class="stat-count"><b>0 Quotes</b></span>
-                <span class="stat-count">0</span>
-                <span class="stat-count"><span class="value-sqft-separator">&raquo;</span>0sqft</span>
-            </span>
-            <span class="summary-item">
-                <a href="/quotes/leads">Leads</a>
-                <span class="stat-count"><b>0</b></span>
-                <span class="stat-count">0</span>
-            </span>
-            <span class="summary-item">
-                <a href="/quotes/opportunities">Opportunities</a>
-                <span class="stat-count"><b>0</b></span>
-                <span class="stat-count">0</span>
-            </span>
-            <span class="summary-item">
-                <a href="/quotes/customers">Customers</a>
-                <span class="stat-count"><b>0</b></span>
-                <span class="stat-count">0</span>
-            </span>
-            <span class="summary-item">
-                <a href="/quotes/completed">Completions</a>
-                <span class="stat-count"><b>0</b></span>
-                <span class="stat-count">0</span>
-            </span>
-            <span class="summary-item">
-                <a href="/quotes/warranties">Warranties</a>
-                <span class="stat-count"><b>0</b></span>
-                <span class="stat-count">0</span>
-            </span>
-            <span class="summary-item">
-                <a href="/quotes/archives">Archives</a>
-                <span class="stat-count"><b>0</b></span>
-                <span class="stat-count">0</span>
-            </span>
-        </div>
-    </Authorized>
-
+    <Authorized></Authorized>
     <NotAuthorized>
-        <div class="nav-item px-3 not-authorized">
-            You must be logged in to access this system!
-        </div>
+        @{
+            navMan.NavigateTo("/Account/Login");
+        }
     </NotAuthorized>
-
 </AuthorizeView>
+
+<h3>Welcome to Facilitate's Platform Administration</h3>
 
 @* <img src="/images/backgrounds/contractors bg - youtube.jpg" class="homepage-contractor" /> *@
 
 @code {
+
+    public QuoteLeaderboard leaderboardStats;
+
+    protected override void OnInitialized()
+    {
+        leaderboardStats = WebServices.GetLeaderBoardStats();
+    }
 
 }
