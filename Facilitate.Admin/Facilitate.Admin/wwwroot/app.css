@@ -6,9 +6,19 @@ html, body {
     overflow: auto !important;
 }
 
+.system-warning {
+    border: solid 0px #ff0000 !important;
+    width: 100% !important;
+    color: #ff0000 !important;
+    text-align: left !important;
+    margin: 50px;
+}
+
 .homepage-contractor {
     border: solid 0px #ff0000 !important;
     width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
 }
 
 .nav-link {

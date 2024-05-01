@@ -24,18 +24,30 @@
 
 <PageTitle>Welcome to Facilitate Platform Administration</PageTitle>
 
-<AuthorizeView>
-    <Authorized></Authorized>
-    <NotAuthorized>
-        @{
-            navMan.NavigateTo("/Account/Login");
-        }
-    </NotAuthorized>
-</AuthorizeView>
-
 <h3>Welcome to Facilitate's Platform Administration</h3>
 
 @* <img src="/images/backgrounds/contractors bg - youtube.jpg" class="homepage-contractor" /> *@
+
+<div class="row">
+    <div class="col-md-4">
+        <img src="/images/backgrounds/contractors bg - youtube.jpg" class="homepage-contractor" />
+    </div>
+</div>
+
+<AuthorizeView>
+    <Authorized></Authorized>
+    <NotAuthorized>
+        @*         @{
+        navMan.NavigateTo("/Account/Login");
+        } *@
+        
+        <div class="row">
+            <div class="col-md-4 system-warning">
+                You must be logged in to access this system
+            </div>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
 
