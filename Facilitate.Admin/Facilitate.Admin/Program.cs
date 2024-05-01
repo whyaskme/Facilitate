@@ -1,10 +1,8 @@
 using Facilitate.Admin.Components;
 using Facilitate.Admin.Components.Account;
 using Facilitate.Admin.Data;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,10 +12,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddDevExpressBlazor(options => {
+    options.BootstrapVersion = DevExpress.Blazor.BootstrapVersion.v5;
+    options.SizeMode = DevExpress.Blazor.SizeMode.Medium;
+});
+
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+
+builder.Services.AddSingleton<WebServices>();
+
+builder.Services.AddCors(x => x.AddPolicy("externalRequests",
+                    policy => policy
+                .WithOrigins("https://jsonip.com")));
 
 builder.Services.AddAuthentication(options =>
     {
@@ -25,33 +34,6 @@ builder.Services.AddAuthentication(options =>
         options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
     })
     .AddIdentityCookies();
-
-//builder.Services.AddAuthentication()
-//   .AddGoogle(options =>
-//   {
-//       IConfigurationSection googleAuthNSection =
-//       config.GetSection("Authentication:Google");
-//       options.ClientId = googleAuthNSection["ClientId"];
-//       options.ClientSecret = googleAuthNSection["ClientSecret"];
-//   })
-//   .AddFacebook(options =>
-//   {
-//       IConfigurationSection FBAuthNSection =
-//       config.GetSection("Authentication:FB");
-//       options.ClientId = FBAuthNSection["ClientId"];
-//       options.ClientSecret = FBAuthNSection["ClientSecret"];
-//   })
-//   .AddMicrosoftAccount(microsoftOptions =>
-//   {
-//       microsoftOptions.ClientId = config["Authentication:Microsoft:ClientId"];
-//       microsoftOptions.ClientSecret = config["Authentication:Microsoft:ClientSecret"];
-//   })
-//   .AddTwitter(twitterOptions =>
-//   {
-//       twitterOptions.ConsumerKey = config["Authentication:Twitter:ConsumerAPIKey"];
-//       twitterOptions.ConsumerSecret = config["Authentication:Twitter:ConsumerSecret"];
-//       twitterOptions.RetrieveUserDetails = true;
-//   });
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -74,6 +56,14 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+
+builder.Services.AddScoped(sp =>
+    new HttpClient
+    {
+        BaseAddress = new Uri(builder.Configuration["FrontendUrl"] ?? "https://localhost:8080")
+    });
+
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
