@@ -6,6 +6,12 @@ html, body {
     overflow: auto !important;
 }
 
+.navbar-dark {
+    border: solid 0px #ff0000 !important;
+    padding-bottom: 0px !important;
+    height: 80px !important;
+}
+
 .system-warning {
     border: solid 0px #ff0000 !important;
     width: 100% !important;

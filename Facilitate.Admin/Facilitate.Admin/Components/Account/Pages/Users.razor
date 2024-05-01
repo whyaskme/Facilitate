@@ -1,11 +1,18 @@
 ﻿@page "/Account/Users"
 
+@using Facilitate.Admin.Data;
+@using Facilitate.Libraries.Models;
+
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.WebUtilities
+
 @using System.ComponentModel.DataAnnotations
 @using System.Text
 @using System.Text.Encodings.Web
-@using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.WebUtilities
-@using Facilitate.Admin.Data
+
+@using DevExpress.Blazor;
+@using DevExpress.Data;
+@using DevExpress.Data.Linq;
 
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserStore<ApplicationUser> UserStore
@@ -15,19 +22,22 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 
-<PageTitle>Register</PageTitle>
+<PageTitle>Manage Users</PageTitle>
 
-<h1>Register</h1>
+<h1>Manage Users</h1>
 
 <div class="row">
 
     <div class="col-md-6 col-md-offset-2">
-        User List here...
-        @*         <section>
-        <h3>Use another service to register.</h3>
-        <hr />
-        <ExternalLoginPicker />
-        </section> *@
+        <DxListBox Data="@ProjectManagers"
+                @bind-Values="@Values"
+                SelectedItemsChanged="@((IEnumerable<ApplicationUser> values) => SelectedProjectManagerChanged(values))"
+                SelectionMode="ListBoxSelectionMode.Single">
+            <Columns>
+            <DxListEditorColumn FieldName="Id" Caption="Id" />
+            <DxListEditorColumn FieldName="Email" Caption="Email" />
+            </Columns>
+        </DxListBox>
     </div>
 
     <div class="col-md-4">
@@ -58,6 +68,22 @@
 </div>
 
 @code {
+
+    IEnumerable<ApplicationUser> SelectedProjectManager { get; set; }
+
+    IEnumerable<string> Values { get; set; }
+
+    public bool IsAssignButtonEnabled = false;
+
+    private RoleManager<IdentityRole> roleManager;
+
+    public List<ApplicationUser> ProjectManagers = new List<ApplicationUser>();
+
+    public void RoleController(RoleManager<IdentityRole> roleMgr)
+    {
+        roleManager = roleMgr;
+    }
+
     private IEnumerable<IdentityError>? identityErrors;
 
     [SupplyParameterFromForm]
@@ -67,6 +93,36 @@
     private string? ReturnUrl { get; set; }
 
     private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
+
+    protected override void OnInitialized()
+    {
+        GetManagers();
+    }
+
+    public void GetManagers()
+    {
+        ProjectManagers = UserManager.Users.ToList();
+
+        foreach (var user in ProjectManagers)
+        {
+            var tmpVal123 = user.Email;
+
+            // Add user roles
+
+        }
+
+        var tmpVal = "";
+    }
+
+    void SelectedProjectManagerChanged(IEnumerable<ApplicationUser> selectedProjectManager)
+    {
+        SelectedProjectManager = selectedProjectManager;
+
+        if (SelectedProjectManager.Count() > 0)
+            IsAssignButtonEnabled = true;
+        else
+            IsAssignButtonEnabled = false;
+    }
 
     public async Task RegisterUser(EditContext editContext)
     {
