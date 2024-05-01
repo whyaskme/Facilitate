@@ -53,13 +53,13 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
             options.SignIn.RequireConfirmedPhoneNumber = requireConfirmedPhoneNumber;
         }
     )
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddSignInManager()
-    .AddDefaultTokenProviders()
-
     .AddRoles<IdentityRole>()
     .AddRoleManager<RoleManager<IdentityRole>>()
+    .AddUserManager<UserManager<ApplicationUser>>()
     .AddRoleStore<RoleStore<IdentityRole, ApplicationDbContext>>()
+    .AddDefaultTokenProviders()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddSignInManager()
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
@@ -96,5 +96,35 @@ app.MapRazorComponents<App>()
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
+
+try
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var roles = new[] { "System Admin", "Site Admin", "Group Admin", "Project Manager", "Vendor", "Member" };
+        foreach (var role in roles)
+        {
+            if (!await roleManager.RoleExistsAsync(role))
+            {
+                IdentityRole roleRole = new IdentityRole(role);
+                await roleManager.CreateAsync(roleRole);
+            }
+        }
+
+        //ApplicationUser adminUser = new ApplicationUser();
+        //adminUser.UserName = "joe@test.org";
+        //adminUser.Email = adminUser.UserName;
+
+        //var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+        //userManager.CreateAsync(adminUser);
+
+        //userManager.AddToRoleAsync(adminUser, "System Admin");
+    }
+}
+catch(Exception ex)
+{
+    Console.WriteLine(ex.Message);
+}
 
 app.Run();

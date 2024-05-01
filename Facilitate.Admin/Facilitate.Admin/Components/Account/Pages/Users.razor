@@ -4,6 +4,7 @@
 @using Facilitate.Libraries.Models;
 
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity.EntityFrameworkCore
 @using Microsoft.AspNetCore.WebUtilities
 
 @using System.ComponentModel.DataAnnotations
@@ -21,6 +22,8 @@
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+
+@inject RoleManager<IdentityRole> roleManager
 
 <PageTitle>Manage Users</PageTitle>
 
@@ -75,14 +78,7 @@
 
     public bool IsAssignButtonEnabled = false;
 
-    private RoleManager<IdentityRole> roleManager;
-
     public List<ApplicationUser> ProjectManagers = new List<ApplicationUser>();
-
-    public void RoleController(RoleManager<IdentityRole> roleMgr)
-    {
-        roleManager = roleMgr;
-    }
 
     private IEnumerable<IdentityError>? identityErrors;
 
@@ -96,27 +92,30 @@
 
     protected override void OnInitialized()
     {
+        GetUserRoles();
+
         GetManagers();
     }
 
     public void GetManagers()
     {
-        ProjectManagers = UserManager.Users.ToList();
-
-        foreach (var user in ProjectManagers)
+        try
         {
-            var tmpVal123 = user.Email;
-
-            // Add user roles
-
+            ProjectManagers = UserManager.Users.ToList();
+            foreach (var user in ProjectManagers)
+            {
+                UserManager.AddToRoleAsync(user, "System Admin");
+            }
         }
-
-        var tmpVal = "";
+        catch(Exception ex)
+        {
+            throw ex;
+        }
     }
 
     void SelectedProjectManagerChanged(IEnumerable<ApplicationUser> selectedProjectManager)
     {
-        SelectedProjectManager = selectedProjectManager;
+        SelectedProjectManager = selectedProjectManager ?? throw new ArgumentNullException(nameof(selectedProjectManager));
 
         if (SelectedProjectManager.Count() > 0)
             IsAssignButtonEnabled = true;
@@ -172,6 +171,24 @@
             throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
                 $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor.");
         }
+    }
+
+    public List<IdentityRole> GetUserRoles()
+    {
+        List<IdentityRole> roles = new List<IdentityRole>();
+
+        try
+        {
+            roles = roleManager.Roles.ToList();
+
+            var tmpVal = "";
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+
+        return roles;
     }
 
     private IUserEmailStore<ApplicationUser> GetEmailStore()
