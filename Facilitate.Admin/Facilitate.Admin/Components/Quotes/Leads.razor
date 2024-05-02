@@ -366,7 +366,7 @@ else
                                     </td>
                                     <td>
                                         <label>Rep Name</label>
-                                        <span>@_quote.repLead</span>
+                                        <span>@_quote.repName</span>
                                     </td>
                                     <td>
                                         <label>Rep Email</label>
@@ -520,46 +520,48 @@ else
 
 @code {
 
-    protected override async Task OnInitializedAsync()
-    {
-        HttpClient httpClient = ClientFactory.CreateClient();
-        var client = httpClient;
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     HttpClient httpClient = ClientFactory.CreateClient();
+    //     var client = httpClient;
 
-        // var request = new HttpRequestMessage(HttpMethod.Get,"https://api.github.com/repos/dotnet/AspNetCore.Docs/branches");
-        // request.Headers.Add("Accept", "application/vnd.github.v3+json");
-        // request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
+    //     //var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7235/api/Quote/status=new");
 
-        var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7235/api/Quote/status=new");
-        request.Headers.Add("Accept", "application/json");
+    //     var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:8080/api/Quote/status=new");
+    //     //var request = new HttpRequestMessage(HttpMethod.Get, "https://api.facilitate.org/api/Quote/status=new");
 
-        try
-        {
-            var response = await client.SendAsync(request);
+    //     //request.Headers.Add("Accept", "application/json");
 
-            if (response.IsSuccessStatusCode)
-            {
-                using var responseStream = await response.Content.ReadAsStreamAsync();
+    //     try
+    //     {
+    //         var response = await client.SendAsync(request);
 
-                var quotes = await JsonSerializer.DeserializeAsync<IEnumerable<Quote>>(responseStream);
+    //         if (response.IsSuccessStatusCode)
+    //         {
+    //             using var responseStream = await response.Content.ReadAsStreamAsync();
 
-                var tmpVal = "";
-            }
-            else
-            {
+    //             var quotes = await JsonSerializer.DeserializeAsync<IEnumerable<Quote>>(responseStream);
 
-            }
-        }
-        catch (Exception ex)
-        {
-            //logger.LogError(ex, "Error occurred calling the GitHub API.");
-        }
-    }
+    //             var tmpVal = "";
+    //         }
+    //         else
+    //         {
+
+    //         }
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         //logger.LogError(ex, "Error occurred calling the GitHub API.");
+    //     }
+    // }
 
     public QuoteLeaderboard leaderboardStats;
 
     protected override void OnInitialized()
     {
         leaderboardStats = WebServices.GetLeaderBoardStats();
+        PauseRefresh(false);
+        //RefreshDisabled = false;
     }
 
     public int noteCount = 0;
@@ -726,7 +728,11 @@ else
         if (firstRender)
         {
             ProjectManagers = memberService.GetMembers(Constants.UserRoles.ProjectManager);
-            RefreshTimer();
+            
+            //RefreshTimer();
+
+            // PauseRefresh(false);
+            // RefreshDisabled = false;
         }
         GetIpAddress();
     }
@@ -1011,7 +1017,7 @@ else
         randomInt = rnd.Next(0, 1);
         var repName = utils.GetRandomFirstName(nameGenders[randomInt]) + " " + utils.GetRandomLastName();
 
-        quote.repLead = repName;
+        quote.repName = repName;
         quote.repEmail = repName.Replace(" ", ".").ToLower() + "@facilitate.org";
 
         randomInt = rnd.Next(5000, 9999);

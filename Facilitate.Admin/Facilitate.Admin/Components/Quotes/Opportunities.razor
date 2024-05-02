@@ -80,12 +80,12 @@
   }
 </script>
 
-<AuthorizeView>
+@* <AuthorizeView>
     <Authorized></Authorized>
     <NotAuthorized>@{
             navMan.NavigateTo("/Account/Login");
         }</NotAuthorized>
-</AuthorizeView>
+</AuthorizeView> *@
 
 @if (quotes == null)
 {
@@ -458,7 +458,7 @@ else
                                     </td>
                                     <td>
                                         <label>Rep Name</label>
-                                        <span>@_quote.repLead</span>
+                                        <span>@_quote.repName</span>
                                     </td>
                                     <td>
                                         <label>Rep Email</label>
@@ -684,6 +684,7 @@ else
     protected override void OnInitialized()
     {
         leaderboardStats = WebServices.GetLeaderBoardStats();
+        RefreshTimer();
     }
 
     public int noteCount = 0;

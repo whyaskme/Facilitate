@@ -22,13 +22,13 @@ namespace Facilitate.Libraries.Models
         {
             _t = "Representative";
 
-            RepLead = new Name();
+            repName = new Name();
             RepEmail = new Email();
             RepPhone = new Phone();
             RepCompany = string.Empty;
         }
 
-        public Name RepLead { get; set; }
+        public Name repName { get; set; }
         public Email RepEmail { get; set; }
         public Phone RepPhone{ get; set; }
         public string RepCompany { get; set; }

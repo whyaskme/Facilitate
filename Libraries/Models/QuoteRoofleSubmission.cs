@@ -43,7 +43,7 @@ namespace Facilitate.Libraries.Models
             //totalInitialSquareFeet = 0;
             //sessionId = string.Empty;
             //structures = new List<Structure>();
-            //repLead = string.Empty;
+            //repName = string.Empty;
             //repEmail = string.Empty;
             //leadId = 0;
             //products = new List<Product>();
@@ -68,7 +68,7 @@ namespace Facilitate.Libraries.Models
         public int numberOfIncludedStructures { get; set; }
         public int totalSquareFeet { get; set; }
 
-        public string repLead { get; set; }
+        public string repName { get; set; }
         public string repEmail { get; set; }
         public int leadId { get; set; }
 

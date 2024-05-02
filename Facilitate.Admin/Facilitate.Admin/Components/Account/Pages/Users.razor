@@ -39,10 +39,8 @@
                 SelectedItemsChanged="@((IEnumerable<ApplicationUser> values) => SelectedProjectManagerChanged(values))"
                 SelectionMode="ListBoxSelectionMode.Single">
             <Columns>
-
             <DxListEditorColumn FieldName="Id" Caption="Id" />
             <DxListEditorColumn FieldName="Email" Caption="Email" />
-
             </Columns>
         </DxListBox>
     </div>
@@ -96,25 +94,7 @@
 
     protected override void OnInitialized()
     {
-        //GetUserRoles();
-
-        //GetManagers();
-    }
-
-    public async Task GetManagers()
-    {
-        try
-        {
-            ProjectManagers = UserManager.Users.ToList();
-            foreach (var user in ProjectManagers)
-            {
-                await UserManager.AddToRoleAsync(user, "System Admin");
-            }
-        }
-        catch(Exception ex)
-        {
-            throw ex;
-        }
+        ProjectManagers = UserManager.Users.ToList();
     }
 
     void SelectedProjectManagerChanged(IEnumerable<ApplicationUser> selectedProjectManager)
@@ -162,15 +142,18 @@
 
         await EmailSender.SendConfirmationLinkAsync(user, Input.Email, HtmlEncoder.Default.Encode(callbackUrl));
 
-        if (UserManager.Options.SignIn.RequireConfirmedAccount)
-        {
-            RedirectManager.RedirectTo(
-                "Account/RegisterConfirmation",
-                new() { ["email"] = Input.Email, ["returnUrl"] = ReturnUrl });
-        }
+        // if (UserManager.Options.SignIn.RequireConfirmedAccount)
+        // {
+        //     RedirectManager.RedirectTo(
+        //         "Account/RegisterConfirmation",
+        //         new() { ["email"] = Input.Email, ["returnUrl"] = ReturnUrl });
+        // }
 
-        await SignInManager.SignInAsync(user, isPersistent: false);
-        RedirectManager.RedirectTo(ReturnUrl);
+        // await SignInManager.SignInAsync(user, isPersistent: false);
+        // RedirectManager.RedirectTo(ReturnUrl);
+
+        RedirectManager.RedirectTo("/Account/Users");
+        //GetManagers();
     }
 
     private ApplicationUser CreateUser()

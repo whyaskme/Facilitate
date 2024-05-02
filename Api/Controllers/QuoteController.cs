@@ -79,7 +79,7 @@ namespace Facilitate.Api.Controllers
             quote.numberOfIncludedStructures = roofleSubmission.numberOfIncludedStructures;
             quote.totalSquareFeet = roofleSubmission.totalSquareFeet;
 
-            quote.repLead = roofleSubmission.repLead;
+            quote.repName = roofleSubmission.repName;
             quote.repEmail = roofleSubmission.repEmail;
             quote.leadId = roofleSubmission.leadId;
 

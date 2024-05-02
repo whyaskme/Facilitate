@@ -29,7 +29,7 @@
         "roofComplexity": "Simple"
       }
     ],
-    "repLead": "Joe Roofer",
+    "repName": "Joe Roofer",
     "repEmail": "joe.roofer@roofle.com",
     "leadId": 123,
     "products": [
@@ -84,7 +84,7 @@
         "roofComplexity": "Simple"
       }
     ],
-    "repLead": "Joe Roofer",
+    "repName": "Joe Roofer",
     "repEmail": "joe.roofer@roofle.com",
     "leadId": 123,
     "products": [
