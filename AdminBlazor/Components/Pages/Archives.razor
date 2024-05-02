@@ -1,4 +1,4 @@
-﻿@page "/quotes/archives"
+﻿@page "/archives"
 
 @using AdminBlazor.Data
 @using DevExpress.Data
@@ -25,32 +25,32 @@
         <span class="stat-count"><span class="value-sqft-separator">&raquo;</span>@leaderboardStats.TotalQuoteSqFt.ToString("N0")sqft</span>
     </span>
     <span class="summary-item">
-        <a href="/quotes/leads">Leads</a>
+        <a href="/leads">Leads</a>
         <span class="stat-count"><b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
         <span class="stat-count">@leaderboardStats.LeadValue.ToString("C0")</span>
     </span>
     <span class="summary-item">
-        <a href="/quotes/Opportunities">Opportunities</a>
+        <a href="/Opportunities">Opportunities</a>
         <span class="stat-count"><b>@leaderboardStats.OpportunityCount.ToString("N0")</b></span>
         <span class="stat-count">@leaderboardStats.OpportunityValue.ToString("C0")</span>
     </span>
     <span class="summary-item">
-        <a href="/quotes/Customers">Customers</a>
+        <a href="/Customers">Customers</a>
         <span class="stat-count"><b>@leaderboardStats.CustomerCount.ToString("N0")</b></span>
         <span class="stat-count">@leaderboardStats.CustomerValue.ToString("C0")</span>
     </span>
     <span class="summary-item">
-        <a href="/quotes/Completed">Completions</a>
+        <a href="/Completed">Completions</a>
         <span class="stat-count"><b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
         <span class="stat-count">@leaderboardStats.CompletionValue.ToString("C0")</span>
     </span>
     <span class="summary-item">
-        <a href="/quotes/Archives">Archives</a>
+        <a href="/Archives">Archives</a>
         <span class="stat-count"><b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
         <span class="stat-count">@leaderboardStats.ArchiveValue.ToString("C0")</span>
     </span>
     <span class="summary-item">
-        <a href="/quotes/Warranties">Warranties</a>
+        <a href="/Warranties">Warranties</a>
         <span class="stat-count"><b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
         <span class="stat-count">@leaderboardStats.WarrantyValue.ToString("C0")</span>
     </span>
@@ -416,7 +416,7 @@ else
                                     </td>
                                     <td>
                                         <label>Rep Name</label>
-                                        <span>@_quote.repLead</span>
+                                        <span>@_quote.repName</span>
                                     </td>
                                     <td>
                                         <label>Rep Email</label>
