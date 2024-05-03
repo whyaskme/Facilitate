@@ -787,8 +787,6 @@ else
 
     public void AssignLead()
     {
-        LoadingPanelVisible = true;
-
         QuoteGrid.CollapseDetailRow(selectedIndex);
 
         selectedQuote.status = "Opportunity";
@@ -851,8 +849,6 @@ else
         selectedQuote.events.Add(assignmentEvent);
 
         WebServices.UpdateQuote(selectedQuote);
-
-        //LoadingPanelVisible = false;
 
         IsAssignPopupVisible = false;
         IsAssignButtonEnabled = false;
