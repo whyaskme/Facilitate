@@ -17,13 +17,15 @@ namespace Facilitate.Admin.Data
         public UserProfile()
         {
             Id = string.Empty;
-            UserName = string.Empty;
-            Domain = string.Empty;
+            FirstName = string.Empty;
+            LastName = string.Empty;
+            ContactInfo = new ContactInfo();
         }
 
         [Key]
         public string Id { get; set; }
-        public string UserName { get; set; }
-        public string Domain { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public ContactInfo ContactInfo { get; set; }
     }
 }

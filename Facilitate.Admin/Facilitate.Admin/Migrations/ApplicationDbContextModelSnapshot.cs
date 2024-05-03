@@ -34,10 +34,6 @@ namespace Facilitate.Admin.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Domain")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -75,9 +71,12 @@ namespace Facilitate.Admin.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("UserProfileUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -89,7 +88,134 @@ namespace Facilitate.Admin.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("UserProfileUserId");
+
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Facilitate.Admin.Data.UserProfile", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ContactInfoUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId");
+
+                    b.HasIndex("ContactInfoUserId");
+
+                    b.ToTable("UserProfile");
+                });
+
+            modelBuilder.Entity("Facilitate.Libraries.Models.Address", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Address1")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Address2")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactInfoUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("County")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TimeZone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ZipCode")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId");
+
+                    b.HasIndex("ContactInfoUserId");
+
+                    b.ToTable("Address");
+                });
+
+            modelBuilder.Entity("Facilitate.Libraries.Models.ContactInfo", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("ContactInfo");
+                });
+
+            modelBuilder.Entity("Facilitate.Libraries.Models.Email", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ContactInfoUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Domain")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId");
+
+                    b.HasIndex("ContactInfoUserId");
+
+                    b.ToTable("Email");
+                });
+
+            modelBuilder.Entity("Facilitate.Libraries.Models.Phone", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AreaCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ContactInfoUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("CountryCode")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Exchange")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PhoneType")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId");
+
+                    b.HasIndex("ContactInfoUserId");
+
+                    b.ToTable("Phone");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -225,6 +351,49 @@ namespace Facilitate.Admin.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Facilitate.Admin.Data.ApplicationUser", b =>
+                {
+                    b.HasOne("Facilitate.Admin.Data.UserProfile", "UserProfile")
+                        .WithMany()
+                        .HasForeignKey("UserProfileUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserProfile");
+                });
+
+            modelBuilder.Entity("Facilitate.Admin.Data.UserProfile", b =>
+                {
+                    b.HasOne("Facilitate.Libraries.Models.ContactInfo", "ContactInfo")
+                        .WithMany()
+                        .HasForeignKey("ContactInfoUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ContactInfo");
+                });
+
+            modelBuilder.Entity("Facilitate.Libraries.Models.Address", b =>
+                {
+                    b.HasOne("Facilitate.Libraries.Models.ContactInfo", null)
+                        .WithMany("Address")
+                        .HasForeignKey("ContactInfoUserId");
+                });
+
+            modelBuilder.Entity("Facilitate.Libraries.Models.Email", b =>
+                {
+                    b.HasOne("Facilitate.Libraries.Models.ContactInfo", null)
+                        .WithMany("Email")
+                        .HasForeignKey("ContactInfoUserId");
+                });
+
+            modelBuilder.Entity("Facilitate.Libraries.Models.Phone", b =>
+                {
+                    b.HasOne("Facilitate.Libraries.Models.ContactInfo", null)
+                        .WithMany("Phone")
+                        .HasForeignKey("ContactInfoUserId");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -274,6 +443,15 @@ namespace Facilitate.Admin.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Facilitate.Libraries.Models.ContactInfo", b =>
+                {
+                    b.Navigation("Address");
+
+                    b.Navigation("Email");
+
+                    b.Navigation("Phone");
                 });
 #pragma warning restore 612, 618
         }

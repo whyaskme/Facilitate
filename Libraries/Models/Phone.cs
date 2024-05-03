@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -20,6 +21,8 @@ namespace Facilitate.Libraries.Models
             Number = 0000;
         }
 
+        [Key]
+        public string UserId { get; set; }
         public int PhoneType { get; set; }
         public int CountryCode { get; set; }
         public int AreaCode { get; set; }

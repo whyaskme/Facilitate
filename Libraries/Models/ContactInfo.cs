@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -18,6 +19,8 @@ namespace Facilitate.Libraries.Models
             Phone = new List<Phone>();
         }
 
+        [Key]
+        public string UserId { get; set; }
         public List<Address> Address { get; set; }
         public List<Email> Email { get; set; }
         public List<Phone> Phone { get; set; }

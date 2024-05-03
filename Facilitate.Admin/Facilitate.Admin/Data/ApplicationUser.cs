@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 
 using Facilitate.Libraries.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Facilitate.Admin.Data
 {
@@ -9,9 +10,9 @@ namespace Facilitate.Admin.Data
     {
         public ApplicationUser()
         {
-            //UserProfile = new UserProfile();
+            UserProfile = new UserProfile();
         }
 
-        //public UserProfile UserProfile { get; set; }
+        public UserProfile UserProfile { get; set; }
     }
 }

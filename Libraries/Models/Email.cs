@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -16,6 +17,9 @@ namespace Facilitate.Libraries.Models
             UserName = string.Empty;
             Domain = string.Empty;
         }
+
+        [Key]
+        public string UserId { get; set; }
         public string UserName { get; set; }
         public string Domain { get; set; }
     }
