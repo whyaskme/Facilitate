@@ -38,8 +38,9 @@
             SelectionMode="ListBoxSelectionMode.Single">
         <Columns>
 @*             <DxListEditorColumn FieldName="Id" Caption="Id" /> *@
-            <DxListEditorColumn FieldName="FirstName" Caption="First" />
+
             <DxListEditorColumn FieldName="LastName" Caption="Last" />
+            <DxListEditorColumn FieldName="FirstName" Caption="First" />
 
             <DxListEditorColumn FieldName="Phone" Caption="Phone" />
             <DxListEditorColumn FieldName="Email" Caption="Email" />
@@ -183,7 +184,14 @@
 
     protected override void OnInitialized()
     {
-        ProjectManagers = UserManager.Users.ToList();
+        var pmList = SortByLastNameUsingLinq(UserManager.Users.ToList());
+
+        ProjectManagers = SortByLastNameUsingLinq(pmList);
+    }
+
+    public List<ApplicationUser> SortByLastNameUsingLinq(List<ApplicationUser> originalList)
+    {
+        return originalList.OrderBy(x => x.LastName).ToList();
     }
 
     void SelectedProjectManagerChanged(IEnumerable<ApplicationUser> selectedProjectManager)
