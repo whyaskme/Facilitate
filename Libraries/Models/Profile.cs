@@ -19,7 +19,7 @@ namespace Facilitate.Libraries.Models
             Suffix = "Unknown";
             Gender = 0;
 
-            Contact = new ContactInfo();
+            Contact = new ProfileContacts();
             CreditCards = new List<CreditCard>();
             Transactions = new List<Transaction>();
         }
@@ -37,7 +37,7 @@ namespace Facilitate.Libraries.Models
         public string Suffix { get; set; }
         public int Gender { get; set; } // 0 = Not specified, Female = 1, Male = 2
 
-        public ContactInfo Contact { get; set; }
+        public ProfileContacts Contact { get; set; }
         public List<CreditCard> CreditCards { get; set; }
         public List<Transaction> Transactions { get; set; }
     }

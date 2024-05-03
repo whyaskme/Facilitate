@@ -10,7 +10,7 @@ namespace Facilitate.Admin.Data
     {
         public ApplicationUser()
         {
-            UserProfile = new UserProfile();
+            UserProfile = new UserProfile(this.Id);
         }
 
         public UserProfile UserProfile { get; set; }

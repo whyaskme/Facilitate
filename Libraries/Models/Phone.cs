@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Web;
 
 using MongoDB;
@@ -14,6 +15,17 @@ namespace Facilitate.Libraries.Models
     {
         public Phone()
         {
+            Id = string.Empty;
+            PhoneType = 0; // 0=Mobile, 1=Home, 2=Work, 3=Fax
+            CountryCode = 1; // 1 = United States
+            AreaCode = 000;
+            Exchange = 000;
+            Number = 0000;
+        }
+
+        public Phone(string _id)
+        {
+            Id = _id;
             PhoneType = 0; // 0=Mobile, 1=Home, 2=Work, 3=Fax
             CountryCode = 1; // 1 = United States
             AreaCode = 000;
@@ -22,7 +34,7 @@ namespace Facilitate.Libraries.Models
         }
 
         [Key]
-        public string UserId { get; set; }
+        public string Id { get; set; }
         public int PhoneType { get; set; }
         public int CountryCode { get; set; }
         public int AreaCode { get; set; }

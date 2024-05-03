@@ -37,7 +37,16 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+// Decide database location to use
+var useLocalhost = false;
+var connectionString = "";
+
+if (useLocalhost)
+    connectionString = builder.Configuration.GetConnectionString("LocalConnection") ?? throw new InvalidOperationException("Connection string 'LocalConnection' not found.");
+else
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -153,6 +162,22 @@ try
         ApplicationUser adminUser = new ApplicationUser();
         adminUser.Email = "admin@facilitate.org";
         adminUser.UserName = adminUser.Email;
+
+        adminUser.UserProfile.Title = "Mr.";
+        adminUser.UserProfile.FirstName = "Facilitate";
+        adminUser.UserProfile.MiddleName = "System";
+        adminUser.UserProfile.LastName = "Administrator";
+        adminUser.UserProfile.Suffix = "Sr.";
+        adminUser.UserProfile.Gender = 1;
+
+        adminUser.UserProfile.Email = adminUser.Email;
+        adminUser.UserProfile.Phone = "512-799-2522";
+
+        adminUser.UserProfile.Address1 = "1234 Main St.";
+        adminUser.UserProfile.Address2 = "Unit #123";
+        adminUser.UserProfile.City = "Austin";
+        adminUser.UserProfile.State = "TX";
+        adminUser.UserProfile.Zip = "78753";
 
         var adminPwd = "!Facilitate2024#";
 

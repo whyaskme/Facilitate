@@ -23,8 +23,8 @@ namespace Facilitate.Libraries.Models
             _t = "Representative";
 
             repName = new Name();
-            RepEmail = new Email();
-            RepPhone = new Phone();
+            RepEmail = new Email(this._id.ToString());
+            RepPhone = new Phone(this._id.ToString());
             RepCompany = string.Empty;
         }
 

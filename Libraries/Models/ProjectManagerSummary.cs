@@ -15,6 +15,6 @@ namespace Facilitate.Libraries.Models
         public string Phone { get; set; }
         public string City { get; set; }
         public string State { get; set; }
-        public int Zip { get; set; }
+        public string Zip { get; set; }
     }
 }

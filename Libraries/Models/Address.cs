@@ -14,6 +14,20 @@ namespace Facilitate.Libraries.Models
     {
         public Address()
         {
+            Id = string.Empty;
+            Country = string.Empty;
+            State = string.Empty;
+            County = string.Empty;
+            City = string.Empty;
+            ZipCode = string.Empty;
+            TimeZone = string.Empty;
+            Address1 = string.Empty;
+            Address2 = string.Empty;
+        }
+
+        public Address(string _id)
+        {
+            Id = _id;
             Country = string.Empty;
             State = string.Empty;
             County = string.Empty;
@@ -25,7 +39,7 @@ namespace Facilitate.Libraries.Models
         }
 
         [Key]
-        public string UserId { get; set; }
+        public string Id { get; set; }
         public string Country { get; set; }
         public string State { get; set; }
         public string County { get; set; }

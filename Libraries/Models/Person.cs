@@ -28,8 +28,8 @@ namespace Facilitate.Libraries.Models
             Gender = "";
             DoB = "";
 
-            Address = new Address();
-            Contact = new ContactInfo();
+            Address = new Address(this._id.ToString());
+            Contact = new ProfileContacts();
 
             Market myMarket = new Market();
 
@@ -44,7 +44,7 @@ namespace Facilitate.Libraries.Models
         public string DoB { get; set; }
 
         public Address Address { get; set; }
-        public ContactInfo Contact { get; set; }
+        public ProfileContacts Contact { get; set; }
 
         public List<Market> Markets { get; set; }
     }

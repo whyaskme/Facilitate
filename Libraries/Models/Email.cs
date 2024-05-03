@@ -14,12 +14,20 @@ namespace Facilitate.Libraries.Models
     {
         public Email()
         {
+            Id = string.Empty;
+            UserName = string.Empty;
+            Domain = string.Empty;
+        }
+
+        public Email(string _id)
+        {
+            Id = _id;
             UserName = string.Empty;
             Domain = string.Empty;
         }
 
         [Key]
-        public string UserId { get; set; }
+        public string Id { get; set; }
         public string UserName { get; set; }
         public string Domain { get; set; }
     }

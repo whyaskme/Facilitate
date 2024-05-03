@@ -10,10 +10,11 @@ using MongoDB.Driver;
 
 namespace Facilitate.Libraries.Models
 {
-    public class ContactInfo
+    public class ProfileContacts
     {
-        public ContactInfo()
+        public ProfileContacts()
         {
+            UserId = string.Empty;
             Address = new List<Address>();
             Email = new List<Email>();
             Phone = new List<Phone>();

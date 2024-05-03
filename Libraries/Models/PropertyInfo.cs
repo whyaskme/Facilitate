@@ -23,7 +23,7 @@ namespace Facilitate.Libraries.Models
             _t = "PropertyInfo";
 
             Market = string.Empty;
-            Address = new Address();
+            Address = new Address(this._id.ToString());
             Structures = new List<Structure>();
         }
 
