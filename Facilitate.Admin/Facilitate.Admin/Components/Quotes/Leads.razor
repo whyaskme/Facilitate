@@ -71,11 +71,12 @@
     </span>
 </div>
 
-<h1>@updateStatus Leads 
+<h1>
+    @updateStatus Completions
     <span id="update-status" class="@StatusClass">@RefreshStatus</span>
     <span class="stats-container-header">
-        <span class="">@leaderboardStats.LeadValue.ToString("C0")</span>
-        <span class=""><span class="value-sqft-separator">&raquo;</span>@leaderboardStats.TotalQuoteSqFt.ToString("N0")sqft</span>
+        <span class="">@leaderboardStats.CompletionValue.ToString("C0")</span>
+        <span class=""><span class="value-sqft-separator">&raquo;</span>@leaderboardStats.CompletionSqFt.ToString("N0")sqft</span>
     </span>
 </h1>
 
@@ -91,7 +92,11 @@
 
 <AuthorizeView>
     <Authorized></Authorized>
-    <NotAuthorized>@{navMan.NavigateTo("/Account/Login");}</NotAuthorized>
+    <NotAuthorized>
+        @{
+            navMan.NavigateTo("/Account/Login");
+        }
+    </NotAuthorized>
 </AuthorizeView>
 
 @if (quotes == null)
@@ -127,6 +132,7 @@ else
             KeyboardNavigationEnabled="true">
         <Columns>
             <DxGridDataColumn Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+            <DxGridDataColumn Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
             <DxGridDataColumn Caption="First" FieldName="firstName" />
             <DxGridDataColumn Caption="Last" FieldName="lastName" />
             <DxGridDataColumn Caption="Street" FieldName="street" />
@@ -196,6 +202,8 @@ else
 
                 <div class="table-spacer" />
 
+                <br />
+
                 <DxTabs CssClass="tabs-container">
 
                     <DxTabPage Id="Panel-Project-Manager" CssClass="tab-container" Text="@roofsCountLabel">
@@ -214,6 +222,8 @@ else
                                 <div class="col">
                                     <label>Included Roofs</label>
                                     <span><b>@_quote.numberOfIncludedStructures.ToString("N0")</b></span>
+                                </div>
+                                <div class="col">
                                 </div>
                             </div>
 
@@ -267,7 +277,7 @@ else
                                     <b>Product #@currentItemIndex</b>
 
                                     <div class="item-details-container">
-                                    
+
                                         <div class="row">
                                             <div class="col">
                                                 <label>Name</label>
@@ -316,6 +326,60 @@ else
                             }
                         </div>
 
+                    </DxTabPage>
+
+                    <DxTabPage Id="Panel-Send-Files" Text="@_emailTabLabel">
+                        <DxUpload Name="fileUpload1"
+                                  SelectButtonText="Upload"
+                                  AllowMultiFileUpload="true"
+                                  UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                  SelectedFilesChanged="@SelectedFilesChanged"
+                                  MaxFileSize="15000000"
+                                  AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
+                                  AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
+                                  CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
+                        </DxUpload>
+                        <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
+                    </DxTabPage>
+
+                    <DxTabPage Id="Panel-Attach-Files" Text="Attachments">
+                        <DxUpload Name="fileUpload2"
+                                  SelectButtonText="Upload"
+                                  AllowMultiFileUpload="true"
+                                  UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                  SelectedFilesChanged="@SelectedFilesChanged"
+                                  MaxFileSize="15000000"
+                                  AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
+                                  AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
+                                  CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
+                        </DxUpload>
+
+                        @foreach (Attachment attachment in _quote.attachments)
+                        {
+                            if (!attachment.IsDeleted)
+                            {
+                                <div class="note-row">
+                                    <div>
+                                        <label>@attachmentsCount) @attachment.Date</label>
+                                    </div>
+
+                                    <span class="hyperlink-warning" @onclick="() => SelectAttachmentToDelete(_quote, attachment)">Delete</span>
+
+                                    <span class="bar-spacer">|</span>
+                                    <a href="@attachment.MediaUrl" target="_blank">
+                                        <span>@attachment.MediaDescription</span>
+                                    </a>
+                                    <span class="bar-spacer">|</span>
+                                    <label>File Type</label>
+                                    <span>@FileType</span>
+                                    <span class="bar-spacer">|</span>
+                                    <label>Author</label>
+                                    <span>@Author</span>
+                                </div>
+
+                                attachmentsCount--;
+                            }
+                        }
                     </DxTabPage>
 
                     <DxTabPage Id="Panel-Notes" Text="Notes">
@@ -421,8 +485,55 @@ else
 
                 </DxTabs>
 
-                <div class="quote-detail-controls-container">
-                    <button class="btn btn-primary" @onclick="@(() => IsAssignPopupVisible = true)">Assign</button>
+                <br />
+
+                // <h6>Customer Qualifications</h6>
+                // <br />
+                // <DxTabs Id="tabs-Customer-Qualifications" CssClass="tabs-container">
+
+                //     <DxTabPage Id="Panel-Customer-Qualifications-Mission-Statement-Acknowledgment" CssClass="tab-container" Text="1) Mission Statement Acknowledgment">
+                //         Mission Statement Acknowledgment...
+                //     </DxTabPage>
+
+                //     <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Needs-Analysis" Text="2) Needs Analysis">
+                //         Needs Analysis...
+                //     </DxTabPage>
+
+                //     <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Project-Manager-Inspection-Report" Text="3) Project Manager Inspection Report">
+                //         Project Manager Inspection Report...
+                //     </DxTabPage>
+
+                //     <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Pictometry-Measurements" Text="4) Pictometry Measurements">
+                //         Pictometry Measurements...
+                //     </DxTabPage>
+
+                //     <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Installer-Inspection-Report" Text="5) Installer Inspection Report">
+                //         Installer Inspection Report...
+                //     </DxTabPage>
+
+                //     <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Material-Order" Text="6) Material Order">
+                //         Material Order...
+                //     </DxTabPage>
+
+                //     <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Labor-Order" Text="7) Labor Order">
+                //         Labor Order...
+                //     </DxTabPage>
+
+                //     <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Total-Project-Expense-Summary" Text="8) Total Project Expense Summary">
+                //         Total Project Expense Summary...
+                //     </DxTabPage>
+
+                //     <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Facilitate-Sample-Warranty" Text="9) Facilitate Sample Warranty">
+                //         Facilitate Sample Warranty...
+                //     </DxTabPage>
+
+                //     <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Signed-Proposal" Text="10) Signed Proposal">
+                //         Signed Proposal...
+                //     </DxTabPage>
+
+                // </DxTabs>
+
+                <div id="div-controls-container" class="quote-detail-controls-container">
                     <button class="btn btn-primary" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
                     <button class="btn btn-primary" @onclick="CloseDetails">Close</button>
                 </div>
@@ -456,6 +567,16 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
+<DxPopup @bind-Visible="@IsPopupVisibleSelectAttachmentToDelete" ShowFooter="true" HeaderText="Delete File">
+    <BodyContentTemplate>
+        Are you sure you want to delete "@selectedAttachment.MediaDescription"?
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteSelectedAttachment" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleSelectAttachmentToDelete = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
 <DxPopup @bind-Visible="@IsPopupVisibleSelectNoteToDelete" ShowFooter="true" HeaderText="Delete Note">
     <BodyContentTemplate>
         Are you sure you want to delete "@selectedNote.Details"?
@@ -463,6 +584,16 @@ else
     <FooterContentTemplate>
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteSelectedNote" />
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleSelectNoteToDelete = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxPopup @bind-Visible="@IsPopupVisibleMakeCustomer" ShowFooter="true" HeaderText="Make Customer">
+    <BodyContentTemplate>
+        If this Opportunity is fully qualified to meet Customer criteria, then click Save.
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="MakeCustomer" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleMakeCustomer = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -522,60 +653,29 @@ else
 
 <div class="@StatusContainerClass">
     <button class="@ButtonClass" disabled="@RefreshDisabled" @onclick="ToggleRefresh">@ButtonText</button>
-    <button class="btn btn-primary" disabled="@CreateLeadDisabled" @onclick="CreateLead">Create 1 Lead</button>
-    <button class="btn btn-primary" disabled="@CreateLeadsDisabled" @onclick="CreateLeads">Create @itemsToCreate Leads</button>
 </div>
 
 
 @code {
-
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     HttpClient httpClient = ClientFactory.CreateClient();
-    //     var client = httpClient;
-
-    //     //var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7235/api/Quote/status=new");
-
-    //     var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:8080/api/Quote/status=new");
-    //     //var request = new HttpRequestMessage(HttpMethod.Get, "https://api.facilitate.org/api/Quote/status=new");
-
-    //     //request.Headers.Add("Accept", "application/json");
-
-    //     try
-    //     {
-    //         var response = await client.SendAsync(request);
-
-    //         if (response.IsSuccessStatusCode)
-    //         {
-    //             using var responseStream = await response.Content.ReadAsStreamAsync();
-
-    //             var quotes = await JsonSerializer.DeserializeAsync<IEnumerable<Quote>>(responseStream);
-
-    //             var tmpVal = "";
-    //         }
-    //         else
-    //         {
-
-    //         }
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         //logger.LogError(ex, "Error occurred calling the GitHub API.");
-    //     }
-    // }
 
     public QuoteLeaderboard leaderboardStats;
 
     protected override void OnInitialized()
     {
         leaderboardStats = WebServices.GetLeaderBoardStats();
-        PauseRefresh(false);
-        //RefreshDisabled = false;
     }
+
+    public int currentItemIndex = 0;
 
     public int noteCount = 0;
 
     IEnumerable<string> Values { get; set; }
+
+    public int roofsCount = 0;
+    public int productsCount = 0;
+
+    public string roofsCountLabel = "";
+    public string productsCountLabel = "";
 
     public Quote selectedQuote { get; set; }
     public Attachment selectedAttachment { get; set; }
@@ -590,16 +690,6 @@ else
     public bool IsAssignButtonEnabled = false;
     IEnumerable<ApplicationUser> SelectedProjectManager { get; set; }
     public List<ApplicationUser>? ProjectManagers;
-
-    void SelectedProjectManagerChanged(IEnumerable<ApplicationUser> selectedProjectManager)
-    {
-        SelectedProjectManager = selectedProjectManager;
-
-        if(SelectedProjectManager.Count() > 0)
-            IsAssignButtonEnabled = true;
-        else
-            IsAssignButtonEnabled = false;
-    }
 
     #region Private Properties
 
@@ -635,19 +725,13 @@ else
 
     public interface IQueryable : System.Collections.IEnumerable;
 
-    public int currentItemIndex = 0;
+    public int currentItem = 0;
     public int selectedIndex = 0;
 
     public string SubmissionUserIP { get; set; }
 
-    public int itemsToCreate = 100;
+    public int itemsToCreate = 10;
     public string updateStatus = "Fetching ";
-
-    public int roofsCount = 0;
-    public int productsCount = 0;
-
-    public string roofsCountLabel = "";
-    public string productsCountLabel = "";
 
     public int attachmentsCount = 0;
     public int notesCount = 0;
@@ -666,7 +750,6 @@ else
     bool IsPopupVisibleSelectNoteToDelete { get; set; }
 
     bool IsPopupVisibleMakeCustomer { get; set; }
-    bool IsAssignmentPopupVisible { get; set; }
     bool IsArchivePopupVisible { get; set; }
 
     bool IsPopupVisibleHelpSendFiles { get; set; }
@@ -705,12 +788,6 @@ else
     public bool RefreshDisabled { get; set; } = false;
 
     [Parameter]
-    public bool CreateLeadDisabled { get; set; } = true;
-
-    [Parameter]
-    public bool CreateLeadsDisabled { get; set; } = true;
-
-    [Parameter]
     public bool SendDocsDisabled { get; set; } = true;
 
     [Parameter]
@@ -732,6 +809,16 @@ else
 
     #region Methods
 
+    void SelectedProjectManagerChanged(IEnumerable<ApplicationUser> selectedProjectManager)
+    {
+        SelectedProjectManager = selectedProjectManager;
+
+        if (SelectedProjectManager.Count() > 0)
+            IsAssignButtonEnabled = true;
+        else
+            IsAssignButtonEnabled = false;
+    }
+
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
@@ -739,6 +826,7 @@ else
             ProjectManagers = SortByLastNameUsingLinq(UserManager.Users.ToList());
             RefreshTimer();
         }
+
         GetIpAddress();
     }
 
@@ -758,8 +846,6 @@ else
             QuoteGrid.CollapseDetailRow(selectedIndex);
 
             PauseRefresh(false);
-
-            RefreshDisabled = false;
         }
         else
         {
@@ -785,11 +871,31 @@ else
         }
     }
 
+    protected void SelectedFilesChanged(IEnumerable<UploadFileInfo> files)
+    {
+        SelectedFilesCount = files.ToList().Count;
+        InvokeAsync(StateHasChanged);
+
+        SendDocsDisabled = false;
+    }
+
+    protected void EmailFiles()
+    {
+        var tmpVal = "";
+    }
+
+    protected string GetUploadUrl(string url)
+    {
+        var absoluteUri = NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
+
+        return absoluteUri;
+    }
+
     public void AssignLead()
     {
-        QuoteGrid.CollapseDetailRow(selectedIndex);
+        LoadingPanelVisible = true;
 
-        selectedQuote.status = "Opportunity";
+        QuoteGrid.CollapseDetailRow(selectedIndex);
 
         Event statusChanged = new Event();
         statusChanged.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Opportunity";
@@ -798,39 +904,6 @@ else
         var previousProjectManager = selectedQuote.projectManager;
 
         selectedQuote.projectManager = SelectedProjectManager.ToList()[0];
-
-        if(selectedQuote.attachments.Count == 0)
-        {
-            // Workflow and Subsequent Document Requirements
-            Attachment workflowRequirements = new Attachment();
-            workflowRequirements.MediaDescription = "Workflow and Subsequent Document Requirements";
-            workflowRequirements.MediaUrl = "/docs/templates/misc/Workflow and Subsequent Document Requirements.pdf";
-            selectedQuote.attachments.Add(workflowRequirements);
-
-            Event workflowRequirementsEvent = new Event();
-            workflowRequirementsEvent.Details = workflowRequirements.MediaDescription + " sent to " + selectedQuote.email;
-            selectedQuote.events.Add(workflowRequirementsEvent);
-
-            // Facilitate Engagement Agreement
-            Attachment engagementAgreement = new Attachment();
-            engagementAgreement.MediaDescription = "Facilitate Engagement Agreement";
-            engagementAgreement.MediaUrl = "/docs/templates/agreements/Facilitate Engagement Agreement.docx";
-            selectedQuote.attachments.Add(engagementAgreement);
-
-            Event engagementAgreementEvent = new Event();
-            engagementAgreementEvent.Details = engagementAgreement.MediaDescription + " sent to " + selectedQuote.email;
-            selectedQuote.events.Add(engagementAgreementEvent);
-
-            // Welcome Letter
-            Attachment welcomeLetter = new Attachment();
-            welcomeLetter.MediaDescription = "Welcome to Facilitate.org";
-            welcomeLetter.MediaUrl = "/docs/templates/boilerplate/Welcome to Facilitate.docx";
-            selectedQuote.attachments.Add(welcomeLetter);
-
-            Event welcomeLetterEvent = new Event();
-            welcomeLetterEvent.Details = welcomeLetter.MediaDescription + " sent to " + selectedQuote.email;
-            selectedQuote.events.Add(welcomeLetterEvent);
-        }
 
         // Assignment event
         var projectManager = selectedQuote.projectManager;
@@ -846,9 +919,12 @@ else
         {
             assignmentEvent.Details = "Lead assigned to Project Manager Id: " + projectManager.Id + " (" + projectManager.FirstName + "), moved to Opportunities and emailed to: " + projectManager.Email;
         }
+
         selectedQuote.events.Add(assignmentEvent);
 
         WebServices.UpdateQuote(selectedQuote);
+
+        //LoadingPanelVisible = false;
 
         IsAssignPopupVisible = false;
         IsAssignButtonEnabled = false;
@@ -863,10 +939,24 @@ else
         QuoteGrid.CollapseDetailRow(selectedIndex);
 
         Note note = new Note();
-        note.Summary = "Opportunity Archived";
+        note.Summary = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
         note.Details = @NoteDetails;
 
         selectedQuote.notes.Add(note);
+
+        Event _event = new Event();
+        _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
+        selectedQuote.events.Add(_event);
+
+        Warranty warranty = new Warranty();
+        warranty.Type = "Assertion";
+        warranty.Summary = "Standard Facilitate Warranty";
+        warranty.Details = "What is Facilitate's standard warranty we are going to offer here???";
+        selectedQuote.warranties.Add(warranty);
+
+        Event warrantyEvent = new Event();
+        warrantyEvent.Details = " Standard Facilitate Warranty " + warranty.Type + " applied to Customer";
+        selectedQuote.events.Add(warrantyEvent);
 
         WebServices.UpdateQuote(selectedQuote);
 
@@ -911,12 +1001,40 @@ else
         PauseRefresh(false);
     }
 
+    public void SelectAttachmentToDelete(Quote quote, Attachment attachment)
+    {
+        selectedQuote = quote;
+        selectedAttachment = attachment;
+
+        IsPopupVisibleSelectAttachmentToDelete = true;
+
+        RefreshTimer();
+    }
+
     public void SelectNoteToDelete(Quote quote, Note note)
     {
         selectedQuote = quote;
         selectedNote = note;
 
         IsPopupVisibleSelectNoteToDelete = true;
+    }
+
+    public void DeleteSelectedAttachment()
+    {
+        selectedAttachment.IsDeleted = true;
+
+        Event _event = new Event();
+        _event.Details = "Deleted attachment (" + selectedAttachment.MediaDescription + ") from Quote";
+
+        selectedQuote.events.Add(_event);
+
+        WebServices.UpdateQuote(selectedQuote);
+
+        RefreshTimer();
+
+        IsPopupVisibleSelectAttachmentToDelete = false;
+
+        attachmentsCount--;
     }
 
     public void DeleteSelectedNote()
@@ -937,243 +1055,33 @@ else
         notesCount--;
     }
 
-    private void CreateLeads()
+    public void MakeCustomer()
     {
-        Quote quote = new Quote();
+        selectedQuote.status = "Customer";
 
-        for (var i = 0; i < itemsToCreate; i++)
-        {
-            updateStatus = "Creating ";
-            CreateLead();
-        }
+        QuoteGrid.CollapseDetailRow(selectedIndex);
 
-        var results = string.Empty;
-
-        try
-        {
-            WebServices.CreateQuote(quote);
-            results = "POSTED";
-        }
-        catch (Exception ex)
-        {
-            results = ex.Message;
-        }
-        finally
-        {
-            PauseRefresh(false);
-        }
-
-        PauseRefresh(false);
-    }
-
-    private void CreateLead()
-    {
-        updateStatus = "Creating ";
-
-        List<String> nameGenders = new List<string>();
-        nameGenders.Add("male");
-        nameGenders.Add("female");
-
-        Quote quote = new Quote();
-        quote.status = "New";
-
-        quote.ipAddress = SubmissionUserIP;
-
-        Utils utils = new Utils();
-
-        var randomStreetNumber = utils.GetRandomStreetNumber();
-        var randomStreetName = utils.GetRandomStreetName();
-
-        var randomState = utils.GetRandomState();
-        var stateName = randomState[0];
-        var stateAbbr = randomState[1];
-        var stateId = randomState[2];
-
-        var randomCity = utils.GetRandomCity(MongoDB.Bson.ObjectId.Parse(stateId));
-
-        string cityId = randomCity[0];
-        string cityName = randomCity[1];
-        string cityCountyId = randomCity[2];
-        string cityTimeZoneId = randomCity[3];
-
-        var randomZipCode = utils.GetRandomZipCode(MongoDB.Bson.ObjectId.Parse(cityId)).ToString();
-
-        quote.address = randomStreetNumber + " " + randomStreetName + ", " + cityName + ", " + stateAbbr + " " + randomZipCode;
-        quote.fullAddress = quote.address;
-        quote.street = randomStreetNumber + " " + randomStreetName;
-        quote.city = cityName;
-        quote.state = stateAbbr;
-        quote.zip = randomZipCode;
-
-        Random rnd = new Random();
-        int randomInt = rnd.Next(0, 1);
-
-        quote.firstName = utils.GetRandomFirstName(nameGenders[randomInt]);
-        quote.lastName = utils.GetRandomLastName();
-
-        quote.email = quote.firstName.ToLower() + "@" + quote.lastName.ToLower() + ".com";
-        quote.phone = "(" + utils.GetRandomAreaCode() + ") " + utils.GetRandomHomePhoneNumber();
-        quote.market = quote.city + ", " + quote.state;
-        quote.externalUrl = "https://app.roofle.com/dashboard";
-        quote.sessionId = "nH9YvHwoBldl2ZkpQSWrX";
-
-        randomInt = rnd.Next(0, 1);
-        var repName = utils.GetRandomFirstName(nameGenders[randomInt]) + " " + utils.GetRandomLastName();
-
-        quote.repName = repName;
-        quote.repEmail = repName.Replace(" ", ".").ToLower() + "@facilitate.org";
-
-        randomInt = rnd.Next(5000, 9999);
-        quote.leadId = randomInt;
-
-        // Add Structure Info
-        int totalSquareFeet = 0;
-        int mainRoofTotalSquareFeet = randomInt;
-
-        randomInt = rnd.Next(1, 3);
-
-        quote.numberOfStructures = randomInt;
-        quote.numberOfIncludedStructures = quote.numberOfStructures;
-
-        quote.structures = null;
-        quote.structures = new List<Structure>();
-        for (var i = 0; i < quote.numberOfStructures; i++)
-        {
-            Structure structure = new Structure();
-            switch (i)
-            {
-                case 1:
-                    structure.initialSquareFeet = rnd.Next(1000, 5000);
-                    structure.isIncluded = true;
-                    structure.name = "Main Roof";
-                    structure.roofComplexity = "Complex";
-                    structure.slope = "steep";
-                    break;
-                case 2:
-                    structure.initialSquareFeet = rnd.Next(500, 1000);
-                    structure.isIncluded = true;
-                    structure.name = "Garage Roof";
-                    structure.roofComplexity = "Simple";
-                    structure.slope = "medium";
-                    break;
-                default:
-                    structure.initialSquareFeet = rnd.Next(250, 1000);
-                    structure.isIncluded = false;
-                    structure.name = "Misc Roof";
-                    structure.roofComplexity = "Compound";
-                    structure.slope = "shallow";
-                    break;
-            }
-
-            structure.squareFeet = structure.initialSquareFeet;
-
-            totalSquareFeet += structure.initialSquareFeet;
-
-            quote.structures.Add(structure);
-        }
-
-        quote.totalSquareFeet = totalSquareFeet;
-        quote.totalInitialSquareFeet = quote.totalSquareFeet;
-
-        quote.mainRoofTotalSquareFeet = totalSquareFeet;
-
-        quote.products = null;
-        quote.products = new List<Product>();
-
-        // Add Product Info
-        var productIndex = 0;
-        double quoteTotal = 0;
-
-        foreach (Structure structure in quote.structures)
-        {
-            productIndex++;
-
-            Product product = new Product();
-            product.name = "Certainteed Landmark (" + productIndex + ")";
-            product.id = 1;
-
-            PriceInfo _priceInfo = new PriceInfo();
-            _priceInfo.priceType = "BasicFinancing";
-
-            randomInt = rnd.Next(550, 675);
-            _priceInfo.pricePerSquare = randomInt;
-
-            randomInt = rnd.Next(250, 400);
-            _priceInfo.monthly = randomInt;
-
-            randomInt = rnd.Next(8, 26);
-            _priceInfo.apr = randomInt;
-
-            randomInt = rnd.Next(120, 360);
-            _priceInfo.months = randomInt;
-
-            product.priceInfo = _priceInfo;
-
-            PriceRange _priceRange = new PriceRange();
-            randomInt = rnd.Next(1150, 5200);
-            _priceRange.totalMin = randomInt;
-
-            randomInt = rnd.Next(16575, 16575);
-            _priceRange.totalMax = randomInt;
-
-            randomInt = rnd.Next(200, 300);
-            _priceRange.monthlyMin = randomInt;
-
-            randomInt = rnd.Next(350, 400);
-            _priceRange.monthlyMax = randomInt;
-
-            product.priceRange = _priceRange;
-
-            product.wasteFactorMainRoof = 1.2;
-
-            _priceInfo.total = (_priceInfo.pricePerSquare * quote.totalSquareFeet) / 100;
-
-            if (quoteTotal < _priceInfo.total)
-                quoteTotal = _priceInfo.total;
-
-            quote.products.Add(product);
-        }
-
-        quote.totalQuote = quoteTotal;
+        var projectManager = selectedQuote.projectManager;
 
         Event _event = new Event();
-        _event.Name = "New Quote";
-        _event.DateTime = DateTime.UtcNow;
-        _event.Details = "New quote referred by Roofle";
+        _event.Details = "Opportunity converted to Customer";
 
-        quote.events.Add(_event);
+        selectedQuote.events.Add(_event);
 
-        var results = string.Empty;
+        WebServices.UpdateQuote(selectedQuote);
 
-        try
-        {
-            WebServices.CreateQuote(quote);
-            results = "POSTED";
-        }
-        catch (Exception ex)
-        {
-            results = ex.Message;
-        }
-        finally
-        {
-            PauseRefresh(false);
-        }
+        IsPopupVisibleMakeCustomer = false;
+
+        PauseRefresh(false);
     }
 
     public virtual void PauseRefresh(bool isPaused)
     {
         RefreshDisabled = isPaused;
-
-        CreateLeadDisabled = isPaused;
-        CreateLeadsDisabled = isPaused;
+        ArchiveLeadsDisabled = isPaused;
 
         if (isPaused)
         {
-            RefreshDisabled = false;
-
-            CreateLeadDisabled = false;
-            CreateLeadsDisabled = false;
-
             ButtonText = "Resume Refresh";
             ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
             StatusClass = "message-warning";
@@ -1183,9 +1091,6 @@ else
         }
         else
         {
-            CreateLeadDisabled = true;
-            CreateLeadsDisabled = true;
-
             ButtonText = "Pause Refresh";
             ButtonClass = "btn btn-outline-primary btn-refresh-active";
             StatusClass = "message";
