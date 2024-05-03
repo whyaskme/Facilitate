@@ -179,6 +179,8 @@ try
         adminUser.State = "TX";
         adminUser.Zip = "78753";
 
+        adminUser.ProfileImage = "https://facilitate.org/images/profiles/Facilitate Profile Logo.png";
+
         var adminPwd = "!Facilitate2024#";
 
         // Check if this admin already exists

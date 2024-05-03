@@ -30,6 +30,8 @@ namespace Facilitate.Admin.Data
 
             Email = string.Empty;
             Phone = string.Empty;
+
+            ProfileImage = string.Empty;
         }
 
         public bool IsEnabled { get; set; }
@@ -53,5 +55,6 @@ namespace Facilitate.Admin.Data
         public string Zip { get; set; }
 
         public string Phone { get; set; }
+        public string ProfileImage { get; set; }
     }
 }
