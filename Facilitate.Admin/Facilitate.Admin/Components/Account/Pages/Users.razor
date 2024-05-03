@@ -184,9 +184,7 @@
 
     protected override void OnInitialized()
     {
-        var pmList = SortByLastNameUsingLinq(UserManager.Users.ToList());
-
-        ProjectManagers = SortByLastNameUsingLinq(pmList);
+        ProjectManagers = SortByLastNameUsingLinq(UserManager.Users.ToList());
     }
 
     public List<ApplicationUser> SortByLastNameUsingLinq(List<ApplicationUser> originalList)

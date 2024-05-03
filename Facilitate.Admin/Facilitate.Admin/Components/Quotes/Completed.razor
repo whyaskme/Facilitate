@@ -577,8 +577,8 @@ else
                    SelectionMode="ListBoxSelectionMode.Single"
                    ShowCheckboxes="true">
             <Columns>
-                <DxListEditorColumn FieldName="FirstName" Caption="First" />
                 <DxListEditorColumn FieldName="LastName" Caption="Last" />
+                <DxListEditorColumn FieldName="FirstName" Caption="First" />
                 <DxListEditorColumn FieldName="Email" Caption="Email" />
                 <DxListEditorColumn FieldName="Id" Visible="false" Caption="Id" />
             </Columns>
@@ -846,11 +846,16 @@ else
     {
         if (firstRender)
         {
-            ProjectManagers = UserManager.Users.ToList();
+            ProjectManagers = SortByLastNameUsingLinq(UserManager.Users.ToList());
             RefreshTimer();
         }
 
         GetIpAddress();
+    }
+
+    public List<ApplicationUser> SortByLastNameUsingLinq(List<ApplicationUser> originalList)
+    {
+        return originalList.OrderBy(x => x.LastName).ToList();
     }
 
     void OnRowClick(GridRowClickEventArgs args)
@@ -923,44 +928,15 @@ else
 
         selectedQuote.projectManager = SelectedProjectManager.ToList()[0];
 
-        // Workflow and Subsequent Document Requirements
-        Attachment workflowRequirements = new Attachment();
-        workflowRequirements.MediaDescription = "Workflow and Subsequent Document Requirements";
-        workflowRequirements.MediaUrl = "/docs/templates/misc/Workflow and Subsequent Document Requirements.pdf";
-        selectedQuote.attachments.Add(workflowRequirements);
-
-        Event workflowRequirementsEvent = new Event();
-        workflowRequirementsEvent.Details = workflowRequirements.MediaDescription + " sent to " + selectedQuote.email;
-        selectedQuote.events.Add(workflowRequirementsEvent);
-
-        // Facilitate Engagement Agreement
-        Attachment engagementAgreement = new Attachment();
-        engagementAgreement.MediaDescription = "Facilitate Engagement Agreement";
-        engagementAgreement.MediaUrl = "/docs/templates/agreements/Facilitate Engagement Agreement.docx";
-        selectedQuote.attachments.Add(engagementAgreement);
-
-        Event engagementAgreementEvent = new Event();
-        engagementAgreementEvent.Details = engagementAgreement.MediaDescription + " sent to " + selectedQuote.email;
-        selectedQuote.events.Add(engagementAgreementEvent);
-
-        // Welcome Letter
-        Attachment welcomeLetter = new Attachment();
-        welcomeLetter.MediaDescription = "Welcome to Facilitate.org";
-        welcomeLetter.MediaUrl = "/docs/templates/boilerplate/Welcome to Facilitate.docx";
-        selectedQuote.attachments.Add(welcomeLetter);
-
-        Event welcomeLetterEvent = new Event();
-        welcomeLetterEvent.Details = welcomeLetter.MediaDescription + " sent to " + selectedQuote.email;
-        selectedQuote.events.Add(welcomeLetterEvent);
-
         // Assignment event
         var projectManager = selectedQuote.projectManager;
         Event assignmentEvent = new Event();
+        assignmentEvent.Name = "Assignment";
 
         if (previousProjectManager != null)
         {
             // Current PM to replace
-            //assignmentEvent.Details = "Project Manager Id: " + previousprojectManager.Id + " (" + previousprojectManager.FirstName + "), replaced by Project Manager Id: " + projectManager.Id + " (" + projectManager.FirstName + ") and emailed to: " + projectManager.Email;
+            assignmentEvent.Details = "Project Manager Id: " + previousProjectManager.Id + " (" + previousProjectManager.FirstName + "), replaced by Project Manager Id: " + projectManager.Id + " (" + projectManager.FirstName + ") and emailed to: " + projectManager.Email;
         }
         else{
             assignmentEvent.Details = "Lead assigned to Project Manager Id: " + projectManager.Id + " (" + projectManager.FirstName + "), moved to Opportunities and emailed to: " + projectManager.Email;
