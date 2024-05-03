@@ -32,44 +32,71 @@
 <h1>Manage Users</h1>
 
 <div class="row">
+    <DxListBox Data="@ProjectManagers"
+            @bind-Values="@Values"
+            SelectedItemsChanged="@((IEnumerable<ApplicationUser> values) => SelectedProjectManagerChanged(values))"
+            SelectionMode="ListBoxSelectionMode.Single">
+        <Columns>
+@*             <DxListEditorColumn FieldName="Id" Caption="Id" /> *@
+            <DxListEditorColumn FieldName="FirstName" Caption="First" />
+            <DxListEditorColumn FieldName="LastName" Caption="Last" />
 
-    <div class="col-md-6 col-md-offset-2">
-        <DxListBox Data="@ProjectManagers"
-                @bind-Values="@Values"
-                SelectedItemsChanged="@((IEnumerable<ApplicationUser> values) => SelectedProjectManagerChanged(values))"
-                SelectionMode="ListBoxSelectionMode.Single">
-            <Columns>
-            <DxListEditorColumn FieldName="Id" Caption="Id" />
+            <DxListEditorColumn FieldName="Phone" Caption="Phone" />
             <DxListEditorColumn FieldName="Email" Caption="Email" />
-            </Columns>
-        </DxListBox>
-    </div>
 
-    <div class="col-md-4">
-        <StatusMessage Message="@Message" />
-        <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
-            <DataAnnotationsValidator />
-            <h2>Create a new account.</h2>
-            <hr />
-            <ValidationSummary class="text-danger" role="alert" />
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label for="email">Email</label>
-                <ValidationMessage For="() => Input.Email" class="text-danger" />
-            </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="password">Password</label>
-                <ValidationMessage For="() => Input.Password" class="text-danger" />
-            </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="confirm-password">Confirm Password</label>
-                <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
-            </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </EditForm>
-    </div>
+            <DxListEditorColumn FieldName="Address1" Caption="Street 1" />
+            <DxListEditorColumn FieldName="Address2" Caption="Street 2" />
+            <DxListEditorColumn FieldName="City" Caption="City" />
+            <DxListEditorColumn FieldName="State" Caption="State" />
+            <DxListEditorColumn FieldName="Zip" Caption="Zip" />
+        </Columns>
+    </DxListBox>
+</div>
+
+<div class="row">
+    <StatusMessage Message="@Message" />
+    <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
+        <DataAnnotationsValidator />
+        <h2>Create a new account.</h2>
+        <hr />
+        <ValidationSummary class="text-danger" role="alert" />
+
+        <div class="form-floating mb-3">
+            <InputText @bind-Value="Input.FirstName" class="form-control" aria-required="true" placeholder="First Name" />
+            <label for="firstName">First Name</label>
+            <ValidationMessage For="() => Input.FirstName" class="text-danger" />
+        </div>
+
+        <div class="form-floating mb-3">
+            <InputText @bind-Value="Input.LastName" class="form-control" aria-required="true" placeholder="Last Name" />
+            <label for="lastName">Last Name</label>
+            <ValidationMessage For="() => Input.LastName" class="text-danger" />
+        </div>
+
+        <div class="form-floating mb-3">
+            <InputText @bind-Value="Input.Phone" class="form-control" aria-required="true" placeholder="(555) 555-1212)" />
+            <label for="phone">Phone</label>
+            <ValidationMessage For="() => Input.Phone" class="text-danger" />
+        </div>
+
+        <div class="form-floating mb-3">
+            <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+            <label for="email">Email</label>
+            <ValidationMessage For="() => Input.Email" class="text-danger" />
+        </div>
+
+        <div class="form-floating mb-3">
+            <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+            <label for="password">Password</label>
+            <ValidationMessage For="() => Input.Password" class="text-danger" />
+        </div>
+        <div class="form-floating mb-3">
+            <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+            <label for="confirm-password">Confirm Password</label>
+            <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
+        </div>
+        <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+    </EditForm>
 </div>
 
 @code {
@@ -199,9 +226,42 @@
     private sealed class InputModel
     {
         [Required]
+        [Display(Name = "First")]
+        public string FirstName { get; set; } = "";
+
+        [Required]
+        [Display(Name = "Last")]
+        public string LastName { get; set; } = "";
+
+        [Required]
+        [Phone]
+        [Display(Name = "Phone")]
+        public string Phone { get; set; } = "";
+
+        [Required]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; } = "";
+
+        [Required]
+        [Display(Name = "Street 1")]
+        public string Address1 { get; set; } = "";
+
+        [Required]
+        [Display(Name = "Street 2")]
+        public string Address2 { get; set; } = "";
+
+        [Required]
+        [Display(Name = "City")]
+        public string City { get; set; } = "";
+
+        [Required]
+        [Display(Name = "State")]
+        public string State { get; set; } = "";
+
+        [Required]
+        [Display(Name = "Zip")]
+        public string Zip { get; set; } = "";
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]

@@ -38,7 +38,7 @@ builder.Services.AddAuthentication(options =>
     .AddIdentityCookies();
 
 // Decide database location to use
-var useLocalhost = false;
+var useLocalhost = true;
 var connectionString = "";
 
 if (useLocalhost)
@@ -163,21 +163,21 @@ try
         adminUser.Email = "admin@facilitate.org";
         adminUser.UserName = adminUser.Email;
 
-        adminUser.UserProfile.Title = "Mr.";
-        adminUser.UserProfile.FirstName = "Facilitate";
-        adminUser.UserProfile.MiddleName = "System";
-        adminUser.UserProfile.LastName = "Administrator";
-        adminUser.UserProfile.Suffix = "Sr.";
-        adminUser.UserProfile.Gender = 1;
+        adminUser.Title = "Mr.";
+        adminUser.FirstName = "Facilitate";
+        adminUser.MiddleName = "System";
+        adminUser.LastName = "Administrator";
+        adminUser.Suffix = "Sr.";
+        adminUser.Gender = 1;
 
-        adminUser.UserProfile.Email = adminUser.Email;
-        adminUser.UserProfile.Phone = "512-799-2522";
+        adminUser.Email = adminUser.Email;
+        adminUser.Phone = "512-799-2522";
 
-        adminUser.UserProfile.Address1 = "1234 Main St.";
-        adminUser.UserProfile.Address2 = "Unit #123";
-        adminUser.UserProfile.City = "Austin";
-        adminUser.UserProfile.State = "TX";
-        adminUser.UserProfile.Zip = "78753";
+        adminUser.Address1 = "1234 Main St.";
+        adminUser.Address2 = "Unit #123";
+        adminUser.City = "Austin";
+        adminUser.State = "TX";
+        adminUser.Zip = "78753";
 
         var adminPwd = "!Facilitate2024#";
 

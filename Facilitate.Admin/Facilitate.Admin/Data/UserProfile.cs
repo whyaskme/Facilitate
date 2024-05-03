@@ -16,52 +16,52 @@ namespace Facilitate.Admin.Data
     {
         public UserProfile()
         {
-            Id = string.Empty;
+            //Id = string.Empty;
 
-            RegistrationDate = DateTime.UtcNow;
-            Expired = false;
-            ExpireDate = DateTime.MaxValue;
+            //RegistrationDate = DateTime.UtcNow;
+            //Expired = false;
+            //ExpireDate = DateTime.MaxValue;
 
-            Title = string.Empty;
-            FirstName = string.Empty;
-            MiddleName = string.Empty;
-            LastName = string.Empty;
-            Suffix = string.Empty;
-            Gender = 0;
+            //Title = string.Empty;
+            //FirstName = string.Empty;
+            //MiddleName = string.Empty;
+            //LastName = string.Empty;
+            //Suffix = string.Empty;
+            //Gender = 0;
 
-            Address1 = string.Empty;
-            Address2 = string.Empty;
-            City = string.Empty;
-            State = string.Empty;
-            Zip = string.Empty;
+            //Address1 = string.Empty;
+            //Address2 = string.Empty;
+            //City = string.Empty;
+            //State = string.Empty;
+            //Zip = string.Empty;
 
-            Email = string.Empty;
-            Phone = string.Empty;
+            //Email = string.Empty;
+            //Phone = string.Empty;
         }
 
         public UserProfile(string _id)
         {
             Id = _id;
 
-            RegistrationDate = DateTime.UtcNow;
-            Expired = false;
-            ExpireDate = DateTime.MaxValue;
+            //RegistrationDate = DateTime.UtcNow;
+            //Expired = false;
+            //ExpireDate = DateTime.MaxValue;
 
-            Title = string.Empty;
-            FirstName = string.Empty;
-            MiddleName = string.Empty;
-            LastName = string.Empty;
-            Suffix = string.Empty;
-            Gender = 0;
+            //Title = string.Empty;
+            //FirstName = string.Empty;
+            //MiddleName = string.Empty;
+            //LastName = string.Empty;
+            //Suffix = string.Empty;
+            //Gender = 0;
 
-            Address1 = string.Empty;
-            Address2 = string.Empty;
-            City = string.Empty;
-            State = string.Empty;
-            Zip = string.Empty;
+            //Address1 = string.Empty;
+            //Address2 = string.Empty;
+            //City = string.Empty;
+            //State = string.Empty;
+            //Zip = string.Empty;
 
-            Email = string.Empty;
-            Phone = string.Empty;
+            //Email = string.Empty;
+            //Phone = string.Empty;
         }
 
         [Key]
