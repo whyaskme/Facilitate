@@ -53,50 +53,64 @@
     </DxListBox>
 </div>
 
+<hr />
+
+<StatusMessage Message="@Message" />
+<EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
+    <DataAnnotationsValidator />
+    <h2>Create a new account.</h2>
+    <ValidationSummary class="text-danger" role="alert" />
+
+    <div class="row">
+        <div class="col-md-6 col-md-offset-2">
+            <div class="form-floating mb-3">
+                <InputText tabindex="1" @bind-Value="Input.FirstName" class="form-control" aria-required="true" placeholder="First Name" />
+                <label for="firstName">First Name</label>
+                <ValidationMessage For="() => Input.FirstName" class="text-danger" />
+            </div>
+
+            <div class="form-floating mb-3">
+                <InputText tabindex="3" @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <label for="email">Email</label>
+                <ValidationMessage For="() => Input.Email" class="text-danger" />
+            </div>
+
+            <div class="form-floating mb-3">
+                <InputText tabindex="5" type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <label for="password">Password</label>
+                <ValidationMessage For="() => Input.Password" class="text-danger" />
+            </div>
+
+        </div>
+
+        <div class="col-md-6 col-md-offset-2">
+
+            <div class="form-floating mb-3">
+                <InputText tabindex="2" @bind-Value="Input.LastName" class="form-control" aria-required="true" placeholder="Last Name" />
+                <label for="lastName">Last Name</label>
+                <ValidationMessage For="() => Input.LastName" class="text-danger" />
+            </div>
+
+            <div class="form-floating mb-3">
+                <InputText tabindex="4" @bind-Value="Input.Phone" class="form-control" aria-required="true" placeholder="(555) 555-1212)" />
+                <label for="phone">Phone</label>
+                <ValidationMessage For="() => Input.Phone" class="text-danger" />
+            </div>
+
+            <div class="form-floating mb-3">
+                <InputText tabindex="6" type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <label for="confirm-password">Confirm Password</label>
+                <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+
+</EditForm>
+
 <div class="row">
-    <StatusMessage Message="@Message" />
-    <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
-        <DataAnnotationsValidator />
-        <h2>Create a new account.</h2>
-        <hr />
-        <ValidationSummary class="text-danger" role="alert" />
 
-        <div class="form-floating mb-3">
-            <InputText @bind-Value="Input.FirstName" class="form-control" aria-required="true" placeholder="First Name" />
-            <label for="firstName">First Name</label>
-            <ValidationMessage For="() => Input.FirstName" class="text-danger" />
-        </div>
-
-        <div class="form-floating mb-3">
-            <InputText @bind-Value="Input.LastName" class="form-control" aria-required="true" placeholder="Last Name" />
-            <label for="lastName">Last Name</label>
-            <ValidationMessage For="() => Input.LastName" class="text-danger" />
-        </div>
-
-        <div class="form-floating mb-3">
-            <InputText @bind-Value="Input.Phone" class="form-control" aria-required="true" placeholder="(555) 555-1212)" />
-            <label for="phone">Phone</label>
-            <ValidationMessage For="() => Input.Phone" class="text-danger" />
-        </div>
-
-        <div class="form-floating mb-3">
-            <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-            <label for="email">Email</label>
-            <ValidationMessage For="() => Input.Email" class="text-danger" />
-        </div>
-
-        <div class="form-floating mb-3">
-            <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-            <label for="password">Password</label>
-            <ValidationMessage For="() => Input.Password" class="text-danger" />
-        </div>
-        <div class="form-floating mb-3">
-            <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-            <label for="confirm-password">Confirm Password</label>
-            <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
-        </div>
-        <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-    </EditForm>
 </div>
 
 @code {

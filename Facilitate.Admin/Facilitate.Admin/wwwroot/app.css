@@ -6,6 +6,10 @@ html, body {
     overflow: auto !important;
 }
 
+.form-floating {
+    border: solid 0px #ff0000 !important;
+}
+
 .navbar-dark {
     border: solid 0px #ff0000 !important;
     padding-bottom: 0px !important;
