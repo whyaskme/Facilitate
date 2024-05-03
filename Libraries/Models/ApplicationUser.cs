@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Facilitate.Libraries.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace Facilitate.Admin.Data
+namespace Facilitate.Libraries.Models
 {
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser

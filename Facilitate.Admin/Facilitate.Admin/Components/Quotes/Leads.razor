@@ -3,8 +3,11 @@
 @using Facilitate.Admin.Data;
 @using Facilitate.Libraries.Models;
 
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity.EntityFrameworkCore
+@using Microsoft.AspNetCore.WebUtilities
+
 @using MongoDB.Bson;
-@* @using Json.Net; *@
 
 @using System.Text.Json;
 
@@ -21,6 +24,12 @@
 @inject HttpClient httpClient
 
 @inject NavigationManager navMan
+
+@inject UserManager<ApplicationUser> UserManager
+@inject IUserStore<ApplicationUser> UserStore
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IEmailSender<ApplicationUser> EmailSender
+@inject RoleManager<IdentityRole> roleManager
 
 <PageTitle>Leads</PageTitle>
 
@@ -430,14 +439,14 @@ else
     <BodyContentTemplate>
         <DxListBox Data="@ProjectManagers"
                    @bind-Values="@Values"
-                   SelectedItemsChanged="@((IEnumerable<User> values) => SelectedProjectManagerChanged(values))"
+                   SelectedItemsChanged="@((IEnumerable<ApplicationUser> values) => SelectedProjectManagerChanged(values))"
                    SelectionMode="ListBoxSelectionMode.Single"
                    ShowCheckboxes="true">
             <Columns>
-                <DxListEditorColumn FieldName="Profile.FirstName" Caption="First" />
-                <DxListEditorColumn FieldName="Profile.LastName" Caption="Last" />
+                <DxListEditorColumn FieldName="FirstName" Caption="First" />
+                <DxListEditorColumn FieldName="LastName" Caption="Last" />
                 <DxListEditorColumn FieldName="Email" Caption="Email" />
-                <DxListEditorColumn FieldName="_id" Visible="false" Caption="Id" />
+                <DxListEditorColumn FieldName="Id" Visible="false" Caption="Id" />
             </Columns>
         </DxListBox>
     </BodyContentTemplate>
@@ -579,10 +588,10 @@ else
     MemberService memberService = new MemberService();
 
     public bool IsAssignButtonEnabled = false;
-    IEnumerable<User> SelectedProjectManager { get; set; }
-    public List<User>? ProjectManagers;
+    IEnumerable<ApplicationUser> SelectedProjectManager { get; set; }
+    public List<ApplicationUser>? ProjectManagers;
 
-    void SelectedProjectManagerChanged(IEnumerable<User> selectedProjectManager)
+    void SelectedProjectManagerChanged(IEnumerable<ApplicationUser> selectedProjectManager)
     {
         SelectedProjectManager = selectedProjectManager;
 
@@ -727,12 +736,8 @@ else
     {
         if (firstRender)
         {
-            ProjectManagers = memberService.GetMembers(Constants.UserRoles.ProjectManager);
-            
-            //RefreshTimer();
-
-            // PauseRefresh(false);
-            // RefreshDisabled = false;
+            ProjectManagers = UserManager.Users.ToList();
+            RefreshTimer();
         }
         GetIpAddress();
     }
@@ -787,25 +792,7 @@ else
         statusChanged.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Opportunity";
         selectedQuote.events.Add(statusChanged);
 
-        var selectedProjectManager = SelectedProjectManager.ToList()[0];
-
-        var pmEmail = selectedProjectManager.Profile.Contact.Email[0].UserName;
-        pmEmail += "@" + selectedProjectManager.Profile.Contact.Email[0].Domain;
-
-        var pmPhone = "(" + selectedProjectManager.Profile.Contact.Phone[0].AreaCode.ToString() + ")";
-        pmPhone += " " + selectedProjectManager.Profile.Contact.Phone[0].Exchange.ToString();
-        pmPhone += "-" + selectedProjectManager.Profile.Contact.Phone[0].Number.ToString();
-
-        ProjectManagerSummary pmSummary = new ProjectManagerSummary();
-        pmSummary._id = selectedProjectManager._id;
-        pmSummary.Name = selectedProjectManager.Profile.FirstName + " " + selectedProjectManager.Profile.LastName;
-        pmSummary.Email = pmEmail;
-        pmSummary.Phone = pmPhone;
-        pmSummary.City = selectedProjectManager.Profile.Contact.Address[0].City;
-        pmSummary.State = selectedProjectManager.Profile.Contact.Address[0].State;
-        pmSummary.Zip = selectedProjectManager.Profile.Contact.Address[0].ZipCode;
-
-        selectedQuote.projectManager = pmSummary;
+        selectedQuote.projectManager = SelectedProjectManager.ToList()[0];
 
         // Workflow and Subsequent Document Requirements
         Attachment workflowRequirements = new Attachment();
@@ -840,7 +827,7 @@ else
         // Assignment event
         var projectManager = selectedQuote.projectManager;
         Event assignmentEvent = new Event();
-        assignmentEvent.Details = "Lead assigned to Project Manager Id: " + projectManager._id + " (" + projectManager.Name + "), moved to Opportunities and emailed to: " + projectManager.Email;
+        assignmentEvent.Details = "Lead assigned to Project Manager Id: " + projectManager.Id + " (" + projectManager.FirstName + "), moved to Opportunities and emailed to: " + projectManager.Email;
         selectedQuote.events.Add(assignmentEvent);
 
         WebServices.UpdateQuote(selectedQuote);

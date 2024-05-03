@@ -78,8 +78,10 @@ h5 {
 }
 
 h6 {
-    font-size: 1.0em;
-    margin-bottom: 25px !important;
+    border: solid 0px #ff0000 !important;
+    font-size: 1.0em !important;
+    padding-top: 15px !important;
+    padding-bottom: 15px !important;
 }
 
 .not-authorized {

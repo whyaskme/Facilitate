@@ -1,6 +1,7 @@
 using Facilitate.Admin.Components;
 using Facilitate.Admin.Components.Account;
 using Facilitate.Admin.Data;
+using Facilitate.Libraries.Models;
 
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -171,7 +172,7 @@ try
         adminUser.Gender = 1;
 
         adminUser.Email = adminUser.Email;
-        adminUser.Phone = "512-799-2522";
+        adminUser.Phone = "(512) 799-2522";
 
         adminUser.Address1 = "1234 Main St.";
         adminUser.Address2 = "Unit #123";
@@ -179,7 +180,7 @@ try
         adminUser.State = "TX";
         adminUser.Zip = "78753";
 
-        adminUser.ProfileImage = "https://facilitate.org/images/profiles/Facilitate Profile Logo.png";
+        adminUser.ProfileImage = "/images/profiles/Facilitate Profile Logo.png";
 
         var adminPwd = "!Facilitate2024#";
 

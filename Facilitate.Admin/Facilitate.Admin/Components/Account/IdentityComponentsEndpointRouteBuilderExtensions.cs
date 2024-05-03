@@ -1,6 +1,6 @@
 using Facilitate.Admin.Components.Account.Pages;
 using Facilitate.Admin.Components.Account.Pages.Manage;
-using Facilitate.Admin.Data;
+using Facilitate.Libraries.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;

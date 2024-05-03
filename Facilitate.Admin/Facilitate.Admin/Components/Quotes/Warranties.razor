@@ -3,8 +3,11 @@
 @using Facilitate.Admin.Data;
 @using Facilitate.Libraries.Models;
 
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity.EntityFrameworkCore
+@using Microsoft.AspNetCore.WebUtilities
+
 @using MongoDB.Bson;
-@* @using Json.Net; *@
 
 @using System.Text.Json;
 
@@ -18,8 +21,15 @@
 
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory ClientFactory
+@inject HttpClient httpClient
 
 @inject NavigationManager navMan
+
+@inject UserManager<ApplicationUser> UserManager
+@inject IUserStore<ApplicationUser> UserStore
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IEmailSender<ApplicationUser> EmailSender
+@inject RoleManager<IdentityRole> roleManager
 
 <PageTitle>Warranties</PageTitle>
 
@@ -130,7 +140,7 @@ else
             <DxGridDataColumn Width="50" Caption="Roofs" FieldName="numberOfIncludedStructures" />
             <DxGridDataColumn Width="75" Caption="SqFt" FieldName="totalSquareFeet" />
             <DxGridDataColumn Width="100" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
-            <DxGridDataColumn Caption="Manager" TextAlignment="GridTextAlignment.Left" FieldName="projectManager.Name" />
+            <DxGridDataColumn Caption="Manager" TextAlignment="GridTextAlignment.Left" FieldName="projectManager.Email" />
         </Columns>
 
         <DetailRowTemplate>
@@ -203,7 +213,7 @@ else
                     <div class="row">
                         <div class="col">
                             <a class="hyperlink-manager-assignment" @onclick="@(() => IsAssignPopupVisible = true)">Manager Assignment</a>
-                            <span class="detail-item">@_quote.projectManager.Name</span>
+                            <span class="detail-item">@_quote.projectManager.FirstName</span>
                         </div>
                         <div class="col">
                             <label>Phone</label>
@@ -646,14 +656,14 @@ else
     <BodyContentTemplate>
         <DxListBox Data="@ProjectManagers"
                    @bind-Values="@Values"
-                   SelectedItemsChanged="@((IEnumerable<User> values) => SelectedProjectManagerChanged(values))"
+                   SelectedItemsChanged="@((IEnumerable<ApplicationUser> values) => SelectedProjectManagerChanged(values))"
                    SelectionMode="ListBoxSelectionMode.Single"
                    ShowCheckboxes="true">
             <Columns>
-                <DxListEditorColumn FieldName="Profile.FirstName" Caption="First" />
-                <DxListEditorColumn FieldName="Profile.LastName" Caption="Last" />
+                <DxListEditorColumn FieldName="FirstName" Caption="First" />
+                <DxListEditorColumn FieldName="LastName" Caption="Last" />
                 <DxListEditorColumn FieldName="Email" Caption="Email" />
-                <DxListEditorColumn FieldName="_id" Visible="false" Caption="Id" />
+                <DxListEditorColumn FieldName="Id" Visible="false" Caption="Id" />
             </Columns>
         </DxListBox>
     </BodyContentTemplate>
@@ -785,8 +795,8 @@ else
     MemberService memberService = new MemberService();
 
     public bool IsAssignButtonEnabled = false;
-    IEnumerable<User> SelectedProjectManager { get; set; }
-    public List<User>? ProjectManagers;
+    IEnumerable<ApplicationUser> SelectedProjectManager { get; set; }
+    public List<ApplicationUser>? ProjectManagers;
 
     #region Private Properties
 
@@ -909,7 +919,7 @@ else
 
     #region Methods
 
-    void SelectedProjectManagerChanged(IEnumerable<User> selectedProjectManager)
+    void SelectedProjectManagerChanged(IEnumerable<ApplicationUser> selectedProjectManager)
     {
         SelectedProjectManager = selectedProjectManager;
 
@@ -923,7 +933,7 @@ else
     {
         if (firstRender)
         {
-            ProjectManagers = memberService.GetMembers(Constants.UserRoles.ProjectManager);
+            ProjectManagers = UserManager.Users.ToList();
             RefreshTimer();
         }
 
@@ -997,25 +1007,8 @@ else
         selectedQuote.events.Add(statusChanged);
 
         var previousProjectManager = selectedQuote.projectManager;
-        var selectedProjectManager = SelectedProjectManager.ToList()[0];
 
-        var pmEmail = selectedProjectManager.Profile.Contact.Email[0].UserName;
-        pmEmail += "@" + selectedProjectManager.Profile.Contact.Email[0].Domain;
-
-        var pmPhone = "(" + selectedProjectManager.Profile.Contact.Phone[0].AreaCode.ToString() + ")";
-        pmPhone += " " + selectedProjectManager.Profile.Contact.Phone[0].Exchange.ToString();
-        pmPhone += "-" + selectedProjectManager.Profile.Contact.Phone[0].Number.ToString();
-
-        ProjectManagerSummary pmSummary = new ProjectManagerSummary();
-        pmSummary._id = selectedProjectManager._id;
-        pmSummary.Name = selectedProjectManager.Profile.FirstName + " " + selectedProjectManager.Profile.LastName;
-        pmSummary.Email = pmEmail;
-        pmSummary.Phone = pmPhone;
-        pmSummary.City = selectedProjectManager.Profile.Contact.Address[0].City;
-        pmSummary.State = selectedProjectManager.Profile.Contact.Address[0].State;
-        pmSummary.Zip = selectedProjectManager.Profile.Contact.Address[0].ZipCode;
-
-        selectedQuote.projectManager = pmSummary;
+        selectedQuote.projectManager = SelectedProjectManager.ToList()[0];
 
         // Workflow and Subsequent Document Requirements
         Attachment workflowRequirements = new Attachment();
@@ -1054,10 +1047,10 @@ else
         if (previousProjectManager != null)
         {
             // Current PM to replace
-            assignmentEvent.Details = "Project Manager Id: " + previousProjectManager._id + " (" + previousProjectManager.Name + "), replaced by Project Manager Id: " + projectManager._id + " (" + projectManager.Name + ") and emailed to: " + projectManager.Email;
+            //assignmentEvent.Details = "Project Manager Id: " + previousprojectManager.Id + " (" + previousprojectManager.FirstName + "), replaced by Project Manager Id: " + projectManager.Id + " (" + projectManager.FirstName + ") and emailed to: " + projectManager.Email;
         }
         else{
-            assignmentEvent.Details = "Lead assigned to Project Manager Id: " + projectManager._id + " (" + projectManager.Name + "), moved to Opportunities and emailed to: " + projectManager.Email;
+            assignmentEvent.Details = "Lead assigned to Project Manager Id: " + projectManager.Id + " (" + projectManager.FirstName + "), moved to Opportunities and emailed to: " + projectManager.Email;
         }        
         
         selectedQuote.events.Add(assignmentEvent);

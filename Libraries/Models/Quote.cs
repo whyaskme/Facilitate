@@ -1,21 +1,4 @@
-﻿using Facilitate.Libraries.Models;
-using Microsoft.VisualBasic;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics.Contracts;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Metadata;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using static Facilitate.Libraries.Models.Constants.Transaction;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using MongoDB.Bson;
 
 namespace Facilitate.Libraries.Models
 {
@@ -99,7 +82,7 @@ namespace Facilitate.Libraries.Models
         public int leadId { get; set; }
 
         //public virtual User? projectManager { get; set; }
-        public virtual ProjectManagerSummary? projectManager { get; set; }
+        public virtual ApplicationUser? projectManager { get; set; }
 
         public List<Product>? products { get; set; }
         public List<Attachment>? attachments { get; set; }

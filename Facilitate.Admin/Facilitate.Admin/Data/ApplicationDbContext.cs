@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Net.NetworkInformation;
+
+using Facilitate.Libraries.Models;
 
 namespace Facilitate.Admin.Data
 {
