@@ -75,8 +75,8 @@
     @updateStatus Leads
     <span id="update-status" class="@StatusClass">@RefreshStatus</span>
     <span class="stats-container-header">
-        <span class="">@leaderboardStats.CompletionValue.ToString("C0")</span>
-        <span class=""><span class="value-sqft-separator">&raquo;</span>@leaderboardStats.CompletionSqFt.ToString("N0")sqft</span>
+        <span class="">@leaderboardStats.LeadValue.ToString("C0")</span>
+        <span class=""><span class="value-sqft-separator">&raquo;</span>@leaderboardStats.LeadSqFt.ToString("N0")sqft</span>
     </span>
 </h1>
 
@@ -687,7 +687,7 @@ else
 
     public string SubmissionUserIP { get; set; }
 
-    public int itemsToCreate = 10;
+    public int itemsToCreate = 100;
     public string updateStatus = "Fetching ";
 
     public int attachmentsCount = 0;

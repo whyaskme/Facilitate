@@ -1022,7 +1022,7 @@ else
         if (previousProjectManager != null)
         {
             // Current PM to replace
-            assignmentEvent.Details = "Project Manager Id: " + previousProjectManager.Id + " (" + previousProjectManager.FirstName + " " + previousProjectManager.LastName + "), replaced by Project Manager Id: " + projectManager.Id + " (" + projectManager.FirstName + " " + projectManager.LastName + ") and emailed to: " + projectManager.Email;
+            assignmentEvent.Details = "Project Manager (" + previousProjectManager.FirstName + " " + previousProjectManager.LastName + "), replaced by (" + projectManager.FirstName + " " + projectManager.LastName + ") and emailed to: " + projectManager.Email;
         }
         else{
             assignmentEvent.Details = "Lead assigned to Project Manager Id: " + projectManager.Id + " (" + projectManager.FirstName + "), moved to Opportunities and emailed to: " + projectManager.Email;

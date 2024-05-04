@@ -75,8 +75,8 @@
     @updateStatus Opportunities
     <span id="update-status" class="@StatusClass">@RefreshStatus</span>
     <span class="stats-container-header">
-        <span class="">@leaderboardStats.CustomerValue.ToString("C0")</span>
-        <span class=""><span class="value-sqft-separator">&raquo;</span>@leaderboardStats.CustomerSqFt.ToString("N0")sqft</span>
+        <span class="">@leaderboardStats.OpportunityValue.ToString("C0")</span>
+        <span class=""><span class="value-sqft-separator">&raquo;</span>@leaderboardStats.OpportunitySqFt.ToString("N0")sqft</span>
     </span>
 </h1>
 
@@ -940,7 +940,7 @@ else
         if (previousProjectManager != null)
         {
             // Current PM to replace
-            assignmentEvent.Details = "Project Manager Id: " + previousProjectManager.Id + " (" + previousProjectManager.FirstName + " " + previousProjectManager.LastName + "), replaced by Project Manager Id: " + projectManager.Id + " (" + projectManager.FirstName + " " + projectManager.LastName + ") and emailed to: " + projectManager.Email;
+            assignmentEvent.Details = "Project Manager (" + previousProjectManager.FirstName + " " + previousProjectManager.LastName + "), replaced by (" + projectManager.FirstName + " " + projectManager.LastName + ") and emailed to: " + projectManager.Email;
         }
         else
         {
