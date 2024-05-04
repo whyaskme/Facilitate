@@ -398,7 +398,7 @@ else
                                     <label>File Type</label>
                                     <span>@FileType</span>
                                     <span class="bar-spacer">|</span>
-                                    <label>Author</label>
+                                    <label>Source</label>
                                     <span>@attachment.Author.FirstName @attachment.Author.LastName</span>
                                 </div>
 
@@ -424,7 +424,7 @@ else
                                     <span>@note.Details</span>
 
                                     <span class="bar-spacer">|</span>
-                                    <label>Author</label>
+                                    <label>Source</label>
                                     <span>@note.Author.FirstName @note.Author.LastName</span>
                                 </div>
 
@@ -445,7 +445,7 @@ else
                                 <span>@_event.Details</span>
 
                                 <span class="bar-spacer">|</span>
-                                <label>Author</label>
+                                <label>Source</label>
                                 <span>@_event.Author.FirstName @_event.Author.LastName</span>
                             </div>
 
@@ -689,7 +689,8 @@ else
         var user = authstate.User;
         var name = user.Identity.Name;
 
-        currentUser = await UserManager.FindByNameAsync(name);
+        if (name != null && name != "")
+            currentUser = await UserManager.FindByNameAsync(name);
     }
 
     public QuoteLeaderboard leaderboardStats;
@@ -977,6 +978,7 @@ else
         Note note = new Note();
         note.Summary = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
         note.Details = @NoteDetails;
+        note.Author = currentUser;
 
         selectedQuote.notes.Add(note);
 

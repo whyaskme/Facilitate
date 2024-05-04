@@ -11,47 +11,80 @@
 @using System.Text
 @using System.Text.Encodings.Web
 
+@using MongoDB.Bson;
+
+@using System.Text.Json;
+
 @using DevExpress.Blazor;
 @using DevExpress.Data;
 @using DevExpress.Data.Linq;
+
+@attribute [StreamRendering(true)]
+@rendermode InteractiveServer
+@inject WebServices WebServices
+
+@inject NavigationManager NavigationManager
+@inject IHttpClientFactory ClientFactory
+@inject HttpClient httpClient
+
+@inject IdentityRedirectManager RedirectManager
 
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserStore<ApplicationUser> UserStore
 @inject SignInManager<ApplicationUser> SignInManager
 
-@inject NavigationManager NavigationManager
-@inject IdentityRedirectManager RedirectManager
-
 @inject IEmailSender<ApplicationUser> EmailSender
-@inject ILogger<Register> Logger
-
 @inject RoleManager<IdentityRole> roleManager
+
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
+@inject ILogger<Register> Logger
 
 <PageTitle>Manage Users</PageTitle>
 
 <h1>Manage Users</h1>
 
 <div class="row">
-    <DxListBox Data="@ProjectManagers"
-            @bind-Values="@Values"
-            SelectedItemsChanged="@((IEnumerable<ApplicationUser> values) => SelectedProjectManagerChanged(values))"
-            SelectionMode="ListBoxSelectionMode.Single">
+
+    <DxGrid @ref="Grid"
+            Data="ProjectManagers"
+            PageSize="10"
+            ValidationEnabled="false"
+            CustomizeEditModel="Grid_CustomizeEditModel"
+            EditModelSaving="Grid_EditModelSaving"
+            DataItemDeleting="Grid_DataItemDeleting"
+            PopupEditFormCssClass="pw-800"
+            EditMode="@CurrentEditMode"
+            KeyboardNavigationEnabled="true">
+
         <Columns>
-@*             <DxListEditorColumn FieldName="Id" Caption="Id" /> *@
-
-            <DxListEditorColumn FieldName="LastName" Caption="Last" />
-            <DxListEditorColumn FieldName="FirstName" Caption="First" />
-
-            <DxListEditorColumn FieldName="Phone" Caption="Phone" />
-            <DxListEditorColumn FieldName="Email" Caption="Email" />
-
-            <DxListEditorColumn FieldName="Address1" Caption="Street 1" />
-            <DxListEditorColumn FieldName="Address2" Caption="Street 2" />
-            <DxListEditorColumn FieldName="City" Caption="City" />
-            <DxListEditorColumn FieldName="State" Caption="State" />
-            <DxListEditorColumn FieldName="Zip" Caption="Zip" />
+            <DxGridCommandColumn Width="160px" />
+            <DxGridDataColumn FieldName="Id" Visible="false" />
+            <DxGridDataColumn FieldName="LastName" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+            <DxGridDataColumn FieldName="FirstName" />
+            <DxGridDataColumn FieldName="Phone" />
+            <DxGridDataColumn FieldName="Email" />
+            <DxGridDataColumn FieldName="Address1" />
+            <DxGridDataColumn FieldName="Address2" />
+            <DxGridDataColumn FieldName="City" />
+            <DxGridDataColumn FieldName="State" />
+            <DxGridDataColumn FieldName="Zip" />
         </Columns>
-    </DxListBox>
+
+        <EditFormTemplate Context="EditFormContext">
+            @{
+                var supplier = (ApplicationUser)EditFormContext.EditModel;
+            }
+            <DxFormLayout CssClass="w-100">
+
+            <DxFormLayoutItem Caption="Last Name:" ColSpanMd="6">
+                    @EditFormContext.GetEditor("LastName")
+            </DxFormLayoutItem>
+
+            </DxFormLayout>
+
+        </EditFormTemplate>
+    </DxGrid>
+
 </div>
 
 <div><br /></div>
@@ -158,19 +191,91 @@
 
 </EditForm>
 
-<div class="row">
-
-</div>
 
 @code {
 
-    IEnumerable<ApplicationUser> SelectedProjectManager { get; set; }
+    IEnumerable<ApplicationUser> DataSource { get; set; }
+
+    // IEnumerable<Country> Countries { get; set; }
+    // IEnumerable<City> Cities { get; set; }
+
+    IGrid Grid { get; set; }
+
+    bool UsePopupEditForm { get; set; }
+
+    GridEditMode CurrentEditMode { get { return UsePopupEditForm ? GridEditMode.PopupEditForm : GridEditMode.EditForm; } }
+    TaskCompletionSource<bool> DataLoadedTcs { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+    async Task UsePopupEditForm_CheckedChanged(bool value)
+    {
+        UsePopupEditForm = value;
+        await Grid.CancelEditAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // DataSource = await NwindDataService.GetSuppliersEditableAsync();
+        // Countries = await WorldcitiesDataService.GetCountriesAsync();
+        // Cities = await WorldcitiesDataService.GetCitiesAsync();
+        DataLoadedTcs.TrySetResult(true);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await DataLoadedTcs.Task;
+            await Grid.StartEditRowAsync(0);
+        }
+    }
+
+    void Grid_CustomizeEditModel(GridCustomizeEditModelEventArgs e)
+    {
+        if (e.IsNew)
+        {
+            // var newSupplier = (Supplier)e.EditModel;
+            // newSupplier.CompanyName = "DevExpress";
+            // newSupplier.ContactName = "John Doe";
+        }
+    }
+
+    async Task Grid_EditModelSaving(GridEditModelSavingEventArgs e)
+    {
+        var tmpVal = "";
+        // if (e.IsNew)
+        //     await NwindDataService.InsertSupplierAsync((Supplier)e.EditModel);
+        // else
+        //     await NwindDataService.UpdateSupplierAsync((Supplier)e.DataItem, (Supplier)e.EditModel);
+
+        // await UpdateDataAsync();
+    }
+
+    async Task Grid_DataItemDeleting(GridDataItemDeletingEventArgs e)
+    {
+        var tmpVal = "";
+        // await NwindDataService.RemoveSupplierAsync((Supplier)e.DataItem);
+        // await UpdateDataAsync();
+    }
+
+    async Task UpdateDataAsync()
+    {
+        var tmpVal = "";
+        //DataSource = await NwindDataService.GetSuppliersEditableAsync();
+    }
+
+    public void Dispose()
+    {
+        DataLoadedTcs.TrySetCanceled();
+    }
 
     IEnumerable<string> Values { get; set; }
 
     public bool IsAssignButtonEnabled = false;
 
+    EntityInstantFeedbackSource InstantFeedbackSource { get; set; }
+
     public List<ApplicationUser> ProjectManagers = new List<ApplicationUser>();
+    IEnumerable<ApplicationUser> SelectedProjectManager { get; set; }
 
     private IEnumerable<IdentityError>? identityErrors;
 
@@ -196,10 +301,7 @@
     {
         SelectedProjectManager = selectedProjectManager ?? throw new ArgumentNullException(nameof(selectedProjectManager));
 
-        if (SelectedProjectManager.Count() > 0)
-            IsAssignButtonEnabled = true;
-        else
-            IsAssignButtonEnabled = false;
+        var tmpVal = "";
     }
 
     public async Task RegisterUser(EditContext editContext)
@@ -266,7 +368,8 @@
         // await SignInManager.SignInAsync(user, isPersistent: false);
         // RedirectManager.RedirectTo(ReturnUrl);
 
-        RedirectManager.RedirectTo("/Account/Users");
+        //RedirectManager.RedirectTo("/Account/Users");
+
         //GetManagers();
     }
 

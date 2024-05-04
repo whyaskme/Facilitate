@@ -25,6 +25,8 @@ namespace Facilitate.Libraries.Models
 
             Summary = string.Empty;
             Details = string.Empty;
+
+            Author = new ApplicationUser();
         }
 
         
@@ -40,6 +42,7 @@ namespace Facilitate.Libraries.Models
 
         public string Summary { get; set; }
         public string Details { get; set; }
+        public ApplicationUser Author { get; set; }
 
     }
 }
