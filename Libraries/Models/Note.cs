@@ -16,8 +16,9 @@ namespace Facilitate.Libraries.Models
             _t = "Note";
             IsDeleted = false;
             Date = DateTime.UtcNow;
-            Summary = "";
-            Details = "";
+            Summary = string.Empty;
+            Details = string.Empty;
+            Author = new ApplicationUser();
         }
 
         #region Properties
@@ -28,6 +29,7 @@ namespace Facilitate.Libraries.Models
         public DateTime Date { get; set; }
         public string Summary { get; set; }
         public string Details { get; set; }
+        public ApplicationUser Author { get; set; }
 
         #endregion
     }

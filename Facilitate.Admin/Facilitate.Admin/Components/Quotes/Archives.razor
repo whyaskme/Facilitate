@@ -379,7 +379,7 @@ else
                                     <span>@FileType</span>
                                     <span class="bar-spacer">|</span>
                                     <label>Author</label>
-                                    <span>@Author</span>
+                                    <span>@attachment.Author.FirstName @attachment.Author.LastName</span>
                                 </div>
 
                                 attachmentsCount--;
@@ -401,7 +401,7 @@ else
 
                                     <span class="bar-spacer">|</span>
                                     <label>Author</label>
-                                    <span>@Author</span>
+                                    <span>@note.Author.FirstName @note.Author.LastName</span>
                                 </div>
 
                                 notesCount--;
@@ -1051,6 +1051,7 @@ else
         Note note = new Note();
         note.Summary = "Note Added";
         note.Details = @NoteDetails;
+        note.Author = currentUser;
 
         selectedQuote.notes.Add(note);
 

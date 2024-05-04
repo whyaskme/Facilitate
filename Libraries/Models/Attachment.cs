@@ -10,8 +10,9 @@ namespace Facilitate.Libraries.Models
             _t = "Attachment";
             IsDeleted = false;
             Date = DateTime.UtcNow;
-            MediaDescription = "";
-            MediaUrl = "";
+            MediaDescription = string.Empty;
+            MediaUrl = string.Empty;
+            Author = new ApplicationUser();
         }
 
         #region Properties
@@ -22,6 +23,7 @@ namespace Facilitate.Libraries.Models
         public DateTime Date { get; set; }
         public string MediaDescription { get; set; }
         public string MediaUrl { get; set; }
+        public ApplicationUser Author { get; set; }
 
         #endregion
     }
