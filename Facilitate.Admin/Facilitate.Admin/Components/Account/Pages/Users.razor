@@ -45,21 +45,31 @@
 
 <div class="row">
 
+    @* RowClick="OnRowClick" *@
+
     <DxGrid @ref="Grid"
             Data="ProjectManagers"
+            KeyFieldName="Id"
             PageSize="10"
+            PagerPosition="GridPagerPosition.Bottom"
+            ShowGroupPanel="true"
+            AutoExpandAllGroupRows="true"
+            ShowFilterRow="false"
             ValidationEnabled="false"
             CustomizeEditModel="Grid_CustomizeEditModel"
             EditModelSaving="Grid_EditModelSaving"
             DataItemDeleting="Grid_DataItemDeleting"
-            PopupEditFormCssClass="pw-800"
+            PopupEditFormCssClass="mw-1100"
             EditMode="@CurrentEditMode"
+            TextWrapEnabled="true"
+            PagerNavigationMode="PagerNavigationMode.InputBox"
+            PageSizeSelectorVisible="true"
+            PageSizeSelectorAllRowsItemVisible="false"
             KeyboardNavigationEnabled="true">
 
         <Columns>
-            <DxGridCommandColumn Width="160px" />
             <DxGridDataColumn FieldName="Id" Visible="false" />
-            <DxGridDataColumn FieldName="LastName" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+            <DxGridDataColumn FieldName="LastName" />
             <DxGridDataColumn FieldName="FirstName" />
             <DxGridDataColumn FieldName="Phone" />
             <DxGridDataColumn FieldName="Email" />
@@ -68,17 +78,52 @@
             <DxGridDataColumn FieldName="City" />
             <DxGridDataColumn FieldName="State" />
             <DxGridDataColumn FieldName="Zip" />
+            <DxGridCommandColumn Width="125px" Caption="Actions" DeleteButtonVisible="false" />
         </Columns>
 
         <EditFormTemplate Context="EditFormContext">
             @{
-                var supplier = (ApplicationUser)EditFormContext.EditModel;
+                SelectedProjectManager = (ApplicationUser)EditFormContext.EditModel;
+                var tmpVal = "";
             }
+
             <DxFormLayout CssClass="w-100">
 
-            <DxFormLayoutItem Caption="Last Name:" ColSpanMd="6">
-                    @EditFormContext.GetEditor("LastName")
-            </DxFormLayoutItem>
+                <DxFormLayoutItem Caption="First Name:" ColSpanMd="6">
+                    @EditFormContext.GetEditor("FirstName")
+                </DxFormLayoutItem>
+
+                <DxFormLayoutItem Caption="Last Name:" ColSpanMd="6">
+                        @EditFormContext.GetEditor("LastName")
+                </DxFormLayoutItem>
+
+                <DxFormLayoutItem Caption="Phone:" ColSpanMd="6">
+                    @EditFormContext.GetEditor("Phone")
+                </DxFormLayoutItem>
+
+                <DxFormLayoutItem Caption="Email:" ColSpanMd="6">
+                    @EditFormContext.GetEditor("Email")
+                </DxFormLayoutItem>
+
+                <DxFormLayoutItem Caption="Address 1:" ColSpanMd="6">
+                    @EditFormContext.GetEditor("Address1")
+                </DxFormLayoutItem>
+
+                <DxFormLayoutItem Caption="Address 2:" ColSpanMd="6">
+                    @EditFormContext.GetEditor("Address2")
+                </DxFormLayoutItem>
+
+                <DxFormLayoutItem Caption="City:" ColSpanMd="6">
+                    @EditFormContext.GetEditor("City")
+                </DxFormLayoutItem>
+
+                <DxFormLayoutItem Caption="State:" ColSpanMd="6">
+                    @EditFormContext.GetEditor("State")
+                </DxFormLayoutItem>
+
+                <DxFormLayoutItem Caption="Zip:" ColSpanMd="6">
+                    @EditFormContext.GetEditor("Zip")
+                </DxFormLayoutItem>
 
             </DxFormLayout>
 
@@ -87,117 +132,28 @@
 
 </div>
 
-<div><br /></div>
-
-<StatusMessage Message="@Message" />
-<EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
-    <DataAnnotationsValidator />
-    <h2>Create a new account.</h2>
-    <ValidationSummary class="text-danger" role="alert" />
-
-    <div class="row">
-
-        <h6>Personal</h6>
-
-        <div class="col-md-6 col-md-offset-2">
-
-            <div class="form-floating mb-3">
-                <InputText tabindex="1" @bind-Value="Input.FirstName" class="form-control" aria-required="true" placeholder="First Name" />
-                <label for="firstName">First Name</label>
-                <ValidationMessage For="() => Input.FirstName" class="text-danger" />
-            </div>
-
-            <div class="form-floating mb-3">
-                <InputText tabindex="3" @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label for="email">Email</label>
-                <ValidationMessage For="() => Input.Email" class="text-danger" />
-            </div>
-
-            <div class="form-floating mb-3">
-                <InputText tabindex="5" type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="password">Password</label>
-                <ValidationMessage For="() => Input.Password" class="text-danger" />
-            </div>
-
-        </div>
-
-        <div class="col-md-6 col-md-offset-2">
-
-            <div class="form-floating mb-3">
-                <InputText tabindex="2" @bind-Value="Input.LastName" class="form-control" aria-required="true" placeholder="Last Name" />
-                <label for="lastName">Last Name</label>
-                <ValidationMessage For="() => Input.LastName" class="text-danger" />
-            </div>
-
-            <div class="form-floating mb-3">
-                <InputText type="phone" tabindex="4" @bind-Value="Input.Phone" class="form-control" aria-required="true" placeholder="(555) 555-1212)" />
-                <label for="phone">Phone</label>
-                <ValidationMessage For="() => Input.Phone" class="text-danger" />
-            </div>
-
-            <div class="form-floating mb-3">
-                <InputText tabindex="6" type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="confirm-password">Confirm Password</label>
-                <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-
-        <h6>Address</h6>
-
-        <div class="col-md-6 col-md-offset-2">
-
-            <div class="form-floating mb-3">
-                <InputText tabindex="7" @bind-Value="Input.Address1" class="form-control" aria-required="true" placeholder="Address 1" />
-                <label for="Address1">Address 1</label>
-                <ValidationMessage For="() => Input.Address1" class="text-danger" />
-            </div>
-
-            <div class="form-floating mb-3">
-                <InputText tabindex="9" @bind-Value="Input.City" class="form-control" aria-required="true" placeholder="City" />
-                <label for="City">City</label>
-                <ValidationMessage For="() => Input.City" class="text-danger" />
-            </div>
-
-            <div class="form-floating mb-3">
-                <InputText tabindex="11" @bind-Value="Input.Zip" class="form-control" aria-required="true" placeholder="Zip" />
-                <label for="Zip">Zip</label>
-                <ValidationMessage For="() => Input.Zip" class="text-danger" />
-            </div>
-
-        </div>
-
-        <div class="col-md-6 col-md-offset-2">
-
-            <div class="form-floating mb-3">
-                <InputText tabindex="8" @bind-Value="Input.Address2" class="form-control" aria-required="true" placeholder="Address 2" />
-                <label for="Address2">Address2</label>
-                <ValidationMessage For="() => Input.Address2" class="text-danger" />
-            </div>
-
-            <div class="form-floating mb-3">
-                <InputText tabindex="10" @bind-Value="Input.State" class="form-control" aria-required="true" placeholder="State" />
-                <label for="State">State</label>
-                <ValidationMessage For="() => Input.State" class="text-danger" />
-            </div>
-
-            <div class="form-floating mb-3">
-                <button tabindex="12" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-            </div>
-        </div>
-    </div>
-
-</EditForm>
-
-
 @code {
 
-    IEnumerable<ApplicationUser> DataSource { get; set; }
+    void OnRowClick(GridRowClickEventArgs args)
+    {
+        var selectedIndex = args.VisibleIndex;
+        //var selectedUser = ProjectManagers[selectedIndex];
 
-    // IEnumerable<Country> Countries { get; set; }
-    // IEnumerable<City> Cities { get; set; }
+        SelectedProjectManager = ProjectManagers[selectedIndex];
+
+        var selectedDetailExpanded = Grid.IsDetailRowExpanded(selectedIndex);
+        if (selectedDetailExpanded)
+        {
+            Grid.CollapseDetailRow(selectedIndex);
+        }
+        else
+        {
+            Grid.CollapseAllDetailRows();
+            Grid.ExpandDetailRow(selectedIndex);
+        }
+    }
+
+    IEnumerable<ApplicationUser> DataSource { get; set; }
 
     IGrid Grid { get; set; }
 
@@ -275,7 +231,8 @@
     EntityInstantFeedbackSource InstantFeedbackSource { get; set; }
 
     public List<ApplicationUser> ProjectManagers = new List<ApplicationUser>();
-    IEnumerable<ApplicationUser> SelectedProjectManager { get; set; }
+    // public IEnumerable<ApplicationUser> SelectedProjectManager { get; set; }
+    public ApplicationUser SelectedProjectManager { get; set; }
 
     private IEnumerable<IdentityError>? identityErrors;
 
@@ -297,7 +254,7 @@
         return originalList.OrderBy(x => x.LastName).ToList();
     }
 
-    void SelectedProjectManagerChanged(IEnumerable<ApplicationUser> selectedProjectManager)
+    void SelectedProjectManagerChanged(ApplicationUser selectedProjectManager)
     {
         SelectedProjectManager = selectedProjectManager ?? throw new ArgumentNullException(nameof(selectedProjectManager));
 
