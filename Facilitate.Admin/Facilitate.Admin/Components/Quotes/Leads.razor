@@ -872,7 +872,7 @@ else
         Event assignmentEvent = new Event();
         assignmentEvent.Name = "Assignment";
 
-        assignmentEvent.Details = "Lead assigned to Project Manager Id: " + projectManager.Id + " (" + projectManager.FirstName + " " + projectManager.LastName + "), moved to Opportunities and emailed to: " + projectManager.Email;
+        assignmentEvent.Details = "Lead assigned to Project Manager (" + projectManager.FirstName + " " + projectManager.LastName + "), moved to Opportunities and emailed to: " + projectManager.Email;
 
         selectedQuote.events.Add(assignmentEvent);
 
