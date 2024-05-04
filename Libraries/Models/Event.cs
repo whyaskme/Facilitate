@@ -21,6 +21,7 @@ namespace Facilitate.Libraries.Models
             TypeId = 0;
             DateTime = DateTime.UtcNow;
             Details = "None";
+            Author = new ApplicationUser();
         }
 
         public string _id { get; set; }
@@ -29,5 +30,6 @@ namespace Facilitate.Libraries.Models
         public int TypeId { get; set; }
         public DateTime DateTime { get; set; }
         public string Details { get; set; }
+        public ApplicationUser Author { get; set; }
     }
 }

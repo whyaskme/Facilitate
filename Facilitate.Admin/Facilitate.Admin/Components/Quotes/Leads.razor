@@ -31,6 +31,8 @@
 @inject IEmailSender<ApplicationUser> EmailSender
 @inject RoleManager<IdentityRole> roleManager
 
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
+
 <PageTitle>Leads</PageTitle>
 
 <div class="quotes-leaderboard">
@@ -420,7 +422,7 @@ else
 
                                 <span class="bar-spacer">|</span>
                                 <label>Author</label>
-                                <span>@Author</span>
+                                <span>@_event.Author.FirstName @_event.Author.LastName</span>
                             </div>
 
                             eventsCount--;
@@ -541,16 +543,6 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup @bind-Visible="@IsPopupVisibleMakeCustomer" ShowFooter="true" HeaderText="Make Customer">
-    <BodyContentTemplate>
-        If this Opportunity is fully qualified to meet Customer criteria, then click Save.
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="MakeCustomer" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleMakeCustomer = false)" />
-    </FooterContentTemplate>
-</DxPopup>
-
 <DxPopup @bind-Visible="@IsPopupVisibleAddNote" ShowFooter="true" HeaderText="Add Note">
     <BodyContentTemplate>
         <p>Please type in your notes below.</p>
@@ -614,6 +606,16 @@ else
 
 @code {
 
+    public ApplicationUser currentUser = new ApplicationUser();
+    protected async override Task OnInitializedAsync()
+    {
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var user = authstate.User;
+        var name = user.Identity.Name;
+
+        currentUser = await UserManager.FindByNameAsync(name);
+    }
+
     public QuoteLeaderboard leaderboardStats;
 
     protected override void OnInitialized()
@@ -641,7 +643,7 @@ else
 
     WebServices webServices = new WebServices();
 
-    MemberService memberService = new MemberService();
+    //MemberService memberService = new MemberService();
 
     public bool IsAssignButtonEnabled = false;
     IEnumerable<ApplicationUser> SelectedProjectManager { get; set; }
@@ -861,19 +863,9 @@ else
 
         selectedQuote.status = "Opportunity";
         selectedQuote.projectManager = SelectedProjectManager.ToList()[0];
-
-        Event statusChanged = new Event();
-        statusChanged.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Opportunity";
-        selectedQuote.events.Add(statusChanged);
-
-        // Assignment event
-        var projectManager = selectedQuote.projectManager;
-        Event assignmentEvent = new Event();
-        assignmentEvent.Name = "Assignment";
-
-        assignmentEvent.Details = "Lead assigned to Project Manager (" + projectManager.FirstName + " " + projectManager.LastName + "), moved to Opportunities and emailed to: " + projectManager.Email;
-
-        selectedQuote.events.Add(assignmentEvent);
+        
+        var sysUser = new ApplicationUser();
+        sysUser.FirstName = "System";
 
         if (selectedQuote.attachments.Count == 0)
         {
@@ -885,6 +877,7 @@ else
 
             Event workflowRequirementsEvent = new Event();
             workflowRequirementsEvent.Details = workflowRequirements.MediaDescription + " sent to " + selectedQuote.email;
+            workflowRequirementsEvent.Author = sysUser;
             selectedQuote.events.Add(workflowRequirementsEvent);
 
             // Facilitate Engagement Agreement
@@ -895,6 +888,7 @@ else
 
             Event engagementAgreementEvent = new Event();
             engagementAgreementEvent.Details = engagementAgreement.MediaDescription + " sent to " + selectedQuote.email;
+            engagementAgreementEvent.Author = sysUser;
             selectedQuote.events.Add(engagementAgreementEvent);
 
             // Welcome Letter
@@ -905,8 +899,24 @@ else
 
             Event welcomeLetterEvent = new Event();
             welcomeLetterEvent.Details = welcomeLetter.MediaDescription + " sent to " + selectedQuote.email;
+            welcomeLetterEvent.Author = sysUser;
             selectedQuote.events.Add(welcomeLetterEvent);
         }
+
+        Event statusChanged = new Event();
+        statusChanged.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Opportunity";
+        statusChanged.Author = currentUser;
+        selectedQuote.events.Add(statusChanged);
+
+        var projectManager = selectedQuote.projectManager;
+
+        // Assignment event
+        Event assignmentEvent = new Event();
+        assignmentEvent.Name = "Assignment";
+        assignmentEvent.Details = "Lead assigned to Project Manager (" + projectManager.FirstName + " " + projectManager.LastName + "), moved to Opportunities and emailed to: " + projectManager.Email;
+        assignmentEvent.Author = currentUser;
+
+        selectedQuote.events.Add(assignmentEvent);
 
         WebServices.UpdateQuote(selectedQuote);
 
@@ -1027,26 +1037,6 @@ else
         IsPopupVisibleSelectNoteToDelete = false;
 
         notesCount--;
-    }
-
-    public void MakeCustomer()
-    {
-        selectedQuote.status = "Customer";
-
-        QuoteGrid.CollapseDetailRow(selectedIndex);
-
-        var projectManager = selectedQuote.projectManager;
-
-        Event _event = new Event();
-        _event.Details = "Opportunity converted to Customer";
-
-        selectedQuote.events.Add(_event);
-
-        WebServices.UpdateQuote(selectedQuote);
-
-        IsPopupVisibleMakeCustomer = false;
-
-        PauseRefresh(false);
     }
 
     private void CreateLeads()
@@ -1251,7 +1241,9 @@ else
         Event _event = new Event();
         _event.Name = "New Quote";
         _event.DateTime = DateTime.UtcNow;
-        _event.Details = "New quote referred by Roofle";
+        _event.Details = "Admin generated test Quote";
+
+        _event.Author = currentUser;
 
         quote.events.Add(_event);
 

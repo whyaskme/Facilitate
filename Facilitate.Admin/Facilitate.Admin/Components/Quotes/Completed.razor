@@ -31,6 +31,8 @@
 @inject IEmailSender<ApplicationUser> EmailSender
 @inject RoleManager<IdentityRole> roleManager
 
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
+
 <PageTitle>Completions</PageTitle>
 
 <div class="quotes-leaderboard">
@@ -444,7 +446,7 @@ else
 
                                 <span class="bar-spacer">|</span>
                                 <label>Author</label>
-                                <span>@Author</span>
+                                <span>@_event.Author.FirstName @_event.Author.LastName</span>
                             </div>
 
                             eventsCount--;
@@ -680,6 +682,16 @@ else
 
 
 @code {
+
+    public ApplicationUser currentUser = new ApplicationUser();
+    protected async override Task OnInitializedAsync()
+    {
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var user = authstate.User;
+        var name = user.Identity.Name;
+
+        currentUser = await UserManager.FindByNameAsync(name);
+    }
 
     public QuoteLeaderboard leaderboardStats;
 
@@ -922,6 +934,7 @@ else
 
         Event statusChanged = new Event();
         statusChanged.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Opportunity";
+        statusChanged.Author = currentUser;
         selectedQuote.events.Add(statusChanged);
 
         var previousProjectManager = selectedQuote.projectManager;
@@ -932,6 +945,7 @@ else
         var projectManager = selectedQuote.projectManager;
         Event assignmentEvent = new Event();
         assignmentEvent.Name = "Assignment";
+        assignmentEvent.Author = currentUser;
 
         if (previousProjectManager != null)
         {
@@ -968,6 +982,7 @@ else
 
         Event _event = new Event();
         _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
+        _event.Author = currentUser;
         selectedQuote.events.Add(_event);
 
         Warranty warranty = new Warranty();
@@ -978,6 +993,11 @@ else
 
         Event warrantyEvent = new Event();
         warrantyEvent.Details = " Standard Facilitate Warranty " + warranty.Type + " applied to Customer";
+
+        var sysUser = new ApplicationUser();
+        sysUser.FirstName = "System";
+
+        warrantyEvent.Author = sysUser;
         selectedQuote.events.Add(warrantyEvent);
 
         WebServices.UpdateQuote(selectedQuote);
@@ -1000,6 +1020,7 @@ else
 
         Event _event = new Event();
         _event.Details = "Note (" + note.Details + ") added to Quote";
+        _event.Author = currentUser;
 
         selectedQuote.events.Add(_event);
 
@@ -1047,6 +1068,7 @@ else
 
         Event _event = new Event();
         _event.Details = "Deleted attachment (" + selectedAttachment.MediaDescription + ") from Quote";
+        _event.Author = currentUser;
 
         selectedQuote.events.Add(_event);
 
@@ -1065,6 +1087,7 @@ else
 
         Event _event = new Event();
         _event.Details = "Deleted note (" + selectedNote.Details + ") from Quote";
+        _event.Author = currentUser;
 
         selectedQuote.events.Add(_event);
 
@@ -1087,6 +1110,7 @@ else
 
         Event _event = new Event();
         _event.Details = "Opportunity converted to Customer";
+        _event.Author = currentUser;
 
         selectedQuote.events.Add(_event);
 

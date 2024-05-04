@@ -95,6 +95,13 @@ namespace Facilitate.Api.Controllers
             _event.DateTime = DateTime.UtcNow;
             _event.Details = "New quote referred by Roofle";
 
+            var author = new ApplicationUser();
+            author.Id = Guid.NewGuid().ToString();
+            author.FirstName = "Web";
+            author.LastName = "Api";
+
+            _event.Author = author;
+
             quote.events.Add(_event);
 
             try
