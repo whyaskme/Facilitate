@@ -557,8 +557,9 @@ else
 
                 </DxTabs>
 
-                <div id="div-controls-container" class="quote-detail-controls-container">
-                    <button class="btn btn-primary" @onclick="@(() => IsPopupVisibleCompleteCustomer = true)">Complete Customer</button>
+                <div class="quote-detail-controls-container">
+                    <button class="btn btn-primary" @onclick="@(() => IsPopupVisibleMakeCustomer = true)">Make Customer</button>
+                    <button class="btn btn-primary" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
                     <button class="btn btn-primary" @onclick="CloseDetails">Close</button>
                 </div>
 
@@ -567,6 +568,16 @@ else
 
     </DxGrid>
 }
+
+<DxPopup @bind-Visible="@IsPopupVisibleMakeCustomer" ShowFooter="true" HeaderText="Make Customer">
+    <BodyContentTemplate>
+        If this Opportunity is fully qualified to meet Customer criteria, then click Save.
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="MakeCustomer" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleMakeCustomer = false)" />
+    </FooterContentTemplate>
+</DxPopup>
 
 <DxPopup @bind-Visible="@IsAssignPopupVisible"
          ShowFooter="true"
@@ -608,16 +619,6 @@ else
     <FooterContentTemplate>
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteSelectedNote" />
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleSelectNoteToDelete = false)" />
-    </FooterContentTemplate>
-</DxPopup>
-
-<DxPopup @bind-Visible="@IsPopupVisibleCompleteCustomer" ShowFooter="true" HeaderText="Complete Customer">
-    <BodyContentTemplate>
-        If this is fully qualified to Complete Customer criteria, then click Save.
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="CompleteCustomer" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleCompleteCustomer = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -772,6 +773,8 @@ else
 
     bool IsPopupVisibleAddNote { get; set; }
     bool IsPopupVisibleSelectNoteToDelete { get; set; }
+
+    bool IsPopupVisibleMakeCustomer { get; set; }
 
     bool IsPopupVisibleCompleteCustomer { get; set; }
     bool IsArchivePopupVisible { get; set; }
@@ -1071,22 +1074,22 @@ else
         notesCount--;
     }
 
-    public void CompleteCustomer()
+    public void MakeCustomer()
     {
-        selectedQuote.status = "Complete";
+        selectedQuote.status = "Customer";
 
         QuoteGrid.CollapseDetailRow(selectedIndex);
 
         var projectManager = selectedQuote.projectManager;
 
         Event _event = new Event();
-        _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Completed Customer";
+        _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Customer";
 
         selectedQuote.events.Add(_event);
 
         WebServices.UpdateQuote(selectedQuote);
 
-        IsPopupVisibleCompleteCustomer = false;
+        IsPopupVisibleMakeCustomer = false;
 
         PauseRefresh(false);
     }
