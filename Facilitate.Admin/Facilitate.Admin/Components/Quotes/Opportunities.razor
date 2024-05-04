@@ -75,79 +75,75 @@
     @updateStatus Opportunities
     <span id="update-status" class="@StatusClass">@RefreshStatus</span>
     <span class="stats-container-header">
-        <span class="">@leaderboardStats.OpportunityValue.ToString("C0")</span>
-        <span class=""><span class="value-sqft-separator">&raquo;</span>@leaderboardStats.OpportunitySqFt.ToString("N0")sqft</span>
+        <span class="">@leaderboardStats.CustomerValue.ToString("C0")</span>
+        <span class=""><span class="value-sqft-separator">&raquo;</span>@leaderboardStats.CustomerSqFt.ToString("N0")sqft</span>
     </span>
 </h1>
 
 <script>
-  window.getIpAddress = () => {
-    return fetch('https://jsonip.com/')
-      .then((response) => response.json())
-      .then((data) => {
-        return data.ip
-      })
-  }
+    window.getIpAddress = () => {
+        return fetch('https://jsonip.com/')
+            .then((response) => response.json())
+            .then((data) => {
+                return data.ip
+            })
+    }
 </script>
 
 <AuthorizeView>
     <Authorized></Authorized>
-    <NotAuthorized>@{
+    <NotAuthorized>
+        @{
             navMan.NavigateTo("/Account/Login");
-        }</NotAuthorized>
+        }
+    </NotAuthorized>
 </AuthorizeView>
 
 @if (quotes == null)
 {
-@*     <p><em>Loading...</em></p> *@
+    @*     <p><em>Loading...</em></p> *@
 }
 else
 {
-        <div>
-            Select row to expand details. Click column headers to sort. Type and hit enter in any empty cell to search that column. 
-            <br/><br/>
-            If you have grouped columns below, drag and drop the column back into the grid header to restore. 
-            <br/><br/>
-        </div>
+    <div>
+        Select row to expand details. Click column headers to sort. Type and hit enter in any empty cell to search that column.
+        <br /><br />
+        If you have grouped columns below, drag and drop the column back into the grid header to restore.
+        <br /><br />
+    </div>
 
-        <DxGrid 
-            @ref="QuoteGrid"
-            Data="@quotes" 
+    <DxGrid @ref="QuoteGrid"
+            Data="@quotes"
             KeyFieldName="_id"
-
-            PageSize="10" 
-            PagerPosition="GridPagerPosition.Bottom" 
+            PageSize="10"
+            PagerPosition="GridPagerPosition.Bottom"
             ShowGroupPanel="true"
             AutoExpandAllGroupRows="true"
             ShowFilterRow="true"
             CssClass="mw-1100"
-
             RowClick="OnRowClick"
-
             AllowSelectRowByClick="true"
             SelectionMode="GridSelectionMode.Single"
-
             @bind-SelectedDataItem="@SelectedQuoteItem"
-
             TextWrapEnabled="true"
             PagerNavigationMode="PagerNavigationMode.InputBox"
             PageSizeSelectorVisible="true"
             PageSizeSelectorAllRowsItemVisible="false"
             KeyboardNavigationEnabled="true">
-            <Columns>
-                <DxGridDataColumn Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
-                <DxGridDataColumn Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-                <DxGridDataColumn Caption="First" FieldName="firstName" />
-                <DxGridDataColumn Caption="Last" FieldName="lastName" />
-                <DxGridDataColumn Caption="Street" FieldName="street" />
-                <DxGridDataColumn Caption="City" FieldName="city" />
-                <DxGridDataColumn Caption="State" FieldName="state" />
-                <DxGridDataColumn Caption="Zip" FieldName="zip" />
-                <DxGridDataColumn Width="50" Caption="Roofs" FieldName="numberOfIncludedStructures" />
-                <DxGridDataColumn Width="75" Caption="SqFt" FieldName="totalSquareFeet" />
-                <DxGridDataColumn Width="100" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
-                <DxGridDataColumn Caption="Manager" FieldName="projectManager.Email" />
-            </Columns>
+        <Columns>
+            <DxGridDataColumn Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+            <DxGridDataColumn Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+            <DxGridDataColumn Caption="First" FieldName="firstName" />
+            <DxGridDataColumn Caption="Last" FieldName="lastName" />
+            <DxGridDataColumn Caption="Street" FieldName="street" />
+            <DxGridDataColumn Caption="City" FieldName="city" />
+            <DxGridDataColumn Caption="State" FieldName="state" />
+            <DxGridDataColumn Caption="Zip" FieldName="zip" />
+            <DxGridDataColumn Width="50" Caption="Roofs" FieldName="numberOfIncludedStructures" />
+            <DxGridDataColumn Width="75" Caption="SqFt" FieldName="totalSquareFeet" />
+            <DxGridDataColumn Width="100" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
+            <DxGridDataColumn Caption="Manager" TextAlignment="GridTextAlignment.Left" FieldName="projectManager.Email" />
+        </Columns>
 
         <DetailRowTemplate>
             @{
@@ -208,7 +204,7 @@ else
                 <div class="table-spacer" />
 
                 <h6>Project Details</h6>
-                <div id="project-manager-assignment" class="row">
+                <div class="row">
                     <div class="col">
                         <a class="hyperlink-manager-assignment" @onclick="@(() => IsAssignPopupVisible = true)">Manager Assignment</a>
                         <span class="detail-item">@_quote.projectManager.FirstName</span>
@@ -233,7 +229,7 @@ else
 
                 <br />
 
-                <DxTabs Id="tabs-Project-Details" CssClass="tabs-container">
+                <DxTabs CssClass="tabs-container">
 
                     <DxTabPage Id="Panel-Project-Manager" CssClass="tab-container" Text="@roofsCountLabel">
 
@@ -513,7 +509,6 @@ else
                     </DxTabPage>
 
                 </DxTabs>
-
                 <br />
 
                 <h6>Customer Qualifications</h6>
@@ -525,7 +520,7 @@ else
                     </DxTabPage>
 
                     <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Needs-Analysis" Text="2) Needs Analysis">
-                    Needs Analysis...
+                        Needs Analysis...
                     </DxTabPage>
 
                     <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Project-Manager-Inspection-Report" Text="3) Project Manager Inspection Report">
@@ -533,45 +528,44 @@ else
                     </DxTabPage>
 
                     <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Pictometry-Measurements" Text="4) Pictometry Measurements">
-                    Pictometry Measurements...
+                        Pictometry Measurements...
                     </DxTabPage>
 
                     <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Installer-Inspection-Report" Text="5) Installer Inspection Report">
-                    Installer Inspection Report...
+                        Installer Inspection Report...
                     </DxTabPage>
 
                     <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Material-Order" Text="6) Material Order">
-                    Material Order...
+                        Material Order...
                     </DxTabPage>
 
                     <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Labor-Order" Text="7) Labor Order">
-                    Labor Order...
+                        Labor Order...
                     </DxTabPage>
 
                     <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Total-Project-Expense-Summary" Text="8) Total Project Expense Summary">
-                    Total Project Expense Summary...
+                        Total Project Expense Summary...
                     </DxTabPage>
 
                     <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Facilitate-Sample-Warranty" Text="9) Facilitate Sample Warranty">
-                    Facilitate Sample Warranty...
+                        Facilitate Sample Warranty...
                     </DxTabPage>
 
                     <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Signed-Proposal" Text="10) Signed Proposal">
-                    Signed Proposal...
+                        Signed Proposal...
                     </DxTabPage>
 
                 </DxTabs>
 
-                <div class="quote-detail-controls-container">
-                    <button class="btn btn-primary" @onclick="@(() => IsPopupVisibleMakeCustomer = true)">Make Customer</button>
-                    <button class="btn btn-primary" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
+                <div id="div-controls-container" class="quote-detail-controls-container">
+                    <button class="btn btn-primary" @onclick="@(() => IsPopupVisibleCompleteCustomer = true)">Complete Customer</button>
                     <button class="btn btn-primary" @onclick="CloseDetails">Close</button>
                 </div>
 
             }
         </DetailRowTemplate>
 
-        </DxGrid>
+    </DxGrid>
 }
 
 <DxPopup @bind-Visible="@IsAssignPopupVisible"
@@ -617,14 +611,13 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup
-    @bind-Visible="@IsPopupVisibleMakeCustomer" ShowFooter="true" HeaderText="Make Customer">
+<DxPopup @bind-Visible="@IsPopupVisibleCompleteCustomer" ShowFooter="true" HeaderText="Complete Customer">
     <BodyContentTemplate>
-        If this Opportunity is fully qualified to meet Customer criteria, then click Save.
+        If this is fully qualified to Complete Customer criteria, then click Save.
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="MakeCustomer" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleMakeCustomer = false)" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="CompleteCustomer" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleCompleteCustomer = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -694,7 +687,6 @@ else
     protected override void OnInitialized()
     {
         leaderboardStats = WebServices.GetLeaderBoardStats();
-        RefreshTimer();
     }
 
     public int noteCount = 0;
@@ -723,6 +715,8 @@ else
 
     ObjectId SelectedFileId { get; set; }
 
+    public int currentItemIndex = 0;
+
     IGrid QuoteGrid { get; set; }
 
     IGrid EventGrid { get; set; }
@@ -749,7 +743,7 @@ else
 
     public interface IQueryable : System.Collections.IEnumerable;
 
-    public int currentItemIndex = 0;
+    public int currentItem = 0;
     public int selectedIndex = 0;
 
     public string SubmissionUserIP { get; set; }
@@ -757,15 +751,15 @@ else
     public int itemsToCreate = 10;
     public string updateStatus = "Fetching ";
 
+    public int attachmentsCount = 0;
+    public int notesCount = 0;
+    public int eventsCount = 0;
+
     public int roofsCount = 0;
     public int productsCount = 0;
 
     public string roofsCountLabel = "";
     public string productsCountLabel = "";
-
-    public int attachmentsCount = 0;
-    public int notesCount = 0;
-    public int eventsCount = 0;
 
     #endregion
 
@@ -779,7 +773,7 @@ else
     bool IsPopupVisibleAddNote { get; set; }
     bool IsPopupVisibleSelectNoteToDelete { get; set; }
 
-    bool IsPopupVisibleMakeCustomer { get; set; }
+    bool IsPopupVisibleCompleteCustomer { get; set; }
     bool IsArchivePopupVisible { get; set; }
 
     bool IsPopupVisibleHelpSendFiles { get; set; }
@@ -876,8 +870,6 @@ else
             QuoteGrid.CollapseDetailRow(selectedIndex);
 
             PauseRefresh(false);
-
-            RefreshDisabled = false;
         }
         else
         {
@@ -929,8 +921,6 @@ else
 
         QuoteGrid.CollapseDetailRow(selectedIndex);
 
-        selectedQuote.status = "Opportunity";
-
         Event statusChanged = new Event();
         statusChanged.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Opportunity";
         selectedQuote.events.Add(statusChanged);
@@ -949,10 +939,11 @@ else
             // Current PM to replace
             assignmentEvent.Details = "Project Manager Id: " + previousProjectManager.Id + " (" + previousProjectManager.FirstName + " " + previousProjectManager.LastName + "), replaced by Project Manager Id: " + projectManager.Id + " (" + projectManager.FirstName + " " + projectManager.LastName + ") and emailed to: " + projectManager.Email;
         }
-        else{
+        else
+        {
             assignmentEvent.Details = "Lead assigned to Project Manager Id: " + projectManager.Id + " (" + projectManager.FirstName + "), moved to Opportunities and emailed to: " + projectManager.Email;
         }
-        
+
         selectedQuote.events.Add(assignmentEvent);
 
         WebServices.UpdateQuote(selectedQuote);
@@ -972,10 +963,16 @@ else
         QuoteGrid.CollapseDetailRow(selectedIndex);
 
         Note note = new Note();
-        note.Summary = "Opportunity Archived";
+        note.Summary = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
         note.Details = @NoteDetails;
 
         selectedQuote.notes.Add(note);
+
+
+        Event _event = new Event();
+        _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
+
+        selectedQuote.events.Add(_event);
 
         WebServices.UpdateQuote(selectedQuote);
 
@@ -1074,22 +1071,22 @@ else
         notesCount--;
     }
 
-    public void MakeCustomer()
+    public void CompleteCustomer()
     {
-        selectedQuote.status = "Customer";
+        selectedQuote.status = "Complete";
 
         QuoteGrid.CollapseDetailRow(selectedIndex);
 
         var projectManager = selectedQuote.projectManager;
 
         Event _event = new Event();
-        _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Customer";
+        _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Completed Customer";
 
         selectedQuote.events.Add(_event);
 
         WebServices.UpdateQuote(selectedQuote);
 
-        IsPopupVisibleMakeCustomer = false;
+        IsPopupVisibleCompleteCustomer = false;
 
         PauseRefresh(false);
     }
@@ -1099,7 +1096,7 @@ else
         RefreshDisabled = isPaused;
         ArchiveLeadsDisabled = isPaused;
 
-        if(isPaused)
+        if (isPaused)
         {
             ButtonText = "Resume Refresh";
             ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
