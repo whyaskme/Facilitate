@@ -607,7 +607,9 @@ else
 </DxLoadingPanel>
 
 <div class="@StatusContainerClass">
-    <button class="@ButtonClass" disabled="@RefreshDisabled" @onclick="ToggleRefresh">@ButtonText</button>
+    <button class="btn btn-primary @ButtonClass" disabled="@RefreshDisabled" @onclick="ToggleRefresh">@ButtonText</button>
+    <button class="btn btn-primary" disabled="@CreateLeadDisabled" @onclick="CreateLead">Create 1 Lead</button>
+    <button class="btn btn-primary" disabled="@CreateLeadsDisabled" @onclick="CreateLeads">Create @itemsToCreate Leads</button>
 </div>
 
 
@@ -1274,10 +1276,17 @@ else
     public virtual void PauseRefresh(bool isPaused)
     {
         RefreshDisabled = isPaused;
-        ArchiveLeadsDisabled = isPaused;
+
+        CreateLeadDisabled = isPaused;
+        CreateLeadsDisabled = isPaused;
 
         if (isPaused)
         {
+            RefreshDisabled = false;
+
+            CreateLeadDisabled = false;
+            CreateLeadsDisabled = false;
+
             ButtonText = "Resume Refresh";
             ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
             StatusClass = "message-warning";
@@ -1287,6 +1296,9 @@ else
         }
         else
         {
+            CreateLeadDisabled = true;
+            CreateLeadsDisabled = true;
+
             ButtonText = "Pause Refresh";
             ButtonClass = "btn btn-outline-primary btn-refresh-active";
             StatusClass = "message";
