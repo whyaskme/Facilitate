@@ -74,17 +74,17 @@
             <DxGridDataColumn FieldName="Phone" />
             <DxGridDataColumn FieldName="Email" />
             <DxGridDataColumn FieldName="Address1" />
-            <DxGridDataColumn FieldName="Address2" />
+            <DxGridDataColumn FieldName="Address2" Visible="false" />
             <DxGridDataColumn FieldName="City" />
             <DxGridDataColumn FieldName="State" />
             <DxGridDataColumn FieldName="Zip" />
-            <DxGridCommandColumn Width="125px" Caption="Actions" DeleteButtonVisible="false" />
+            <DxGridDataColumn FieldName="RegistrationDate" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+            <DxGridCommandColumn Width="150px" Caption="Actions" DeleteButtonVisible="true" />
         </Columns>
 
         <EditFormTemplate Context="EditFormContext">
             @{
                 SelectedProjectManager = (ApplicationUser)EditFormContext.EditModel;
-                var tmpVal = "";
             }
 
             <DxFormLayout CssClass="w-100">
@@ -162,11 +162,6 @@
 
         if (e.IsNew)
         {
-            // ApplicationUser user = new ApplicationUser();
-            // user.FirstName = "Test";
-            // user.LastName = "User";
-
-            //e.EditModel = user;
         }
     }
 
@@ -230,21 +225,31 @@
         }
         catch (Exception ex)
         {
-            throw ex;
+            var errMsg = ex.Message;
         }
 
         Dispose();
-
-        //RedirectManager.RedirectTo("/Users");
     }
 
     async Task Grid_DataItemDeleting(GridDataItemDeletingEventArgs e)
     {
+        ApplicationUser adminUser = (ApplicationUser)e.DataItem;
+
+        var result = await UserManager.DeleteAsync(adminUser);
+        if (!result.Succeeded)
+        {
+            identityErrors = result.Errors;
+            return;
+        }
+
+        Dispose();
     }
 
     public void Dispose()
     {
         DataLoadedTcs.TrySetCanceled();
+
+        ProjectManagers = SortByLastNameUsingLinq(UserManager.Users.ToList());
     }
 
     IEnumerable<string> Values { get; set; }
