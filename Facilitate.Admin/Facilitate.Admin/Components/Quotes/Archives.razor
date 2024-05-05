@@ -226,6 +226,19 @@ else
                                         <b>Roof #@currentItemIndex</b>
                                         <div class="row item-details-container">
                                             <div class="col">
+                                                <label>Included</label>
+                                                @{
+                                                    if (@_quote.structures[i].isIncluded)
+                                                    {
+                                                        <span>Yes</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="system-warning">No</span>
+                                                    }
+                                                }
+                                            </div>
+                                            <div class="col">
                                                 <label>Name</label>
                                                 <span>@_quote.structures[i].name</span>
                                             </div>

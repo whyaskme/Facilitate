@@ -188,13 +188,11 @@
 
         adminUser.Phone = "(" + areaCode + ") " + prefix + "-" + lineNumber;
 
-        var userPwd = "Test1234!";
-
         try
         {
             if (e.IsNew)
             {
-                var tmpVal = "";
+                var userPwd = "!Facilitate2024#";
 
                 await UserStore.SetUserNameAsync(adminUser, adminUser.Email, CancellationToken.None);
 
