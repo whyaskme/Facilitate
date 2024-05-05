@@ -10,7 +10,10 @@ using Microsoft.EntityFrameworkCore;
 using ServiceStack;
 using System;
 
+
 var builder = WebApplication.CreateBuilder(args);
+
+//builder.Services.AddScoped<QuoteLeaderboard>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

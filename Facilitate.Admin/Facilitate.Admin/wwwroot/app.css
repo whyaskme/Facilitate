@@ -45,6 +45,7 @@ html, body {
     border: solid 0px #ff0000 !important;
     text-align: center !important;
     color: #808080 !important;
+    padding-top: 25px !important;
 }
 
 .quote-stats-count {
@@ -52,6 +53,7 @@ html, body {
     padding-right: 10px !important;
     margin-right: 8px !important;
     font-style: italic !important;
+    font-weight: bold !important;
 }
 
 .quote-stats-value {
@@ -247,9 +249,23 @@ table {
     padding-top: 35px;
 }
 
+.quotes-leaderboard-page-header {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    padding: 15px;
+    font-size: 0.9em;
+    text-align: center !important;
+}
+
+.quotes-leaderboard-page-header span,
+.quotes-leaderboard-page-header a 
+{
+    color: #eee !important;
+}
+
 .quotes-leaderboard {
     background-color: #eee !important;
-    border: solid 0px #808080 !important;
+    border: solid 0px #ff0000 !important;
     padding: 15px;
     font-size: 0.9em;
     margin-bottom: 25px !important;
