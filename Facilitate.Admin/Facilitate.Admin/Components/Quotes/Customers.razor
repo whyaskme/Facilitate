@@ -73,14 +73,14 @@
     </span>
 </div>
 
-<h1>
-    @updateStatus Customers
-    <span id="update-status" class="@StatusClass">@RefreshStatus</span>
-    <span class="stats-container-header">
-        <span class="">@leaderboardStats.CustomerValue.ToString("C0")</span>
-        <span class=""><span class="value-sqft-separator">&raquo;</span>@leaderboardStats.CustomerSqFt.ToString("N0")sqft</span>
-    </span>
-</h1>
+<div class="quote-stats-header">
+    <span class="quote-stats-count">@updateStatus Customers</span>
+    <span class="quote-stats-value">@leaderboardStats.CustomerValue.ToString("C0")</span>
+    <span class="quote-stats-sqft">@leaderboardStats.CustomerSqFt.ToString("N0")sqft</span>
+</div>
+<div class="quote-stats-hints">
+    Select row to expand details. Click column headers to sort. Type and hit enter in any empty cell to search that column. If you have grouped columns below, drag and drop the column back into the grid header to restore.
+</div>
 
 <script>
     window.getIpAddress = () => {
@@ -105,13 +105,6 @@
 }
 else
 {
-    <div>
-        Select row to expand details. Click column headers to sort. Type and hit enter in any empty cell to search that column.
-        <br /><br />
-        If you have grouped columns below, drag and drop the column back into the grid header to restore.
-        <br /><br />
-    </div>
-
     <DxGrid @ref="QuoteGrid"
             Data="@quotes"
             KeyFieldName="_id"

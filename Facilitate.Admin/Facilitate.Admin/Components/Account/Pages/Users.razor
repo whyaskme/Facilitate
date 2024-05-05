@@ -39,6 +39,15 @@
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
 @inject ILogger<Register> Logger
 
+<AuthorizeView>
+    <Authorized></Authorized>
+    <NotAuthorized>
+        @{
+            NavigationManager.NavigateTo("/Account/Login");
+        }
+    </NotAuthorized>
+</AuthorizeView>
+
 <PageTitle>Manage Users</PageTitle>
 
 <h1>Manage Users</h1>
