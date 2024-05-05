@@ -21,18 +21,21 @@ html, body {
     border-right: solid 1px #c0c0c0 !important;
     padding-right: 10px !important;
     margin-right: 8px !important;
+    font-style: italic !important;
 }
 
 .quote-stats-value {
     border-right: solid 1px #c0c0c0 !important;
     padding-right: 10px !important;
     margin-right: 8px !important;
+    font-style: italic !important;
 }
 
 .quote-stats-sqft {
     border-right: solid 0px #c0c0c0 !important;
     padding-right: 10px !important;
     margin-right: 10px !important;
+    font-style: italic !important;
 }
 
 .quote-stats-hints {
@@ -41,6 +44,7 @@ html, body {
     margin-top: 15px !important;
     margin-bottom: 15px !important;
     text-align: center !important;
+    font-style: italic !important;
 }
 
 .form-floating {
