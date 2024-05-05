@@ -33,6 +33,8 @@
 
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
 
+@inject QuoteLeaderboard leaderboardStats
+
 <PageTitle>Leads</PageTitle>
 
 <div class="quote-stats-header">
@@ -88,11 +90,11 @@ else
             PageSizeSelectorAllRowsItemVisible="false"
             KeyboardNavigationEnabled="true">
         <Columns>
-            <DxGridDataColumn Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
-            <DxGridDataColumn Caption="First" FieldName="firstName" />
-            <DxGridDataColumn Caption="Last" FieldName="lastName" />
-            <DxGridDataColumn Caption="Street" FieldName="street" />
-            <DxGridDataColumn Caption="City" FieldName="city" />
+            <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+            <DxGridDataColumn Width="125" Caption="First" FieldName="firstName" />
+            <DxGridDataColumn Width="150" Caption="Last" FieldName="lastName" />
+            <DxGridDataColumn Width="auto" Caption="Street" FieldName="street" />
+            <DxGridDataColumn Width="150" Caption="City" FieldName="city" />
             <DxGridDataColumn Width="75" Caption="State" FieldName="state" />
             <DxGridDataColumn Width="75" Caption="Zip" FieldName="zip" />
             <DxGridDataColumn Width="75" Caption="Roofs" FieldName="numberOfIncludedStructures" />
@@ -572,8 +574,6 @@ else
         if (name != null && name != "")
             currentUser = await UserManager.FindByNameAsync(name);
     }
-
-    public QuoteLeaderboard leaderboardStats;
 
     protected override void OnInitialized()
     {

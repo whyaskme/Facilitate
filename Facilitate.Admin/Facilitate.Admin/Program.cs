@@ -13,8 +13,6 @@ using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Services.AddScoped<QuoteLeaderboard>();
-
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -30,6 +28,9 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
 builder.Services.AddSingleton<WebServices>();
+
+//builder.Services.AddScoped<QuoteLeaderboard>();
+builder.Services.AddSingleton<QuoteLeaderboard>();
 
 builder.Services.AddCors(x => x.AddPolicy("externalRequests",
                     policy => policy

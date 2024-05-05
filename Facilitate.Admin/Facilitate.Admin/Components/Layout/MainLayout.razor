@@ -4,7 +4,7 @@
 @using Facilitate.Libraries.Models;
 
 @inject WebServices WebServices
-@* @inject QuoteLeaderboard leaderboardStats *@
+@inject QuoteLeaderboard leaderboardStats
 
 <AuthorizeView>
     <Authorized>
@@ -62,7 +62,9 @@
 
     <main>
         <article class="content px-4">
-            @Body
+            <CascadingValue Value="@leaderboardStats">
+                @Body
+            </CascadingValue>
         </article>
     </main>
 </div>
@@ -75,8 +77,7 @@
 
 @code
 {
-    Timer statsTimer;
-    QuoteLeaderboard leaderboardStats = new QuoteLeaderboard();
+    private Timer statsTimer;
 
     protected async override void OnInitialized()
     {
