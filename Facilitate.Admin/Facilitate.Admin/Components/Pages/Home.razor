@@ -24,7 +24,25 @@
 
 <PageTitle>Welcome to Facilitate Platform Administration</PageTitle>
 
+<h3>Facilitate Platform Administration</h3>
+
+<div class="row">
+    <div class="col-md-auto">
+        @* <img src="/images/backgrounds/contractors bg - youtube.jpg" class="homepage-contractor" /> *@
+        Dashboard coming soon....
+    </div>
+</div>
+
 <AuthorizeView>
+    <Authorized></Authorized>
+    <NotAuthorized>
+        @{
+            navMan.NavigateTo("/Account/Login");
+        }
+    </NotAuthorized>
+</AuthorizeView>
+
+@* <AuthorizeView>
     <Authorized>
         <div class="quotes-leaderboard">
             <span class="summary-item">
@@ -65,22 +83,13 @@
         </div>
     </Authorized>
     <NotAuthorized>
-@*         <div class="row">
+        <div class="row">
             <div class="col-md-4 system-warning">
                 You must be logged in to access this system
             </div>
-        </div> *@
+        </div>
     </NotAuthorized>
-</AuthorizeView>
-
-<h3>Facilitate Platform Administration</h3>
-
-<div class="row">
-    <div class="col-md-auto">
-        @* <img src="/images/backgrounds/contractors bg - youtube.jpg" class="homepage-contractor" /> *@
-        Dashboard coming soon....
-    </div>
-</div>
+</AuthorizeView> *@
 
 @code {
 
