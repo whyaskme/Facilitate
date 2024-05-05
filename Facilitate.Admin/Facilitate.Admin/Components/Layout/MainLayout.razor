@@ -82,7 +82,8 @@
 
     public void Dispose()
     {
-        statsTimer?.Dispose();           // because you need it here
+        // because you need it here
+        statsTimer?.Dispose();
     }
 
     private async Task RefreshTimer()
