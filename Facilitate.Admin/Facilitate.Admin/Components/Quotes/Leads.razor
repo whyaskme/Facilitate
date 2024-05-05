@@ -499,6 +499,7 @@ else
     <BodyContentTemplate>
         <DxListBox Data="@ProjectManagers"
                    @bind-Values="@Values"
+                   CssClass="popup-grid"
                    SelectedItemsChanged="@((IEnumerable<ApplicationUser> values) => SelectedProjectManagerChanged(values))"
                    SelectionMode="ListBoxSelectionMode.Single"
                    ShowCheckboxes="true">
