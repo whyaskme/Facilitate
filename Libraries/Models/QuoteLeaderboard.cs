@@ -12,37 +12,37 @@ namespace Facilitate.Libraries.Models
 {
     public class QuoteLeaderboard
     {
-        //public QuoteLeaderboard()
-        //{
-        //    LeadCount = 0;
-        //    LeadSqFt = 0;
-        //    LeadValue = 0;
-        //    LeadLabel = "Leads";
+        public QuoteLeaderboard()
+        {
+            LeadCount = 0;
+            LeadSqFt = 0;
+            LeadValue = 0;
+            LeadLabel = "Leads";
 
-        //    OpportunityCount = 0;
-        //    OpportunitySqFt = 0;
-        //    OpportunityValue = 0;
+            OpportunityCount = 0;
+            OpportunitySqFt = 0;
+            OpportunityValue = 0;
 
-        //    CustomerCount = 0;
-        //    CustomerSqFt = 0;
-        //    CustomerValue = 0;
+            CustomerCount = 0;
+            CustomerSqFt = 0;
+            CustomerValue = 0;
 
-        //    CompletionCount = 0;
-        //    CompletionSqFt = 0;
-        //    CompletionValue = 0;
+            CompletionCount = 0;
+            CompletionSqFt = 0;
+            CompletionValue = 0;
 
-        //    ArchiveCount = 0;
-        //    ArchiveSqFt = 0;
-        //    ArchiveValue = 0;
+            ArchiveCount = 0;
+            ArchiveSqFt = 0;
+            ArchiveValue = 0;
 
-        //    WarrantyCount = 0;
-        //    WarrantySqFt = 0;
-        //    WarrantyValue = 0;
+            WarrantyCount = 0;
+            WarrantySqFt = 0;
+            WarrantyValue = 0;
 
-        //    TotalQuoteCount = 0;
-        //    TotalQuoteSqFt = 0;
-        //    TotalQuoteValue = 0;
-        //}   
+            TotalQuoteCount = 0;
+            TotalQuoteSqFt = 0;
+            TotalQuoteValue = 0;
+        }
 
         public long LeadCount { get; set; }
         public long LeadSqFt { get; set; }
