@@ -603,6 +603,54 @@ namespace Facilitate.Libraries.Models
             return stateAbbr;
         }
 
+        public string GetStateAbbrByName(string stateName)
+        {
+            var stateAbbr = "";
+
+            try
+            {
+                CreateDbConnection("State", "States");
+
+                var stateCollection = _mongoStateCollection.Find(s => s.Name == stateName).ToListAsync().Result;
+                foreach (State currentState in stateCollection)
+                {
+                    stateAbbr = currentState.Abbr;
+                    return stateAbbr;
+                }
+            }
+            catch (Exception ex)
+            {
+                var errMsg = ex.ToString();
+            }
+
+            //return stateAbbr;
+
+            stateName = textinfo.ToTitleCase(stateName.ToLower());
+
+            try
+            {
+                //var randomCities = cityCollection.Find(s => s._t == "City").ToListAsync().Result;
+
+                var stateCollection = client.GetDatabase(dbName).GetCollection<State>("ReferenceData");
+                var selectedState = stateCollection.Find(s => s._t == "State").ToListAsync().Result;
+
+                foreach (State currentState in selectedState)
+                {
+                    if (currentState.Name == stateName)
+                    {
+                        stateAbbr = currentState.Abbr;
+                        return stateAbbr;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var errMsg = ex.ToString();
+            }
+
+            return stateAbbr;
+        }
+
         public string SaveEvent(Event myEvent)
         {
             CreateDbConnection("Event", "Events");

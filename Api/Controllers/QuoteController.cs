@@ -49,7 +49,27 @@ namespace Facilitate.Api.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] QuoteRoofleSubmission roofleSubmission)
         {
+            string headerForwardedFor = "n/a";
+            string headerReferer = "n/a";
+
+            var requestHeaders = HttpContext.Request.Headers;
+            foreach(var header in requestHeaders)
+            {
+                if(header.Key == "X-Forwarded-For")
+                {
+                    headerForwardedFor = header.Value;
+                }
+
+                if (header.Key == "Referer")
+                {
+                    headerReferer = header.Value;
+                }
+            }
+
             Quote quote = new Quote();
+
+            quote.ipAddress = headerForwardedFor;
+            quote.externalUrl = headerReferer;
 
             if (roofleSubmission.products[0].priceInfo.total != null)
             {
@@ -64,7 +84,10 @@ namespace Facilitate.Api.Controllers
             quote.fullAddress = roofleSubmission.fullAddress;
             quote.street = roofleSubmission.street;
             quote.city = roofleSubmission.city;
-            quote.state = roofleSubmission.state;
+
+            var stateAbbreviation = utils.GetStateAbbrByName(roofleSubmission.state);
+    
+            quote.state = stateAbbreviation;
             quote.zip = roofleSubmission.zip;
 
             quote.firstName = roofleSubmission.firstName;
@@ -72,7 +95,7 @@ namespace Facilitate.Api.Controllers
             quote.email = roofleSubmission.email;
             quote.phone = roofleSubmission.phone;
             quote.market = roofleSubmission.market;
-            quote.externalUrl = roofleSubmission.externalUrl;
+            
             quote.timestamp = DateTime.UtcNow;
 
             quote.numberOfStructures = roofleSubmission.numberOfStructures;
@@ -93,7 +116,7 @@ namespace Facilitate.Api.Controllers
             Event _event = new Event();
             _event.Name = "New Quote";
             _event.DateTime = DateTime.UtcNow;
-            _event.Details = "New quote referred by Roofle";
+            _event.Details = "New quote referred by: " + headerReferer;
 
             var author = new ApplicationUser();
             author.Id = Guid.NewGuid().ToString();
