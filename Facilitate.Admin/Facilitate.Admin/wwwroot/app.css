@@ -6,6 +6,26 @@ html, body {
     overflow: auto !important;
 }
 
+.sidebar,
+.navbar-dark,
+.nav-scrollable 
+{
+    border: solid 0px #ff0000 !important;
+    background-color: #000000 !important;
+}
+
+.dxbl-grid-header,
+.dxbl-btn,
+.dxbl-grid-command-cell {
+    background-color: #eee !important;
+    color: #808080 !important;
+}
+
+.dxbl-grid-header-content span {
+    border: solid 0px #ff0000 !important;
+    color: #808080 !important;
+}
+
 .dxbl-grid-edit-form {
     border: solid 0px #ff0000 !important;
     background-color: #eee !important;
@@ -15,6 +35,7 @@ html, body {
 .quote-stats-header {
     border: solid 0px #ff0000 !important;
     text-align: center !important;
+    color: #808080 !important;
 }
 
 .quote-stats-count {
@@ -38,12 +59,19 @@ html, body {
     font-style: italic !important;
 }
 
-.quote-stats-hints {
+.quote-stats-hints
+{
     border: solid 0px #ff0000 !important;
     font-size: 0.8em;
     margin-top: 15px !important;
     margin-bottom: 15px !important;
     text-align: center !important;
+    font-style: italic !important;
+    color: #808080 !important;
+}
+
+.dxbl-text {
+    color: #808080 !important;
     font-style: italic !important;
 }
 
