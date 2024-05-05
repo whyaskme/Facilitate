@@ -6,6 +6,26 @@ html, body {
     overflow: auto !important;
 }
 
+.logo {
+    width: 175px !important;
+    height: auto;
+}
+
+.user-greeting {
+    border-top: solid 0px #ffffff !important;
+    color: #eee !important;
+    text-align: center !important;
+    padding-top: 25px !important;
+    padding-bottom: 40px !important;
+    font-size: 0.85em !important;
+}
+
+.stat-element {
+    border: solid 0px #ff0000 !important;
+    text-align: left !important;
+    display: inline-flex !important;
+}
+
 .welcome-banner {
     border-bottom: solid 0px #c0c0c0 !important;
     border-collapse: collapse !important;
@@ -20,6 +40,7 @@ html, body {
 .navbar-dark,
 .nav-scrollable {
     border: solid 0px #ff0000 !important;
+    background: none !important;
     background-color: #000000 !important;
 }
 
@@ -168,15 +189,6 @@ h6 {
     color: #ff0000 !important;
 }
 
-.logo {
-    width: 150px !important;
-    height: auto;
-    margin: 0 auto;
-    display: block;
-    margin-top: 0px !important;
-    margin-bottom: 25px !important;
-}
-
 a, .btn-link,
 a:hover, .btn-link:hover
 {
@@ -279,7 +291,7 @@ table {
 
 .stat-count {
     border-right: solid 0px #dad7d7 !important;
-    padding-left: 0px !important;
+    padding-left: 5px !important;
     padding-right: 0px !important;
     font-weight: normal;
     font-style: normal;
@@ -659,7 +671,8 @@ h6 {
 }
 
 .btn-refresh-active {
-    background-color: #b10505 !important;
+    /*    background-color: #b10505 !important;*/
+    background-color: #000000 !important;
     color: #fff !important;
     margin-right: 25px !important;
 }

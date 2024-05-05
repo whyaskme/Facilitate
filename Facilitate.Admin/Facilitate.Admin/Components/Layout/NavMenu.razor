@@ -4,15 +4,13 @@
 
 @using Microsoft.AspNetCore.Authorization
 
-@* @attribute [Authorize] *@
-
-<div class="top-row ps-3 navbar navbar-dark">
+@* <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="/Quotes/Leads">
             <img src="/images/logos/White Transparent.png" class="logo" />
         </a>
     </div>
-</div>
+</div> *@
 
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
@@ -22,11 +20,9 @@
         <AuthorizeView>
 
             <Authorized>
-
-                <div class="welcome-banner">
+                <div class="user-greeting">
                     Hello @context.User.Identity?.Name!
                 </div>
-
                 <div class="nav-item px-3">
                     <form action="Account/Logout" method="post">
                         <AntiforgeryToken />
