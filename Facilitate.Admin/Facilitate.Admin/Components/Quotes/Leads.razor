@@ -120,7 +120,7 @@ else
             AllowSelectRowByClick="true"
             SelectionMode="GridSelectionMode.Single"
             @bind-SelectedDataItem="@SelectedQuoteItem"
-            TextWrapEnabled="true"
+            TextWrapEnabled="false"
             PagerNavigationMode="PagerNavigationMode.InputBox"
             PageSizeSelectorVisible="true"
             PageSizeSelectorAllRowsItemVisible="false"
@@ -131,9 +131,9 @@ else
             <DxGridDataColumn Caption="Last" FieldName="lastName" />
             <DxGridDataColumn Caption="Street" FieldName="street" />
             <DxGridDataColumn Caption="City" FieldName="city" />
-            <DxGridDataColumn Caption="State" FieldName="state" />
-            <DxGridDataColumn Caption="Zip" FieldName="zip" />
-            <DxGridDataColumn Width="50" Caption="Roofs" FieldName="numberOfIncludedStructures" />
+            <DxGridDataColumn Width="75" Caption="State" FieldName="state" />
+            <DxGridDataColumn Width="75" Caption="Zip" FieldName="zip" />
+            <DxGridDataColumn Width="75" Caption="Roofs" FieldName="numberOfIncludedStructures" />
             <DxGridDataColumn Width="75" Caption="SqFt" FieldName="totalSquareFeet" />
             <DxGridDataColumn Width="100" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
         </Columns>
