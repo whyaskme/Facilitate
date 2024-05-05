@@ -52,8 +52,8 @@
             KeyFieldName="Id"
             PageSize="10"
             PagerPosition="GridPagerPosition.Bottom"
-            ShowGroupPanel="true"
-            AutoExpandAllGroupRows="true"
+            ShowGroupPanel="false"
+            AutoExpandAllGroupRows="false"
             ShowFilterRow="false"
             ValidationEnabled="false"
             CustomizeEditModel="Grid_CustomizeEditModel"
@@ -151,7 +151,9 @@
         if (firstRender)
         {
             await DataLoadedTcs.Task;
-            await Grid.StartEditRowAsync(0);
+            //await Grid.StartEditRowAsync(0);
+
+            Grid.CollapseAllDetailRows();
         }
     }
 
