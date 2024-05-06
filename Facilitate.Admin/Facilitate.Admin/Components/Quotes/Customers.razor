@@ -651,14 +651,41 @@ else
 @code {
 
     public ApplicationUser currentUser = new ApplicationUser();
-    protected async override Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-        var user = authstate.User;
-        var name = user.Identity.Name;
+        if (firstRender)
+        {
+            try
+            {
+                var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+                var user = authstate.User;
+                var name = user.Identity.Name;
 
-        if (name != null && name != "")
-            currentUser = await UserManager.FindByNameAsync(name);
+                if (name != null && name != "")
+                    currentUser = await UserManager.FindByNameAsync(name);
+
+                List<ApplicationUser> adminUsers = new List<ApplicationUser>();
+                List<ApplicationUser> tmpUsers = UserManager.Users.ToList();
+                foreach (ApplicationUser adminUser in tmpUsers)
+                {
+                    if (adminUser.IsEnabled)
+                    {
+                        var list = await UserManager.IsInRoleAsync(adminUser, "Project Manager");
+                        adminUsers.Add(adminUser);
+                    }
+                }
+
+                ProjectManagers = SortByLastNameUsingLinq(adminUsers);
+                RefreshTimer();
+
+                GetIpAddress();
+            }
+            catch (Exception ex)
+            {
+                var errMsg = ex.Message;
+                return;
+            }
+        }
     }
 
     public QuoteLeaderboard leaderboardStats;
@@ -684,7 +711,7 @@ else
 
     public bool IsAssignButtonEnabled = false;
     IEnumerable<ApplicationUser> SelectedProjectManager { get; set; }
-    public List<ApplicationUser>? ProjectManagers;
+    public List<ApplicationUser>? ProjectManagers = new List<ApplicationUser>();
 
     #region Private Properties
 

@@ -7,6 +7,7 @@ html, body {
 }
 
 .logo {
+    border: solid 0px #ff0000 !important;
     width: 175px !important;
     height: auto;
 }

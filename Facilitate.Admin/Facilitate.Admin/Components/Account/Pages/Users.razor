@@ -78,6 +78,7 @@
 
         <Columns>
             <DxGridDataColumn FieldName="Id" Visible="false" />
+            <DxGridDataColumn FieldName="IsEnabled" />
             <DxGridDataColumn FieldName="LastName" />
             <DxGridDataColumn FieldName="FirstName" />
             <DxGridDataColumn FieldName="Phone" />
@@ -88,7 +89,7 @@
             <DxGridDataColumn FieldName="State" />
             <DxGridDataColumn FieldName="Zip" />
             <DxGridDataColumn FieldName="RegistrationDate" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-            <DxGridCommandColumn Width="150px" Caption="Actions" DeleteButtonVisible="true" />
+            <DxGridCommandColumn Width="150px" Caption="Actions" DeleteButtonVisible="false" />
         </Columns>
 
         <EditFormTemplate Context="EditFormContext">
@@ -97,6 +98,10 @@
             }
 
             <DxFormLayout CssClass="w-100">
+
+                <DxFormLayoutItem Caption="Enabled:" ColSpanMd="6">
+                    @EditFormContext.GetEditor("IsEnabled")
+                </DxFormLayoutItem>
 
                 <DxFormLayoutItem Caption="First Name:" ColSpanMd="6">
                     @EditFormContext.GetEditor("FirstName")
