@@ -11,9 +11,9 @@ namespace Facilitate.Libraries.Models
     {
         public ApplicationUserDetails()
         {
-            Roles = new List<string[]>();
+            Roles = new List<ListItem>();
         }
 
-        public List<string[]> Roles { get; set; }
+        public List<ListItem> Roles { get; set; }
     }
 }

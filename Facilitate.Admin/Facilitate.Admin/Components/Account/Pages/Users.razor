@@ -55,7 +55,7 @@
 <div class="row">
 
     <DxGrid @ref="UserGrid"
-            Data="ApplicationUserDetails"
+            Data="SystemUsers"
             KeyFieldName="Id"
             PageSize="10"
             PagerPosition="GridPagerPosition.Bottom"
@@ -91,6 +91,7 @@
         </Columns>
 
         <EditFormTemplate Context="EditFormContext">
+
 @*             @{
                 SelectedProjectManager = (ApplicationUser)EditFormContext.EditModel;
             }
@@ -144,46 +145,18 @@
                 <DxFormLayoutItem ColSpanMd="12">
                     <hr />
                     <h5>Roles</h5>
-
-                    <div class="role-element">
-                        <label>System Admin</label>
-                        <input type="checkbox" name="System Admin" value="System Admin" />
-                    </div>
-
-                    <div class="role-element">
-                        <label>Site Admin</label>
-                        <input type="checkbox" name="Site Admin" value="Site Admin" />
-                    </div>
-                            
-                    <div class="role-element">
-                        <label>Group Admin</label>
-                        <input type="checkbox" name="Group Admin" value="Group Admin" />
-                    </div>
-     
-                    <div class="role-element">
-                        <label>Project Manager</label>
-                        <input type="checkbox" name="Project Manager" value="Project Manager" />
-                    </div>
-
-                    <div class="role-element">
-                        <label>Vendor</label>
-                        <input type="checkbox" name="Vendor" value="Vendor" />
-                    </div>
-
-                    <div class="role-element">
-                        <label>Member</label>
-                        <input type="checkbox" name="Member" value="Member" />
-                    </div>
-
                     @{
-                        foreach (var role in userRoles)
-                        {
-                            var roleName = role.Name;
-                            var currentUser = SelectedProjectManager;
+                        var currentRowIndex = 0;
+                        var currentUser = SystemUsers[currentRowIndex];
 
+                        foreach (var role in currentUser.Roles)
+                        {
+                            <div class="role-element">
+                                <label>@role.Text</label>
+                                <input type="checkbox" checked="@role.Value" name="@role.Text" value="@role.Text" />
+                            </div>
                         }
                     }
-
                 </DxFormLayoutItem>
 
             </DxFormLayout>
@@ -199,7 +172,7 @@
     IGrid RolesGrid { get; set; }
 
     List<IdentityRole> userRoles = new List<IdentityRole>();
-    List<ApplicationUserDetails> ApplicationUserDetails = new List<ApplicationUserDetails>();
+    List<ApplicationUserDetails> SystemUsers = new List<ApplicationUserDetails>();
 
     bool UsePopupEditForm { get; set; }
 
@@ -209,6 +182,7 @@
     protected override async Task OnInitializedAsync()
     {
         DataLoadedTcs.TrySetResult(true);
+
         GetUserRoles();
 
         try
@@ -240,18 +214,27 @@
                 {
                     var isInRole = await UserManager.IsInRoleAsync(adminUser, role.Name);
 
-                    string[] roles = new string[] { role.Name, isInRole.ToString() };
+                    ListItem userRole = new ListItem();
+                    userRole.Text = role.Name;
+                    userRole.Value = isInRole.ToString();
 
-                    userDetail.Roles.Add(roles);
+                    userDetail.Roles.Add(userRole);
                 }
-                    
-                ApplicationUserDetails.Add(userDetail);
+
+                userDetail.Roles = SortRoles(userDetail.Roles);
+
+                SystemUsers.Add(userDetail);
             }
         }
         catch(Exception ex)
         {
             var errMsg = ex.Message;
         }
+    }
+
+    public List<ListItem> SortRoles(List<ListItem> originalList)
+    {
+        return originalList.OrderBy(x => x.Text).ToList();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
