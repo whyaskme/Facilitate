@@ -54,9 +54,7 @@
 
 <div class="row">
 
-    @* RowClick="OnRowClick" *@
-
-    <DxGrid @ref="Grid"
+    <DxGrid @ref="UserGrid"
             Data="ProjectManagers"
             KeyFieldName="Id"
             PageSize="10"
@@ -143,6 +141,23 @@
                     @EditFormContext.GetEditor("Zip")
                 </DxFormLayoutItem>
 
+                <DxFormLayoutItem ColSpanMd="12">
+                    <hr />
+                    <h5>Roles</h5>
+                    @{
+                        foreach (var role in userRoles)
+                        {
+                            var roleName = role.Name;
+
+                            <div class="role-element">
+                                <label>@roleName</label>
+                                <input type="checkbox" checked name="@roleName" value="@roleName" />
+                            </div>
+                        }
+                    }
+
+                </DxFormLayoutItem>
+
             </DxFormLayout>
 
         </EditFormTemplate>
@@ -152,7 +167,10 @@
 
 @code {
 
-    IGrid Grid { get; set; }
+    IGrid UserGrid { get; set; }
+    IGrid RolesGrid { get; set; }
+
+    List<IdentityRole> userRoles = new List<IdentityRole>();
 
     bool UsePopupEditForm { get; set; }
 
@@ -162,6 +180,7 @@
     protected override async Task OnInitializedAsync()
     {
         DataLoadedTcs.TrySetResult(true);
+        GetUserRoles();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -170,7 +189,7 @@
         {
             await DataLoadedTcs.Task;
 
-            Grid.CollapseAllDetailRows();
+            UserGrid.CollapseAllDetailRows();
         }
     }
 
@@ -214,7 +233,7 @@
                     return;
                 }
 
-                // Add user to roles
+                // Add user to userRoles
                 await UserManager.AddToRoleAsync(adminUser, "System Admin");
                 await UserManager.AddToRoleAsync(adminUser, "Site Admin");
                 await UserManager.AddToRoleAsync(adminUser, "Group Admin");
@@ -345,7 +364,7 @@
             return;
         }
 
-        // Add user to roles
+        // Add user to userRoles
         await UserManager.AddToRoleAsync(user, "System Admin");
         await UserManager.AddToRoleAsync(user, "Site Admin");
         await UserManager.AddToRoleAsync(user, "Group Admin");
@@ -395,20 +414,17 @@
 
     public List<IdentityRole> GetUserRoles()
     {
-        List<IdentityRole> roles = new List<IdentityRole>();
-
         try
         {
-            roles = roleManager.Roles.ToList();
+            userRoles = roleManager.Roles.ToList();
 
-            var tmpVal = "";
         }
         catch (Exception ex)
         {
             throw ex;
         }
 
-        return roles;
+        return userRoles;
     }
 
     private IUserEmailStore<ApplicationUser> GetEmailStore()

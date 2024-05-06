@@ -6,6 +6,12 @@ html, body {
     overflow: auto !important;
 }
 
+.role-element {
+    border: solid 0px #ff0000 !important;
+    float: left;
+    margin-right: 50px;
+}
+
 .logo {
     border: solid 0px #ff0000 !important;
     width: 175px !important;
@@ -152,6 +158,10 @@ html, body {
     color: #fff !important;
     border: solid 0px #ff0000 !important;
     background-color: #000000 !important;
+}
+
+h1,h2,h3,h4,h5,h6{
+    color: #808080 !important;
 }
 
 h1 {
