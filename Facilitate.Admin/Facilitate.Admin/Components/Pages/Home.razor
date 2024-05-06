@@ -34,7 +34,11 @@
 </div>
 
 <AuthorizeView>
-    <Authorized></Authorized>
+    <Authorized>
+        @{
+            navMan.NavigateTo("/Quotes/Leads");
+        }
+    </Authorized>
     <NotAuthorized>
         @{
             navMan.NavigateTo("/Account/Login");

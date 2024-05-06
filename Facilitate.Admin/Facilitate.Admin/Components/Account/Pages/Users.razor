@@ -88,7 +88,7 @@
             <DxGridDataColumn FieldName="City" />
             <DxGridDataColumn FieldName="State" />
             <DxGridDataColumn FieldName="Zip" />
-            <DxGridDataColumn FieldName="RegistrationDate" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+            <DxGridDataColumn Width="175" FieldName="RegistrationDate" DisplayFormat="MM/dd/yyyy hh:mm tt" />
             <DxGridCommandColumn Width="150px" Caption="Actions" DeleteButtonVisible="false" />
         </Columns>
 
@@ -101,6 +101,10 @@
 
                 <DxFormLayoutItem Caption="Enabled:" ColSpanMd="6">
                     @EditFormContext.GetEditor("IsEnabled")
+                </DxFormLayoutItem>
+
+                <DxFormLayoutItem Caption="" ColSpanMd="6">
+                    &nbsp;
                 </DxFormLayoutItem>
 
                 <DxFormLayoutItem Caption="First Name:" ColSpanMd="6">
@@ -165,7 +169,6 @@
         if (firstRender)
         {
             await DataLoadedTcs.Task;
-            //await Grid.StartEditRowAsync(0);
 
             Grid.CollapseAllDetailRows();
         }
@@ -228,21 +231,39 @@
             }
             else
             {
-                // This is an update
-                var result = await UserManager.UpdateAsync(adminUser);
+                var user = await UserManager.FindByIdAsync(adminUser.Id);
+
+                user.IsEnabled = adminUser.IsEnabled;
+                user.FirstName = adminUser.FirstName;
+                user.LastName = adminUser.LastName;
+                user.Phone = adminUser.Phone;
+                user.Email = adminUser.Email;
+                user.Address1 = adminUser.Address1;
+                user.Address2 = adminUser.Address2;
+                user.City = adminUser.City;
+                user.State = adminUser.State;
+                user.Zip = adminUser.Zip;
+
+                var result = await UserManager.UpdateAsync(user);
                 if (!result.Succeeded)
                 {
                     identityErrors = result.Errors;
                     return;
                 }
             }
+
+            // Refresh PM list
+            ProjectManagers = SortByLastNameUsingLinq(UserManager.Users.ToList());
         }
         catch (Exception ex)
         {
             var errMsg = ex.Message;
         }
+    }
 
-        Dispose();
+    public async Task Dispose()
+    {
+        DataLoadedTcs.TrySetCanceled();
     }
 
     async Task Grid_DataItemDeleting(GridDataItemDeletingEventArgs e)
@@ -255,25 +276,11 @@
             identityErrors = result.Errors;
             return;
         }
-
-        Dispose();
-    }
-
-    public void Dispose()
-    {
-        DataLoadedTcs.TrySetCanceled();
-
-        ProjectManagers = SortByLastNameUsingLinq(UserManager.Users.ToList());
     }
 
     IEnumerable<string> Values { get; set; }
 
-    public bool IsAssignButtonEnabled = false;
-
-    EntityInstantFeedbackSource InstantFeedbackSource { get; set; }
-
-    public List<ApplicationUser> ProjectManagers = new List<ApplicationUser>();
-    // public IEnumerable<ApplicationUser> SelectedProjectManager { get; set; }
+    public List<ApplicationUser> ProjectManagers { get; set; }
     public ApplicationUser SelectedProjectManager { get; set; }
 
     private IEnumerable<IdentityError>? identityErrors;
@@ -415,6 +422,10 @@
 
     private sealed class InputModel
     {
+        [Required]
+        [Display(Name = "IsEnabled")]
+        public bool IsEnabled { get; set; } = true;
+
         [Required]
         [Display(Name = "First")]
         public string FirstName { get; set; } = "";
