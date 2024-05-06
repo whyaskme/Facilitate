@@ -417,19 +417,16 @@ td {
     left: 5px !important;
 }
 
-    .icon-help:hover {
-        cursor: pointer;
-    }
-
-h4 {
-    color: #dad7d7 !important;
-    font-size: 1.3em !important;
-    font-weight: bold !important;
+.icon-help:hover {
+    cursor: pointer;
 }
 
 .hyperlink-manager-assignment {
     /*    color: #b10505 !important;*/
     text-decoration: underline !important;
+    border-right: solid 1px #c0c0c0 !important;
+    padding-right: 15px !important;
+    margin-right: 10px !important;
 }
 
     .hyperlink-manager-assignment:hover {
@@ -638,7 +635,7 @@ h6 {
 
 .detail-item {
     border-right: solid 0px #eee !important;
-    margin-right: 25px !important;
+    margin-right: 15px !important;
     font-weight: normal !important;
 }
 
