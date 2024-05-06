@@ -91,10 +91,10 @@
         </Columns>
 
         <EditFormTemplate Context="EditFormContext">
-            @{
+@*             @{
                 SelectedProjectManager = (ApplicationUser)EditFormContext.EditModel;
             }
-
+ *@
             <DxFormLayout CssClass="w-100">
 
                 <DxFormLayoutItem Caption="Enabled:" ColSpanMd="6">
@@ -144,15 +144,47 @@
                 <DxFormLayoutItem ColSpanMd="12">
                     <hr />
                     <h5>Roles</h5>
+
+                    <div class="role-element">
+                        <label>System Admin</label>
+                        <input type="checkbox" name="System Admin" value="System Admin" />
+                    </div>
+
+                    <div class="role-element">
+                        <label>Site Admin</label>
+                        <input type="checkbox" name="Site Admin" value="Site Admin" />
+                    </div>
+                            
+                    <div class="role-element">
+                        <label>Group Admin</label>
+                        <input type="checkbox" name="Group Admin" value="Group Admin" />
+                    </div>
+     
+                    <div class="role-element">
+                        <label>Project Manager</label>
+                        <input type="checkbox" name="Project Manager" value="Project Manager" />
+                    </div>
+
+                    <div class="role-element">
+                        <label>Vendor</label>
+                        <input type="checkbox" name="Vendor" value="Vendor" />
+                    </div>
+
+                    <div class="role-element">
+                        <label>Member</label>
+                        <input type="checkbox" name="Member" value="Member" />
+                    </div>
+
                     @{
                         foreach (var role in userRoles)
                         {
                             var roleName = role.Name;
+                            var currentUser = SelectedProjectManager;
 
-                            <div class="role-element">
-                                <label>@roleName</label>
-                                <input type="checkbox" checked name="@roleName" value="@roleName" />
-                            </div>
+                            // <div class="role-element">
+                            //     <label>@roleName</label>
+                            //     <input type="checkbox" checked name="@roleName" value="@roleName" />
+                            // </div>
                         }
                     }
 
