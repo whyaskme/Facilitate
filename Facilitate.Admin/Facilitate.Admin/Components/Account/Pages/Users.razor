@@ -55,7 +55,7 @@
 <div class="row">
 
     <DxGrid @ref="UserGrid"
-            Data="ProjectManagers"
+            Data="ApplicationUserDetails"
             KeyFieldName="Id"
             PageSize="10"
             PagerPosition="GridPagerPosition.Bottom"
@@ -181,10 +181,6 @@
                             var roleName = role.Name;
                             var currentUser = SelectedProjectManager;
 
-                            // <div class="role-element">
-                            //     <label>@roleName</label>
-                            //     <input type="checkbox" checked name="@roleName" value="@roleName" />
-                            // </div>
                         }
                     }
 
@@ -203,6 +199,7 @@
     IGrid RolesGrid { get; set; }
 
     List<IdentityRole> userRoles = new List<IdentityRole>();
+    List<ApplicationUserDetails> ApplicationUserDetails = new List<ApplicationUserDetails>();
 
     bool UsePopupEditForm { get; set; }
 
@@ -213,6 +210,48 @@
     {
         DataLoadedTcs.TrySetResult(true);
         GetUserRoles();
+
+        try
+        {
+            ProjectManagers = SortByLastNameUsingLinq(UserManager.Users.ToList());
+
+            foreach (ApplicationUser adminUser in ProjectManagers)
+            {
+                ApplicationUserDetails userDetail = new ApplicationUserDetails();
+
+                userDetail.AccessFailedCount = adminUser.AccessFailedCount;
+                userDetail.Address1 = adminUser.Address1;
+                userDetail.Address2 = adminUser.Address2;
+                userDetail.City = adminUser.City;
+                userDetail.Email = adminUser.Email;
+                userDetail.FirstName = adminUser.FirstName;
+                userDetail.Id = adminUser.Id;
+                userDetail.IsEnabled = adminUser.IsEnabled;
+                userDetail.LastName = adminUser.LastName;
+                userDetail.LockoutEnabled = adminUser.LockoutEnabled;
+                userDetail.LockoutEnd = adminUser.LockoutEnd;
+                userDetail.Phone = adminUser.Phone;
+                userDetail.ProfileImage = adminUser.ProfileImage;
+                userDetail.RegistrationDate = adminUser.RegistrationDate;
+                userDetail.State = adminUser.State;
+                userDetail.Zip = adminUser.Zip;
+
+                foreach (var role in userRoles)
+                {
+                    var isInRole = await UserManager.IsInRoleAsync(adminUser, role.Name);
+
+                    string[] roles = new string[] { role.Name, isInRole.ToString() };
+
+                    userDetail.Roles.Add(roles);
+                }
+                    
+                ApplicationUserDetails.Add(userDetail);
+            }
+        }
+        catch(Exception ex)
+        {
+            var errMsg = ex.Message;
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
