@@ -1,5 +1,39 @@
-﻿@inherits LayoutComponentBase
+﻿@using Facilitate.Admin.Data;
+@using Facilitate.Libraries.Models;
+
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity.EntityFrameworkCore
+@using Microsoft.AspNetCore.WebUtilities
+
+@using System.ComponentModel.DataAnnotations
+@using System.Text
+@using System.Text.Encodings.Web
+
+@using MongoDB.Bson;
+
+@using System.Text.Json;
+
+@using DevExpress.Blazor;
+@using DevExpress.Data;
+@using DevExpress.Data.Linq;
+
+@inherits LayoutComponentBase
 @layout AccountLayout
+
+@inject NavigationManager NavigationManager
+@inject IHttpClientFactory ClientFactory
+@inject HttpClient httpClient
+
+@inject IdentityRedirectManager RedirectManager
+
+@inject UserManager<ApplicationUser> UserManager
+@inject IUserStore<ApplicationUser> UserStore
+@inject SignInManager<ApplicationUser> SignInManager
+
+@inject IEmailSender<ApplicationUser> EmailSender
+@inject RoleManager<IdentityRole> roleManager
+
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
 
 <h1>Manage your account</h1>
 
@@ -14,3 +48,7 @@
         </div>
     </div>
 </div>
+
+@code{
+
+}

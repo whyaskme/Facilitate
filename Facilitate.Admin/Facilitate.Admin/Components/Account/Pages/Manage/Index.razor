@@ -9,6 +9,22 @@
 @inject IdentityUserAccessor UserAccessor
 @inject IdentityRedirectManager RedirectManager
 
+@inject NavigationManager NavigationManager
+@inject IHttpClientFactory ClientFactory
+@inject HttpClient httpClient
+
+@inject IdentityRedirectManager RedirectManager
+
+@inject UserManager<ApplicationUser> UserManager
+@inject IUserStore<ApplicationUser> UserStore
+@inject SignInManager<ApplicationUser> SignInManager
+
+@inject IEmailSender<ApplicationUser> EmailSender
+@inject RoleManager<IdentityRole> roleManager
+
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
+@inject ILogger<Register> Logger
+
 <PageTitle>Profile</PageTitle>
 
 <h3>Profile</h3>
@@ -34,6 +50,49 @@
 </div>
 
 @code {
+
+    // public ApplicationUser currentUser = new ApplicationUser();
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     try
+    //     {
+    //         if (firstRender)
+    //         {
+    //             var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+    //             var loggedInUser = authstate.User;
+    //             var loggedInName = loggedInUser.Identity.Name;
+
+    //             if (loggedInName != null && loggedInName != "")
+    //                 currentUser = await UserManager.FindByNameAsync(loggedInName);
+
+    //             if (!currentUser.IsEnabled)
+    //             {
+    //                 UserSignOut();
+    //             }
+    //         }
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         var errMsg = ex.Message;
+    //         return;
+    //     }
+    // }
+
+    // private void UserSignOut()
+    // {
+    //     try
+    //     {
+
+    //         SignInManager.SignOutAsync();
+
+    //         NavigationManager.NavigateTo("/Account/Lockout");
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         var errMsg = ex.Message;
+    //     }
+    // }
+
     private ApplicationUser user = default!;
     private string? username;
     private string? phoneNumber;

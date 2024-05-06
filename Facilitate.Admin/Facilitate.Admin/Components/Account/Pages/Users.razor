@@ -175,6 +175,67 @@
 
 @code {
 
+    public ApplicationUser currentUser = new ApplicationUser();
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        try
+        {
+            if (firstRender)
+            {
+                var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+                var loggedInUser = authstate.User;
+                var loggedInName = loggedInUser.Identity.Name;
+
+                if (loggedInName != null && loggedInName != "")
+                    currentUser = await UserManager.FindByNameAsync(loggedInName);
+
+                if (currentUser.IsEnabled)
+                {
+                    List<ApplicationUser> adminUsers = new List<ApplicationUser>();
+                    List<ApplicationUser> tmpUsers = UserManager.Users.ToList();
+                    foreach (ApplicationUser adminUser in tmpUsers)
+                    {
+                        if (adminUser.IsEnabled)
+                        {
+                            var list = await UserManager.IsInRoleAsync(adminUser, "Project Manager");
+                            adminUsers.Add(adminUser);
+                        }
+                    }
+
+                    ProjectManagers = SortByLastNameUsingLinq(adminUsers);
+                }
+                else
+                {
+                    UserSignOut();
+                }
+
+                await DataLoadedTcs.Task;
+
+                UserGrid.CollapseAllDetailRows();
+            }
+        }
+        catch (Exception ex)
+        {
+            var errMsg = ex.Message;
+            return;
+        }
+    }
+
+    private void UserSignOut()
+    {
+        try
+        {
+
+            SignInManager.SignOutAsync();
+
+            NavigationManager.NavigateTo("/Account/Lockout");
+        }
+        catch (Exception ex)
+        {
+            var errMsg = ex.Message;
+        }
+    }
+
     bool LoadingPanelVisible { get; set; } = true;
 
     IGrid UserGrid { get; set; }
@@ -246,16 +307,6 @@
     public List<ListItem> SortRoles(List<ListItem> originalList)
     {
         return originalList.OrderBy(x => x.Text).ToList();
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await DataLoadedTcs.Task;
-
-            UserGrid.CollapseAllDetailRows();
-        }
     }
 
     void Grid_CustomizeEditModel(GridCustomizeEditModelEventArgs e)
