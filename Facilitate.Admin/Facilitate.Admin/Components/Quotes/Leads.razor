@@ -7,6 +7,8 @@
 @using Microsoft.AspNetCore.Identity.EntityFrameworkCore
 @using Microsoft.AspNetCore.WebUtilities
 
+@using Microsoft.AspNetCore.Mvc
+
 @using MongoDB.Bson;
 
 @using System.Text.Json;
@@ -33,7 +35,7 @@
 
 @inject QuoteLeaderboard leaderboardStats
 
-@* @inject IdentityRedirectManager RedirectManager *@
+@attribute [IgnoreAntiforgeryToken]
 
 <PageTitle>Leads</PageTitle>
 
@@ -605,11 +607,11 @@ else
             try
             {
                 var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-                var user = authstate.User;
-                var name = user.Identity.Name;
+                var loggedInUser = authstate.User;
+                var loggedInName = loggedInUser.Identity.Name;
 
-                if (name != null && name != "")
-                    currentUser = await UserManager.FindByNameAsync(name);
+                if (loggedInName != null && loggedInName != "")
+                    currentUser = await UserManager.FindByNameAsync(loggedInName);
 
                 if(currentUser.IsEnabled)
                 {
@@ -631,8 +633,15 @@ else
                 }
                 else
                 {
+                    UserSignOut();
+
                     // Log user out and redirect to login with error message
-                    NavigationManager.NavigateTo("/Account/Login");
+                    // if (SignInManager.IsSignedIn(loggedInUser))
+                    // {
+                    //     await SignInManager.SignOutAsync();
+                    // }
+
+                    // NavigationManager.NavigateTo("/Account/Login");
                 }
             }
             catch (Exception ex)
@@ -642,6 +651,22 @@ else
             }
         }
     }
+
+    private void UserSignOut()
+    {
+        try{
+
+            SignInManager.SignOutAsync();
+
+            NavigationManager.NavigateTo("/Account/Login");
+        }
+        catch(Exception ex)
+        {
+            var errMsg = ex.Message;
+        }
+    }
+
+    private readonly IClaimsProvider _claimsProvider;
 
     protected override void OnInitialized()
     {

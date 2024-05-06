@@ -27,6 +27,14 @@ builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
+builder.Services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+
+builder.Services.AddScoped<IClaimsProvider>(provider =>
+{
+    var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+    return new ClaimsProvider(httpContextAccessor);
+});
+
 builder.Services.AddSingleton<WebServices>();
 
 builder.Services.AddScoped<QuoteLeaderboard>();
