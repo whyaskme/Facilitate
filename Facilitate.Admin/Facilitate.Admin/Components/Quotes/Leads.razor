@@ -23,8 +23,6 @@
 @inject IHttpClientFactory ClientFactory
 @inject HttpClient httpClient
 
-@inject NavigationManager navMan
-
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserStore<ApplicationUser> UserStore
 @inject SignInManager<ApplicationUser> SignInManager
@@ -34,6 +32,8 @@
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
 
 @inject QuoteLeaderboard leaderboardStats
+
+@* @inject IdentityRedirectManager RedirectManager *@
 
 <PageTitle>Leads</PageTitle>
 
@@ -60,7 +60,7 @@
     <Authorized></Authorized>
     <NotAuthorized>
         @{
-            navMan.NavigateTo("/Account/Login");
+            NavigationManager.NavigateTo("/Account/Login");
         }
     </NotAuthorized>
 </AuthorizeView>
@@ -576,7 +576,6 @@ else
     <button class="btn btn-primary" disabled="@CreateLeadsDisabled" @onclick="CreateLeads">Create @itemsToCreate Leads</button>
 </div>
 
-
 @code {
 
     async Task Grid_DataItemDeleting(GridDataItemDeletingEventArgs e)
@@ -598,7 +597,6 @@ else
         WebServices.UpdateQuote(selectedQuote);
     }
 
-
     public ApplicationUser currentUser = new ApplicationUser();
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -613,21 +611,29 @@ else
                 if (name != null && name != "")
                     currentUser = await UserManager.FindByNameAsync(name);
 
-                List<ApplicationUser> adminUsers = new List<ApplicationUser>();
-                List<ApplicationUser> tmpUsers = UserManager.Users.ToList();
-                foreach (ApplicationUser adminUser in tmpUsers)
+                if(currentUser.IsEnabled)
                 {
-                    if (adminUser.IsEnabled)
+                    List<ApplicationUser> adminUsers = new List<ApplicationUser>();
+                    List<ApplicationUser> tmpUsers = UserManager.Users.ToList();
+                    foreach (ApplicationUser adminUser in tmpUsers)
                     {
-                        var list = await UserManager.IsInRoleAsync(adminUser, "Project Manager");
-                        adminUsers.Add(adminUser);
+                        if (adminUser.IsEnabled)
+                        {
+                            var list = await UserManager.IsInRoleAsync(adminUser, "Project Manager");
+                            adminUsers.Add(adminUser);
+                        }
                     }
+
+                    ProjectManagers = SortByLastNameUsingLinq(adminUsers);
+                    RefreshTimer();
+
+                    GetIpAddress();
                 }
-
-                ProjectManagers = SortByLastNameUsingLinq(adminUsers);
-                RefreshTimer();
-
-                GetIpAddress();
+                else
+                {
+                    // Log user out and redirect to login with error message
+                    NavigationManager.NavigateTo("/Account/Login");
+                }
             }
             catch (Exception ex)
             {
@@ -1330,15 +1336,18 @@ else
 
     public void Dispose()
     {
-        _timer?.Dispose();           // because you need it here
+        _timer?.Dispose();
     }
 
-    private void RefreshTimer()
+    private async Task RefreshTimer()
     {
         LoadingPanelVisible = true;
 
         _timer = new Timer(new TimerCallback(_ =>
         {
+            // Check to see if user IsEnabled. If not, log them out an redirect to login page
+            //var isUserEnabled = IsUserEnabled();
+
             leaderboardStats = WebServices.GetLeaderBoardStats();
 
             quotes = webServices.GetQuotes("New");
@@ -1352,6 +1361,18 @@ else
         }), null, 1000, 1000);
 
         LoadingPanelVisible = false;
+    }
+
+    private async Task<bool> IsUserEnabled()
+    {
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var user = authstate.User;
+        var name = user.Identity.Name;
+
+        if (name != null && name != "")
+            currentUser = await UserManager.FindByNameAsync(name);
+
+        return currentUser.IsEnabled;
     }
 
     #endregion

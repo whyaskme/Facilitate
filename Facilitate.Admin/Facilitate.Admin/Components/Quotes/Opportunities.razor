@@ -23,8 +23,6 @@
 @inject IHttpClientFactory ClientFactory
 @inject HttpClient httpClient
 
-@inject NavigationManager navMan
-
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserStore<ApplicationUser> UserStore
 @inject SignInManager<ApplicationUser> SignInManager
@@ -58,7 +56,7 @@
     <Authorized></Authorized>
     <NotAuthorized>
         @{
-            navMan.NavigateTo("/Account/Login");
+            NavigationManager.NavigateTo("/Account/Login");
         }
     </NotAuthorized>
 </AuthorizeView>
@@ -667,21 +665,29 @@ else
                 if (name != null && name != "")
                     currentUser = await UserManager.FindByNameAsync(name);
 
-                List<ApplicationUser> adminUsers = new List<ApplicationUser>();
-                List<ApplicationUser> tmpUsers = UserManager.Users.ToList();
-                foreach (ApplicationUser adminUser in tmpUsers)
+                if (currentUser.IsEnabled)
                 {
-                    if (adminUser.IsEnabled)
+                    List<ApplicationUser> adminUsers = new List<ApplicationUser>();
+                    List<ApplicationUser> tmpUsers = UserManager.Users.ToList();
+                    foreach (ApplicationUser adminUser in tmpUsers)
                     {
-                        var list = await UserManager.IsInRoleAsync(adminUser, "Project Manager");
-                        adminUsers.Add(adminUser);
+                        if (adminUser.IsEnabled)
+                        {
+                            var list = await UserManager.IsInRoleAsync(adminUser, "Project Manager");
+                            adminUsers.Add(adminUser);
+                        }
                     }
+
+                    ProjectManagers = SortByLastNameUsingLinq(adminUsers);
+                    RefreshTimer();
+
+                    GetIpAddress();
                 }
-
-                ProjectManagers = SortByLastNameUsingLinq(adminUsers);
-                RefreshTimer();
-
-                GetIpAddress();
+                else
+                {
+                    // Log user out and redirect to login with error message
+                    NavigationManager.NavigateTo("/Account/Login");
+                }
             }
             catch (Exception ex)
             {
@@ -1150,10 +1156,10 @@ else
 
     public void Dispose()
     {
-        _timer?.Dispose();           // because you need it here
+        _timer?.Dispose();
     }
 
-    private void RefreshTimer()
+    private async Task RefreshTimer()
     {
         LoadingPanelVisible = true;
 
