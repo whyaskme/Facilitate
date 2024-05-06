@@ -51,48 +51,6 @@
 
 @code {
 
-    // public ApplicationUser currentUser = new ApplicationUser();
-    // protected override async Task OnAfterRenderAsync(bool firstRender)
-    // {
-    //     try
-    //     {
-    //         if (firstRender)
-    //         {
-    //             var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-    //             var loggedInUser = authstate.User;
-    //             var loggedInName = loggedInUser.Identity.Name;
-
-    //             if (loggedInName != null && loggedInName != "")
-    //                 currentUser = await UserManager.FindByNameAsync(loggedInName);
-
-    //             if (!currentUser.IsEnabled)
-    //             {
-    //                 UserSignOut();
-    //             }
-    //         }
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         var errMsg = ex.Message;
-    //         return;
-    //     }
-    // }
-
-    // private void UserSignOut()
-    // {
-    //     try
-    //     {
-
-    //         SignInManager.SignOutAsync();
-
-    //         NavigationManager.NavigateTo("/Account/Lockout");
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         var errMsg = ex.Message;
-    //     }
-    // }
-
     private ApplicationUser user = default!;
     private string? username;
     private string? phoneNumber;
@@ -105,11 +63,18 @@
 
     protected override async Task OnInitializedAsync()
     {
-        user = await UserAccessor.GetRequiredUserAsync(HttpContext);
-        username = await UserManager.GetUserNameAsync(user);
-        phoneNumber = await UserManager.GetPhoneNumberAsync(user);
+        try
+        {
+            user = await UserAccessor.GetRequiredUserAsync(HttpContext);
+            username = await UserManager.GetUserNameAsync(user);
+            phoneNumber = await UserManager.GetPhoneNumberAsync(user);
 
-        Input.PhoneNumber ??= phoneNumber;
+            Input.PhoneNumber ??= phoneNumber;
+        }
+        catch(Exception ex)
+        {
+            var errorMessage = $"Error: {ex.Message}";
+        }
     }
 
     private async Task OnValidSubmitAsync()

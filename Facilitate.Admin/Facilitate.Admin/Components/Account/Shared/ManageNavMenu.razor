@@ -1,41 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Facilitate.Libraries.Models;
 
-@using Facilitate.Admin.Data;
-
-@using Microsoft.AspNetCore.Identity.EntityFrameworkCore
-@using Microsoft.AspNetCore.WebUtilities
-
-@using System.ComponentModel.DataAnnotations
-@using System.Text
-@using System.Text.Encodings.Web
-
-@using MongoDB.Bson;
-
-@using System.Text.Json;
-
-@using DevExpress.Blazor;
-@using DevExpress.Data;
-@using DevExpress.Data.Linq;
-
-@inherits LayoutComponentBase
-@layout AccountLayout
-
-@inject NavigationManager NavigationManager
-@inject IHttpClientFactory ClientFactory
-@inject HttpClient httpClient
-
-@inject IdentityRedirectManager RedirectManager
-
-@inject UserManager<ApplicationUser> UserManager
-@inject IUserStore<ApplicationUser> UserStore
-@inject SignInManager<ApplicationUser> SignInManager
-
-@inject IEmailSender<ApplicationUser> EmailSender
-@inject RoleManager<IdentityRole> roleManager
-
-@inject AuthenticationStateProvider GetAuthenticationStateAsync
-
 @inject SignInManager<ApplicationUser> SignInManager
 
 <ul class="nav nav-pills flex-column">
@@ -63,48 +28,10 @@
 </ul>
 
 @code {
-
-    public ApplicationUser currentUser = new ApplicationUser();
-
-    private void UserSignOut()
-    {
-        try
-        {
-
-            SignInManager.SignOutAsync();
-
-            //NavigationManager.NavigateTo("/Account/Lockout");
-        }
-        catch (Exception ex)
-        {
-            var errMsg = ex.Message;
-        }
-    }
-
     private bool hasExternalLogins;
 
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-            var loggedInUser = authstate.User;
-            var loggedInName = loggedInUser.Identity.Name;
-
-            if (loggedInName != null && loggedInName != "")
-                currentUser = await UserManager.FindByNameAsync(loggedInName);
-
-            if (!currentUser.IsEnabled)
-            {
-                UserSignOut();
-            }
-        }
-        catch (Exception ex)
-        {
-            var errMsg = ex.Message;
-            return;
-        }
-
         hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
     }
 }
