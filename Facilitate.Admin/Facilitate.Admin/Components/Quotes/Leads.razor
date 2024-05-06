@@ -634,14 +634,6 @@ else
                 else
                 {
                     UserSignOut();
-
-                    // Log user out and redirect to login with error message
-                    // if (SignInManager.IsSignedIn(loggedInUser))
-                    // {
-                    //     await SignInManager.SignOutAsync();
-                    // }
-
-                    // NavigationManager.NavigateTo("/Account/Login");
                 }
             }
             catch (Exception ex)
@@ -658,7 +650,7 @@ else
 
             SignInManager.SignOutAsync();
 
-            NavigationManager.NavigateTo("/Account/Login");
+            NavigationManager.NavigateTo("/Account/Lockout");
         }
         catch(Exception ex)
         {

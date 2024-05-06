@@ -656,11 +656,11 @@ else
             try
             {
                 var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-                var user = authstate.User;
-                var name = user.Identity.Name;
+                var loggedInUser = authstate.User;
+                var loggedInName = loggedInUser.Identity.Name;
 
-                if (name != null && name != "")
-                    currentUser = await UserManager.FindByNameAsync(name);
+                if (loggedInName != null && loggedInName != "")
+                    currentUser = await UserManager.FindByNameAsync(loggedInName);
 
                 if (currentUser.IsEnabled)
                 {
@@ -682,8 +682,7 @@ else
                 }
                 else
                 {
-                    // Log user out and redirect to login with error message
-                    NavigationManager.NavigateTo("/Account/Login");
+                    UserSignOut();
                 }
             }
             catch (Exception ex)
@@ -691,6 +690,21 @@ else
                 var errMsg = ex.Message;
                 return;
             }
+        }
+    }
+
+    private void UserSignOut()
+    {
+        try
+        {
+
+            SignInManager.SignOutAsync();
+
+            NavigationManager.NavigateTo("/Account/Lockout");
+        }
+        catch (Exception ex)
+        {
+            var errMsg = ex.Message;
         }
     }
 

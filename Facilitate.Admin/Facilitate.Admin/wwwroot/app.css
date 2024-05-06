@@ -6,6 +6,11 @@ html, body {
     overflow: auto !important;
 }
 
+h1.text-danger
+{
+    padding-top: 25px !important;
+}
+
 .role-element {
     border: solid 0px #ff0000 !important;
     float: left;
