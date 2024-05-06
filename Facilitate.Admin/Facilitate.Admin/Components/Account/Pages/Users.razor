@@ -92,10 +92,11 @@
 
         <EditFormTemplate Context="EditFormContext">
 
-@*             @{
-                SelectedProjectManager = (ApplicationUser)EditFormContext.EditModel;
+            @{
+                //SelectedProjectManager = (ApplicationUser)EditFormContext.EditModel;
+                var rowIndex = 0;
             }
- *@
+
             <DxFormLayout CssClass="w-100">
 
                 <DxFormLayoutItem Caption="Enabled:" ColSpanMd="6">
@@ -166,7 +167,15 @@
 
 </div>
 
+<DxLoadingPanel @bind-Visible=@LoadingPanelVisible
+                PositionTarget="body"
+                ApplyBackgroundShading="true"
+                CssClass="w-100">
+</DxLoadingPanel>
+
 @code {
+
+    bool LoadingPanelVisible { get; set; } = true;
 
     IGrid UserGrid { get; set; }
     IGrid RolesGrid { get; set; }
@@ -230,6 +239,8 @@
         {
             var errMsg = ex.Message;
         }
+
+        LoadingPanelVisible = false;
     }
 
     public List<ListItem> SortRoles(List<ListItem> originalList)
@@ -325,8 +336,33 @@
                 }
             }
 
-            // Refresh PM list
-            ProjectManagers = SortByLastNameUsingLinq(UserManager.Users.ToList());
+            RefreshUIAfterUpdate();
+        }
+        catch (Exception ex)
+        {
+            var errMsg = ex.Message;
+        }
+    }
+
+    public void RefreshUIAfterUpdate()
+    {
+        try
+        {
+            var updatedManagerList = UserManager.Users.ToList();
+            ProjectManagers = SortByLastNameUsingLinq(updatedManagerList);
+
+            UserGrid.BeginUpdate();
+
+            try
+            {
+                UserGrid.Data = null;
+                UserGrid.Data = ProjectManagers;
+            }
+            finally
+            {
+                UserGrid.EndUpdate();
+                UserGrid.Reload();
+            }
         }
         catch (Exception ex)
         {
@@ -343,11 +379,22 @@
     {
         ApplicationUser adminUser = (ApplicationUser)e.DataItem;
 
-        var result = await UserManager.DeleteAsync(adminUser);
-        if (!result.Succeeded)
+        try
         {
-            identityErrors = result.Errors;
-            return;
+            var result = await UserManager.DeleteAsync(adminUser);
+            if (!result.Succeeded)
+            {
+                identityErrors = result.Errors;
+                return;
+            }
+
+            // Refresh PM list
+            var updatedManagerList = UserManager.Users.ToList();
+            ProjectManagers = SortByLastNameUsingLinq(updatedManagerList);
+        }
+        catch(Exception ex)
+        {
+            var errMsg = ex.Message;
         }
     }
 

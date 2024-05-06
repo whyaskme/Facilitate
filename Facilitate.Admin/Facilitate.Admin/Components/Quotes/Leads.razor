@@ -88,6 +88,7 @@ else
             PagerNavigationMode="PagerNavigationMode.InputBox"
             PageSizeSelectorVisible="true"
             PageSizeSelectorAllRowsItemVisible="false"
+            DataItemDeleting="Grid_DataItemDeleting"
             KeyboardNavigationEnabled="true">
         <Columns>
             <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
@@ -100,6 +101,7 @@ else
             <DxGridDataColumn Width="75" Caption="Roofs" FieldName="numberOfIncludedStructures" />
             <DxGridDataColumn Width="75" Caption="SqFt" FieldName="totalSquareFeet" />
             <DxGridDataColumn Width="100" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
+            <DxGridCommandColumn Width="150px" Caption="Actions" EditButtonVisible="false" DeleteButtonVisible="true" />
         </Columns>
 
         <DetailRowTemplate>
@@ -576,6 +578,26 @@ else
 
 
 @code {
+
+    async Task Grid_DataItemDeleting(GridDataItemDeletingEventArgs e)
+    {
+        Quote selectedQuote = (Quote)e.DataItem;
+        // selectedQuote.status = "Deleted";
+        selectedQuote.status = "Archive";
+
+        Event _event = new Event();
+        _event.Name = "Deleted Quote";
+        _event.DateTime = DateTime.UtcNow;
+        _event.Details = "Admin deleted Quote";
+
+        _event.Author = currentUser;
+
+        selectedQuote.events.Add(_event);
+
+        // Let's delete this quote
+        WebServices.UpdateQuote(selectedQuote);
+    }
+
 
     public ApplicationUser currentUser = new ApplicationUser();
     protected override async Task OnAfterRenderAsync(bool firstRender)
