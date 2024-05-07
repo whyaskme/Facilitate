@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Facilitate.Libraries", "Lib
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Facilitate.Admin", "Facilitate.Admin\Facilitate.Admin\Facilitate.Admin.csproj", "{4B520FD9-C63F-4638-8D23-8B0FC1B1FC75}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Facilitate.Api", "Api\Facilitate.Api.csproj", "{A016EE59-102B-49E5-856C-522E865212F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{4B520FD9-C63F-4638-8D23-8B0FC1B1FC75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B520FD9-C63F-4638-8D23-8B0FC1B1FC75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B520FD9-C63F-4638-8D23-8B0FC1B1FC75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A016EE59-102B-49E5-856C-522E865212F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A016EE59-102B-49E5-856C-522E865212F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A016EE59-102B-49E5-856C-522E865212F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A016EE59-102B-49E5-856C-522E865212F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
