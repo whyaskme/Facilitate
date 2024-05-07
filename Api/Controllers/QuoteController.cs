@@ -1,33 +1,24 @@
 ﻿using Facilitate.Libraries.Models;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
-using MongoDB.Bson;
-using static Facilitate.Libraries.Models.Constants.Messaging;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Facilitate.Api.Controllers
 {
     [Route("api/[controller]")]
-    //[Route("[controller]")]
     [ApiController]
     public class QuoteController : ControllerBase
     {
         Utils utils = new Utils();
 
-        string dbName = "Facilitate";
-        string collectionName = "Quote";
+        string _mongoDBName = "Facilitate";
+        string _mongoDBCollectionName = "Quote";
 
-        string resultMsg = string.Empty;
+        //string _mongoDBConnectionString = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
+        string _mongoDBConnectionString = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
 
-        //string mongoUri = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
-        //mongodb+srv://elite-io:!113324BossWood@cluster0.wluzv.mongodb.net/DriveSwitch?replicaSet=atlas-sqh0hv-shard-0&amp;readPreference=primary&amp;connectTimeoutMS=10000&amp;authSource=admin&amp;authMechanism=SCRAM-SHA-1
-        string mongoUri = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
+        IMongoClient _mongoDBClient;
 
-        IMongoClient client;
-
-        IMongoCollection<Quote> collection;
-        private CancellationToken _cancellationToken;
+        IMongoCollection<Quote> _quoteCollection;
 
         List<Quote> sortedQuotes = new List<Quote>();
 
@@ -35,15 +26,14 @@ namespace Facilitate.Api.Controllers
         List<Note> unSortedNotes = new List<Note>();
         List<Event> unSortedEvents = new List<Event>();
 
-        private readonly ILogger<QuoteController> _logger;
+        string resultMsg = string.Empty;
 
-        public QuoteController(ILogger<QuoteController> logger)
+        public QuoteController()
         {
-            _logger = logger;
+            _mongoDBClient = new MongoClient(_mongoDBConnectionString);
+            _quoteCollection = _mongoDBClient.GetDatabase(_mongoDBName).GetCollection<Quote>(_mongoDBCollectionName);
         }
 
-        // POST api/<QuoteController>
-        //[Produces("application/json")]
         [ProducesResponseType<String>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost]
@@ -129,11 +119,8 @@ namespace Facilitate.Api.Controllers
 
             try
             {
-                // Post the Quote to Api
-                client = new MongoClient(mongoUri);
-
-                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
-                collection.InsertOne(quote);
+                _quoteCollection = _mongoDBClient.GetDatabase(_mongoDBName).GetCollection<Quote>(_mongoDBCollectionName);
+                _quoteCollection.InsertOne(quote);
 
                 resultMsg = "Added QuoteId: " + quote._id;
             }
@@ -160,13 +147,10 @@ namespace Facilitate.Api.Controllers
 
             try
             {
-                client = new MongoClient(mongoUri);
-                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
-
                 var builder = Builders<Quote>.Filter;
                 var filter = builder.Eq(f => f.status, status);
 
-                sortedQuotes = collection.Find(filter).SortByDescending(e => e.timestamp).ToList();
+                sortedQuotes = _quoteCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
 
                 for (var i = 0; i < sortedQuotes.Count; i++)
                 {
