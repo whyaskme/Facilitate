@@ -27,8 +27,8 @@ namespace Facilitate.Admin.Data
         string dbName = "Facilitate";
         string collectionName = "Users";
 
-        //string mongoUri = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate";
-        string mongoUri = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate";
+        //string mongoUri = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
+        string mongoUri = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
 
         IMongoClient client;
 

@@ -26,8 +26,8 @@ namespace Facilitate.Libraries.Models
 
         string resultMsg = string.Empty;
 
-        //string mongoUri = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate";
-        string mongoUri = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate";
+        //string mongoUri = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
+        string mongoUri = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
 
         public TextInfo textinfo = new CultureInfo("en-US", false).TextInfo;
 
@@ -1202,7 +1202,7 @@ namespace Facilitate.Libraries.Models
         private void CreateDbConnection(string objectType, string collectionName)
         {
             //var dbConnectionString = ConfigurationManager.ConnectionStrings["MongoServer"].ConnectionString;
-            var dbConnectionString = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate";
+            var dbConnectionString = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
 
             _mongoClient = new MongoClient(dbConnectionString);
 
