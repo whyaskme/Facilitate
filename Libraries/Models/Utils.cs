@@ -13,6 +13,28 @@ namespace Facilitate.Libraries.Models
 {
     public class Utils
     {
+        IMongoDatabase _mongoDatabase;
+        IMongoClient _mongoClient;
+
+        string _mongoDBName = "Facilitate";
+        string _mongoDBCollectionName = "ReferenceData";
+
+        IMongoCollection<State> _mongoReferenceDataCollection;
+
+        IMongoCollection<State> _mongoStateCollection;
+        IMongoCollection<City> _mongoCityCollection;
+        IMongoCollection<ZipCode> _mongoZipCodeCollection;
+        IMongoCollection<Market> _mongoMarketCollection;
+        IMongoCollection<Advertisement> _mongoAdvertisementCollection;
+        IMongoCollection<Event> _mongoEventCollection;
+        IMongoCollection<Name> _mongoNameCollection;
+        IMongoCollection<Female> _mongoFemaleNameCollection;
+        IMongoCollection<Male> _mongoMaleNameCollection;
+        IMongoCollection<Last> _mongoLastNameCollection;
+        IMongoCollection<Street> _mongoStreetNameCollection;
+        IMongoCollection<Person> _mongoPersonCollection;
+        IMongoCollection<Stats> _mongoStatsCollection;
+
         public static int FemaleFirstNameCount = 4275;
         public static int MaleFirstNameCount = 1219;
         public static int LastNameCount = 79536;
@@ -21,22 +43,17 @@ namespace Facilitate.Libraries.Models
         public static int StateNameCount = 50;
         public static int ZipCodeCount = 41365;
 
-        string dbName = "Facilitate";
-        string collectionName = "ReferenceData";
-
         string resultMsg = string.Empty;
 
-        //string mongoUri = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
-        string mongoUri = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
+        //string _mongoDBConnectionString = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
+        string _mongoDBConnectionString = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
 
         public TextInfo textinfo = new CultureInfo("en-US", false).TextInfo;
 
-        IMongoClient client;
-        IMongoCollection<Name> namesCollection;
-
         public Utils()
         {
-            client = new MongoClient(mongoUri);
+            _mongoClient = new MongoClient(_mongoDBConnectionString);
+            _mongoDatabase = _mongoClient.GetDatabase("Facilitate");
         }
 
         public DateTime FormateDateTimeToLocal(DateTime dt)
@@ -152,7 +169,7 @@ namespace Facilitate.Libraries.Models
                 switch (sGender.ToLower())
                 {
                     case "female":
-                        var femaleNames = client.GetDatabase(dbName).GetCollection<NameFemale>(collectionName);
+                        var femaleNames = _mongoClient.GetDatabase(_mongoDBName).GetCollection<NameFemale>(_mongoDBCollectionName);
                         var myRandomFemaleName = femaleNames.Find(s => s._t == "NameFemale").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
                         foreach (var currentFemaleName in myRandomFemaleName)
                         {
@@ -161,7 +178,7 @@ namespace Facilitate.Libraries.Models
                         break;
 
                     case "male":
-                        var maleNames = client.GetDatabase(dbName).GetCollection<NameMale>(collectionName);
+                        var maleNames = _mongoClient.GetDatabase(_mongoDBName).GetCollection<NameMale>(_mongoDBCollectionName);
                         var myRandomMaleName = maleNames.Find(s => s._t == "NameMale").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
                         foreach (var currentMaleName in myRandomMaleName)
                         {
@@ -201,7 +218,7 @@ namespace Facilitate.Libraries.Models
 
             try
             {
-                var lastNames = client.GetDatabase(dbName).GetCollection<NameMale>(collectionName);
+                var lastNames = _mongoClient.GetDatabase(_mongoDBName).GetCollection<NameMale>(_mongoDBCollectionName);
                 var myRandomLastName = lastNames.Find(s => s._t == "NameLast").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
                 foreach (var currentLastName in myRandomLastName)
                 {
@@ -241,7 +258,7 @@ namespace Facilitate.Libraries.Models
 
             try
             {
-                var streetNames = client.GetDatabase(dbName).GetCollection<NameStreet>(collectionName);
+                var streetNames = _mongoClient.GetDatabase(_mongoDBName).GetCollection<NameStreet>(_mongoDBCollectionName);
                 var randomStreetName = streetNames.Find(s => s._t == "NameStreet").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
                 foreach (var currentStreetName in randomStreetName)
                 {
@@ -264,7 +281,7 @@ namespace Facilitate.Libraries.Models
 
             try
             {
-                var cityCollection = client.GetDatabase(dbName).GetCollection<City>(collectionName);
+                var cityCollection = _mongoClient.GetDatabase(_mongoDBName).GetCollection<City>(_mongoDBCollectionName);
                 var randomCities = cityCollection.Find(s => s._t == "City").ToListAsync().Result;
 
                 foreach (City randomCity in randomCities)
@@ -310,7 +327,7 @@ namespace Facilitate.Libraries.Models
 
             try
             {
-                var stateNames = client.GetDatabase(dbName).GetCollection<State>(collectionName);
+                var stateNames = _mongoClient.GetDatabase(_mongoDBName).GetCollection<State>(_mongoDBCollectionName);
                 var randomStateName = stateNames.Find(s => s._t == "State").Limit(-1).Skip(randomRecordNumber).ToListAsync().Result;
                 foreach (var currentState in randomStateName)
                 {
@@ -336,7 +353,7 @@ namespace Facilitate.Libraries.Models
 
             try
             {
-                var zipCodeCollection = client.GetDatabase(dbName).GetCollection<ZipCode>(collectionName);
+                var zipCodeCollection = _mongoClient.GetDatabase(_mongoDBName).GetCollection<ZipCode>(_mongoDBCollectionName);
                 var randomZipCodes = zipCodeCollection.Find(s => s._t == "ZipCode").ToListAsync().Result;
 
                 foreach (ZipCode randomZipCode in randomZipCodes)
@@ -399,7 +416,7 @@ namespace Facilitate.Libraries.Models
         {
             try
             {
-                var zipCodeCollection = client.GetDatabase(dbName).GetCollection<ZipCode>("ReferenceData");
+                var zipCodeCollection = _mongoClient.GetDatabase(_mongoDBName).GetCollection<ZipCode>("ReferenceData");
                 var selectedZipCodes = zipCodeCollection.Find(s => s.Zip == zipCode).ToListAsync().Result;
 
                 foreach (ZipCode currentZipCode in selectedZipCodes)
@@ -423,7 +440,7 @@ namespace Facilitate.Libraries.Models
 
             try
             {
-                var stateCollection = client.GetDatabase(dbName).GetCollection<State>("ReferenceData");
+                var stateCollection = _mongoClient.GetDatabase(_mongoDBName).GetCollection<State>("ReferenceData");
                 var selectedState = stateCollection.Find(s => s.Name == stateName).ToListAsync().Result;
 
                 foreach (State currentState in selectedState)
@@ -451,7 +468,7 @@ namespace Facilitate.Libraries.Models
 
             try
             {
-                var stateCollection = client.GetDatabase(dbName).GetCollection<State>("ReferenceData");
+                var stateCollection = _mongoClient.GetDatabase(_mongoDBName).GetCollection<State>("ReferenceData");
                 var selectedState = stateCollection.Find(s => s.Abbr == stateAbbr).ToListAsync().Result;
 
                 foreach (State currentState in selectedState)
@@ -502,7 +519,7 @@ namespace Facilitate.Libraries.Models
 
             try
             {
-                var cityCollection = client.GetDatabase(dbName).GetCollection<City>("ReferenceData");
+                var cityCollection = _mongoClient.GetDatabase(_mongoDBName).GetCollection<City>("ReferenceData");
                 var selectedCities = cityCollection.Find(s => s.Name == cityName).ToListAsync().Result;
 
                 foreach (City currentCity in selectedCities)
@@ -533,7 +550,7 @@ namespace Facilitate.Libraries.Models
 
             try
             {
-                var cityCollection = client.GetDatabase(dbName).GetCollection<City>("ReferenceData");
+                var cityCollection = _mongoClient.GetDatabase(_mongoDBName).GetCollection<City>("ReferenceData");
                 var selectedCities = cityCollection.Find(s => s.Name == cityName).ToListAsync().Result;
 
                 foreach (City currentCity in selectedCities)
@@ -561,7 +578,7 @@ namespace Facilitate.Libraries.Models
 
             try
             {
-                var countyCollection = client.GetDatabase(dbName).GetCollection<County>("ReferenceData");
+                var countyCollection = _mongoClient.GetDatabase(_mongoDBName).GetCollection<County>("ReferenceData");
                 var selectedCounties = countyCollection.Find(s => s.TimeZoneId == timezoneId).ToListAsync().Result;
 
                 foreach (County currentCounty in selectedCounties)
@@ -631,7 +648,7 @@ namespace Facilitate.Libraries.Models
             {
                 //var randomCities = cityCollection.Find(s => s._t == "City").ToListAsync().Result;
 
-                var stateCollection = client.GetDatabase(dbName).GetCollection<State>("ReferenceData");
+                var stateCollection = _mongoClient.GetDatabase(_mongoDBName).GetCollection<State>("ReferenceData");
                 var selectedState = stateCollection.Find(s => s._t == "State").ToListAsync().Result;
 
                 foreach (State currentState in selectedState)
@@ -1012,24 +1029,6 @@ namespace Facilitate.Libraries.Models
             return cityCount.ToString();
         }
 
-        //public string GetMarketCount()
-        //{
-        //    var marketCount = 0;
-
-        //    CreateDbConnection("Market", "Markets");
-
-        //    var sort = Builders<BsonDocument>.Sort.Ascending("Name");
-
-        //    var marketCollection = _mongoMarketCollection.Find(s => s._t == "Market").ToListAsync().Result;
-
-        //    foreach (Market currentMarket in marketCollection)
-        //    {
-        //        marketCount++;
-        //    }
-
-        //    return marketCount.ToString();
-        //}
-
         public string GeoLocationByUserIp(string userIp)
         {
             var stateName = "Unknown";
@@ -1180,91 +1179,64 @@ namespace Facilitate.Libraries.Models
 
         #region MongoDB Methods
 
-        IMongoDatabase _mongoDatabase;
-        IMongoClient _mongoClient;
-
-        IMongoCollection<State> _mongoReferenceDataCollection;
-
-        IMongoCollection<State> _mongoStateCollection;
-        IMongoCollection<City> _mongoCityCollection;
-        IMongoCollection<ZipCode> _mongoZipCodeCollection;
-        IMongoCollection<Market> _mongoMarketCollection;
-        IMongoCollection<Advertisement> _mongoAdvertisementCollection;
-        IMongoCollection<Event> _mongoEventCollection;
-        IMongoCollection<Name> _mongoNameCollection;
-        IMongoCollection<Female> _mongoFemaleNameCollection;
-        IMongoCollection<Male> _mongoMaleNameCollection;
-        IMongoCollection<Last> _mongoLastNameCollection;
-        IMongoCollection<Street> _mongoStreetNameCollection;
-        IMongoCollection<Person> _mongoPersonCollection;
-        IMongoCollection<Stats> _mongoStatsCollection;
-
-        private void CreateDbConnection(string objectType, string collectionName)
+        private void CreateDbConnection(string objectType, string _collectionName)
         {
-            //var dbConnectionString = ConfigurationManager.ConnectionStrings["MongoServer"].ConnectionString;
-            var dbConnectionString = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
-
-            _mongoClient = new MongoClient(dbConnectionString);
-
-            //_mongoDatabase = _mongoClient.GetDatabase(ConfigurationManager.AppSettings["MongoDbName"]); // this database uses the new API
-            _mongoDatabase = _mongoClient.GetDatabase("Facilitate"); // this database uses the new API
-
             switch (objectType.ToLower())
             {
                 case "advertisement":
-                    _mongoAdvertisementCollection = _mongoDatabase.GetCollection<Advertisement>(collectionName);
+                    _mongoAdvertisementCollection = _mongoDatabase.GetCollection<Advertisement>(_collectionName);
                     break;
 
                 case "city":
-                    _mongoCityCollection = _mongoDatabase.GetCollection<City>(collectionName);
+                    _mongoCityCollection = _mongoDatabase.GetCollection<City>(_collectionName);
                     break;
 
                 case "event":
-                    _mongoEventCollection = _mongoDatabase.GetCollection<Event>(collectionName);
+                    _mongoEventCollection = _mongoDatabase.GetCollection<Event>(_collectionName);
                     break;
 
                 case "market":
-                    _mongoMarketCollection = _mongoDatabase.GetCollection<Market>(collectionName);
+                    _mongoMarketCollection = _mongoDatabase.GetCollection<Market>(_collectionName);
                     break;
 
                 case "name":
-                    _mongoNameCollection = _mongoDatabase.GetCollection<Name>(collectionName);
+                    _mongoNameCollection = _mongoDatabase.GetCollection<Name>(_collectionName);
                     break;
 
                 case "female":
-                    _mongoFemaleNameCollection = _mongoDatabase.GetCollection<Female>(collectionName);
+                    _mongoFemaleNameCollection = _mongoDatabase.GetCollection<Female>(_collectionName);
                     break;
 
                 case "male":
-                    _mongoMaleNameCollection = _mongoDatabase.GetCollection<Male>(collectionName);
+                    _mongoMaleNameCollection = _mongoDatabase.GetCollection<Male>(_collectionName);
                     break;
 
                 case "last":
-                    _mongoLastNameCollection = _mongoDatabase.GetCollection<Last>(collectionName);
+                    _mongoLastNameCollection = _mongoDatabase.GetCollection<Last>(_collectionName);
                     break;
 
                 case "street":
-                    _mongoStreetNameCollection = _mongoDatabase.GetCollection<Street>(collectionName);
+                    _mongoStreetNameCollection = _mongoDatabase.GetCollection<Street>(_collectionName);
                     break;
 
                 case "person":
-                    _mongoPersonCollection = _mongoDatabase.GetCollection<Person>(collectionName);
+                    _mongoPersonCollection = _mongoDatabase.GetCollection<Person>(_collectionName);
                     break;
 
                 case "state":
-                    _mongoStateCollection = _mongoDatabase.GetCollection<State>(collectionName);
+                    _mongoStateCollection = _mongoDatabase.GetCollection<State>(_collectionName);
                     break;
 
                 case "stats":
-                    _mongoStatsCollection = _mongoDatabase.GetCollection<Stats>(collectionName);
+                    _mongoStatsCollection = _mongoDatabase.GetCollection<Stats>(_collectionName);
                     break;
 
                 case "zipcode":
-                    _mongoZipCodeCollection = _mongoDatabase.GetCollection<ZipCode>(collectionName);
+                    _mongoZipCodeCollection = _mongoDatabase.GetCollection<ZipCode>(_collectionName);
                     break;
 
                 default:
-                    _mongoStateCollection = _mongoDatabase.GetCollection<State>(collectionName);
+                    _mongoStateCollection = _mongoDatabase.GetCollection<State>(_collectionName);
                     break;
             }
         }

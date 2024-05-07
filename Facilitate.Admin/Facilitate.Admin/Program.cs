@@ -35,10 +35,11 @@ builder.Services.AddScoped<IClaimsProvider>(provider =>
     return new ClaimsProvider(httpContextAccessor);
 });
 
+//builder.Services.AddSingleton<Utils>();
 builder.Services.AddSingleton<WebServices>();
 
-builder.Services.AddScoped<QuoteLeaderboard>();
-//builder.Services.AddSingleton<QuoteLeaderboard>();
+//builder.Services.AddScoped<QuoteLeaderboard>();
+builder.Services.AddSingleton<QuoteLeaderboard>();
 
 builder.Services.AddCors(x => x.AddPolicy("externalRequests",
                     policy => policy

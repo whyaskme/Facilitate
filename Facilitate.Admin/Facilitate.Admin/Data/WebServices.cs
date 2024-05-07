@@ -1,36 +1,40 @@
 ﻿using Facilitate.Libraries.Models;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using MongoDB.Driver;
-using static Facilitate.Libraries.Models.Constants.Messaging;
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
-//using ServiceStack;
-using System.Drawing.Text;
+using MongoDB.Driver;
 
 namespace Facilitate.Admin.Data
 {
-    //[Route("api/[controller]")]
     [ApiController]
     public class WebServices : ControllerBase
     {
+
         Utils utils = new Utils();
 
         public HttpClient apiClient = new HttpClient();
 
-        string dbName = "Facilitate";
-        string collectionName = "Quote";
+        string _mongoDBName = "Facilitate";
+        string _mongoDBCollectionName = "Quote";
 
         string resultMsg = string.Empty;
 
-        //string mongoUri = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
-        string mongoUri = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
+        List<Attachment> unSortedFiles = new List<Attachment>();
+        List<Note> unSortedNotes = new List<Note>();
+        List<Event> unSortedEvents = new List<Event>();
 
-        IMongoClient client;
+        //string _mongoDBConnectionString = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
+        string _mongoDBConnectionString = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
 
-        IMongoCollection<Quote> collection;
+        IMongoClient _mongoDBClient;
+
+        IMongoCollection<Quote> _mongoDBCollection;
         private CancellationToken _cancellationToken;
+
+        public WebServices()
+        {
+            _mongoDBClient = new MongoClient(_mongoDBConnectionString);
+            _mongoDBCollection = _mongoDBClient.GetDatabase(_mongoDBName).GetCollection<Quote>(_mongoDBCollectionName);
+        }
 
         public List<Quote> quoteList = new List<Quote>();
 
@@ -62,19 +66,12 @@ namespace Facilitate.Admin.Data
 
         public List<Quote> GetQuotes(string status)
         {
-            List<Attachment> unSortedFiles = new List<Attachment>();
-            List<Note> unSortedNotes = new List<Note>();
-            List<Event> unSortedEvents = new List<Event>();
-
             try
             {
-                client = new MongoClient(mongoUri);
-                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
-
                 var builder = Builders<Quote>.Filter;
                 var filter = builder.Eq(f => f.status, status);
 
-                var sortedQuotes = collection.Find(filter).SortByDescending(e => e.timestamp).ToList();
+                var sortedQuotes = _mongoDBCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
                 for (var i = 0; i < sortedQuotes.Count; i++)
                 {
                     unSortedFiles.Clear();
@@ -132,19 +129,12 @@ namespace Facilitate.Admin.Data
 
         public Quote GetQuote(Quote selectedQuote)
         {
-            List<Attachment> unSortedFiles = new List<Attachment>();
-            List<Note> unSortedNotes = new List<Note>();
-            List<Event> unSortedEvents = new List<Event>();
-
             try
             {
-                client = new MongoClient(mongoUri);
-                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
-
                 var builder = Builders<Quote>.Filter;
                 var filter = builder.Eq(f => f._id, selectedQuote._id);
 
-                selectedQuote = (Quote)collection.Find(filter);
+                selectedQuote = (Quote)_mongoDBCollection.Find(filter);
 
                 selectedQuote = SortItemsByDateDesc(selectedQuote);
 
@@ -166,11 +156,7 @@ namespace Facilitate.Admin.Data
         {
             try
             {
-                // Post the Quote to Api
-                client = new MongoClient(mongoUri);
-
-                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
-                collection.InsertOne(quote);
+                _mongoDBCollection.InsertOne(quote);
 
                 resultMsg = "Added Quote!";
             }
@@ -194,13 +180,9 @@ namespace Facilitate.Admin.Data
 
             try
             {
-                // This is a soft delete > move to archive.
-                client = new MongoClient(mongoUri);
-                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
-
                 var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
 
-                var result = collection.ReplaceOne(filter, quote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+                var result = _mongoDBCollection.ReplaceOne(filter, quote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
             }
             catch (Exception ex)
             {
@@ -220,13 +202,10 @@ namespace Facilitate.Admin.Data
         {
             try
             {
-                client = new MongoClient(mongoUri);
-                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
-
                 var builder = Builders<Quote>.Filter;
                 var filter = builder.Eq(f => f.status, status);
 
-                var count = collection.CountDocuments(filter);
+                var count = _mongoDBCollection.CountDocuments(filter);
 
                 return (int)count;
             }
@@ -247,10 +226,7 @@ namespace Facilitate.Admin.Data
 
             try
             {
-                client = new MongoClient(mongoUri);
-                collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
-
-                var countsByQuoteStatus = collection.Aggregate()
+                var countsByQuoteStatus = _mongoDBCollection.Aggregate()
                           .Group(
                               x => x.status,
                               g => new QuoteStat
@@ -340,60 +316,5 @@ namespace Facilitate.Admin.Data
         {
             return originalList.OrderByDescending(x => x.Date).ToList();
         }
-
-        //// GET api/<WebServices>/5
-        //[HttpGet("{id}")]
-        //public string GetQuote(int id)
-        //{
-        //    return "value";
-        //}
-
-        //// POST api/<WebServices>
-        //[HttpPost]
-        //public void PostQuote([FromBody] string value)
-        //{
-        //}
-
-        //// PUT api/<WebServices>/5
-        //[HttpPut("{id}")]
-        //public void PutQuote(int id, [FromBody] string value)
-        //{
-        //}
-
-        //[HttpDelete("{quoteId}, {quote}")]
-        //public string DeleteQuote(string quoteId)
-        //{
-        //    try
-        //    {
-        //        // This is a soft delete > move to archive.
-        //        client = new MongoClient(mongoUri);
-        //        collection = client.GetDatabase(dbName).GetCollection<Quote>(collectionName);
-
-        //        // Get the selected quote for update
-        //        var builder = Builders<Quote>.Filter;
-        //        var filter = builder.Eq(f => f._id, quoteId);
-
-        //        var sortedelectedQuote = collection.Find(filter).ToList()[0];
-
-        //        Event _event = new Event();
-        //        _event.Details = sortedelectedQuote.status + " moved to Archive";
-
-        //        sortedelectedQuote.status = "Archive";
-        //        sortedelectedQuote.events.Add(_event);
-
-        //        var result = collection.ReplaceOne(filter, sortedelectedQuote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
-
-        //        resultMsg = "Archived!";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        resultMsg = ex.Message;
-        //    }
-        //    finally
-        //    {
-
-        //    }
-        //    return resultMsg;
-        //}
     }
 }
