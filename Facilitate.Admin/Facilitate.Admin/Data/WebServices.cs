@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using MongoDB.Driver;
+using System.Collections.Generic;
 
 namespace Facilitate.Admin.Data
 {
@@ -66,12 +67,14 @@ namespace Facilitate.Admin.Data
 
         public List<Quote> GetQuotes(string status)
         {
+            List<Quote> sortedQuotes = new List<Quote>();
             try
             {
                 var builder = Builders<Quote>.Filter;
                 var filter = builder.Eq(f => f.status, status);
 
-                var sortedQuotes = _mongoDBCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
+                sortedQuotes = _mongoDBCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
+
                 for (var i = 0; i < sortedQuotes.Count; i++)
                 {
                     unSortedFiles.Clear();
@@ -120,11 +123,8 @@ namespace Facilitate.Admin.Data
             {
                 resultMsg = ex.Message;
             }
-            finally
-            {
-
-            }
-            return null;
+            
+            return sortedQuotes;
         }
 
         public Quote GetQuote(Quote selectedQuote)

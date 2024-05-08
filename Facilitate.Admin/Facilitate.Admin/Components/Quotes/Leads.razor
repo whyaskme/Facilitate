@@ -580,6 +580,8 @@ else
 
 @code {
 
+    Utils utils = new Utils();
+
     async Task Grid_DataItemDeleting(GridDataItemDeletingEventArgs e)
     {
         Quote selectedQuote = (Quote)e.DataItem;
@@ -663,6 +665,8 @@ else
     protected override void OnInitialized()
     {
         leaderboardStats = WebServices.GetLeaderBoardStats();
+
+        //GetQuotes();
     }
 
     public int currentItemIndex = 0;
@@ -892,7 +896,7 @@ else
 
         selectedQuote.status = "Opportunity";
         selectedQuote.projectManager = SelectedProjectManager.ToList()[0];
-        
+
         var sysUser = new ApplicationUser();
         sysUser.FirstName = "System";
 
@@ -1045,7 +1049,7 @@ else
 
         Event _event = new Event();
         _event.Details = "Deleted attachment (" + selectedAttachment.MediaDescription + ") from Quote";
-       _event.Author = currentUser;
+        _event.Author = currentUser;
 
         selectedQuote.events.Add(_event);
 
@@ -1118,8 +1122,6 @@ else
         quote.status = "New";
 
         quote.ipAddress = SubmissionUserIP;
-
-        Utils utils = new Utils();
 
         var randomStreetNumber = utils.GetRandomStreetNumber();
         var randomStreetName = utils.GetRandomStreetName();
@@ -1283,7 +1285,8 @@ else
 
         _event.Author = currentUser;
 
-        quote.events.Add(_event);
+        if(_event != null)
+            quote.events.Add(_event);
 
         var results = string.Empty;
 
@@ -1368,6 +1371,7 @@ else
             leaderboardStats = WebServices.GetLeaderBoardStats();
 
             quotes = webServices.GetQuotes("New");
+
             updateStatus = quotes.Count().ToString("N0");
             StatusContainerClass = "container-action-buttons-show";
 
@@ -1378,6 +1382,20 @@ else
         }), null, 1000, 1000);
 
         LoadingPanelVisible = false;
+    }
+
+    private async Task GetQuotes()
+    {
+        try
+        {
+            var tmpQuotes = webServices.CallQuoteApi("New");
+
+            var testMsg = "";
+        }
+        catch (Exception ex)
+        {
+            var errMsg = ex.Message;
+        }
     }
 
     private async Task<bool> IsUserEnabled()

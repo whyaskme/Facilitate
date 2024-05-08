@@ -86,24 +86,24 @@
     protected async override void OnInitialized()
     {
         leaderboardStats = WebServices.GetLeaderBoardStats();
-        await RefreshTimer();
+        //await RefreshTimer();
     }
 
-    public void Dispose()
-    {
-        statsTimer?.Dispose();
-    }
+    // public void Dispose()
+    // {
+    //     statsTimer?.Dispose();
+    // }
 
-    private async Task RefreshTimer()
-    {
-        statsTimer = new Timer(new TimerCallback(_ =>
-        {
-            leaderboardStats = WebServices.GetLeaderBoardStats();
+    // private async Task RefreshTimer()
+    // {
+    //     statsTimer = new Timer(new TimerCallback(_ =>
+    //     {
+    //         leaderboardStats = WebServices.GetLeaderBoardStats();
 
-            InvokeAsync(() =>
-            {
-                StateHasChanged();
-            });
-        }), null, 1000, 1000);
-    }
+    //         InvokeAsync(() =>
+    //         {
+    //             StateHasChanged();
+    //         });
+    //     }), null, 1000, 1000);
+    // }
 }
