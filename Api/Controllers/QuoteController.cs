@@ -203,28 +203,6 @@ namespace Facilitate.Api.Controllers
             return sortedQuotes == null ? NotFound() : Ok(sortedQuotes);
         }
 
-        // GET api/<QuoteController>/5
-        //[Produces("application/json")]
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
-
-        // PUT api/<QuoteController>/5
-        //[Produces("application/json")]
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
-
-        // DELETE api/<QuoteController>/5
-        //[Produces("application/json")]
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
-
         private List<Event> SortEventsByDateDesc(List<Event> originalList)
         {
             return originalList.OrderByDescending(x => x.DateTime).ToList();

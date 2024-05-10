@@ -582,6 +582,19 @@ else
 
     Utils utils = new Utils();
 
+    async void OnLocationChanged(object sender, LocationChangedEventArgs args)
+    {
+        var tmpVal = "";
+
+        Dispose();
+    }
+
+    public void Dispose()
+    {
+        //_timer?.Dispose();
+        //NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+
     async Task Grid_DataItemDeleting(GridDataItemDeletingEventArgs e)
     {
         Quote selectedQuote = (Quote)e.DataItem;
@@ -665,6 +678,8 @@ else
     protected override void OnInitialized()
     {
         leaderboardStats = WebServices.GetLeaderBoardStats();
+
+        NavigationManager.LocationChanged += OnLocationChanged;
 
         //GetQuotes();
     }
@@ -1292,7 +1307,9 @@ else
 
         try
         {
-            WebServices.CreateQuote(quote);
+            //WebServices.CreateQuote(quote);
+            var tmpVal = WebServices.CreateQuoteApi(quote);
+
             results = "POSTED";
         }
         catch (Exception ex)
@@ -1354,10 +1371,10 @@ else
         RefreshDisabled = false;
     }
 
-    public void Dispose()
-    {
-        _timer?.Dispose();
-    }
+    // public void Dispose()
+    // {
+    //     _timer?.Dispose();
+    // }
 
     private async Task RefreshTimer()
     {

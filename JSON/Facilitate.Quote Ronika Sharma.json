@@ -1,0 +1,167 @@
+[{
+  "_id": "663d2a3b9c61674fa7b80f43",
+  "_t": "Quote",
+  "ipAddress": "44.210.74.179",
+  "status": "New",
+  "Groups": [
+    {
+      "$oid": "000000000000000000000000"
+    }
+  ],
+  "address": "11201 Brista Way, Austin, Texas 78726",
+  "fullAddress": "11201 Brista Way, Austin, Texas 78726",
+  "street": "11201 Brista Way",
+  "city": "Austin",
+  "state": "TX",
+  "zip": "78726",
+  "firstName": "Ronika",
+  "lastName": "Sharma",
+  "email": "ronikasharma@yahoo.com",
+  "phone": "(732) 610-5633",
+  "market": "Austin, TX",
+  "externalUrl": "n/a",
+  "timestamp": {
+    "$date": "2024-05-09T19:55:39.575Z"
+  },
+  "lastUpdated": {
+    "$date": "2024-05-09T19:55:39.145Z"
+  },
+  "totalQuote": 14325.27,
+  "numberOfStructures": 1,
+  "numberOfIncludedStructures": 1,
+  "totalSquareFeet": 3775,
+  "mainRoofTotalSquareFeet": 3775,
+  "totalInitialSquareFeet": 3775,
+  "sessionId": "myUv5m9POCPLJ1zScpA94",
+  "structures": [
+    {
+      "name": "Main Roof",
+      "slope": "Steep",
+      "isIncluded": true,
+      "squareFeet": 3775,
+      "initialSquareFeet": 3775,
+      "roofComplexity": "Complex"
+    }
+  ],
+  "repName": "",
+  "repEmail": "",
+  "leadId": 73025,
+  "projectManager": null,
+  "products": [
+    {
+      "name": "TAMKO Heritage",
+      "_id": 54574,
+      "priceInfo": {
+        "priceType": "BasicFinancing",
+        "total": 14325.27,
+        "pricePerSquare": 320,
+        "monthly": 0,
+        "apr": 0,
+        "months": 0
+      },
+      "priceRange": {
+        "totalMin": 12892,
+        "totalMax": 15757,
+        "monthlyMin": 0,
+        "monthlyMax": 0
+      },
+      "wasteFactorMainRoof": 1.15
+    },
+    {
+      "name": "GAF Timberline HDZ",
+      "_id": 53309,
+      "priceInfo": {
+        "priceType": "BasicFinancing",
+        "total": 16061.66,
+        "pricePerSquare": 360,
+        "monthly": 325,
+        "apr": 7.9,
+        "months": 60
+      },
+      "priceRange": {
+        "totalMin": 14455,
+        "totalMax": 17667,
+        "monthlyMin": 292,
+        "monthlyMax": 357
+      },
+      "wasteFactorMainRoof": 1.15
+    },
+    {
+      "name": "IKO Nordic",
+      "_id": 53310,
+      "priceInfo": {
+        "priceType": "BasicFinancing",
+        "total": 21704.95,
+        "pricePerSquare": 490,
+        "monthly": 0,
+        "apr": 0,
+        "months": 0
+      },
+      "priceRange": {
+        "totalMin": 19534,
+        "totalMax": 23875,
+        "monthlyMin": 0,
+        "monthlyMax": 0
+      },
+      "wasteFactorMainRoof": 1.15
+    }
+  ],
+  "attachments": [],
+  "notes": [],
+  "events": [
+    {
+      "_id": "663d2a3b9c61674fa7b80f76",
+      "_t": "Event",
+      "Name": "New Quote",
+      "TypeId": 0,
+      "DateTime": {
+        "$date": "2024-05-09T19:55:39.576Z"
+      },
+      "Details": "New quote referred by: n/a",
+      "Author": {
+        "_id": "da5b4022-7c5b-43ef-bd4b-aabfc55c3aa5",
+        "UserName": null,
+        "NormalizedUserName": null,
+        "Email": "",
+        "NormalizedEmail": null,
+        "EmailConfirmed": false,
+        "PasswordHash": null,
+        "SecurityStamp": "9a26b15e-4978-4ce9-9b6b-ddb3afb8fff7",
+        "ConcurrencyStamp": "dc303c4a-a3a4-4007-bcf1-0a0a34385a15",
+        "PhoneNumber": null,
+        "PhoneNumberConfirmed": false,
+        "TwoFactorEnabled": false,
+        "LockoutEnd": null,
+        "LockoutEnabled": false,
+        "AccessFailedCount": 0,
+        "IsEnabled": true,
+        "RegistrationDate": {
+          "$date": "2024-05-09T19:55:39.576Z"
+        },
+        "Expired": false,
+        "ExpireDate": {
+          "$date": "9999-12-31T23:59:59.999Z"
+        },
+        "DateOfBirth": {
+          "$date": {
+            "$numberLong": "-62135596800000"
+          }
+        },
+        "Title": "",
+        "FirstName": "Web",
+        "MiddleName": "",
+        "LastName": "Api",
+        "Suffix": "",
+        "Gender": 0,
+        "Address1": "",
+        "Address2": "",
+        "City": "",
+        "State": "",
+        "Zip": "",
+        "Phone": "",
+        "ProfileImage": ""
+      }
+    }
+  ],
+  "warranties": []
+}]

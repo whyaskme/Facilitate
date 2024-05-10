@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 
 using MongoDB.Driver;
+using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Facilitate.Admin.Data
 {
@@ -157,6 +159,31 @@ namespace Facilitate.Admin.Data
             try
             {
                 _mongoDBCollection.InsertOne(quote);
+
+                resultMsg = "Added Quote!";
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
+            return resultMsg;
+        }
+
+        public async Task<string> CreateQuoteApi(Quote quote)
+        {
+            try
+            {
+
+                var apiUrl = apiClient.BaseAddress = new Uri("https://api.facilitate.org/api/quote");
+                //var apiUrl = apiClient.BaseAddress = new Uri("https://api.facilitate.org/api/quote");
+
+                HttpContent content = new StringContent(JsonConvert.SerializeObject(quote), Encoding.UTF8, "application/json");
+
+                var quotes = await apiClient.PostAsync(apiUrl.ToString(), content);
 
                 resultMsg = "Added Quote!";
             }
