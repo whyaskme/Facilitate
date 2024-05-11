@@ -35,11 +35,10 @@ builder.Services.AddScoped<IClaimsProvider>(provider =>
     return new ClaimsProvider(httpContextAccessor);
 });
 
-//builder.Services.AddSingleton<Utils>();
 builder.Services.AddSingleton<WebServices>();
 
-//builder.Services.AddScoped<QuoteLeaderboard>();
-builder.Services.AddSingleton<QuoteLeaderboard>();
+builder.Services.AddScoped<QuoteLeaderboard>();
+//builder.Services.AddSingleton<QuoteLeaderboard>();
 
 builder.Services.AddCors(x => x.AddPolicy("externalRequests",
                     policy => policy
@@ -120,16 +119,16 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = true;
 });
 
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    // Cookie settings
-    options.Cookie.HttpOnly = false;
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+//builder.Services.ConfigureApplicationCookie(options =>
+//{
+//    // Cookie settings
+//    options.Cookie.HttpOnly = false;
+//    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
 
-    options.LoginPath = "/Account/Login";
-    options.AccessDeniedPath = "/Account/AccessDenied";
-    options.SlidingExpiration = true;
-});
+//    options.LoginPath = "/Account/Login";
+//    options.AccessDeniedPath = "/Account/AccessDenied";
+//    options.SlidingExpiration = true;
+//});
 
 var app = builder.Build();
 

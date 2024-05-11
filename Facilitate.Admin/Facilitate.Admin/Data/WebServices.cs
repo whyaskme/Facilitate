@@ -5,6 +5,7 @@ using MongoDB.Driver;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Text;
+using static Facilitate.Libraries.Models.Constants.Messaging;
 
 namespace Facilitate.Admin.Data
 {
@@ -14,7 +15,7 @@ namespace Facilitate.Admin.Data
 
         Utils utils = new Utils();
 
-        public HttpClient apiClient = new HttpClient();
+        public HttpClient _apiClient = new HttpClient();
 
         string _mongoDBName = "Facilitate";
         string _mongoDBCollectionName = "Quote";
@@ -37,6 +38,8 @@ namespace Facilitate.Admin.Data
         {
             _mongoDBClient = new MongoClient(_mongoDBConnectionString);
             _mongoDBCollection = _mongoDBClient.GetDatabase(_mongoDBName).GetCollection<Quote>(_mongoDBCollectionName);
+
+            _apiClient.BaseAddress = new Uri("https://api.facilitate.org/api");
         }
 
         public List<Quote> quoteList = new List<Quote>();
@@ -45,11 +48,10 @@ namespace Facilitate.Admin.Data
         {
             status = utils.TitleCaseString(status);
 
-            //var quoteList = apiClient.BaseAddress = new Uri("http://localhost:8080/api/quote?status=new");
-            var apiUrl = apiClient.BaseAddress = new Uri("https://api.facilitate.org/api/quote?status=" + status);
+            var apiUrl = new Uri(_apiClient.BaseAddress + "/api/quote?status=" + status);
 
-            //var quotes = await apiClient.GetAsync(apiUrl);
-            var quotes = await apiClient.GetFromJsonAsync<List<Quote>>(apiUrl);
+            //var quotes = await _apiClient.GetAsync(apiUrl);
+            var quotes = await _apiClient.GetFromJsonAsync<List<Quote>>(apiUrl);
 
             return quotes;
         }
@@ -58,11 +60,10 @@ namespace Facilitate.Admin.Data
         {
             status = utils.TitleCaseString(status);
 
-            //var quoteList = apiClient.BaseAddress = new Uri("http://localhost:8080/api/quote?status=new");
-            var apiUrl = apiClient.BaseAddress = new Uri("https://api.facilitate.org/api/quote?status=" + status);
+            var apiUrl = new Uri(_apiClient.BaseAddress + "/api/quote?status=" + status);
 
-            var quotes = apiClient.GetAsync(apiUrl);
-            //var quotes = apiClient.GetFromJsonAsync<Quote>(apiUrl);
+            var quotes = _apiClient.GetAsync(apiUrl);
+            //var quotes = _apiClient.GetFromJsonAsync<Quote>(apiUrl);
 
             return null;
         }
@@ -129,61 +130,57 @@ namespace Facilitate.Admin.Data
             return sortedQuotes;
         }
 
-        public Quote GetQuote(Quote selectedQuote)
+        //public Quote GetQuote(Quote selectedQuote)
+        //{
+        //    try
+        //    {
+        //        var builder = Builders<Quote>.Filter;
+        //        var filter = builder.Eq(f => f._id, selectedQuote._id);
+
+        //        selectedQuote = (Quote)_mongoDBCollection.Find(filter);
+
+        //        selectedQuote = SortItemsByDateDesc(selectedQuote);
+
+
+        //        return selectedQuote;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        resultMsg = ex.Message;
+        //    }
+        //    finally
+        //    {
+
+        //    }
+        //    return null;
+        //}
+
+        //public string CreateQuote(Quote quote)
+        //{
+        //    try
+        //    {
+        //        _mongoDBCollection.InsertOne(quote);
+
+        //        resultMsg = "Added Quote!";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        resultMsg = ex.Message;
+        //    }
+        //    finally
+        //    {
+
+        //    }
+        //    return resultMsg;
+        //}
+
+        public async Task<string> CreateQuoteApi(int numQuotesToCreate)
         {
             try
             {
-                var builder = Builders<Quote>.Filter;
-                var filter = builder.Eq(f => f._id, selectedQuote._id);
+                var apiUrl = new Uri(_apiClient.BaseAddress + "/api/Test/" + numQuotesToCreate);
 
-                selectedQuote = (Quote)_mongoDBCollection.Find(filter);
-
-                selectedQuote = SortItemsByDateDesc(selectedQuote);
-
-
-                return selectedQuote;
-            }
-            catch (Exception ex)
-            {
-                resultMsg = ex.Message;
-            }
-            finally
-            {
-
-            }
-            return null;
-        }
-
-        public string CreateQuote(Quote quote)
-        {
-            try
-            {
-                _mongoDBCollection.InsertOne(quote);
-
-                resultMsg = "Added Quote!";
-            }
-            catch (Exception ex)
-            {
-                resultMsg = ex.Message;
-            }
-            finally
-            {
-
-            }
-            return resultMsg;
-        }
-
-        public async Task<string> CreateQuoteApi(Quote quote)
-        {
-            try
-            {
-
-                var apiUrl = apiClient.BaseAddress = new Uri("https://api.facilitate.org/api/quote");
-                //var apiUrl = apiClient.BaseAddress = new Uri("https://api.facilitate.org/api/quote");
-
-                HttpContent content = new StringContent(JsonConvert.SerializeObject(quote), Encoding.UTF8, "application/json");
-
-                var quotes = await apiClient.PostAsync(apiUrl.ToString(), content);
+                resultMsg = await _apiClient.GetStringAsync(apiUrl);
 
                 resultMsg = "Added Quote!";
             }
@@ -331,17 +328,23 @@ namespace Facilitate.Admin.Data
 
         public List<Event> SortEventsByDateDesc(List<Event> originalList)
         {
-            return originalList.OrderByDescending(x => x.DateTime).ToList();
+            if(originalList.Count > 0)
+                return originalList.OrderByDescending(x => x.DateTime).ToList();
+            else return originalList;
         }
 
         public List<Attachment> SortFilesByDateDesc(List<Attachment> originalList)
         {
-            return originalList.OrderByDescending(x => x.Date).ToList();
+            if (originalList.Count > 0)
+                return originalList.OrderByDescending(x => x.Date).ToList();
+            else return originalList;
         }
 
         public List<Note> SortNotesByDateDesc(List<Note> originalList)
         {
-            return originalList.OrderByDescending(x => x.Date).ToList();
+            if (originalList.Count > 0)
+                return originalList.OrderByDescending(x => x.Date).ToList();
+            else return originalList;
         }
     }
 }
