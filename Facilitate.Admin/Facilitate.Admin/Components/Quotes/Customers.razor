@@ -694,6 +694,12 @@ else
 
 @code {
 
+    async void OnLocationChanged(object sender, LocationChangedEventArgs args)
+    {
+        _timer?.Dispose();
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+
     public ApplicationUser currentUser = new ApplicationUser();
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -759,6 +765,8 @@ else
     protected override void OnInitialized()
     {
         leaderboardStats = WebServices.GetLeaderBoardStats();
+
+        NavigationManager.LocationChanged += OnLocationChanged;
     }
 
     public int noteCount = 0;
@@ -1184,7 +1192,7 @@ else
             StatusClass = "message-warning";
             RefreshStatus = " Auto refresh paused...";
 
-            _timer?.Dispose();
+           _timer?.Dispose();
         }
         else
         {

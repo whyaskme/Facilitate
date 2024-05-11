@@ -619,17 +619,8 @@ else
 
     async void OnLocationChanged(object sender, LocationChangedEventArgs args)
     {
-        var tmpVal = "";
-
-        Dispose();
-    }
-
-    public void Dispose()
-    {
-        var myTimer = _timer;
-
-        //_timer?.Dispose();
-        //NavigationManager.LocationChanged -= OnLocationChanged;
+        _timer?.Dispose();
+        NavigationManager.LocationChanged -= OnLocationChanged;
     }
 
     async Task Grid_DataItemDeleting(GridDataItemDeletingEventArgs e)
@@ -717,8 +708,6 @@ else
         leaderboardStats = WebServices.GetLeaderBoardStats();
 
         NavigationManager.LocationChanged += OnLocationChanged;
-
-        //GetQuotes();
     }
 
     public int currentItemIndex = 0;
@@ -1152,7 +1141,7 @@ else
             StatusClass = "message-warning";
             RefreshStatus = " Auto refresh paused...";
 
-            _timer?.Dispose();
+           _timer?.Dispose();
         }
         else
         {
@@ -1182,10 +1171,10 @@ else
         RefreshDisabled = false;
     }
 
-    // public void Dispose()
-    // {
-    //     _timer?.Dispose();
-    // }
+    public void Dispose()
+    {
+        _timer?.Dispose();
+    }
 
     private async Task RefreshTimer()
     {
