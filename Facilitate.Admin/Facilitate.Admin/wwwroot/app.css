@@ -20,8 +20,9 @@ h1.text-danger
 .logo {
     border: solid 0px #ff0000 !important;
     width: 175px !important;
-    height: auto;
-/*    margin-bottom: 35px !important;*/
+    height: auto !important;
+    padding-left: 15px !important;
+    /*    margin-bottom: 25px !important;*/
 }
 
 .user-greeting {
@@ -33,10 +34,44 @@ h1.text-danger
     font-size: 0.85em !important;
 }
 
+.quotes-leaderboard-page-header {
+    border: solid 0px #ff0000 !important;
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    padding: 25px;
+    font-size: 0.9em;
+    text-align: left !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+}
+
+.quotes-leaderboard-page-header span,
+.quotes-leaderboard-page-header a {
+    color: #eee !important;
+}
+
+.stat-summary {
+    border: solid 1px #ff0000 !important;
+    text-align: left !important;
+    display: inline-flex !important;
+    /*    padding-right: 25px !important;*/
+}
+
 .stat-element {
     border: solid 0px #ff0000 !important;
     text-align: left !important;
     display: inline-flex !important;
+/*    padding-right: 25px !important;*/
+}
+
+.stat-value {
+    border-right: solid 0px #dad7d7 !important;
+    padding-left: 5px !important;
+    padding-right: 0px !important;
+    font-weight: normal;
+    font-style: normal;
+    color: #808080;
 }
 
 .welcome-banner {
@@ -267,51 +302,6 @@ table {
     padding-right: 10px !important;
     position: relative !important;
     top: -2px !important;
-}
-
-.stats-container-header {
-    border: solid 0px #ff0000 !important;
-    float: right !important;
-    color: #808080;
-    font-size: 0.7em;
-    padding: 75px;
-    padding-top: 35px;
-}
-
-.quotes-leaderboard-page-header {
-    border: solid 0px #ff0000 !important;
-    background-color: #000000 !important;
-    color: #ffffff !important;
-    padding: 25px;
-    font-size: 0.9em;
-    text-align: center !important;
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 1000 !important;
-}
-
-.quotes-leaderboard-page-header span,
-.quotes-leaderboard-page-header a 
-{
-    color: #eee !important;
-}
-
-.quotes-leaderboard {
-    background-color: #eee !important;
-    border: solid 0px #ff0000 !important;
-    padding: 15px;
-    font-size: 0.9em;
-    margin-bottom: 25px !important;
-    text-align: center !important;
-}
-
-.stat-count {
-    border-right: solid 0px #dad7d7 !important;
-    padding-left: 5px !important;
-    padding-right: 0px !important;
-    font-weight: normal;
-    font-style: normal;
-    color: #808080;
 }
 
 .btn-warning {
