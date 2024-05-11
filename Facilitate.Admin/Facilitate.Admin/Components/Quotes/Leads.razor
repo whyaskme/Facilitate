@@ -33,11 +33,52 @@
 
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
 
-@inject QuoteLeaderboard leaderboardStats
-
 @attribute [IgnoreAntiforgeryToken]
 
 <PageTitle>Leads</PageTitle>
+
+<AuthorizeView>
+    <Authorized>
+
+        <div class="quotes-leaderboard-page-header">
+            <div class="col-md-3 stat-element">
+                <span class="stat-value"><b>@leaderboardStats.TotalQuoteCount.ToString("N0") Quotes</b></span>
+                <span class="stat-value">@leaderboardStats.TotalQuoteValue.ToString("C0")</span>
+                <span class="stat-value">@leaderboardStats.TotalQuoteSqFt.ToString("N0")sqft</span>
+            </div>
+            <div class="col-md-1 stat-element">
+                <a href="/quotes/leads">Leads</a>
+                <span class="stat-value"><b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
+            </div>
+            <div class="col-md-1 stat-element">
+                <a href="/quotes/opportunities">Opportunities</a>
+                <span class="stat-value"><b>@leaderboardStats.OpportunityCount.ToString("N0")</b></span>
+            </div>
+            <div class="col-md-1 stat-element">
+                <a href="/quotes/customers">Customers</a>
+                <span class="stat-value"><b>@leaderboardStats.CustomerCount.ToString("N0")</b></span>
+            </div>
+            <div class="col-md-1 stat-element">
+                <a href="/quotes/completed">Completions</a>
+                <span class="stat-value"><b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
+            </div>
+            <div class="col-md-1 stat-element">
+                <a href="/quotes/archives">Archives</a>
+                <span class="stat-value"><b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
+            </div>
+            <div class="col-md-1 stat-element">
+                <a href="/quotes/warranties">Warranties</a>
+                <span class="stat-value"><b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
+            </div>
+        </div>
+
+    </Authorized>
+    <NotAuthorized>
+        @{
+            NavigationManager.NavigateTo("/Account/Login");
+        }
+    </NotAuthorized>
+</AuthorizeView>
 
 <div class="quote-stats-header">
     <span class="quote-stats-count">@updateStatus Leads</span>
@@ -57,15 +98,6 @@
             })
     }
 </script>
-
-<AuthorizeView>
-    <Authorized></Authorized>
-    <NotAuthorized>
-        @{
-            NavigationManager.NavigateTo("/Account/Login");
-        }
-    </NotAuthorized>
-</AuthorizeView>
 
 @if (quotes == null)
 {
@@ -577,6 +609,8 @@ else
 </div>
 
 @code {
+
+    public QuoteLeaderboard leaderboardStats = new QuoteLeaderboard();
 
     Utils utils = new Utils();
 

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ServiceStack;
 using System;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,7 +38,7 @@ builder.Services.AddScoped<IClaimsProvider>(provider =>
 
 builder.Services.AddSingleton<WebServices>();
 
-builder.Services.AddScoped<QuoteLeaderboard>();
+//builder.Services.AddScoped<QuoteLeaderboard>();
 //builder.Services.AddSingleton<QuoteLeaderboard>();
 
 builder.Services.AddCors(x => x.AddPolicy("externalRequests",

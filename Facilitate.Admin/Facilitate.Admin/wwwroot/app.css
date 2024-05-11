@@ -21,8 +21,6 @@ h1.text-danger
     border: solid 0px #ff0000 !important;
     width: 175px !important;
     height: auto !important;
-    padding-left: 15px !important;
-    /*    margin-bottom: 25px !important;*/
 }
 
 .user-greeting {
@@ -51,18 +49,11 @@ h1.text-danger
     color: #eee !important;
 }
 
-.stat-summary {
-    border: solid 1px #ff0000 !important;
-    text-align: left !important;
-    display: inline-flex !important;
-    /*    padding-right: 25px !important;*/
-}
-
 .stat-element {
     border: solid 0px #ff0000 !important;
     text-align: left !important;
     display: inline-flex !important;
-/*    padding-right: 25px !important;*/
+    white-space: nowrap !important;
 }
 
 .stat-value {
