@@ -140,7 +140,12 @@ namespace Facilitate.Admin.Data
             {
                 var builder = Builders<Quote>.Filter;
                 //var filter = builder.Eq(f => f.status, status);
-                var filter = builder.Eq(f => f.projectManager.Email, userId);
+                //var filter = builder.Eq(f => f.projectManager.Email, userId);
+
+                var filter = Builders<Quote>.Filter.And(
+                    Builders<Quote>.Filter.Where(p => p.status.Contains(status)),
+                    Builders<Quote>.Filter.Where(p => p.projectManager.Email.Contains(userId))
+                    );
 
                 sortedQuotes = _mongoDBCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
                 for (var i = 0; i < sortedQuotes.Count; i++)
@@ -382,13 +387,14 @@ namespace Facilitate.Admin.Data
             return quoteLeaderboard;
         }
 
-        public QuoteLeaderboard GetLeaderBoardStats(ApplicationUser applicationUser)
+        public QuoteLeaderboard GetLeaderBoardStats(string userId)
         {
             QuoteLeaderboard quoteLeaderboard = new QuoteLeaderboard();
 
             try
             {
                 var countsByQuoteStatus = _mongoDBCollection.Aggregate()
+                    .Match(x => x.projectManager.Email == userId)
                           .Group(
                               x => x.status,
                               g => new QuoteStat

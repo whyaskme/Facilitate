@@ -74,15 +74,17 @@ else
             <span class="stat-value">@leaderboardStats.TotalQuoteSqFt.ToString("N0")sqft</span>
             <span class="stat-divider">|</span>
         </div>
-        <div class="col-md-1 stat-element">
-            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
-                <Authorized>
+
+        <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+            <Authorized>
+                <div class="col-md-1 stat-element">
                     <a href="/quotes/leads">Leads</a>
                     <span class="stat-value"><b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
-                </Authorized>
-                <NotAuthorized></NotAuthorized>
-            </AuthorizeView>
-        </div>
+                </div>
+            </Authorized>
+            <NotAuthorized></NotAuthorized>
+        </AuthorizeView>
+
         <div class="col-md-1 stat-element">
             <a href="/quotes/opportunities">Opportunities</a>
             <span class="stat-value"><b>@leaderboardStats.OpportunityCount.ToString("N0")</b></span>
@@ -91,32 +93,20 @@ else
             <a href="/quotes/customers">Customers</a>
             <span class="stat-value"><b>@leaderboardStats.CustomerCount.ToString("N0")</b></span>
         </div>
+
         <div class="col-md-1 stat-element">
-            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
-                <Authorized>
-                    <a href="/quotes/completed">Completions</a>
-                    <span class="stat-value"><b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
-                </Authorized>
-                <NotAuthorized></NotAuthorized>
-            </AuthorizeView>
+            <a href="/quotes/completed">Completions</a>
+            <span class="stat-value"><b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
         </div>
+
         <div class="col-md-1 stat-element">
-            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
-                <Authorized>
-                    <a href="/quotes/archives">Archives</a>
-                    <span class="stat-value"><b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
-                </Authorized>
-                <NotAuthorized></NotAuthorized>
-            </AuthorizeView>
+            <a href="/quotes/archives">Archives</a>
+            <span class="stat-value"><b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
         </div>
+
         <div class="col-md-1 stat-element">
-            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
-                <Authorized>
-                    <a href="/quotes/warranties">Warranties</a>
-                    <span class="stat-value"><b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
-                </Authorized>
-                <NotAuthorized></NotAuthorized>
-            </AuthorizeView>
+            <a href="/quotes/warranties">Warranties</a>
+            <span class="stat-value"><b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
         </div>
     </div>
 
@@ -1270,12 +1260,16 @@ else
 
         _timer = new Timer(new TimerCallback(_ =>
         {
-            leaderboardStats = WebServices.GetLeaderBoardStats();
-
             if (isUserAdmin)
-                quotes = webServices.GetQuotes("New");
+            {
+                leaderboardStats = WebServices.GetLeaderBoardStats();
+                quotes = webServices.GetQuotes("Complete");
+            }
             else
-                quotes = webServices.GetQuotes("New", currentUser.Email);
+            {
+                leaderboardStats = WebServices.GetLeaderBoardStats(currentUser.Email);
+                quotes = webServices.GetQuotes("Complete", currentUser.Email);
+            }
 
             updateStatus = quotes.Count().ToString("N0");
             StatusContainerClass = "container-action-buttons-show";
