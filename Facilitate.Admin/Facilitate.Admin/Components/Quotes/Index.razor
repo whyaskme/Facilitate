@@ -1,0 +1,316 @@
+﻿@page "/quotes/index"
+
+@using Facilitate.Admin.Data;
+@using Facilitate.Libraries.Models;
+
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity.EntityFrameworkCore
+@using Microsoft.AspNetCore.WebUtilities
+
+@using MongoDB.Bson;
+
+@using System.Text.Json;
+
+@using DevExpress.Blazor;
+@using DevExpress.Data;
+@using DevExpress.Data.Linq;
+
+@attribute [StreamRendering(true)]
+@rendermode InteractiveServer
+@inject WebServices WebServices
+
+@inject NavigationManager NavigationManager
+@inject IHttpClientFactory ClientFactory
+@inject HttpClient httpClient
+
+@inject UserManager<ApplicationUser> UserManager
+@inject IUserStore<ApplicationUser> UserStore
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IEmailSender<ApplicationUser> EmailSender
+@inject RoleManager<IdentityRole> roleManager
+
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
+
+<PageTitle>Quotes</PageTitle>
+
+
+<AuthorizeView>
+    <Authorized></Authorized>
+    <NotAuthorized>
+        @{
+            NavigationManager.NavigateTo("/Account/Login");
+        }
+    </NotAuthorized>
+</AuthorizeView>
+
+<div class="quotes-leaderboard-page-header">
+    <div class="col-md-3 stat-element">
+        <span class="stat-value"><b>@leaderboardStats.TotalQuoteCount.ToString("N0") Quotes</b></span>
+        <span class="stat-divider">|</span>
+        <span class="stat-value">@leaderboardStats.TotalQuoteValue.ToString("C0")</span>
+        <span class="stat-divider">|</span>
+        <span class="stat-value">@leaderboardStats.TotalQuoteSqFt.ToString("N0")sqft</span>
+        <span class="stat-divider">|</span>
+    </div>
+    <div class="col-md-1 stat-element">
+        <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+            <Authorized>
+                <a href="/quotes/leads">Leads</a>
+                <span class="stat-value"><b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
+            </Authorized>
+            <NotAuthorized></NotAuthorized>
+        </AuthorizeView>
+    </div>
+    <div class="col-md-1 stat-element">
+        <a href="/quotes/opportunities">Opportunities</a>
+        <span class="stat-value"><b>@leaderboardStats.OpportunityCount.ToString("N0")</b></span>
+    </div>
+    <div class="col-md-1 stat-element">
+        <a href="/quotes/customers">Customers</a>
+        <span class="stat-value"><b>@leaderboardStats.CustomerCount.ToString("N0")</b></span>
+    </div>
+    <div class="col-md-1 stat-element">
+        <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+            <Authorized>
+                <a href="/quotes/completed">Completions</a>
+                <span class="stat-value"><b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
+            </Authorized>
+            <NotAuthorized></NotAuthorized>
+        </AuthorizeView>
+    </div>
+    <div class="col-md-1 stat-element">
+        <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+            <Authorized>
+                <a href="/quotes/archives">Archives</a>
+                <span class="stat-value"><b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
+            </Authorized>
+            <NotAuthorized></NotAuthorized>
+        </AuthorizeView>
+    </div>
+    <div class="col-md-1 stat-element">
+        <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+            <Authorized>
+                <a href="/quotes/warranties">Warranties</a>
+                <span class="stat-value"><b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
+            </Authorized>
+            <NotAuthorized></NotAuthorized>
+        </AuthorizeView>
+    </div>
+</div>
+
+<div>
+    User dashboard here...
+</div>
+
+<DxLoadingPanel @bind-Visible=@LoadingPanelVisible
+                PositionTarget="body"
+                ApplyBackgroundShading="true"
+                CssClass="w-100">
+</DxLoadingPanel>
+
+@* <div class="@StatusContainerClass">
+    <button class="@ButtonClass" disabled="@RefreshDisabled" @onclick="ToggleRefresh">@ButtonText</button>
+</div> *@
+
+
+@code {
+
+    public QuoteLeaderboard leaderboardStats = new QuoteLeaderboard();
+
+    Utils utils = new Utils();
+
+    async void OnLocationChanged(object sender, LocationChangedEventArgs args)
+    {
+        _timer?.Dispose();
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+
+    public ApplicationUser currentUser = new ApplicationUser();
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+                var loggedInUser = authstate.User;
+                var loggedInName = loggedInUser.Identity.Name;
+
+                if (loggedInName != null && loggedInName != "")
+                    currentUser = await UserManager.FindByNameAsync(loggedInName);
+
+                if (currentUser.IsEnabled)
+                {
+                }
+                else
+                {
+                    UserSignOut();
+                }
+            }
+            catch (Exception ex)
+            {
+                var errMsg = ex.Message;
+                return;
+            }
+        }
+    }
+
+    private void UserSignOut()
+    {
+        try
+        {
+
+            SignInManager.SignOutAsync();
+
+            NavigationManager.NavigateTo("/Account/Lockout");
+        }
+        catch (Exception ex)
+        {
+            var errMsg = ex.Message;
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += OnLocationChanged;
+
+        RefreshTimer();
+    }
+
+    bool LoadingPanelVisible { get; set; } = true;
+
+    WebServices webServices = new WebServices();
+
+    MemberService memberService = new MemberService();
+
+    #region Private Properties
+
+
+
+    #endregion
+
+    #region Public Properties
+
+    [Inject] public IJSRuntime jsRuntime { get; set; }
+
+    public Timer _timer;
+
+    #endregion
+
+    #region Popup properties
+
+    bool IsAssignPopupVisible { get; set; }
+
+    bool IsPopupVisibleAddFile { get; set; }
+    bool IsPopupVisibleSelectAttachmentToDelete { get; set; }
+
+    bool IsPopupVisibleAddNote { get; set; }
+    bool IsPopupVisibleSelectNoteToDelete { get; set; }
+
+    bool IsPopupVisibleMakeWarrantyClaim { get; set; }
+    bool IsArchivePopupVisible { get; set; }
+
+    bool IsPopupVisibleHelpSendFiles { get; set; }
+    bool IsPopupVisibleHelpFileAttachments { get; set; }
+    bool IsPopupVisibleHelpFileNotes { get; set; }
+
+    #endregion
+
+    #region Parameters
+
+    [Parameter]
+    public string RefreshStatus { get; set; } = "";
+
+    [Parameter]
+    public string StatusContainerClass { get; set; } = "container-action-buttons-hide";
+
+    [Parameter]
+    public string StatusClass { get; set; } = "message-normal";
+
+    [Parameter]
+    public string ButtonText { get; set; } = "Pause Refresh";
+
+    [Parameter]
+    public string ButtonClass { get; set; } = "btn btn-outline-primary btn-refresh-active";
+
+    [Parameter]
+    public bool RefreshDisabled { get; set; } = false;
+
+    [Parameter]
+    public int VisibleIndex { get; set; }
+
+    [Parameter]
+    public bool ClearFilterButtonVisible { get; set; }
+
+    #endregion
+
+    #region Methods
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+    }
+
+    public virtual void PauseRefresh(bool isPaused)
+    {
+        RefreshDisabled = isPaused;
+
+        if (isPaused)
+        {
+            ButtonText = "Resume Refresh";
+            ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
+            StatusClass = "message-warning";
+            RefreshStatus = " Auto refresh paused...";
+
+            _timer?.Dispose();
+        }
+        else
+        {
+            ButtonText = "Pause Refresh";
+            ButtonClass = "btn btn-outline-primary btn-refresh-active";
+            StatusClass = "message";
+            RefreshStatus = "";
+
+            RefreshTimer();
+        }
+    }
+
+    public virtual void ToggleRefresh()
+    {
+        if (ButtonText == "Pause Refresh")
+        {
+            PauseRefresh(true);
+        }
+        else
+        {
+            PauseRefresh(false);
+        }
+
+        RefreshDisabled = false;
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+    }
+
+    private async Task RefreshTimer()
+    {
+        LoadingPanelVisible = true;
+
+        _timer = new Timer(new TimerCallback(_ =>
+        {
+            leaderboardStats = WebServices.GetLeaderBoardStats();
+
+            StatusContainerClass = "container-action-buttons-show";
+
+            InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
+        }), null, 1000, 1000);
+
+        LoadingPanelVisible = false;
+    }
+
+    #endregion
+}

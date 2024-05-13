@@ -87,6 +87,8 @@
 
     public async Task LoginUser()
     {
+        ApplicationUser applicationUser = new ApplicationUser();
+
         var userIsEnabled = false;
 
         // Check IsEnabled
@@ -96,6 +98,8 @@
             {
                 if(user.UserName == Input.Email)
                 {
+                    applicationUser = user;
+
                     if (user.IsEnabled)
                     {
                         userIsEnabled = true;
@@ -120,7 +124,29 @@
             var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
             {
-                ReturnUrl = "/Quotes/Leads";
+                ReturnUrl = "/Quotes/Opportunities";
+
+                bool isInRole = false;
+
+                isInRole = await UserManager.IsInRoleAsync(applicationUser, "System Admin");
+                if(isInRole)
+                {
+                    ReturnUrl = "/Quotes/Leads";
+                }
+
+                isInRole = await UserManager.IsInRoleAsync(applicationUser, "2Site Admin");
+                if (isInRole)
+                {
+                    ReturnUrl = "/Quotes/Leads";
+                }
+
+                isInRole = await UserManager.IsInRoleAsync(applicationUser, "Group Admin");
+                if (isInRole)
+                {
+                    ReturnUrl = "/Quotes/Leads";
+                }
+
+                // var userRoles = await UserManager.GetRolesAsync(applicationUser);
 
                 Logger.LogInformation("User logged in.");
                 RedirectManager.RedirectTo(ReturnUrl);

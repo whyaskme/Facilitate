@@ -330,21 +330,21 @@ namespace Facilitate.Admin.Data
 
         public List<Event> SortEventsByDateDesc(List<Event> originalList)
         {
-            if(originalList.Count > 0)
+            if(originalList != null)
                 return originalList.OrderByDescending(x => x.DateTime).ToList();
             else return originalList;
         }
 
         public List<Attachment> SortFilesByDateDesc(List<Attachment> originalList)
         {
-            if (originalList.Count > 0)
+            if (originalList != null)
                 return originalList.OrderByDescending(x => x.Date).ToList();
             else return originalList;
         }
 
         public List<Note> SortNotesByDateDesc(List<Note> originalList)
         {
-            if (originalList.Count > 0)
+            if (originalList != null)
                 return originalList.OrderByDescending(x => x.Date).ToList();
             else return originalList;
         }

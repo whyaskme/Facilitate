@@ -68,8 +68,13 @@ else
             <span class="stat-divider">|</span>
         </div>
         <div class="col-md-1 stat-element">
-            <a href="/quotes/leads">Leads</a>
-            <span class="stat-value"><b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
+            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+                <Authorized>
+                    <a href="/quotes/leads">Leads</a>
+                    <span class="stat-value"><b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
+                </Authorized>
+                <NotAuthorized></NotAuthorized>
+            </AuthorizeView>
         </div>
         <div class="col-md-1 stat-element">
             <a href="/quotes/opportunities">Opportunities</a>
@@ -80,16 +85,31 @@ else
             <span class="stat-value"><b>@leaderboardStats.CustomerCount.ToString("N0")</b></span>
         </div>
         <div class="col-md-1 stat-element">
-            <a href="/quotes/completed">Completions</a>
-            <span class="stat-value"><b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
+            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+                <Authorized>
+                    <a href="/quotes/completed">Completions</a>
+                    <span class="stat-value"><b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
+                </Authorized>
+                <NotAuthorized></NotAuthorized>
+            </AuthorizeView>
         </div>
         <div class="col-md-1 stat-element">
-            <a href="/quotes/archives">Archives</a>
-            <span class="stat-value"><b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
+            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+                <Authorized>
+                    <a href="/quotes/archives">Archives</a>
+                    <span class="stat-value"><b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
+                </Authorized>
+                <NotAuthorized></NotAuthorized>
+            </AuthorizeView>
         </div>
         <div class="col-md-1 stat-element">
-            <a href="/quotes/warranties">Warranties</a>
-            <span class="stat-value"><b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
+            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+                <Authorized>
+                    <a href="/quotes/warranties">Warranties</a>
+                    <span class="stat-value"><b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
+                </Authorized>
+                <NotAuthorized></NotAuthorized>
+            </AuthorizeView>
         </div>
     </div>
 
