@@ -57,6 +57,10 @@
     <DxGrid @ref="UserGrid"
             Data="SystemUsers"
             KeyFieldName="Id"
+            RowClick="OnRowClick"
+            AllowSelectRowByClick="true"
+            SelectionMode="GridSelectionMode.Single"
+            @bind-SelectedDataItem="@SelectedUserAccountItem"
             PageSize="10"
             PagerPosition="GridPagerPosition.Bottom"
             ShowGroupPanel="false"
@@ -87,7 +91,7 @@
             <DxGridDataColumn FieldName="State" />
             <DxGridDataColumn FieldName="Zip" />
             <DxGridDataColumn Width="175" FieldName="RegistrationDate" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-            <DxGridCommandColumn Width="150px" Caption="Actions" DeleteButtonVisible="false" />
+            <DxGridCommandColumn Width="150px" Caption="Actions" EditButtonVisible="true" DeleteButtonVisible="false" />
         </Columns>
 
         <EditFormTemplate Context="EditFormContext">
@@ -143,7 +147,12 @@
                     @EditFormContext.GetEditor("Zip")
                 </DxFormLayoutItem>
 
-                <DxFormLayoutItem ColSpanMd="12">
+                <DxFormLayoutItem ColSpanMd="6">
+                    <label class="label-roles">User Roles:</label>
+                    <button class="btn btn-primary btn-roles" @onclick="@(() => IsRolesPopupVisible = true)">Assign</button>
+                </DxFormLayoutItem>
+
+@*                 <DxFormLayoutItem ColSpanMd="12">
                     <hr />
                     <h5>Roles</h5>
                     @{
@@ -158,7 +167,7 @@
                             </div>
                         }
                     }
-                </DxFormLayoutItem>
+                </DxFormLayoutItem> *@
 
             </DxFormLayout>
 
@@ -173,7 +182,51 @@
                 CssClass="w-100">
 </DxLoadingPanel>
 
+
+<DxPopup @bind-Visible="@IsRolesPopupVisible"
+         ShowFooter="true"
+         HeaderText="Please select roles for User">
+    <BodyContentTemplate>
+        Roles list here...
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" Enabled="true" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="SaveUserRoles" />
+    </FooterContentTemplate>
+</DxPopup>
+
 @code {
+
+    [Parameter]
+    public object SelectedUserAccountItem { get; set; }
+
+    bool IsRolesPopupVisible { get; set; }
+
+    void SaveUserRoles()
+    {
+        var selectedIndex = SelectedUserAccountItem;
+
+        var tmpVal = "";
+    }
+
+    void OnRowClick(GridRowClickEventArgs args)
+    {
+        var selectedIndex = args.VisibleIndex;
+
+        var selectedAdminAccount = SystemUsers[selectedIndex];
+
+        var tmpVal = "";
+
+        var selectedDetailExpanded = UserGrid.IsDetailRowExpanded(selectedIndex);
+        if (selectedDetailExpanded)
+        {
+            UserGrid.CollapseDetailRow(selectedIndex);
+        }
+        else
+        {
+            UserGrid.CollapseAllDetailRows();
+            UserGrid.ExpandDetailRow(selectedIndex);
+        }
+    }
 
     public ApplicationUser currentUser = new ApplicationUser();
     protected override async Task OnAfterRenderAsync(bool firstRender)
