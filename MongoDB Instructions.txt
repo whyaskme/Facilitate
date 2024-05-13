@@ -1,0 +1,19 @@
+mongodb://localhost:27017
+
+use admin
+
+db.createUser(
+  {
+    user: "SysAdmin",
+    pwd: "!13324BossWood", // or cleartext password
+    roles: [
+      { role: "userAdminAnyDatabase", db: "admin" },
+      { role: "readWriteAnyDatabase", db: "admin" }
+    ]
+  }
+)
+
+
+db.adminCommand( { shutdown: 1 } )
+
+mongod --auth --port 27017 --dbpath /var/lib/mongodb

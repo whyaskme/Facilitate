@@ -26,7 +26,7 @@ namespace Facilitate.Admin.Data
         List<Note> unSortedNotes = new List<Note>();
         List<Event> unSortedEvents = new List<Event>();
 
-        //string _mongoDBConnectionString = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
+        //string _mongoDBConnectionString = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate";
         string _mongoDBConnectionString = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
 
         IMongoClient _mongoDBClient;
@@ -76,7 +76,9 @@ namespace Facilitate.Admin.Data
                 var builder = Builders<Quote>.Filter;
                 var filter = builder.Eq(f => f.status, status);
 
-                sortedQuotes = _mongoDBCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
+                //sortedQuotes = _mongoDBCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
+
+                sortedQuotes = _mongoDBCollection.FindAsync(filter).Result.ToList();
 
                 for (var i = 0; i < sortedQuotes.Count; i++)
                 {
