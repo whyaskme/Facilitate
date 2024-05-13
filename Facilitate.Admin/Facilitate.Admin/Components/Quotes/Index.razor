@@ -98,9 +98,9 @@
     </div>
 </div>
 
-<div>
+@* <div>
     User dashboard here...
-</div>
+</div> *@
 
 <DxLoadingPanel @bind-Visible=@LoadingPanelVisible
                 PositionTarget="body"
@@ -141,6 +141,18 @@
 
                 if (currentUser.IsEnabled)
                 {
+                    var userRoles = await UserManager.GetRolesAsync(currentUser);
+                    foreach (var role in userRoles)
+                    {
+                        if (role == "System Admin" || role == "Site Admin" || role == "Group Admin")
+                        {
+                            NavigationManager.NavigateTo("Quotes/Leads");
+                        }
+                        else
+                        {
+                            NavigationManager.NavigateTo("Quotes/Opportunities");
+                        }
+                    }
                 }
                 else
                 {
