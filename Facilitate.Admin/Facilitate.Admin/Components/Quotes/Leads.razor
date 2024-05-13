@@ -72,7 +72,15 @@ else
             <span class="stat-divider">|</span>
         </div>
         <div class="col-md-1 stat-element">
-            <a href="/quotes/leads">Leads</a>
+
+            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+                <Authorized>
+                    <a href="/quotes/leads">Leads</a>
+                </Authorized>
+                <NotAuthorized>
+                    Leads
+                </NotAuthorized>
+            </AuthorizeView>
             <span class="stat-value"><b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
         </div>
         <div class="col-md-1 stat-element">
@@ -664,6 +672,10 @@ else
                         {
                             var list = await UserManager.IsInRoleAsync(adminUser, "Project Manager");
                             adminUsers.Add(adminUser);
+
+                            // var userRoles = await UserManager.GetRolesAsync(adminUser);
+
+                            // var tmp = "";
                         }
                     }
 

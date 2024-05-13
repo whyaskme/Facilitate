@@ -17,6 +17,16 @@
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="flex-column">
 
+@*         <AuthorizeView Roles="Project Manager">
+            <Authorized>
+                <span style="color: #ffffff !important;">I'm a Project Manager!</span>
+            </Authorized>
+
+            <NotAuthorized>
+                <span style="color: #ffffff !important;">I'm NOT authorized!</span>
+            </NotAuthorized>
+        </AuthorizeView> *@
+
         <AuthorizeView>
 
             <Authorized>
@@ -32,11 +42,13 @@
                         </button>
                     </form>
                 </div>
+
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="Account/Users">
                         <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> Manage Users
                     </NavLink>
                 </div>
+
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="Account/Manage">
                         <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> My Account
