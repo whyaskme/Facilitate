@@ -1,8 +1,12 @@
-﻿using Facilitate.Libraries.Models;
+﻿using Facilitate.Admin.Components.Account;
+using Facilitate.Libraries.Models;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 using MongoDB.Driver;
 using Newtonsoft.Json;
+using ServiceStack;
 using System.Collections.Generic;
 using System.Text;
 using static Facilitate.Libraries.Models.Constants.Messaging;
@@ -76,10 +80,7 @@ namespace Facilitate.Admin.Data
                 var builder = Builders<Quote>.Filter;
                 var filter = builder.Eq(f => f.status, status);
 
-                //sortedQuotes = _mongoDBCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
-
-                sortedQuotes = _mongoDBCollection.FindAsync(filter).Result.ToList();
-
+                sortedQuotes = _mongoDBCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
                 for (var i = 0; i < sortedQuotes.Count; i++)
                 {
                     unSortedFiles.Clear();
@@ -129,6 +130,68 @@ namespace Facilitate.Admin.Data
                 resultMsg = ex.Message;
             }
             
+            return sortedQuotes;
+        }
+
+        public List<Quote> GetQuotes(string status, string userId)
+        {
+            List<Quote> sortedQuotes = new List<Quote>();
+            try
+            {
+                var builder = Builders<Quote>.Filter;
+                //var filter = builder.Eq(f => f.status, status);
+                var filter = builder.Eq(f => f.projectManager.Email, userId);
+
+                sortedQuotes = _mongoDBCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
+                for (var i = 0; i < sortedQuotes.Count; i++)
+                {
+                    unSortedFiles.Clear();
+                    unSortedNotes.Clear();
+                    unSortedEvents.Clear();
+
+                    // Convert to local time
+                    sortedQuotes[i].timestamp = sortedQuotes[i].timestamp.ToLocalTime();
+                    sortedQuotes[i].lastUpdated = sortedQuotes[i].lastUpdated.ToLocalTime();
+
+                    for (var j = 0; j < sortedQuotes[i].attachments.Count; j++)
+                    {
+                        Attachment currentAttachment = sortedQuotes[i].attachments[j];
+
+                        var currentDateTime = currentAttachment.Date;
+
+                        currentAttachment.Date = currentAttachment.Date.ToLocalTime();
+
+                        unSortedFiles.Add(currentAttachment);
+                    }
+
+                    for (var j = 0; j < sortedQuotes[i].notes.Count; j++)
+                    {
+                        Note currentNote = sortedQuotes[i].notes[j];
+                        currentNote.Date = currentNote.Date.ToLocalTime();
+
+                        unSortedNotes.Add(currentNote);
+                    }
+
+                    for (var j = 0; j < sortedQuotes[i].events.Count; j++)
+                    {
+                        Event currentEvent = sortedQuotes[i].events[j];
+                        currentEvent.DateTime = currentEvent.DateTime.ToLocalTime();
+
+                        unSortedEvents.Add(currentEvent);
+                    }
+
+                    sortedQuotes[i].attachments = SortFilesByDateDesc(unSortedFiles);
+                    sortedQuotes[i].notes = SortNotesByDateDesc(unSortedNotes);
+                    sortedQuotes[i].events = SortEventsByDateDesc(unSortedEvents);
+                }
+
+                return sortedQuotes;
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+
             return sortedQuotes;
         }
 
@@ -302,6 +365,80 @@ namespace Facilitate.Admin.Data
                         quoteLeaderboard.WarrantySqFt = item.QuoteSqFt;
                     }
                 }   
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
+
+            quoteLeaderboard.TotalQuoteCount = quoteLeaderboard.LeadCount + quoteLeaderboard.OpportunityCount + quoteLeaderboard.CustomerCount + quoteLeaderboard.CompletionCount + quoteLeaderboard.ArchiveCount + quoteLeaderboard.WarrantyCount;
+            quoteLeaderboard.TotalQuoteValue = quoteLeaderboard.LeadValue + quoteLeaderboard.OpportunityValue + quoteLeaderboard.CustomerValue + quoteLeaderboard.CompletionValue + quoteLeaderboard.ArchiveValue + quoteLeaderboard.WarrantyValue;
+            quoteLeaderboard.TotalQuoteSqFt = quoteLeaderboard.LeadSqFt + quoteLeaderboard.OpportunitySqFt + quoteLeaderboard.CustomerSqFt + quoteLeaderboard.CompletionSqFt + quoteLeaderboard.ArchiveSqFt + quoteLeaderboard.WarrantySqFt;
+
+            return quoteLeaderboard;
+        }
+
+        public QuoteLeaderboard GetLeaderBoardStats(ApplicationUser applicationUser)
+        {
+            QuoteLeaderboard quoteLeaderboard = new QuoteLeaderboard();
+
+            try
+            {
+                var countsByQuoteStatus = _mongoDBCollection.Aggregate()
+                          .Group(
+                              x => x.status,
+                              g => new QuoteStat
+                              {
+                                  QuoteType = g.Key,
+                                  QuoteCount = g.Count(),
+                                  QuoteValue = g.Sum(x => x.totalQuote),
+                                  QuoteSqFt = g.Sum(x => x.totalSquareFeet)
+                              }
+                              ).ToList();
+
+                foreach (var item in countsByQuoteStatus)
+                {
+                    if (item.QuoteType == "New")
+                    {
+                        quoteLeaderboard.LeadCount = item.QuoteCount;
+                        quoteLeaderboard.LeadValue = item.QuoteValue;
+                        quoteLeaderboard.LeadSqFt = item.QuoteSqFt;
+                    }
+                    else if (item.QuoteType == "Opportunity")
+                    {
+                        quoteLeaderboard.OpportunityCount = item.QuoteCount;
+                        quoteLeaderboard.OpportunityValue = item.QuoteValue;
+                        quoteLeaderboard.OpportunitySqFt = item.QuoteSqFt;
+                    }
+                    else if (item.QuoteType == "Customer")
+                    {
+                        quoteLeaderboard.CustomerCount = item.QuoteCount;
+                        quoteLeaderboard.CustomerValue = item.QuoteValue;
+                        quoteLeaderboard.CustomerSqFt = item.QuoteSqFt;
+                    }
+                    else if (item.QuoteType == "Complete")
+                    {
+                        quoteLeaderboard.CompletionCount = item.QuoteCount;
+                        quoteLeaderboard.CompletionValue = item.QuoteValue;
+                        quoteLeaderboard.CompletionSqFt = item.QuoteSqFt;
+                    }
+                    else if (item.QuoteType == "Archive")
+                    {
+                        quoteLeaderboard.ArchiveCount = item.QuoteCount;
+                        quoteLeaderboard.ArchiveValue = item.QuoteValue;
+                        quoteLeaderboard.ArchiveSqFt = item.QuoteSqFt;
+                    }
+                    else if (item.QuoteType == "Warranty")
+                    {
+                        quoteLeaderboard.WarrantyCount = item.QuoteCount;
+                        quoteLeaderboard.WarrantyValue = item.QuoteValue;
+                        quoteLeaderboard.WarrantySqFt = item.QuoteSqFt;
+                    }
+                }
             }
             catch (Exception ex)
             {

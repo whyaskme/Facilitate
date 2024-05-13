@@ -134,7 +134,7 @@
                     ReturnUrl = "/Quotes/Leads";
                 }
 
-                isInRole = await UserManager.IsInRoleAsync(applicationUser, "2Site Admin");
+                isInRole = await UserManager.IsInRoleAsync(applicationUser, "Site Admin");
                 if (isInRole)
                 {
                     ReturnUrl = "/Quotes/Leads";

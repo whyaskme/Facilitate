@@ -661,6 +661,8 @@ else
     }
 
     public ApplicationUser currentUser = new ApplicationUser();
+    public bool isUserAdmin = false;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -676,6 +678,15 @@ else
 
                 if(currentUser.IsEnabled)
                 {
+                    var isSysAdmin = await UserManager.IsInRoleAsync(currentUser, "System Admin");
+                    var isSiteAdmin = await UserManager.IsInRoleAsync(currentUser, "Site Admin");
+                    var isGroupAdmin = await UserManager.IsInRoleAsync(currentUser, "Group Admin");
+
+                    if (isSysAdmin || isSysAdmin || isSysAdmin)
+                    {
+                        isUserAdmin = true;
+                    }
+
                     List<ApplicationUser> adminUsers = new List<ApplicationUser>();
                     List<ApplicationUser> tmpUsers = UserManager.Users.ToList();
                     foreach (ApplicationUser adminUser in tmpUsers)
@@ -1207,7 +1218,10 @@ else
 
             leaderboardStats = WebServices.GetLeaderBoardStats();
 
-            quotes = webServices.GetQuotes("New");
+            if (isUserAdmin)
+                quotes = webServices.GetQuotes("New");
+            else
+                quotes = webServices.GetQuotes("New", currentUser.Email);
 
             updateStatus = quotes.Count().ToString("N0");
             StatusContainerClass = "container-action-buttons-show";
