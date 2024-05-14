@@ -206,7 +206,12 @@ else
                 <h6>Project Details</h6>
                 <div class="row">
                     <div class="col">
-                        <a class="hyperlink-manager-assignment" @onclick="@(() => IsAssignPopupVisible = true)">Manager Assignment</a>
+                        @{
+                            if (isUserAdmin)
+                            {
+                                <a class="hyperlink-manager-assignment" @onclick="@(() => IsAssignPopupVisible = true)">Manager Assignment</a>
+                            }
+                        }
                         <span class="detail-item">@_quote.projectManager.FirstName</span><span class="detail-item">@_quote.projectManager.LastName</span>
                     </div>
                     <div class="col">
