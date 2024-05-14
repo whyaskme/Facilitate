@@ -626,10 +626,32 @@ else
 </DxLoadingPanel>
 
 <div class="@StatusContainerClass">
-    <button class="btn btn-primary @ButtonClass" disabled="@RefreshDisabled" @onclick="ToggleRefresh">@ButtonText</button>
+    @{
+        if(isSystemAdmin)
+        {
+            <button class="btn btn-primary" @onclick="GetTestData">@ShowTestDataButtonText</button>
+        }
+    }
+    <button class="btn btn-primary @RefreshButtonClass" disabled="@RefreshDisabled" @onclick="ToggleRefresh">@RefreshButtonText</button>
 </div>
 
 @code {
+
+    public bool ShowTestData = false;
+
+    public virtual void GetTestData()
+    {
+        if (ShowTestDataButtonText == "Show Test Data")
+        {
+            ShowTestData = true;
+            ShowTestDataButtonText = "Hide Test Data";
+        }
+        else
+        {
+            ShowTestData = false;
+            ShowTestDataButtonText = "Show Test Data";
+        }
+    }
 
     public QuoteLeaderboard leaderboardStats = new QuoteLeaderboard();
 
@@ -661,6 +683,7 @@ else
     }
 
     public ApplicationUser currentUser = new ApplicationUser();
+    public bool isSystemAdmin = false;
     public bool isUserAdmin = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -678,11 +701,12 @@ else
 
                 if(currentUser.IsEnabled)
                 {
-                    var isSysAdmin = await UserManager.IsInRoleAsync(currentUser, "System Admin");
+                    isSystemAdmin = await UserManager.IsInRoleAsync(currentUser, "System Admin");
+
                     var isSiteAdmin = await UserManager.IsInRoleAsync(currentUser, "Site Admin");
                     var isGroupAdmin = await UserManager.IsInRoleAsync(currentUser, "Group Admin");
 
-                    if (isSysAdmin || isSysAdmin || isSysAdmin)
+                    if (isSystemAdmin || isSiteAdmin || isGroupAdmin)
                     {
                         isUserAdmin = true;
                     }
@@ -853,10 +877,13 @@ else
     public string StatusClass { get; set; } = "message-normal";
 
     [Parameter]
-    public string ButtonText { get; set; } = "Pause Refresh";
+    public string ShowTestDataButtonText { get; set; } = "Show Test Data";
 
     [Parameter]
-    public string ButtonClass { get; set; } = "btn btn-outline-primary btn-refresh-active";
+    public string RefreshButtonText { get; set; } = "Pause Refresh";
+
+    [Parameter]
+    public string RefreshButtonClass { get; set; } = "btn btn-outline-primary btn-refresh-active";
 
     [Parameter]
     public bool RefreshDisabled { get; set; } = false;
@@ -1167,8 +1194,8 @@ else
             CreateLeadDisabled = false;
             CreateLeadsDisabled = false;
 
-            ButtonText = "Resume Refresh";
-            ButtonClass = "btn btn-outline-primary btn-refresh-inactive";
+            RefreshButtonText = "Resume Refresh";
+            RefreshButtonClass = "btn btn-outline-primary btn-refresh-inactive";
             StatusClass = "message-warning";
             RefreshStatus = " Auto refresh paused...";
 
@@ -1179,8 +1206,8 @@ else
             CreateLeadDisabled = true;
             CreateLeadsDisabled = true;
 
-            ButtonText = "Pause Refresh";
-            ButtonClass = "btn btn-outline-primary btn-refresh-active";
+            RefreshButtonText = "Pause Refresh";
+            RefreshButtonClass = "btn btn-outline-primary btn-refresh-active";
             StatusClass = "message";
             RefreshStatus = "";
 
@@ -1190,7 +1217,7 @@ else
 
     public virtual void ToggleRefresh()
     {
-        if (ButtonText == "Pause Refresh")
+        if (RefreshButtonText == "Pause Refresh")
         {
             PauseRefresh(true);
         }
@@ -1218,7 +1245,7 @@ else
 
             leaderboardStats = WebServices.GetLeaderBoardStats();
 
-            if (isUserAdmin)
+            if(isSystemAdmin)
                 quotes = webServices.GetQuotes("New");
             else
                 quotes = webServices.GetQuotes("New", currentUser.Email);
