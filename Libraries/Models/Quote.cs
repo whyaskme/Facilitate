@@ -8,11 +8,12 @@ namespace Facilitate.Libraries.Models
         {
             _id = ObjectId.GenerateNewId().ToString();
             _t = "Quote";
+            applicationType = "Unspecified";
 
             ipAddress = "127.0.0.1";
             status = "New";
 
-            Groups.Add(ObjectId.Empty);// = new List<ObjectId>();
+            Groups = new List<ObjectId>();
 
             address = string.Empty;
             fullAddress = string.Empty;
@@ -51,10 +52,11 @@ namespace Facilitate.Libraries.Models
 
         public string _id { get; set; }
         public string _t { get; set; }
+        public string applicationType { get; set; }
         public string ipAddress { get; set; }
         public string status { get; set; }
 
-        public List<ObjectId> Groups { get; set; } = new List<ObjectId>();
+        public List<ObjectId> Groups { get; set; }
 
         public string address { get; set; }
         public string fullAddress { get; set; }

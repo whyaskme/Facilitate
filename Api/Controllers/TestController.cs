@@ -52,6 +52,9 @@ namespace Facilitate.Api.Controllers
                         Quote quote = new Quote();
                         quote.status = "New";
 
+                        // Will need to figure out how to set dynamically
+                        quote.applicationType = "Roofing";
+
                         var randomStreetNumber = utils.GetRandomStreetNumber();
                         var randomStreetName = utils.GetRandomStreetName();
 

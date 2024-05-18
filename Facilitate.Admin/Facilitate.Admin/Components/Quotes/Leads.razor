@@ -1245,10 +1245,16 @@ else
 
             leaderboardStats = WebServices.GetLeaderBoardStats();
 
-            if(isSystemAdmin)
+            if (isSystemAdmin)
+            {
+                leaderboardStats = WebServices.GetLeaderBoardStats();
                 quotes = webServices.GetQuotes("New");
+            }
             else
+            {
+                leaderboardStats = WebServices.GetLeaderBoardStats(currentUser.Email);
                 quotes = webServices.GetQuotes("New", currentUser.Email);
+            }
 
             updateStatus = quotes.Count().ToString("N0");
             StatusContainerClass = "container-action-buttons-show";

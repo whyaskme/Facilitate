@@ -58,6 +58,9 @@ namespace Facilitate.Api.Controllers
 
             Quote quote = new Quote();
 
+            // Will need to figure out how to set dynamically
+            quote.applicationType = "Roofing";
+
             quote.ipAddress = headerForwardedFor;
             quote.externalUrl = headerReferer;
 
