@@ -789,7 +789,7 @@ else
     @{
         if(isSystemAdmin)
         {
-            <button class="btn btn-primary" @onclick="GetTestData">@ShowTestDataButtonText</button>
+            <button class="btn btn-primary" @onclick="ShowHideTestData">@ShowTestDataButtonText</button>
         }
     }
     <button class="@RefreshButtonClass" disabled="@RefreshDisabled" @onclick="ToggleRefresh">@RefreshButtonText</button>
@@ -800,7 +800,7 @@ else
 
     public bool ShowTestData = false;
 
-    public virtual void GetTestData()
+    public virtual void ShowHideTestData()
     {
         if (ShowTestDataButtonText == "Show Test Data")
         {
@@ -1384,7 +1384,7 @@ else
             if(isSystemAdmin)
             {
                 leaderboardStats = WebServices.GetLeaderBoardStats();
-                quotes = webServices.GetQuotes("Warranty");
+                quotes = webServices.GetQuotes("Warranty", ShowTestData);
             }
             else
             {
