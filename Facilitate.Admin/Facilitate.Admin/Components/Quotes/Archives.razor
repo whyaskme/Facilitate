@@ -745,14 +745,26 @@ else
                 CssClass="w-100">
 </DxLoadingPanel>
 
-<div class="@StatusContainerClass">
+<div class="row @StatusContainerClass">
     @{
-        if(isSystemAdmin)
+        if (isSystemAdmin)
         {
-            <button class="btn btn-primary" @onclick="ShowHideTestData">@ShowTestDataButtonText</button>
+            <div class="col-md-4"></div>
+            <div class="col-md-2">
+                <button class="btn btn-primary" @onclick="ShowHideTestData">@ShowTestDataButtonText</button>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary @RefreshButtonClass" disabled="@RefreshDisabled" @onclick="ToggleRefresh">@RefreshButtonText</button>
+            </div>
+            <div class="col-md-4"></div>
+        }
+        else
+        {
+            <div class="col-md-12">
+                <button class="btn btn-primary @RefreshButtonClass" disabled="@RefreshDisabled" @onclick="ToggleRefresh">@RefreshButtonText</button>
+            </div>
         }
     }
-    <button class="@RefreshButtonClass" disabled="@RefreshDisabled" @onclick="ToggleRefresh">@RefreshButtonText</button>
 </div>
 
 
