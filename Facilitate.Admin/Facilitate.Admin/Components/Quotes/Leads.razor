@@ -1255,11 +1255,9 @@ else
             // Check to see if user IsEnabled. If not, log them out an redirect to login page
             //var isUserEnabled = IsUserEnabled();
 
-            leaderboardStats = WebServices.GetLeaderBoardStats();
-
             if (isSystemAdmin)
             {
-                leaderboardStats = WebServices.GetLeaderBoardStats();
+                leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
                 quotes = webServices.GetQuotes("New", ShowTestData);
             }
             else

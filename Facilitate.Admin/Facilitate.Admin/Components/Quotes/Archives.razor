@@ -1352,7 +1352,7 @@ else
         {
             if(isSystemAdmin)
             {
-                leaderboardStats = WebServices.GetLeaderBoardStats();
+                leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
                 quotes = webServices.GetQuotes("Archive", ShowTestData);
             }
             else

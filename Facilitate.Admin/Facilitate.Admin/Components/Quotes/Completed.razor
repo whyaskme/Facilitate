@@ -1306,7 +1306,7 @@ else
         {
             if(isSystemAdmin)
             {
-                leaderboardStats = WebServices.GetLeaderBoardStats();
+                leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
                 quotes = webServices.GetQuotes("Complete", ShowTestData);
             }
             else
