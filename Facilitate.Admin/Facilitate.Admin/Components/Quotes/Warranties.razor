@@ -828,7 +828,7 @@ else
 
     async void OnLocationChanged(object sender, LocationChangedEventArgs args)
     {
-        _timer?.Dispose();
+        TimerDispose();
         NavigationManager.LocationChanged -= OnLocationChanged;
     }
 
@@ -873,7 +873,7 @@ else
                     }
 
                     ProjectManagers = SortByLastNameUsingLinq(adminUsers);
-                    RefreshTimer();
+                    TimerRefresh();
 
                     GetIpAddress();
                 }
@@ -1077,7 +1077,7 @@ else
         if (firstRender)
         {
             ProjectManagers = SortByLastNameUsingLinq(UserManager.Users.ToList());
-            RefreshTimer();
+            TimerRefresh();
         }
         GetIpAddress();
     }
@@ -1234,7 +1234,7 @@ else
 
         WebServices.UpdateQuote(selectedQuote);
 
-        RefreshTimer();
+        TimerRefresh();
         quotes = webServices.GetQuotes("New");
 
         QuoteGrid.ExpandDetailRow(selectedIndex);
@@ -1256,7 +1256,7 @@ else
 
         IsPopupVisibleSelectAttachmentToDelete = true;
 
-        RefreshTimer();
+        TimerRefresh();
     }
 
     public void SelectNoteToDelete(Quote quote, Note note)
@@ -1279,7 +1279,7 @@ else
 
         WebServices.UpdateQuote(selectedQuote);
 
-        RefreshTimer();
+        TimerRefresh();
 
         IsPopupVisibleSelectAttachmentToDelete = false;
 
@@ -1298,7 +1298,7 @@ else
 
         WebServices.UpdateQuote(selectedQuote);
 
-        RefreshTimer();
+        TimerRefresh();
 
         IsPopupVisibleSelectNoteToDelete = false;
 
@@ -1355,7 +1355,7 @@ else
             StatusClass = "message-warning";
             RefreshStatus = " Auto refresh paused...";
 
-           _timer?.Dispose();
+           TimerDispose();
         }
         else
         {
@@ -1364,7 +1364,7 @@ else
             StatusClass = "message";
             RefreshStatus = "";
 
-            RefreshTimer();
+            TimerRefresh();
         }
     }
 
@@ -1382,13 +1382,16 @@ else
         RefreshDisabled = false;
     }
 
-    public void Dispose()
+    public void TimerDispose()
     {
         _timer?.Dispose();
+        _timer = null;
     }
 
-    private async Task RefreshTimer()
+    private async Task TimerRefresh()
     {
+        TimerDispose();
+
         LoadingPanelVisible = true;
 
         _timer = new Timer(new TimerCallback(_ =>

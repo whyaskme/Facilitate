@@ -11,27 +11,27 @@
   "phone": "(612) 255-8200",
   "market": "Minneapolis-St. Paul, MN",
   "externalUrl": "https://app.roofle.com/dashboard",
-  "timestamp": "2024-03-02T15:32:50.159Z",
-  "numberOfStructures": 2,
-  "numberOfIncludedStructures": 2,
-  "totalSquareFeet": 1909,
-  "totalInitialSquareFeet": 1909,
-  "mainRoofTotalSquareFeet": 1139,
-  "sessionId": "W5cnnBDgDNGvbWnqn1Cz8",
-  "productName": "Certainteed Landmark",
+  "timestamp": "2023-07-19T16:48:22.193Z",
+  "numberOfStructures": 1,
+  "numberOfIncludedStructures": 1,
+  "totalSquareFeet": 1369,
+  "mainRoofTotalSquareFeet": 1369,
+  "totalInitialSquareFeet": 1369,
+  "sessionId": "nH9YvHwoBldl2ZkpQSWrX",
   "structures": [
     {
       "name": "Main Roof",
       "slope": "medium",
       "isIncluded": true,
-      "squareFeet": 1909,
-      "initialSquareFeet": 1139,
+      "squareFeet": 1369,
+      "initialSquareFeet": 1369,
       "roofComplexity": "Simple"
     }
   ],
+  "productName": "Certainteed Landmark",
   "priceInfo": {
     "priceType": "BasicFinancing",
-    "total": 15069.25,
+    "total": 15069.5,
     "pricePerSquare": 401,
     "monthly": 334,
     "apr": 26.1,
@@ -39,9 +39,9 @@
   },
   "priceRange": {
     "totalMin": 13562,
-    "totalMax": 16576,
+    "totalMax": 16575,
     "monthlyMin": 300,
     "monthlyMax": 367
   },
-  "wasteFactorMainRoof": 1.12
+  "wasteFactorMainRoof": 1.2
 }

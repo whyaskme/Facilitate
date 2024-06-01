@@ -42,6 +42,7 @@ namespace Facilitate.Libraries.Models
             repName = string.Empty;
             repEmail = string.Empty;
             leadId = 0;
+            relationships = new List<ListItem>();
             products = new List<Product>();
             attachments = new List<Attachment>();
             notes = new List<Note>();
@@ -91,6 +92,7 @@ namespace Facilitate.Libraries.Models
         //public virtual User? projectManager { get; set; }
         public virtual ApplicationUser? projectManager { get; set; }
 
+        public List<ListItem>? relationships { get; set; }
         public List<Product>? products { get; set; }
         public List<Attachment>? attachments { get; set; }
         public List<Note>? notes { get; set; }

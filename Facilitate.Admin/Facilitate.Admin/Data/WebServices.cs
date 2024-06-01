@@ -50,28 +50,137 @@ namespace Facilitate.Admin.Data
 
         public List<Quote> quoteList = new List<Quote>();
 
-        public async Task<List<Quote>> CallQuoteApi(string status)
+        public List<QuoteHeader> GetSummaries(string status, bool showHideTestData)
         {
-            status = utils.TitleCaseString(status);
+            List<QuoteHeader> QuoteHeaders = new List<QuoteHeader>();
+            try
+            {
+                var condition = Builders<Quote>.Filter.Eq(f => f.status, status);
 
-            var apiUrl = new Uri(_apiClient.BaseAddress + "/api/quote?status=" + status);
+                var fields = Builders<Quote>.Projection.Include(p => p.firstName)
+                    .Include(p => p.lastName)
+                    .Include(p => p.status)
+                    .Include(p => p.numberOfStructures)
+                    .Include(p => p.numberOfIncludedStructures)
+                    .Include(p => p.totalQuote)
+                    .Include(p => p.totalSquareFeet)
+                    .Include(p => p.timestamp)
+                    .Include(p => p.lastUpdated)
+                    .Include(p => p.street)
+                    .Include(p => p.city)
+                    .Include(p => p.state)
+                    .Include(p => p.zip);
 
-            //var quotes = await _apiClient.GetAsync(apiUrl);
-            var quotes = await _apiClient.GetFromJsonAsync<List<Quote>>(apiUrl);
 
-            return quotes;
+                var builder = Builders<Quote>.Filter;
+                var filter = Builders<Quote>.Filter.Where(p => p.status.Contains(status));
+                var dataSourceFilter = Builders<Quote>.Filter.Not(Builders<Quote>.Filter.Eq(p => p.externalUrl, "Auto-generated WebApi"));
+
+                if (!showHideTestData)
+                {
+                    filter = Builders<Quote>.Filter.And(filter, dataSourceFilter);
+                }
+
+                List<Quote> quotes = _mongoDBCollection.Find(filter).Project<Quote>(fields).ToList();
+
+                for (var i = 0; i < quotes.Count; i++)
+                {
+                    QuoteHeader _header = new QuoteHeader();
+                    _header._id = quotes[i]._id;
+                    _header.firstName = quotes[i].firstName;
+                    _header.lastName = quotes[i].lastName;
+                    _header.status = quotes[i].status;
+
+                    _header.street = quotes[i].street;
+                    _header.city = quotes[i].city;
+                    _header.state = quotes[i].state;
+                    _header.zip = quotes[i].zip;
+
+                    _header.numberOfStructures = quotes[i].numberOfStructures;
+                    _header.numberOfIncludedStructures = quotes[i].numberOfIncludedStructures;
+
+                    _header.totalQuote = quotes[i].totalQuote;
+                    _header.totalSquareFeet = quotes[i].totalSquareFeet;
+
+                    _header.timestamp = quotes[i].timestamp.ToLocalTime();
+                    _header.lastUpdated = quotes[i].lastUpdated.ToLocalTime();
+
+                    QuoteHeaders.Add(_header);
+                }
+
+                return QuoteHeaders;
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+
+            return QuoteHeaders;
         }
 
-        public List<Quote> GetQuoteList(string status)
+        public List<QuoteHeader> GetSummaries(string status, string userId)
         {
-            status = utils.TitleCaseString(status);
+            List<QuoteHeader> QuoteHeaders = new List<QuoteHeader>();
+            try
+            {
+                var condition = Builders<Quote>.Filter.Eq(f => f.status, status);
 
-            var apiUrl = new Uri(_apiClient.BaseAddress + "/api/quote?status=" + status);
+                var fields = Builders<Quote>.Projection.Include(p => p.firstName)
+                    .Include(p => p.lastName)
+                    .Include(p => p.status)
+                    .Include(p => p.numberOfStructures)
+                    .Include(p => p.numberOfIncludedStructures)
+                    .Include(p => p.totalQuote)
+                    .Include(p => p.totalSquareFeet)
+                    .Include(p => p.timestamp)
+                    .Include(p => p.lastUpdated)
+                    .Include(p => p.street)
+                    .Include(p => p.city)
+                    .Include(p => p.state)
+                    .Include(p => p.zip);
 
-            var quotes = _apiClient.GetAsync(apiUrl);
-            //var quotes = _apiClient.GetFromJsonAsync<Quote>(apiUrl);
 
-            return null;
+                var builder = Builders<Quote>.Filter;
+                var filter = Builders<Quote>.Filter.And(
+                    Builders<Quote>.Filter.Where(p => p.status.Contains(status)),
+                    Builders<Quote>.Filter.Where(p => p.projectManager.Email.Contains(userId))
+                    );
+
+                List<Quote> quotes = _mongoDBCollection.Find(filter).Project<Quote>(fields).ToList();
+
+                for (var i = 0; i < quotes.Count; i++)
+                {
+                    QuoteHeader _header = new QuoteHeader();
+                    _header._id = quotes[i]._id;
+                    _header.firstName = quotes[i].firstName;
+                    _header.lastName = quotes[i].lastName;
+                    _header.status = quotes[i].status;
+
+                    _header.street = quotes[i].street;
+                    _header.city = quotes[i].city;
+                    _header.state = quotes[i].state;
+                    _header.zip = quotes[i].zip;
+
+                    _header.numberOfStructures = quotes[i].numberOfStructures;
+                    _header.numberOfIncludedStructures = quotes[i].numberOfIncludedStructures;
+
+                    _header.totalQuote = quotes[i].totalQuote;
+                    _header.totalSquareFeet = quotes[i].totalSquareFeet;
+
+                    _header.timestamp = quotes[i].timestamp.ToLocalTime();
+                    _header.lastUpdated = quotes[i].lastUpdated.ToLocalTime();
+
+                    QuoteHeaders.Add(_header);
+                }
+
+                return QuoteHeaders;
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+
+            return QuoteHeaders;
         }
 
         public List<Quote> GetQuotes(string status, bool showHideTestData)
@@ -92,6 +201,16 @@ namespace Facilitate.Admin.Data
 
                 for (var i = 0; i < sortedQuotes.Count; i++)
                 {
+                    if (sortedQuotes[i].firstName == "")
+                    {
+                        sortedQuotes[i].firstName = "Address";
+                    }
+
+                    if (sortedQuotes[i].lastName == "")
+                    {
+                        sortedQuotes[i].lastName = "Only";
+                    }
+
                     unSortedFiles.Clear();
                     unSortedNotes.Clear();
                     unSortedEvents.Clear();
@@ -153,6 +272,16 @@ namespace Facilitate.Admin.Data
                 sortedQuotes = _mongoDBCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
                 for (var i = 0; i < sortedQuotes.Count; i++)
                 {
+                    if (sortedQuotes[i].firstName == "")
+                    {
+                        sortedQuotes[i].firstName = "Address";
+                    }
+
+                    if (sortedQuotes[i].lastName == "")
+                    {
+                        sortedQuotes[i].lastName = "Only";
+                    }
+
                     unSortedFiles.Clear();
                     unSortedNotes.Clear();
                     unSortedEvents.Clear();
@@ -217,6 +346,16 @@ namespace Facilitate.Admin.Data
                 sortedQuotes = _mongoDBCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
                 for (var i = 0; i < sortedQuotes.Count; i++)
                 {
+                    if (sortedQuotes[i].firstName == "")
+                    {
+                        sortedQuotes[i].firstName = "Address";
+                    }
+
+                    if (sortedQuotes[i].lastName == "")
+                    {
+                        sortedQuotes[i].lastName = "Only";
+                    }
+
                     unSortedFiles.Clear();
                     unSortedNotes.Clear();
                     unSortedEvents.Clear();

@@ -16,6 +16,7 @@
 @using DevExpress.Blazor;
 @using DevExpress.Data;
 @using DevExpress.Data.Linq;
+@using DevExpress.Web;
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
@@ -125,6 +126,40 @@ else
     <div class="quote-stats-hints">
         Select row to expand details. Click column headers to sort. Type and hit enter in any empty cell to search that column. If you have grouped columns below, drag and drop the column back into the grid header to restore.
     </div>
+
+    <DxPopup @bind-Visible="@IsAssignPopupVisible"
+             ShowFooter="true"
+             HeaderText="Please select a Project Manager for assignment">
+        <BodyContentTemplate>
+            <DxListBox Data="@ProjectManagers"
+                       @bind-Values="@Values"
+                       SelectedItemsChanged="@((IEnumerable<ApplicationUser> values) => SelectedProjectManagerChanged(values))"
+                       SelectionMode="ListBoxSelectionMode.Single"
+                       ShowCheckboxes="true">
+                <Columns>
+                    <DxListEditorColumn FieldName="LastName" Caption="Last" />
+                    <DxListEditorColumn FieldName="FirstName" Caption="First" />
+                    <DxListEditorColumn FieldName="Email" Caption="Email" />
+                    <DxListEditorColumn FieldName="Id" Visible="false" Caption="Id" />
+                </Columns>
+            </DxListBox>
+        </BodyContentTemplate>
+        <FooterContentTemplate>
+            <DxButton CssClass="popup-button my-1 ms-2" Enabled="@IsAssignButtonEnabled" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
+            <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsAssignPopupVisible = false)" />
+        </FooterContentTemplate>
+    </DxPopup>
+
+    <DxListBox Data="@LeadTypeList"
+               id="ddlLeadTypeList"
+               @bind-Values="@LeadTypeValues"
+               CssClass="dropdownlist"
+               SelectedItemsChanged="@((IEnumerable<ListItem> values) => FilterAddressOnlyChanged(values))"
+               SelectionMode="ListBoxSelectionMode.Single">
+        <Columns>
+            <DxListEditorColumn FieldName="Value" Caption="Lead Type" />
+        </Columns>
+    </DxListBox>
 
     <DxGrid @ref="QuoteGrid"
             Data="@quotes"
@@ -546,7 +581,7 @@ else
         </DxListBox>
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" Enabled="@IsAssignButtonEnabled" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
+        <DxButton CssClass="popup-button my-1 ms-2" Enabled="true" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsAssignPopupVisible = false)" />
     </FooterContentTemplate>
 </DxPopup>
@@ -649,6 +684,8 @@ else
 
 @code {
 
+    public List<ListItem> LeadTypeList = new List<ListItem>();
+
     public bool ShowTestData = false;
 
     public virtual void ShowHideTestData()
@@ -671,7 +708,7 @@ else
 
     async void OnLocationChanged(object sender, LocationChangedEventArgs args)
     {
-        _timer?.Dispose();
+        TimerDispose();
         NavigationManager.LocationChanged -= OnLocationChanged;
     }
 
@@ -704,6 +741,10 @@ else
         {
             try
             {
+                LeadTypeList.Add(new ListItem() { Text = "New", Value = "Complete Info" });
+                LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
+                LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
+
                 var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
                 var loggedInUser = authstate.User;
                 var loggedInName = loggedInUser.Identity.Name;
@@ -739,7 +780,7 @@ else
                     }
 
                     ProjectManagers = SortByLastNameUsingLinq(adminUsers);
-                    RefreshTimer();
+                    TimerRefresh();
 
                     GetIpAddress();
                 }
@@ -782,6 +823,7 @@ else
     public int noteCount = 0;
 
     IEnumerable<string> Values { get; set; }
+    IEnumerable<string> LeadTypeValues { get; set; }
 
     public int roofsCount = 0;
     public int productsCount = 0;
@@ -924,6 +966,9 @@ else
     [Parameter]
     public bool ClearFilterButtonVisible { get; set; }
 
+    [Parameter]
+    public string SelectedLeadType { get; set; } = "New";
+
     #endregion
 
     #region Methods
@@ -936,6 +981,23 @@ else
             IsAssignButtonEnabled = true;
         else
             IsAssignButtonEnabled = false;
+    }
+
+    void FilterAddressOnlyChanged(IEnumerable<ListItem> selectedLeadType)
+    {
+        SelectedLeadType = "New";
+
+        foreach(var item in selectedLeadType)
+        {
+            if (item.Value == "Complete Info")
+            {
+                SelectedLeadType = "New";
+            }
+            else
+            {
+                SelectedLeadType = item.Value;
+            }
+        }
     }
 
     public List<ApplicationUser> SortByLastNameUsingLinq(List<ApplicationUser> originalList)
@@ -1001,6 +1063,8 @@ else
 
     public void AssignLead()
     {
+        PauseRefresh(true);
+
         LoadingPanelVisible = true;
 
         QuoteGrid.CollapseDetailRow(selectedIndex);
@@ -1075,6 +1139,8 @@ else
 
     public void ArchiveLead()
     {
+        PauseRefresh(true);
+
         selectedQuote.status = "Archive";
 
         QuoteGrid.CollapseDetailRow(selectedIndex);
@@ -1101,6 +1167,8 @@ else
 
     public void AddNote()
     {
+        PauseRefresh(true);
+
         QuoteGrid.CollapseDetailRow(selectedIndex);
 
         Note note = new Note();
@@ -1121,7 +1189,7 @@ else
 
         WebServices.UpdateQuote(selectedQuote);
 
-        RefreshTimer();
+        TimerRefresh();
         quotes = webServices.GetQuotes("New");
 
         QuoteGrid.ExpandDetailRow(selectedIndex);
@@ -1143,7 +1211,7 @@ else
 
         IsPopupVisibleSelectAttachmentToDelete = true;
 
-        RefreshTimer();
+        TimerRefresh();
     }
 
     public void SelectNoteToDelete(Quote quote, Note note)
@@ -1166,7 +1234,7 @@ else
 
         WebServices.UpdateQuote(selectedQuote);
 
-        RefreshTimer();
+        TimerRefresh();
 
         IsPopupVisibleSelectAttachmentToDelete = false;
 
@@ -1185,7 +1253,7 @@ else
 
         WebServices.UpdateQuote(selectedQuote);
 
-        RefreshTimer();
+        TimerRefresh();
 
         IsPopupVisibleSelectNoteToDelete = false;
 
@@ -1211,7 +1279,7 @@ else
             StatusClass = "message-warning";
             RefreshStatus = " Auto refresh paused...";
 
-           _timer?.Dispose();
+            TimerDispose();
         }
         else
         {
@@ -1223,7 +1291,7 @@ else
             StatusClass = "message";
             RefreshStatus = "";
 
-            RefreshTimer();
+            TimerRefresh();
         }
     }
 
@@ -1241,13 +1309,16 @@ else
         RefreshDisabled = false;
     }
 
-    public void Dispose()
+    public void TimerDispose()
     {
         _timer?.Dispose();
+        _timer = null;
     }
 
-    private async Task RefreshTimer()
+    private async Task TimerRefresh()
     {
+        TimerDispose();
+
         LoadingPanelVisible = true;
 
         _timer = new Timer(new TimerCallback(_ =>
@@ -1258,7 +1329,7 @@ else
             if (isSystemAdmin)
             {
                 leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
-                quotes = webServices.GetQuotes("New", ShowTestData);
+                quotes = webServices.GetQuotes(SelectedLeadType, ShowTestData);
             }
             else
             {
@@ -1276,20 +1347,6 @@ else
         }), null, 1000, 1000);
 
         LoadingPanelVisible = false;
-    }
-
-    private async Task GetQuotes()
-    {
-        try
-        {
-            var tmpQuotes = webServices.CallQuoteApi("New");
-
-            var testMsg = "";
-        }
-        catch (Exception ex)
-        {
-            var errMsg = ex.Message;
-        }
     }
 
     private async Task<bool> IsUserEnabled()

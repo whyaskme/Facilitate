@@ -6,8 +6,14 @@ html, body {
     overflow: auto !important;
 }
 
-.label-roles
-{
+.dropdownlist {
+    border: solid 1px #c0c0c0 !important;
+    height: 88px !important;
+    width: 200px !important;
+    margin-bottom: 25px !important;
+}
+
+.label-roles {
     border: solid 0px #ff0000 !important;
     color: #808080 !important;
     position: relative;
