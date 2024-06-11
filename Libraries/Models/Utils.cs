@@ -1125,7 +1125,7 @@ namespace Facilitate.Libraries.Models
 
         #endregion
 
-        public bool SendGenericEmail(string ownerId, string ownerType, string fromAddress, string toAddress, string subject, string body, bool isBodyHtml)
+        public bool SendEmail(string ownerId, string ownerType, string fromAddress, string toAddress, string subject, string body, bool isBodyHtml)
         {
             if (fromAddress == "")
                 fromAddress = ""; // ConfigurationManager.AppSettings[cfg.FromAddress];

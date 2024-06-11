@@ -686,6 +686,8 @@ else
 
     public List<ListItem> LeadTypeList = new List<ListItem>();
 
+    public bool emailSentStatus = false;
+
     public bool ShowTestData = false;
 
     public virtual void ShowHideTestData()
@@ -737,6 +739,16 @@ else
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        // var ownerId = "";
+        // var ownerType = "";
+        // var fromAddress = "admin@facilitate.org";
+        // var toAddress = "joseph.baranauskas@gmail.com";
+        // var subject = "Testing Email Services";
+        // var body = "This is just a test of the emergenct broadcast system. Had this been an actual emergency, you are toast!";
+        // var isBodyHtml = true;
+
+        // var emailSent = WebServices.SendEmail(ownerId, ownerType, fromAddress, toAddress, subject, body, isBodyHtml);
+
         if (firstRender)
         {
             try

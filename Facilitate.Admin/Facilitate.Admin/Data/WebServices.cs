@@ -10,6 +10,8 @@ using MongoDB.Driver;
 using Newtonsoft.Json;
 using ServiceStack;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Net.Mail;
 using System.Text;
 using static Facilitate.Libraries.Models.Constants.Messaging;
 
@@ -28,7 +30,7 @@ namespace Facilitate.Admin.Data
 
         string resultMsg = string.Empty;
 
-        List<Attachment> unSortedFiles = new List<Attachment>();
+        List<Libraries.Models.Attachment> unSortedFiles = new List<Libraries.Models.Attachment>();
         List<Note> unSortedNotes = new List<Note>();
         List<Event> unSortedEvents = new List<Event>();
 
@@ -221,7 +223,7 @@ namespace Facilitate.Admin.Data
 
                     for (var j = 0; j < sortedQuotes[i].attachments.Count; j++)
                     {
-                        Attachment currentAttachment = sortedQuotes[i].attachments[j];
+                        Libraries.Models.Attachment currentAttachment = sortedQuotes[i].attachments[j];
 
                         var currentDateTime = currentAttachment.Date;
 
@@ -292,7 +294,7 @@ namespace Facilitate.Admin.Data
 
                     for (var j = 0; j < sortedQuotes[i].attachments.Count; j++)
                     {
-                        Attachment currentAttachment = sortedQuotes[i].attachments[j];
+                        Libraries.Models.Attachment currentAttachment = sortedQuotes[i].attachments[j];
 
                         var currentDateTime = currentAttachment.Date;
 
@@ -366,7 +368,7 @@ namespace Facilitate.Admin.Data
 
                     for (var j = 0; j < sortedQuotes[i].attachments.Count; j++)
                     {
-                        Attachment currentAttachment = sortedQuotes[i].attachments[j];
+                        Libraries.Models.Attachment currentAttachment = sortedQuotes[i].attachments[j];
 
                         var currentDateTime = currentAttachment.Date;
 
@@ -783,7 +785,7 @@ namespace Facilitate.Admin.Data
             else return originalList;
         }
 
-        public List<Attachment> SortFilesByDateDesc(List<Attachment> originalList)
+        public List<Libraries.Models.Attachment> SortFilesByDateDesc(List<Libraries.Models.Attachment> originalList)
         {
             if (originalList != null)
                 return originalList.OrderByDescending(x => x.Date).ToList();
@@ -795,6 +797,50 @@ namespace Facilitate.Admin.Data
             if (originalList != null)
                 return originalList.OrderByDescending(x => x.Date).ToList();
             else return originalList;
+        }
+
+        public bool SendEmail(string ownerId, string ownerType, string fromAddress, string toAddress, string subject, string body, bool isBodyHtml)
+        {
+            try
+            {
+                //Set up message
+                var message = new MailMessage { From = new MailAddress(fromAddress) };
+                message.To.Add(new MailAddress(toAddress));
+                message.Subject = subject;
+                message.IsBodyHtml = isBodyHtml;
+
+                var messageBody = body;
+                messageBody = messageBody.Replace("[DocTitle]", subject);
+                messageBody = messageBody.Replace("[Date]", DateTime.UtcNow.ToLocalTime().ToString(CultureInfo.InvariantCulture));
+                messageBody = messageBody.Replace("[MessageBody]", body.Replace("|", isBodyHtml ? "<br />" : Environment.NewLine));
+
+                message.Body = messageBody;
+
+                message.Priority = MailPriority.High;
+
+                message.DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure;
+
+                //// setup Smtp Client
+                //var smtp = new SmtpClient
+                //{
+                //    Port = 25,
+                //    Host = "email-smtp.us-east-2.amazonaws.com",
+                //    EnableSsl = true,
+                //    UseDefaultCredentials = true,
+                //    Credentials = new NetworkCredential("admin@facilitate.org", "!Facilitate2024#"),
+                //    DeliveryMethod = SmtpDeliveryMethod.Network
+                //};
+
+                //smtp.Send(message);
+
+                return true;
+            }
+            // ReSharper disable once EmptyGeneralCatchClause
+            catch (Exception ex)
+            {
+                var errMsg = ex.Message;
+            }
+            return false;
         }
     }
 }
