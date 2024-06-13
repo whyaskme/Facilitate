@@ -57,6 +57,7 @@
     }
 </script>
 
+
 @if (quotes == null)
 {
     @*     <p><em>Loading...</em></p> *@
@@ -150,7 +151,7 @@ else
         </FooterContentTemplate>
     </DxPopup>
 
-    <DxListBox Data="@LeadTypeList"
+@*     <DxListBox Data="@LeadTypeList"
                id="ddlLeadTypeList"
                @bind-Values="@LeadTypeValues"
                CssClass="dropdownlist"
@@ -159,8 +160,18 @@ else
         <Columns>
             <DxListEditorColumn FieldName="Value" Caption="Lead Type" />
         </Columns>
-    </DxListBox>
+    </DxListBox> *@
 
+    <div class="div-filters">
+        <select id="listbox-markets" runat="server" class="div-filter">
+            <option selected="selected" value="Roofing">Roofing</option>
+        </select>
+        <select id="listbox-quote-types" runat="server" class="div-filter">
+            <option selected="selected" value="Complete Info">Complete Info</option>
+            <option value="Address Only">Address Only</option>
+            <option value="Product Requested">Product Requested</option>
+        </select>
+    </div>
 
     <DxGrid @ref="QuoteGrid"
             Data="@quotes"

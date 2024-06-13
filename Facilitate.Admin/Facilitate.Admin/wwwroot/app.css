@@ -8,9 +8,32 @@ html, body {
 
 .dropdownlist {
     border: solid 1px #c0c0c0 !important;
-    height: 88px !important;
+    height: auto !important;
     width: 200px !important;
     margin-bottom: 25px !important;
+}
+
+select {
+    border: solid 1px #ff0000 !important;
+    height: auto !important;
+    padding: 5px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+
+.div-filters {
+    border: solid 0px #c0c0c0 !important;
+    border-radius: 5px !important;
+    padding: 25px !important;
+/*    padding-bottom:  25px !important;
+    margin-bottom: 25px !important;*/
+    text-align: center !important;
+}
+
+.div-filter {
+    border: solid 1px #c0c0c0 !important;
+    border-radius: 5px !important;
+    margin-right: 15px !important;
 }
 
 .label-roles {
