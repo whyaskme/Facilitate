@@ -1020,12 +1020,15 @@ else
 
     void SelectedProjectManagerChanged(IEnumerable<ApplicationUser> selectedProjectManager)
     {
-        SelectedProjectManager = selectedProjectManager;
+        if(selectedProjectManager.Count() > 0)
+        {
+            SelectedProjectManager = selectedProjectManager;
 
-        if (SelectedProjectManager.Count() > 0)
-            IsAssignButtonEnabled = true;
-        else
-            IsAssignButtonEnabled = false;
+            if (SelectedProjectManager.Count() > 0)
+                IsAssignButtonEnabled = true;
+            else
+                IsAssignButtonEnabled = false;
+        }
     }
 
     void FilterLeadTypes(IEnumerable<ListItem> selectedLeadType)
