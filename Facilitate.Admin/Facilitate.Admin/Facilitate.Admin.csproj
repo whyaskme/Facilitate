@@ -31,10 +31,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Identity.Client" Version="4.61.3" />
-    <PackageReference Include="MongoDB.Bson" Version="2.25.0" />
-    <PackageReference Include="MongoDB.Driver" Version="2.25.0" />
-    <PackageReference Include="MongoDB.Driver.Core" Version="2.25.0" />
-    <PackageReference Include="MongoDB.Driver.GridFS" Version="2.25.0" />
+    <PackageReference Include="MongoDB.Bson" Version="2.26.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.26.0" />
+    <PackageReference Include="MongoDB.Driver.Core" Version="2.26.0" />
+    <PackageReference Include="MongoDB.Driver.GridFS" Version="2.26.0" />
     <PackageReference Include="ServiceStack.Client" Version="8.2.2" />
     <PackageReference Include="Syncfusion.Blazor.Core" Version="26.1.35" />
   </ItemGroup>

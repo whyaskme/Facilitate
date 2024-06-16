@@ -3,11 +3,11 @@
 @using Facilitate.Admin.Data;
 @using Facilitate.Libraries.Models;
 
-@using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.Identity.EntityFrameworkCore
-@using Microsoft.AspNetCore.WebUtilities
-
-@using Microsoft.AspNetCore.Mvc
+@using Microsoft.AspNetCore.Identity;
+@using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.AspNetCore.Mvc.Rendering;
+@using Microsoft.AspNetCore.WebUtilities;
 
 @using MongoDB.Bson;
 
@@ -17,6 +17,9 @@
 @using DevExpress.Data;
 @using DevExpress.Data.Linq;
 @using DevExpress.Web;
+@* @using static DevExpress.XtraPrinting.Native.ExportOptionsPropertiesNames *@
+
+@using Microsoft.AspNetCore.Html;
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
@@ -56,7 +59,6 @@
             })
     }
 </script>
-
 
 @if (quotes == null)
 {
@@ -151,26 +153,36 @@ else
         </FooterContentTemplate>
     </DxPopup>
 
-@*     <DxListBox Data="@LeadTypeList"
-               id="ddlLeadTypeList"
-               @bind-Values="@LeadTypeValues"
-               CssClass="dropdownlist"
-               SelectedItemsChanged="@((IEnumerable<ListItem> values) => FilterAddressOnlyChanged(values))"
-               SelectionMode="ListBoxSelectionMode.Single">
-        <Columns>
-            <DxListEditorColumn FieldName="Value" Caption="Lead Type" />
-        </Columns>
-    </DxListBox> *@
-
     <div class="div-filters">
-        <select id="listbox-markets" runat="server" class="div-filter">
-            <option selected="selected" value="Roofing">Roofing</option>
-        </select>
-        <select id="listbox-quote-types" runat="server" class="div-filter">
-            <option selected="selected" value="Complete Info">Complete Info</option>
-            <option value="Address Only">Address Only</option>
-            <option value="Product Requested">Product Requested</option>
-        </select>
+        <div id="dropdown-customization-target-container">
+            <DxButton Id="btnLeadTypes" Click="() => IsOpen = !IsOpen" RenderStyle="@ButtonRenderStyle.Primary">@FilterLabel</DxButton>
+        </div>
+        <DxDropDown
+            @bind-IsOpen="@IsOpen"
+            MinWidth="max(20vw, 100px)"
+            PositionMode="DropDownPositionMode.Bottom"
+            PositionTarget="#dropdown-customization-target-container"
+            RestrictionTarget="#Navigation-DropDown-Customization"
+            CloseMode="DropDownCloseMode.Close"
+            PreventCloseOnPositionTargetClick="true"
+            HeaderVisible="false"
+            HeaderText="Available Lead Types"
+            FooterVisible="false"
+           >
+            <BodyContentTemplate>
+                    <DxListBox Data="@LeadTypeList"
+                               id="ddlLeadTypeList"
+                               @bind-Values="@LeadTypeValues"
+                               SelectedItemsChanged="@((IEnumerable<ListItem> values) => FilterLeadTypes(values))"
+                               SelectionMode="ListBoxSelectionMode.Single">
+                    </DxListBox>
+                <SampleEditForm/>
+            </BodyContentTemplate>
+            <FooterContentTemplate>
+                <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="OK" Click="@context.CloseCallback"/>
+                <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@context.CloseCallback"/>
+            </FooterContentTemplate>
+        </DxDropDown>
     </div>
 
     <DxGrid @ref="QuoteGrid"
@@ -696,6 +708,15 @@ else
 
 @code {
 
+    public void SetLeadFilter()
+    {
+
+    }
+
+    public string FilterLabel { get; set; } = "Leads Filter (Complete Info)";
+
+    bool IsOpen { get; set; } = false;
+
     public List<ListItem> LeadTypeList = new List<ListItem>();
 
     public bool emailSentStatus = false;
@@ -765,7 +786,7 @@ else
         {
             try
             {
-                LeadTypeList.Add(new ListItem() { Text = "New", Value = "Complete Info" });
+                LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
                 LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
                 LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
 
@@ -1007,7 +1028,7 @@ else
             IsAssignButtonEnabled = false;
     }
 
-    void FilterAddressOnlyChanged(IEnumerable<ListItem> selectedLeadType)
+    void FilterLeadTypes(IEnumerable<ListItem> selectedLeadType)
     {
         SelectedLeadType = "New";
 
@@ -1016,12 +1037,16 @@ else
             if (item.Value == "Complete Info")
             {
                 SelectedLeadType = "New";
+                FilterLabel = "Leads Filter (Complete Info)";
             }
             else
             {
                 SelectedLeadType = item.Value;
+                FilterLabel = "Leads Filter (" + SelectedLeadType + ")";
             }
         }
+
+        IsOpen = false;
     }
 
     public List<ApplicationUser> SortByLastNameUsingLinq(List<ApplicationUser> originalList)

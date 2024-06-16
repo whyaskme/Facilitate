@@ -53,7 +53,7 @@ builder.Services.AddAuthentication(options =>
     .AddIdentityCookies();
 
 // Decide database location to use
-var useLocalhost = true;
+var useLocalhost = false;
 var connectionString = "";
 
 if (useLocalhost)

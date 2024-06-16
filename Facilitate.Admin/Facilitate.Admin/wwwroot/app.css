@@ -6,6 +6,16 @@ html, body {
     overflow: auto !important;
 }
 
+#btnLeadTypes{
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+
+li.dxbl-list-box-item-selected {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+
 .dropdownlist {
     border: solid 1px #c0c0c0 !important;
     height: auto !important;
@@ -27,7 +37,7 @@ select {
     padding: 25px !important;
 /*    padding-bottom:  25px !important;
     margin-bottom: 25px !important;*/
-    text-align: center !important;
+    text-align: left !important;
 }
 
 .div-filter {
