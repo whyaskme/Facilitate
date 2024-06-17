@@ -886,7 +886,7 @@ else
 
     public string LeadTypeFilterLabel { get; set; } = "Types (Complete Info)";
 
-    public string TradesFilterLabel { get; set; } = "Trades (Roofing)";
+    public string TradesFilterLabel { get; set; } = "Trades (All)";
 
     public bool IsLeadTypeListOpen { get; set; } = false;
 
@@ -926,8 +926,20 @@ else
     {
         if (firstRender)
         {
+            Utils _utils = new Utils();
+
             try
             {
+                LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
+                LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
+                LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
+
+                var tradeList = WebServices.GetTradesList();
+                foreach (var trade in tradeList)
+                {
+                    TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
+                }
+
                 var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
                 var loggedInUser = authstate.User;
                 var loggedInName = loggedInUser.Identity.Name;
