@@ -839,11 +839,11 @@ else
                 LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
                 LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
 
-                var tradeList = WebServices.GetTradesList();
-                foreach (var trade in tradeList)
-                {
-                    TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
-                }
+                // var tradeList = WebServices.GetTradesList();
+                // foreach (var trade in tradeList)
+                // {
+                //     TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
+                // }
 
                 var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
                 var loggedInUser = authstate.User;
@@ -1466,6 +1466,7 @@ else
             if (isSystemAdmin)
             {
                 leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
+
                 quotes = webServices.GetQuotes(SelectedTradeType, SelectedLeadType, ShowTestData);
             }
             else

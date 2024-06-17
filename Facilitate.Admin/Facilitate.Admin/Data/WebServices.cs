@@ -268,6 +268,7 @@ namespace Facilitate.Admin.Data
             List<Quote> sortedQuotes = new List<Quote>();
             try
             {
+
                 var builder = Builders<Quote>.Filter;
                 var filter = Builders<Quote>.Filter.Where(p => p.status.Contains(status));
 
