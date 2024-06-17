@@ -53,7 +53,7 @@ namespace Facilitate.Api.Controllers
                         quote.status = "New";
 
                         // Will need to figure out how to set dynamically
-                        quote.applicationType = applicationType.ToLower();
+                        quote.applicationType = utils.TitleCaseString(applicationType);
 
                         var randomStreetNumber = utils.GetRandomStreetNumber();
                         var randomStreetName = utils.GetRandomStreetName();

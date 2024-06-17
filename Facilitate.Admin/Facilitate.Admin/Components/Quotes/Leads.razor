@@ -246,6 +246,7 @@ else
             DataItemDeleting="Grid_DataItemDeleting"
             KeyboardNavigationEnabled="true">
         <Columns>
+            <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" />
             <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Width="125" Caption="First" FieldName="firstName" />
             <DxGridDataColumn Width="150" Caption="Last" FieldName="lastName" />
@@ -749,11 +750,6 @@ else
 
 @code {
 
-    public void SetLeadFilter()
-    {
-
-    }
-
     public string LeadTypeFilterLabel { get; set; } = "Types (Complete Info)";
 
     public string TradesFilterLabel { get; set; } = "Trades (Roofing)";
@@ -839,11 +835,11 @@ else
                 LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
                 LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
 
-                // var tradeList = WebServices.GetTradesList();
-                // foreach (var trade in tradeList)
-                // {
-                //     TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
-                // }
+                var tradeList = WebServices.GetTradesList();
+                foreach (var trade in tradeList)
+                {
+                    TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
+                }
 
                 var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
                 var loggedInUser = authstate.User;
@@ -1071,7 +1067,7 @@ else
     public string SelectedLeadType { get; set; } = "New";
 
     [Parameter]
-    public string SelectedTradeType { get; set; } = "Roofing";
+    public string SelectedTradeType { get; set; } = "All";
 
     #endregion
 
@@ -1466,7 +1462,6 @@ else
             if (isSystemAdmin)
             {
                 leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
-
                 quotes = webServices.GetQuotes(SelectedTradeType, SelectedLeadType, ShowTestData);
             }
             else

@@ -110,6 +110,79 @@ else
         </div>
     </div>
 
+    <div class="div-filters">
+
+        <div class="">
+            <label>Filters</label>
+        </div>
+
+        <div class="div-filter">
+
+            <div id="dropdown-customization-target-container-trades">
+                <DxButton Id="btnTrades" Click="() => IsTradesListOpen = !IsTradesListOpen" RenderStyle="@ButtonRenderStyle.Primary">@TradesFilterLabel</DxButton>
+            </div>
+            <DxDropDown
+                @bind-IsOpen="@IsTradesListOpen"
+                MinWidth="max(20vw, 100px)"
+                PositionMode="DropDownPositionMode.Bottom"
+                        PositionTarget="#dropdown-customization-target-container-trades"
+                RestrictionTarget="#Navigation-DropDown-Customization"
+                CloseMode="DropDownCloseMode.Close"
+                PreventCloseOnPositionTargetClick="true"
+                HeaderVisible="false"
+                HeaderText="Trades"
+                FooterVisible="false"
+               >
+                <BodyContentTemplate>
+                        <DxListBox Data="@TradesList"
+                                   id="ddlTradesList"
+                                   @bind-Values="@TradeTypeValues"
+                                   SelectedItemsChanged="@((IEnumerable<ListItem> values) => FilterTradeType(values))"
+                                   SelectionMode="ListBoxSelectionMode.Single">
+                        </DxListBox>
+                    <SampleEditForm/>
+                </BodyContentTemplate>
+                <FooterContentTemplate>
+                    <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="OK" Click="@context.CloseCallback"/>
+                    <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@context.CloseCallback"/>
+                </FooterContentTemplate>
+            </DxDropDown>
+        </div>
+
+        <div class="div-filter">
+            <div id="dropdown-customization-target-container">
+                <DxButton Id="btnLeadTypes" Click="() => IsLeadTypeListOpen = !IsLeadTypeListOpen" RenderStyle="@ButtonRenderStyle.Primary">@LeadTypeFilterLabel</DxButton>
+            </div>
+            <DxDropDown
+                @bind-IsOpen="@IsLeadTypeListOpen"
+                MinWidth="max(20vw, 100px)"
+                PositionMode="DropDownPositionMode.Bottom"
+                PositionTarget="#dropdown-customization-target-container"
+                RestrictionTarget="#Navigation-DropDown-Customization"
+                CloseMode="DropDownCloseMode.Close"
+                PreventCloseOnPositionTargetClick="true"
+                HeaderVisible="false"
+                HeaderText="Available Lead Types"
+                FooterVisible="false"
+               >
+                <BodyContentTemplate>
+                        <DxListBox Data="@LeadTypeList"
+                                   id="ddlLeadTypeList"
+                                   @bind-Values="@LeadTypeValues"
+                                   SelectedItemsChanged="@((IEnumerable<ListItem> values) => FilterLeadTypes(values))"
+                                   SelectionMode="ListBoxSelectionMode.Single">
+                        </DxListBox>
+                    <SampleEditForm/>
+                </BodyContentTemplate>
+                <FooterContentTemplate>
+                    <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="OK" Click="@context.CloseCallback"/>
+                    <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@context.CloseCallback"/>
+                </FooterContentTemplate>
+            </DxDropDown>
+        </div>
+
+    </div>
+
     <div class="quote-stats-header">
         <span class="quote-stats-count">@updateStatus Warranties</span>
         <span class="quote-stats-value">@leaderboardStats.WarrantyValue.ToString("C0")</span>
@@ -138,6 +211,7 @@ else
             PageSizeSelectorAllRowsItemVisible="false"
             KeyboardNavigationEnabled="true">
         <Columns>
+            <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" />
             <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Width="175" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
             <DxGridDataColumn Width="125" Caption="First" FieldName="firstName" />
@@ -810,6 +884,18 @@ else
 
 @code {
 
+    public string LeadTypeFilterLabel { get; set; } = "Types (Complete Info)";
+
+    public string TradesFilterLabel { get; set; } = "Trades (Roofing)";
+
+    public bool IsLeadTypeListOpen { get; set; } = false;
+
+    public List<ListItem> LeadTypeList = new List<ListItem>();
+
+    public bool IsTradesListOpen { get; set; } = false;
+
+    public List<ListItem> TradesList = new List<ListItem>();
+
     public bool ShowTestData = false;
 
     public virtual void ShowHideTestData()
@@ -917,6 +1003,8 @@ else
     public int noteCount = 0;
 
     IEnumerable<string> Values { get; set; }
+    IEnumerable<string> LeadTypeValues { get; set; }
+    IEnumerable<string> TradeTypeValues { get; set; }
 
     public int roofsCount = 0;
     public int productsCount = 0;
@@ -1058,6 +1146,12 @@ else
     [Parameter]
     public bool ClearFilterButtonVisible { get; set; }
 
+    [Parameter]
+    public string SelectedLeadType { get; set; } = "New";
+
+    [Parameter]
+    public string SelectedTradeType { get; set; } = "All";
+
     #endregion
 
     #region Methods
@@ -1070,6 +1164,50 @@ else
             IsAssignButtonEnabled = true;
         else
             IsAssignButtonEnabled = false;
+    }
+
+    void FilterLeadTypes(IEnumerable<ListItem> selectedLeadType)
+    {
+        SelectedLeadType = "New";
+
+        foreach (var item in selectedLeadType)
+        {
+            if (item.Value == "Complete Info")
+            {
+                SelectedLeadType = "New";
+                LeadTypeFilterLabel = "Types (Complete Info)";
+            }
+            else
+            {
+                SelectedLeadType = item.Value;
+                LeadTypeFilterLabel = "Types (" + SelectedLeadType + ")";
+            }
+        }
+
+        IsLeadTypeListOpen = false;
+    }
+
+    void FilterTradeType(IEnumerable<ListItem> selectedTradeType)
+    {
+        LeadTypeList.Clear();
+
+        foreach (var item in selectedTradeType)
+        {
+            SelectedTradeType = item.Value;
+            if (SelectedTradeType == "Roofing")
+            {
+                LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
+                LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
+                LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
+            }
+            else
+            {
+                LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
+            }
+        }
+
+        TradesFilterLabel = "Trades (" + SelectedTradeType + ")";
+        IsTradesListOpen = false;
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -1399,7 +1537,7 @@ else
             if(isSystemAdmin)
             {
                 leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
-                quotes = webServices.GetQuotes("Warranty", ShowTestData);
+                quotes = webServices.GetQuotes(SelectedTradeType, "Warranty", ShowTestData);
             }
             else
             {

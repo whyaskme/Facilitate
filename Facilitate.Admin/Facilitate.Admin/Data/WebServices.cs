@@ -268,20 +268,20 @@ namespace Facilitate.Admin.Data
             List<Quote> sortedQuotes = new List<Quote>();
             try
             {
+                //var filter = Builders<Quote>.Filter.Where(p => p.status.Contains(status));
 
-                var builder = Builders<Quote>.Filter;
-                var filter = Builders<Quote>.Filter.Where(p => p.status.Contains(status));
+                var tradeFilter = Builders<Quote>.Filter.Where(p => p.applicationType.Contains(utils.TitleCaseString(tradeType)));
+                //filter = Builders<Quote>.Filter.And(filter, tradeFilter);
 
-                var dataSourceFilter = Builders<Quote>.Filter.Not(Builders<Quote>.Filter.Eq(p => p.externalUrl, "Auto-generated WebApi"));
+                var filterBuilder = Builders<Quote>.Filter;
+                var filter = filterBuilder.Eq("status", status) & filterBuilder.Eq("applicationType", utils.TitleCaseString(tradeType));
 
                 if (!showHideTestData)
                 {
+                    var dataSourceFilter = Builders<Quote>.Filter.Not(Builders<Quote>.Filter.Eq(p => p.externalUrl, "Auto-generated WebApi"));
+
                     filter = Builders<Quote>.Filter.And(filter, dataSourceFilter);
                 }
-
-                var tradeFilter = Builders<Quote>.Filter.Where(p => p.applicationType.Contains(tradeType.ToLower()));
-
-                filter = Builders<Quote>.Filter.And(filter, tradeFilter);
 
                 sortedQuotes = _mongoDBCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
 
