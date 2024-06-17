@@ -856,7 +856,7 @@ else
 
     public List<ListItem> TradesList = new List<ListItem>();
 
-    public bool ShowTestData = false;
+    public bool ShowTestData = true;
 
     public virtual void ShowHideTestData()
     {
@@ -984,7 +984,7 @@ else
     public string roofsCountLabel = "";
     public string productsCountLabel = "";
 
-    public Quote selectedQuote { get; set; }
+    public QuoteHeader selectedQuote { get; set; }
     public Attachment selectedAttachment { get; set; }
     public Note selectedNote { get; set; }
 
@@ -1000,7 +1000,7 @@ else
 
     #region Private Properties
 
-    private List<Quote>? quotes;
+    private List<QuoteHeader>? quotes;
 
     int SelectedFilesCount { get; set; }
 
@@ -1086,7 +1086,7 @@ else
     public string StatusClass { get; set; } = "message-normal";
 
     [Parameter]
-    public string ShowTestDataButtonText { get; set; } = "Show Test Data";
+    public string ShowTestDataButtonText { get; set; } = "Hide Test Data";
 
     [Parameter]
     public string RefreshButtonText { get; set; } = "Pause Refresh";
@@ -1290,7 +1290,29 @@ else
 
         selectedQuote.events.Add(assignmentEvent);
 
-        WebServices.UpdateQuote(selectedQuote);
+        Quote updatedQuote = new Quote();
+        updatedQuote.address = selectedQuote.street;
+        updatedQuote.firstName = selectedQuote.firstName;
+        updatedQuote.lastName = selectedQuote.lastName;
+        updatedQuote.email = selectedQuote.email;
+        // updatedQuote.phone = selectedQuote.phone;
+        updatedQuote.status = selectedQuote.status;
+        updatedQuote.projectManager = projectManager;
+        updatedQuote.timestamp = selectedQuote.timestamp;
+        // updatedQuote.market = selectedQuote.market;
+        // updatedQuote.repName = selectedQuote.repName;
+        // updatedQuote.repEmail = selectedQuote.repEmail;
+        // updatedQuote.externalUrl = selectedQuote.externalUrl;
+        // updatedQuote.sessionId = selectedQuote.sessionId;
+        // updatedQuote.leadId = selectedQuote.leadId;
+        updatedQuote._id = selectedQuote._id;
+        // updatedQuote.notes = selectedQuote.notes;
+        updatedQuote.events = selectedQuote.events;
+        // updatedQuote.attachments = selectedQuote.attachments;
+        // updatedQuote.warranties = selectedQuote.warranties;
+
+
+        WebServices.UpdateQuote(updatedQuote);
 
         //LoadingPanelVisible = false;
 
@@ -1306,12 +1328,33 @@ else
 
         QuoteGrid.CollapseDetailRow(selectedIndex);
 
+        Quote updatedQuote = new Quote();
+        updatedQuote.address = selectedQuote.street;
+        updatedQuote.firstName = selectedQuote.firstName;
+        updatedQuote.lastName = selectedQuote.lastName;
+        updatedQuote.email = selectedQuote.email;
+        // updatedQuote.phone = selectedQuote.phone;
+        updatedQuote.status = selectedQuote.status;
+        // updatedQuote.projectManager = projectManager;
+        updatedQuote.timestamp = selectedQuote.timestamp;
+        // updatedQuote.market = selectedQuote.market;
+        // updatedQuote.repName = selectedQuote.repName;
+        // updatedQuote.repEmail = selectedQuote.repEmail;
+        // updatedQuote.externalUrl = selectedQuote.externalUrl;
+        // updatedQuote.sessionId = selectedQuote.sessionId;
+        // updatedQuote.leadId = selectedQuote.leadId;
+        updatedQuote._id = selectedQuote._id;
+        // updatedQuote.notes = selectedQuote.notes;
+        updatedQuote.events = selectedQuote.events;
+        // updatedQuote.attachments = selectedQuote.attachments;
+        // updatedQuote.warranties = selectedQuote.warranties;
+
         Note note = new Note();
         note.Summary = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
         note.Details = @NoteDetails;
         note.Author = currentUser;
 
-        selectedQuote.notes.Add(note);
+        updatedQuote.notes.Add(note);
 
         Event _event = new Event();
         _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
@@ -1319,7 +1362,7 @@ else
 
         selectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(selectedQuote);
+        WebServices.UpdateQuote(updatedQuote);
 
         IsArchivePopupVisible = false;
         NoteDetails = "";
@@ -1331,12 +1374,33 @@ else
     {
         QuoteGrid.CollapseDetailRow(selectedIndex);
 
+        Quote updatedQuote = new Quote();
+        updatedQuote.address = selectedQuote.street;
+        updatedQuote.firstName = selectedQuote.firstName;
+        updatedQuote.lastName = selectedQuote.lastName;
+        updatedQuote.email = selectedQuote.email;
+        // updatedQuote.phone = selectedQuote.phone;
+        updatedQuote.status = selectedQuote.status;
+        // updatedQuote.projectManager = projectManager;
+        updatedQuote.timestamp = selectedQuote.timestamp;
+        // updatedQuote.market = selectedQuote.market;
+        // updatedQuote.repName = selectedQuote.repName;
+        // updatedQuote.repEmail = selectedQuote.repEmail;
+        // updatedQuote.externalUrl = selectedQuote.externalUrl;
+        // updatedQuote.sessionId = selectedQuote.sessionId;
+        // updatedQuote.leadId = selectedQuote.leadId;
+        updatedQuote._id = selectedQuote._id;
+        // updatedQuote.notes = selectedQuote.notes;
+        updatedQuote.events = selectedQuote.events;
+        // updatedQuote.attachments = selectedQuote.attachments;
+        // updatedQuote.warranties = selectedQuote.warranties;
+
         Note note = new Note();
         note.Summary = "Note Added";
         note.Details = @NoteDetails;
         note.Author = currentUser;
 
-        selectedQuote.notes.Add(note);
+        updatedQuote.notes.Add(note);
 
         Event _event = new Event();
         _event.Details = "Note (" + note.Details + ") added to Quote";
@@ -1347,10 +1411,10 @@ else
         IsPopupVisibleAddNote = false;
         NoteDetails = "";
 
-        WebServices.UpdateQuote(selectedQuote);
+        WebServices.UpdateQuote(updatedQuote);
 
         TimerRefresh();
-        quotes = webServices.GetQuotes("New");
+        //quotes = webServices.GetQuotes("New");
 
         QuoteGrid.ExpandDetailRow(selectedIndex);
 
@@ -1366,95 +1430,95 @@ else
 
     public void SelectAttachmentToDelete(Quote quote, Attachment attachment)
     {
-        selectedQuote = quote;
-        selectedAttachment = attachment;
+        // selectedQuote = quote;
+        // selectedAttachment = attachment;
 
-        IsPopupVisibleSelectAttachmentToDelete = true;
+        // IsPopupVisibleSelectAttachmentToDelete = true;
 
-        TimerRefresh();
+        // TimerRefresh();
     }
 
     public void SelectNoteToDelete(Quote quote, Note note)
     {
-        selectedQuote = quote;
-        selectedNote = note;
+        // selectedQuote = quote;
+        // selectedNote = note;
 
-        IsPopupVisibleSelectNoteToDelete = true;
+        // IsPopupVisibleSelectNoteToDelete = true;
     }
 
     public void DeleteSelectedAttachment()
     {
-        selectedAttachment.IsDeleted = true;
+        // selectedAttachment.IsDeleted = true;
 
-        Event _event = new Event();
-        _event.Details = "Deleted attachment (" + selectedAttachment.MediaDescription + ") from Quote";
-        _event.Author = currentUser;
+        // Event _event = new Event();
+        // _event.Details = "Deleted attachment (" + selectedAttachment.MediaDescription + ") from Quote";
+        // _event.Author = currentUser;
 
-        selectedQuote.events.Add(_event);
+        // selectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(selectedQuote);
+        // WebServices.UpdateQuote(selectedQuote);
 
-        TimerRefresh();
+        // TimerRefresh();
 
-        IsPopupVisibleSelectAttachmentToDelete = false;
+        // IsPopupVisibleSelectAttachmentToDelete = false;
 
-        attachmentsCount--;
+        // attachmentsCount--;
     }
 
     public void DeleteSelectedNote()
     {
-        selectedNote.IsDeleted = true;
+        // selectedNote.IsDeleted = true;
 
-        Event _event = new Event();
-        _event.Details = "Deleted note (" + selectedNote.Details + ") from Quote";
-        _event.Author = currentUser;
+        // Event _event = new Event();
+        // _event.Details = "Deleted note (" + selectedNote.Details + ") from Quote";
+        // _event.Author = currentUser;
 
-        selectedQuote.events.Add(_event);
+        // selectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(selectedQuote);
+        // WebServices.UpdateQuote(selectedQuote);
 
-        TimerRefresh();
+        // TimerRefresh();
 
-        IsPopupVisibleSelectNoteToDelete = false;
+        // IsPopupVisibleSelectNoteToDelete = false;
 
-        notesCount--;
+        // notesCount--;
     }
 
     public void MakeWarrantyClaim()
     {
-        selectedQuote.status = "Warranty";
+        // selectedQuote.status = "Warranty";
 
-        QuoteGrid.CollapseDetailRow(selectedIndex);
+        // QuoteGrid.CollapseDetailRow(selectedIndex);
 
-        var projectManager = selectedQuote.projectManager;
+        // var projectManager = selectedQuote.projectManager;
 
-        Warranty warranty = new Warranty();
-        warranty.Type = "Claim";
-        warranty.Summary = "Warranty Claim";
-        warranty.Details = @NoteDetails;
-        warranty.Author = currentUser;
+        // Warranty warranty = new Warranty();
+        // warranty.Type = "Claim";
+        // warranty.Summary = "Warranty Claim";
+        // warranty.Details = @NoteDetails;
+        // warranty.Author = currentUser;
 
-        selectedQuote.warranties.Add(warranty);
+        // selectedQuote.warranties.Add(warranty);
 
-        Note note = new Note();
-        note.Summary = "Note Added (Make Warranty Claim)";
-        note.Details = @NoteDetails;
-        note.Author = currentUser;
+        // Note note = new Note();
+        // note.Summary = "Note Added (Make Warranty Claim)";
+        // note.Details = @NoteDetails;
+        // note.Author = currentUser;
 
-        selectedQuote.notes.Add(note);
+        // selectedQuote.notes.Add(note);
 
-        Event _event = new Event();
-        _event.Details = "Archive converted to Warranty Claim";
-        _event.Author = currentUser;
+        // Event _event = new Event();
+        // _event.Details = "Archive converted to Warranty Claim";
+        // _event.Author = currentUser;
 
-        selectedQuote.events.Add(_event);
+        // selectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(selectedQuote);
+        // WebServices.UpdateQuote(selectedQuote);
 
-        IsPopupVisibleMakeWarrantyClaim = false;
-        NoteDetails = "";
+        // IsPopupVisibleMakeWarrantyClaim = false;
+        // NoteDetails = "";
 
-        PauseRefresh(false);
+        // PauseRefresh(false);
     }
 
     public virtual void PauseRefresh(bool isPaused)
@@ -1510,22 +1574,22 @@ else
 
         _timer = new Timer(new TimerCallback(_ =>
         {
-            if(isSystemAdmin)
+            if (isSystemAdmin)
             {
                 leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
                 if (SelectedTradeType.Contains("All"))
                 {
-                    quotes = webServices.GetQuotes("Archive", ShowTestData);
+                    quotes = webServices.GetSummaries("Archive", ShowTestData);
                 }
                 else
                 {
-                    quotes = webServices.GetQuotes(SelectedTradeType, "Archive", ShowTestData);
+                    quotes = webServices.GetSummaries(SelectedTradeType, "Archive", ShowTestData);
                 }
             }
             else
             {
                 leaderboardStats = WebServices.GetLeaderBoardStats(currentUser.Email);
-                quotes = webServices.GetQuotes("Archive", currentUser.Email);
+                quotes = webServices.GetSummaries("Archive", currentUser.Email);
             }
 
             updateStatus = quotes.Count().ToString("N0");

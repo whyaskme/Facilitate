@@ -811,7 +811,7 @@ else
 
     public List<ListItem> TradesList = new List<ListItem>();
 
-    public bool ShowTestData = false;
+    public bool ShowTestData = true;
 
     public virtual void ShowHideTestData()
     {
@@ -1041,7 +1041,7 @@ else
     public string StatusClass { get; set; } = "message-normal";
 
     [Parameter]
-    public string ShowTestDataButtonText { get; set; } = "Show Test Data";
+    public string ShowTestDataButtonText { get; set; } = "Hide Test Data";
 
     [Parameter]
     public string RefreshButtonText { get; set; } = "Pause Refresh";

@@ -812,7 +812,7 @@ else
 
     public List<ListItem> TradesList = new List<ListItem>();
 
-    public bool ShowTestData = false;
+    public bool ShowTestData = true;
 
     public virtual void ShowHideTestData()
     {
@@ -941,7 +941,7 @@ else
     public string roofsCountLabel = "";
     public string productsCountLabel = "";
 
-    public Quote selectedQuote { get; set; }
+    public QuoteHeader selectedQuote { get; set; }
     public Attachment selectedAttachment { get; set; }
     public Note selectedNote { get; set; }
 
@@ -957,7 +957,7 @@ else
 
     #region Private Properties
 
-    private List<Quote>? quotes;
+    private List<QuoteHeader>? quotes;
 
     int SelectedFilesCount { get; set; }
 
@@ -1043,7 +1043,7 @@ else
     public string StatusClass { get; set; } = "message-normal";
 
     [Parameter]
-    public string ShowTestDataButtonText { get; set; } = "Show Test Data";
+    public string ShowTestDataButtonText { get; set; } = "Hide Test Data";
 
     [Parameter]
     public string RefreshButtonText { get; set; } = "Pause Refresh";
@@ -1216,115 +1216,115 @@ else
 
     public void AssignLead()
     {
-        LoadingPanelVisible = true;
+        // LoadingPanelVisible = true;
 
-        QuoteGrid.CollapseDetailRow(selectedIndex);
+        // QuoteGrid.CollapseDetailRow(selectedIndex);
 
-        Event statusChanged = new Event();
-        statusChanged.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Opportunity";
-        statusChanged.Author = currentUser;
-        selectedQuote.events.Add(statusChanged);
+        // Event statusChanged = new Event();
+        // statusChanged.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Opportunity";
+        // statusChanged.Author = currentUser;
+        // selectedQuote.events.Add(statusChanged);
 
-        var previousProjectManager = selectedQuote.projectManager;
+        // var previousProjectManager = selectedQuote.projectManager;
 
-        selectedQuote.projectManager = SelectedProjectManager.ToList()[0];
+        // selectedQuote.projectManager = SelectedProjectManager.ToList()[0];
 
-        // Assignment event
-        var projectManager = selectedQuote.projectManager;
-        Event assignmentEvent = new Event();
-        assignmentEvent.Name = "Assignment";
-        assignmentEvent.Author = currentUser;
+        // // Assignment event
+        // var projectManager = selectedQuote.projectManager;
+        // Event assignmentEvent = new Event();
+        // assignmentEvent.Name = "Assignment";
+        // assignmentEvent.Author = currentUser;
 
-        if (previousProjectManager != null)
-        {
-            // Current PM to replace
-            assignmentEvent.Details = "Project Manager (" + previousProjectManager.FirstName + " " + previousProjectManager.LastName + "), replaced by (" + projectManager.FirstName + " " + projectManager.LastName + ") and emailed to: " + projectManager.Email;
-        }
-        else{
-            assignmentEvent.Details = "Lead assigned to Project Manager (" + projectManager.FirstName + "), moved to Opportunities and emailed to: " + projectManager.Email;
-        }
+        // if (previousProjectManager != null)
+        // {
+        //     // Current PM to replace
+        //     assignmentEvent.Details = "Project Manager (" + previousProjectManager.FirstName + " " + previousProjectManager.LastName + "), replaced by (" + projectManager.FirstName + " " + projectManager.LastName + ") and emailed to: " + projectManager.Email;
+        // }
+        // else{
+        //     assignmentEvent.Details = "Lead assigned to Project Manager (" + projectManager.FirstName + "), moved to Opportunities and emailed to: " + projectManager.Email;
+        // }
 
-        selectedQuote.events.Add(assignmentEvent);
+        // selectedQuote.events.Add(assignmentEvent);
 
-        WebServices.UpdateQuote(selectedQuote);
+        // WebServices.UpdateQuote(selectedQuote);
 
-        //LoadingPanelVisible = false;
+        // //LoadingPanelVisible = false;
 
-        IsAssignPopupVisible = false;
-        IsAssignButtonEnabled = false;
+        // IsAssignPopupVisible = false;
+        // IsAssignButtonEnabled = false;
 
-        PauseRefresh(false);
+        // PauseRefresh(false);
     }
 
     public void ArchiveLead()
     {
-        selectedQuote.status = "Archive";
+        // selectedQuote.status = "Archive";
 
-        QuoteGrid.CollapseDetailRow(selectedIndex);
+        // QuoteGrid.CollapseDetailRow(selectedIndex);
 
-        Note note = new Note();
-        note.Summary = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
-        note.Details = @NoteDetails;
-        note.Author = currentUser;
+        // Note note = new Note();
+        // note.Summary = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
+        // note.Details = @NoteDetails;
+        // note.Author = currentUser;
 
-        selectedQuote.notes.Add(note);
+        // selectedQuote.notes.Add(note);
 
-        Event _event = new Event();
-        _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
-        _event.Author = currentUser;
-        selectedQuote.events.Add(_event);
+        // Event _event = new Event();
+        // _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
+        // _event.Author = currentUser;
+        // selectedQuote.events.Add(_event);
 
-        Warranty warranty = new Warranty();
-        warranty.Type = "Assertion";
-        warranty.Summary = "Standard Facilitate Warranty";
-        warranty.Details = "What is Facilitate's standard warranty we are going to offer here???";
-        selectedQuote.warranties.Add(warranty);
+        // Warranty warranty = new Warranty();
+        // warranty.Type = "Assertion";
+        // warranty.Summary = "Standard Facilitate Warranty";
+        // warranty.Details = "What is Facilitate's standard warranty we are going to offer here???";
+        // selectedQuote.warranties.Add(warranty);
 
-        Event warrantyEvent = new Event();
-        warrantyEvent.Details = " Standard Facilitate Warranty " + warranty.Type + " applied to Customer";
+        // Event warrantyEvent = new Event();
+        // warrantyEvent.Details = " Standard Facilitate Warranty " + warranty.Type + " applied to Customer";
 
-        var sysUser = new ApplicationUser();
-        sysUser.FirstName = "System";
+        // var sysUser = new ApplicationUser();
+        // sysUser.FirstName = "System";
 
-        warrantyEvent.Author = sysUser;
-        selectedQuote.events.Add(warrantyEvent);
+        // warrantyEvent.Author = sysUser;
+        // selectedQuote.events.Add(warrantyEvent);
 
-        WebServices.UpdateQuote(selectedQuote);
+        // WebServices.UpdateQuote(selectedQuote);
 
-        IsArchivePopupVisible = false;
-        NoteDetails = "";
+        // IsArchivePopupVisible = false;
+        // NoteDetails = "";
 
-        PauseRefresh(false);
+        // PauseRefresh(false);
     }
 
     public void AddNote()
     {
-        QuoteGrid.CollapseDetailRow(selectedIndex);
+        // QuoteGrid.CollapseDetailRow(selectedIndex);
 
-        Note note = new Note();
-        note.Summary = "Note Added";
-        note.Details = @NoteDetails;
-        note.Author = currentUser;
+        // Note note = new Note();
+        // note.Summary = "Note Added";
+        // note.Details = @NoteDetails;
+        // note.Author = currentUser;
 
-        selectedQuote.notes.Add(note);
+        // selectedQuote.notes.Add(note);
 
-        Event _event = new Event();
-        _event.Details = "Note (" + note.Details + ") added to Quote";
-        _event.Author = currentUser;
+        // Event _event = new Event();
+        // _event.Details = "Note (" + note.Details + ") added to Quote";
+        // _event.Author = currentUser;
 
-        selectedQuote.events.Add(_event);
+        // selectedQuote.events.Add(_event);
 
-        IsPopupVisibleAddNote = false;
-        NoteDetails = "";
+        // IsPopupVisibleAddNote = false;
+        // NoteDetails = "";
 
-        WebServices.UpdateQuote(selectedQuote);
+        // WebServices.UpdateQuote(selectedQuote);
 
-        TimerRefresh();
-        quotes = webServices.GetQuotes("New");
+        // TimerRefresh();
+        // quotes = webServices.GetQuotes("New");
 
-        QuoteGrid.ExpandDetailRow(selectedIndex);
+        // QuoteGrid.ExpandDetailRow(selectedIndex);
 
-        PauseRefresh(true);
+        // PauseRefresh(true);
     }
 
     public void CloseDetails()
@@ -1336,79 +1336,79 @@ else
 
     public void SelectAttachmentToDelete(Quote quote, Attachment attachment)
     {
-        selectedQuote = quote;
-        selectedAttachment = attachment;
+        // selectedQuote = quote;
+        // selectedAttachment = attachment;
 
-        IsPopupVisibleSelectAttachmentToDelete = true;
+        // IsPopupVisibleSelectAttachmentToDelete = true;
 
-        TimerRefresh();
+        // TimerRefresh();
     }
 
     public void SelectNoteToDelete(Quote quote, Note note)
     {
-        selectedQuote = quote;
-        selectedNote = note;
+        // selectedQuote = quote;
+        // selectedNote = note;
 
-        IsPopupVisibleSelectNoteToDelete = true;
+        // IsPopupVisibleSelectNoteToDelete = true;
     }
 
     public void DeleteSelectedAttachment()
     {
-        selectedAttachment.IsDeleted = true;
+        // selectedAttachment.IsDeleted = true;
 
-        Event _event = new Event();
-        _event.Details = "Deleted attachment (" + selectedAttachment.MediaDescription + ") from Quote";
-        _event.Author = currentUser;
+        // Event _event = new Event();
+        // _event.Details = "Deleted attachment (" + selectedAttachment.MediaDescription + ") from Quote";
+        // _event.Author = currentUser;
 
-        selectedQuote.events.Add(_event);
+        // selectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(selectedQuote);
+        // WebServices.UpdateQuote(selectedQuote);
 
-        TimerRefresh();
+        // TimerRefresh();
 
-        IsPopupVisibleSelectAttachmentToDelete = false;
+        // IsPopupVisibleSelectAttachmentToDelete = false;
 
-        attachmentsCount--;
+        // attachmentsCount--;
     }
 
     public void DeleteSelectedNote()
     {
-        selectedNote.IsDeleted = true;
+        // selectedNote.IsDeleted = true;
 
-        Event _event = new Event();
-        _event.Details = "Deleted note (" + selectedNote.Details + ") from Quote";
-        _event.Author = currentUser;
+        // Event _event = new Event();
+        // _event.Details = "Deleted note (" + selectedNote.Details + ") from Quote";
+        // _event.Author = currentUser;
 
-        selectedQuote.events.Add(_event);
+        // selectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(selectedQuote);
+        // WebServices.UpdateQuote(selectedQuote);
 
-        TimerRefresh();
+        // TimerRefresh();
 
-        IsPopupVisibleSelectNoteToDelete = false;
+        // IsPopupVisibleSelectNoteToDelete = false;
 
-        notesCount--;
+        // notesCount--;
     }
 
     public void MakeCustomer()
     {
-        selectedQuote.status = "Customer";
+        // selectedQuote.status = "Customer";
 
-        QuoteGrid.CollapseDetailRow(selectedIndex);
+        // QuoteGrid.CollapseDetailRow(selectedIndex);
 
-        var projectManager = selectedQuote.projectManager;
+        // var projectManager = selectedQuote.projectManager;
 
-        Event _event = new Event();
-        _event.Details = "Opportunity converted to Customer";
-        _event.Author = currentUser;
+        // Event _event = new Event();
+        // _event.Details = "Opportunity converted to Customer";
+        // _event.Author = currentUser;
 
-        selectedQuote.events.Add(_event);
+        // selectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(selectedQuote);
+        // WebServices.UpdateQuote(selectedQuote);
 
-        IsPopupVisibleMakeCustomer = false;
+        // IsPopupVisibleMakeCustomer = false;
 
-        PauseRefresh(false);
+        // PauseRefresh(false);
     }
 
     public virtual void PauseRefresh(bool isPaused)
@@ -1464,22 +1464,22 @@ else
 
         _timer = new Timer(new TimerCallback(_ =>
         {
-            if(isSystemAdmin)
+            if (isSystemAdmin)
             {
                 leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
                 if (SelectedTradeType.Contains("All"))
                 {
-                    quotes = webServices.GetQuotes("Complete", ShowTestData);
+                    quotes = webServices.GetSummaries("Complete", ShowTestData);
                 }
                 else
                 {
-                    quotes = webServices.GetQuotes(SelectedTradeType, "Complete", ShowTestData);
+                    quotes = webServices.GetSummaries(SelectedTradeType, "Complete", ShowTestData);
                 }
             }
             else
             {
                 leaderboardStats = WebServices.GetLeaderBoardStats(currentUser.Email);
-                quotes = webServices.GetQuotes("Complete", currentUser.Email);
+                quotes = webServices.GetSummaries("Complete", currentUser.Email);
             }
 
             updateStatus = quotes.Count().ToString("N0");
