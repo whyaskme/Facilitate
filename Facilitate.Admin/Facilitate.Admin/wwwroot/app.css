@@ -32,11 +32,12 @@ select {
 }
 
 .div-filters {
-    border: solid 0px #c0c0c0 !important;
-    border-radius: 5px !important;
+    border: solid 1px #c0c0c0 !important;
+    border-radius: 0px !important;
+    background-color: #eee !important;
     padding: 25px !important;
-/*    padding-bottom:  25px !important;
-    margin-bottom: 25px !important;*/
+        padding-bottom:  65px !important;
+    margin-bottom: 25px !important;
     text-align: left !important;
 }
 
@@ -44,6 +45,7 @@ select {
     border: solid 1px #c0c0c0 !important;
     border-radius: 5px !important;
     margin-right: 15px !important;
+    float: left !important;
 }
 
 .label-roles {
