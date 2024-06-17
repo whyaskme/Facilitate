@@ -226,7 +226,7 @@ else
             <DxGridDataColumn Width="175" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
         </Columns>
 
-        <DetailRowTemplate>
+ @*        <DetailRowTemplate>
             @{
                 var _quote = (Quote)context.DataItem;
 
@@ -706,7 +706,7 @@ else
                     <br />
                 }
             }
-        </DetailRowTemplate>
+        </DetailRowTemplate> *@
 
     </DxGrid>
 }
@@ -1197,23 +1197,29 @@ else
 
     void OnRowClick(GridRowClickEventArgs args)
     {
+        PauseRefresh(true);
+
         selectedIndex = args.VisibleIndex;
         selectedQuote = quotes[selectedIndex];
 
-        var selectedDetailExpanded = QuoteGrid.IsDetailRowExpanded(selectedIndex);
-        if (selectedDetailExpanded)
-        {
-            QuoteGrid.CollapseDetailRow(selectedIndex);
+        var selectedQuoteId = selectedQuote._id;
 
-            PauseRefresh(false);
-        }
-        else
-        {
-            QuoteGrid.CollapseAllDetailRows();
-            QuoteGrid.ExpandDetailRow(selectedIndex);
+        NavigationManager.NavigateTo("/Quotes/Details?id=" + selectedQuoteId);
 
-            PauseRefresh(true);
-        }
+        // var selectedDetailExpanded = QuoteGrid.IsDetailRowExpanded(selectedIndex);
+        // if (selectedDetailExpanded)
+        // {
+        //     QuoteGrid.CollapseDetailRow(selectedIndex);
+
+        //     PauseRefresh(false);
+        // }
+        // else
+        // {
+        //     QuoteGrid.CollapseAllDetailRows();
+        //     QuoteGrid.ExpandDetailRow(selectedIndex);
+
+        //     PauseRefresh(true);
+        // }
     }
 
     public async Task<string> GetIpAddress()
