@@ -76,5 +76,7 @@ namespace Facilitate.Libraries.Models
         public long TotalQuoteCount { get; set; }
         public long TotalQuoteSqFt { get; set; }
         public double TotalQuoteValue { get; set; }
+
+        public List<string> Trades { get; set; }
     }
 }

@@ -829,6 +829,8 @@ else
 
         // var emailSent = WebServices.SendEmail(ownerId, ownerType, fromAddress, toAddress, subject, body, isBodyHtml);
 
+        var _utils = new Utils();
+
         if (firstRender)
         {
             try
@@ -837,8 +839,11 @@ else
                 LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
                 LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
 
-                TradesList.Add(new ListItem() { Text = "Roofing", Value = "Roofing" });
-                TradesList.Add(new ListItem() { Text = "Gutters", Value = "Gutters" });
+                var tradeList = WebServices.GetTradesList();
+                foreach (var trade in tradeList)
+                {
+                    TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
+                }
 
                 var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
                 var loggedInUser = authstate.User;

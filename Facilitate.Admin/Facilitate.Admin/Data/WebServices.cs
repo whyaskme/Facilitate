@@ -5,7 +5,7 @@ using Json.Net;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using ServiceStack;
@@ -491,6 +491,23 @@ namespace Facilitate.Admin.Data
             return sortedQuotes;
         }
 
+        public List<string> GetTradesList()
+        {
+            try
+            {
+                var filter = new BsonDocument();
+                var tradesList = _mongoDBCollection.Distinct(s => s.applicationType, new BsonDocument());
+
+                return tradesList.ToList();
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+
+            return null;
+        }
+
         //public Quote GetQuote(Quote selectedQuote)
         //{
         //    try
@@ -681,6 +698,8 @@ namespace Facilitate.Admin.Data
         public QuoteLeaderboard GetLeaderBoardStats(bool showHideTestData)
         {
             QuoteLeaderboard quoteLeaderboard = new QuoteLeaderboard();
+
+            quoteLeaderboard.Trades = GetTradesList();
 
             var searchResults = new List<QuoteStat>();
             var dataSourceFilter = Builders<Quote>.Filter.Not(Builders<Quote>.Filter.Eq(p => p.externalUrl, "Auto-generated WebApi"));
