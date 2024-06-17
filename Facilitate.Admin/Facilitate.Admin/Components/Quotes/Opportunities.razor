@@ -843,6 +843,7 @@ else
                 LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
                 LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
 
+                TradesList.Add(new ListItem() { Text = "All", Value = "All" });
                 var tradeList = WebServices.GetTradesList();
                 foreach (var trade in tradeList)
                 {
@@ -1440,7 +1441,14 @@ else
             if(isSystemAdmin)
             {
                 leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
-                quotes = webServices.GetQuotes(SelectedTradeType, "Opportunity", ShowTestData);
+                if (SelectedTradeType.Contains("All"))
+                {
+                    quotes = webServices.GetQuotes("Opportunity", ShowTestData);
+                }
+                else
+                {
+                    quotes = webServices.GetQuotes(SelectedTradeType, "Opportunity", ShowTestData);
+                }
             }
             else
             {
