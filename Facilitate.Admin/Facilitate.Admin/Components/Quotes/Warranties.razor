@@ -112,14 +112,23 @@ else
 
     <div class="div-filters">
 
-        <div class="">
-            <label>Filters</label>
+        @{
+            if (isSystemAdmin)
+            {
+                <div class="div-filter">
+                    <DxButton Click="ShowHideTestData">@ShowTestDataButtonText</DxButton>
+                </div>
+            }
+        }
+
+        <div class="div-filter">
+            <DxButton Click="ToggleRefresh">@RefreshButtonText</DxButton>
         </div>
 
         <div class="div-filter">
 
             <div id="dropdown-customization-target-container-trades">
-                <DxButton Id="btnTrades" Click="() => IsTradesListOpen = !IsTradesListOpen" RenderStyle="@ButtonRenderStyle.Primary">@TradesFilterLabel</DxButton>
+                <DxButton Id="btnTrades" Click="() => IsTradesListOpen = !IsTradesListOpen">@TradesFilterLabel</DxButton>
             </div>
             <DxDropDown
                 @bind-IsOpen="@IsTradesListOpen"
@@ -143,15 +152,15 @@ else
                     <SampleEditForm/>
                 </BodyContentTemplate>
                 <FooterContentTemplate>
-                    <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="OK" Click="@context.CloseCallback"/>
-                    <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@context.CloseCallback"/>
+                    <DxButton CssClass="popup-button my-1 ms-2" Text="OK" Click="@context.CloseCallback"/>
+                    <DxButton CssClass="popup-button my-1 ms-2" Text="Cancel" Click="@context.CloseCallback"/>
                 </FooterContentTemplate>
             </DxDropDown>
         </div>
 
         <div class="div-filter">
             <div id="dropdown-customization-target-container">
-                <DxButton Id="btnLeadTypes" Click="() => IsLeadTypeListOpen = !IsLeadTypeListOpen" RenderStyle="@ButtonRenderStyle.Primary">@LeadTypeFilterLabel</DxButton>
+                <DxButton Id="btnLeadTypes" Click="() => IsLeadTypeListOpen = !IsLeadTypeListOpen">@LeadTypeFilterLabel</DxButton>
             </div>
             <DxDropDown
                 @bind-IsOpen="@IsLeadTypeListOpen"
@@ -175,8 +184,8 @@ else
                     <SampleEditForm/>
                 </BodyContentTemplate>
                 <FooterContentTemplate>
-                    <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="OK" Click="@context.CloseCallback"/>
-                    <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@context.CloseCallback"/>
+                    <DxButton CssClass="popup-button my-1 ms-2" Text="OK" Click="@context.CloseCallback"/>
+                    <DxButton CssClass="popup-button my-1 ms-2" Text="Cancel" Click="@context.CloseCallback"/>
                 </FooterContentTemplate>
             </DxDropDown>
         </div>
@@ -858,29 +867,6 @@ else
                 ApplyBackgroundShading="true"
                 CssClass="w-100">
 </DxLoadingPanel>
-
-<div class="row @StatusContainerClass">
-    @{
-        if (isSystemAdmin)
-        {
-            <div class="col-md-4"></div>
-            <div class="col-md-2">
-                <button class="btn btn-primary" @onclick="ShowHideTestData">@ShowTestDataButtonText</button>
-            </div>
-            <div class="col-md-2">
-                <button class="btn btn-primary @RefreshButtonClass" disabled="@RefreshDisabled" @onclick="ToggleRefresh">@RefreshButtonText</button>
-            </div>
-            <div class="col-md-4"></div>
-        }
-        else
-        {
-            <div class="col-md-12">
-                <button class="btn btn-primary @RefreshButtonClass" disabled="@RefreshDisabled" @onclick="ToggleRefresh">@RefreshButtonText</button>
-            </div>
-        }
-    }
-</div>
-
 
 @code {
 

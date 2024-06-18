@@ -36,16 +36,17 @@ select {
     border-radius: 0px !important;
     background-color: #eee !important;
     padding: 25px !important;
-        padding-bottom:  65px !important;
+    padding-bottom: 50px !important;
     margin-bottom: 25px !important;
-    text-align: left !important;
+    text-align: center !important;
 }
 
 .div-filter {
-    border: solid 1px #c0c0c0 !important;
+    border: solid 0px #ff0000 !important;
     border-radius: 5px !important;
     margin-right: 15px !important;
     float: left !important;
+    display: inline-block !important;
 }
 
 .label-roles {
