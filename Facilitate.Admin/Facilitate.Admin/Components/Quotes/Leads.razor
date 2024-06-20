@@ -1134,7 +1134,7 @@ else
 
         var selectedQuoteId = selectedQuote._id;
 
-        NavigationManager.NavigateTo("/quotes/details?QuoteId=" + selectedQuoteId);
+        NavigationManager.NavigateTo("/quotes/details/" + selectedQuote._id);
 
         // var selectedDetailExpanded = QuoteGrid.IsDetailRowExpanded(selectedIndex);
         // if (selectedDetailExpanded)

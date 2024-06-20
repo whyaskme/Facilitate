@@ -590,30 +590,33 @@ namespace Facilitate.Admin.Data
             return null;
         }
 
-        //public Quote GetQuote(Quote selectedQuote)
-        //{
-        //    try
-        //    {
-        //        var builder = Builders<Quote>.Filter;
-        //        var filter = builder.Eq(f => f._id, selectedQuote._id);
+        public Quote GetQuote(string quoteId)
+        {
+            try
+            {
+                var builder = Builders<Quote>.Filter;
+                var filter = builder.Eq(f => f._id, quoteId);
 
-        //        selectedQuote = (Quote)_mongoDBCollection.Find(filter);
+                var sortedQuotes = _mongoDBCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
+                if (sortedQuotes.Count > 0)
+                {
+                    return sortedQuotes[0];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
 
-        //        selectedQuote = SortItemsByDateDesc(selectedQuote);
-
-
-        //        return selectedQuote;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        resultMsg = ex.Message;
-        //    }
-        //    finally
-        //    {
-
-        //    }
-        //    return null;
-        //}
+            }
+            return null;
+        }
 
         //public string CreateQuote(Quote quote)
         //{
