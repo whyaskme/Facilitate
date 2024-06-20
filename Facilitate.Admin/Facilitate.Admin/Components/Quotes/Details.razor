@@ -1,13 +1,1419 @@
-﻿@* @page "{id}" *@
-
-@page "/quotes/details"
+﻿@page "/quotes/details"
 @page "/quotes/details{id}"
 
-<h3>Details</h3>
+@using Facilitate.Admin.Data;
+@using Facilitate.Libraries.Models;
+
+@using Microsoft.AspNetCore.Identity;
+@using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.AspNetCore.Mvc.Rendering;
+@using Microsoft.AspNetCore.Mvc.Routing
+@using Microsoft.AspNetCore.WebUtilities;
+
+@using MongoDB.Bson;
+
+@using System.Text.Json;
+
+@using DevExpress.Blazor;
+@using DevExpress.Data;
+@using DevExpress.Data.Linq;
+@using DevExpress.Web;
+
+@using Microsoft.AspNetCore.Html;
+
+@attribute [StreamRendering(true)]
+@rendermode InteractiveServer
+@inject WebServices WebServices
+
+@inject NavigationManager NavigationManager
+@inject IHttpClientFactory ClientFactory
+@inject HttpClient httpClient
+
+@inject UserManager<ApplicationUser> UserManager
+@inject IUserStore<ApplicationUser> UserStore
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IEmailSender<ApplicationUser> EmailSender
+@inject RoleManager<IdentityRole> roleManager
+
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
+
+@attribute [IgnoreAntiforgeryToken]
+
+<PageTitle>Leads</PageTitle>
+
+<AuthorizeView>
+    <Authorized></Authorized>
+    <NotAuthorized>
+        @{
+            NavigationManager.NavigateTo("/Account/Login");
+        }
+    </NotAuthorized>
+</AuthorizeView>
+
+<script>
+    window.getIpAddress = () => {
+        return fetch('https://jsonip.com/')
+            .then((response) => response.json())
+            .then((data) => {
+                return data.ip
+            })
+    }
+</script>
+
+@if (quotes == null)
+{
+    @*     <p><em>Loading...</em></p> *@
+}
+else
+{
+@*     <div class="quotes-leaderboard-page-header">
+        <div class="col-md-3 stat-element">
+            <span class="stat-value"><b>@leaderboardStats.TotalQuoteCount.ToString("N0") Quotes</b></span>
+            <span class="stat-divider">|</span>
+            <span class="stat-value">@leaderboardStats.TotalQuoteValue.ToString("C0")</span>
+            <span class="stat-divider">|</span>
+            <span class="stat-value">@leaderboardStats.TotalQuoteSqFt.ToString("N0")sqft</span>
+            <span class="stat-divider">|</span>
+        </div>
+        <div class="col-md-1 stat-element">
+            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+                <Authorized>
+                    <a href="/quotes/leads">Leads</a>
+                    <span class="stat-value"><b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
+                </Authorized>
+                <NotAuthorized></NotAuthorized>
+            </AuthorizeView>
+        </div>
+        <div class="col-md-1 stat-element">
+            <a href="/quotes/opportunities">Opportunities</a>
+            <span class="stat-value"><b>@leaderboardStats.OpportunityCount.ToString("N0")</b></span>
+        </div>
+        <div class="col-md-1 stat-element">
+            <a href="/quotes/customers">Customers</a>
+            <span class="stat-value"><b>@leaderboardStats.CustomerCount.ToString("N0")</b></span>
+        </div>
+        <div class="col-md-1 stat-element">
+            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+                <Authorized>
+                    <a href="/quotes/completed">Completions</a>
+                    <span class="stat-value"><b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
+                </Authorized>
+                <NotAuthorized></NotAuthorized>
+            </AuthorizeView>
+        </div>
+        <div class="col-md-1 stat-element">
+            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+                <Authorized>
+                    <a href="/quotes/archives">Archives</a>
+                    <span class="stat-value"><b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
+                </Authorized>
+                <NotAuthorized></NotAuthorized>
+            </AuthorizeView>
+        </div>
+        <div class="col-md-1 stat-element">
+            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+                <Authorized>
+                    <a href="/quotes/warranties">Warranties</a>
+                    <span class="stat-value"><b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
+                </Authorized>
+                <NotAuthorized></NotAuthorized>
+            </AuthorizeView>
+        </div>
+    </div>
+
+    <div class="quote-stats-header">
+        <span class="quote-stats-count">@updateStatus Leads</span>
+        <span class="quote-stats-value">@leaderboardStats.LeadValue.ToString("C0")</span>
+        <span class="quote-stats-sqft">@leaderboardStats.LeadSqFt.ToString("N0")sqft</span>
+    </div>
+    <div class="quote-stats-hints">
+        Select row to expand details. Click column headers to sort. Type and hit enter in any empty cell to search that column. If you have grouped columns below, drag and drop the column back into the grid header to restore.
+    </div> *@
+
+    <DxPopup @bind-Visible="@IsAssignPopupVisible"
+             ShowFooter="true"
+             HeaderText="Please select a Project Manager for assignment">
+        <BodyContentTemplate>
+            <DxListBox Data="@ProjectManagers"
+                       @bind-Values="@Values"
+                       SelectedItemsChanged="@((IEnumerable<ApplicationUser> values) => SelectedProjectManagerChanged(values))"
+                       SelectionMode="ListBoxSelectionMode.Single"
+                       ShowCheckboxes="true">
+                <Columns>
+                    <DxListEditorColumn FieldName="LastName" Caption="Last" />
+                    <DxListEditorColumn FieldName="FirstName" Caption="First" />
+                    <DxListEditorColumn FieldName="Email" Caption="Email" />
+                    <DxListEditorColumn FieldName="Id" Visible="false" Caption="Id" />
+                </Columns>
+            </DxListBox>
+        </BodyContentTemplate>
+        <FooterContentTemplate>
+            <DxButton CssClass="popup-button my-1 ms-2" Enabled="@IsAssignButtonEnabled" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
+            <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsAssignPopupVisible = false)" />
+        </FooterContentTemplate>
+    </DxPopup>
+
+    <DxGrid @ref="QuoteGrid"
+            Data="@quotes"
+            KeyFieldName="_id"
+            PageSize="10"
+            PagerPosition="GridPagerPosition.Bottom"
+            ShowGroupPanel="true"
+            AutoExpandAllGroupRows="true"
+            ShowFilterRow="true"
+            CssClass="mw-1100"
+            RowClick="OnRowClick"
+            AllowSelectRowByClick="true"
+            SelectionMode="GridSelectionMode.Single"
+            @bind-SelectedDataItem="@SelectedQuoteItem"
+            TextWrapEnabled="false"
+            PagerNavigationMode="PagerNavigationMode.InputBox"
+            PageSizeSelectorVisible="true"
+            PageSizeSelectorAllRowsItemVisible="false"
+            KeyboardNavigationEnabled="true">
+        <Columns>
+            <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" />
+            <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+            <DxGridDataColumn Width="125" Caption="First" FieldName="firstName" />
+            <DxGridDataColumn Width="150" Caption="Last" FieldName="lastName" />
+            <DxGridDataColumn Width="150" Caption="Email" FieldName="email" />
+            <DxGridDataColumn Width="auto" Caption="Street" FieldName="street" />
+            <DxGridDataColumn Width="150" Caption="City" FieldName="city" />
+            <DxGridDataColumn Width="75" Caption="State" FieldName="state" />
+            <DxGridDataColumn Width="75" Caption="Zip" FieldName="zip" />
+            <DxGridDataColumn Width="75" Caption="Roofs" FieldName="numberOfIncludedStructures" />
+            <DxGridDataColumn Width="75" Caption="SqFt" FieldName="totalSquareFeet" />
+            <DxGridDataColumn Width="100" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
+            <DxGridCommandColumn Width="150px" Caption="Actions" EditButtonVisible="false" DeleteButtonVisible="true" />
+        </Columns>
+
+       @*  <DetailRowTemplate>
+            @{
+                var _quote = (Quote)context.DataItem;
+
+                var _emailTabLabel = "Email " + @_quote.firstName + " Documents";
+
+                roofsCount = _quote.structures.Count;
+                if (roofsCount <= 1)
+                    roofsCountLabel = roofsCount.ToString() + " Roof Project";
+                else
+                    roofsCountLabel = roofsCount.ToString() + " Roof Projects";
+
+                productsCount = _quote.products.Count;
+                if (productsCount <= 1)
+                    productsCountLabel = productsCount.ToString() + " Product Quoted";
+                else
+                    productsCountLabel = productsCount.ToString() + " Products Quoted";
+
+                attachmentsCount = _quote.attachments.Count;
+                notesCount = _quote.notes.Count;
+                eventsCount = _quote.events.Count;
+
+                <h6>Homeowner</h6>
+                <div class="row">
+                    <div class="col">
+                        <label>Name</label>
+                        <span>@_quote.firstName @_quote.lastName</span>
+                    </div>
+                    <div class="col">
+                        <label>Email</label>
+                        <a href="mailto:@_quote.email">
+                            <span>@_quote.email</span>
+                        </a>
+                    </div>
+                    <div class="col">
+                        <label>Phone</label>
+                        <span>@_quote.phone</span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <label>Address</label>
+                        <a href="https://www.google.com/maps/search/@_quote.street @_quote.city, @_quote.state @_quote.zip" target="_blank">
+                            @_quote.street @_quote.city, @_quote.state @_quote.zip
+                        </a>
+                    </div>
+                    <div class="col">
+                        <label>IP</label>
+                        <a href="https://whatismyipaddress.com/ip/@SubmissionUserIP" target="_blank">
+                            <span>Location</span>
+                        </a>
+                    </div>
+                    <div class="col"></div>
+                </div>
+
+                <div class="table-spacer" />
+
+                <br />
+
+                <DxTabs CssClass="tabs-container">
+
+                    <DxTabPage Id="Panel-Project-Manager" CssClass="tab-container" Text="@roofsCountLabel">
+
+                        <div class="container">
+
+                            <div class="row item-details-container">
+                                <div class="col">
+                                    <label>Total Quote</label>
+                                    <span><b>@_quote.totalQuote.ToString("C0")</b></span>
+                                </div>
+                                <div class="col">
+                                    <label>Total Sqft</label>
+                                    <span><b>@_quote.totalSquareFeet.ToString("N0")</b></span>
+                                </div>
+                                <div class="col">
+                                    <label>Included Roofs</label>
+                                    <span><b>@_quote.numberOfIncludedStructures.ToString("N0")</b></span>
+                                </div>
+                                <div class="col">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                @{
+                                    currentItemIndex = 0;
+
+                                    for (var i = 0; i < @_quote.structures.Count; i++)
+                                    {
+                                        currentItemIndex = i + 1;
+
+                                        <b>Roof #@currentItemIndex</b>
+                                        <div class="row item-details-container">
+                                            <div class="col">
+                                                <label>Included</label>
+                                                @{
+                                                    if(@_quote.structures[i].isIncluded)
+                                                    {
+                                                        <span>Yes</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="system-warning">No</span>
+                                                    }
+                                                }
+                                            </div>
+                                            <div class="col">
+                                                <label>Name</label>
+                                                <span>@_quote.structures[i].name</span>
+                                            </div>
+                                            <div class="col">
+                                                <label>SqFt</label>
+                                                <span>@_quote.structures[i].squareFeet.ToString("N0")</span>
+                                            </div>
+                                            <div class="col">
+                                                <label>Complexity</label>
+                                                <span>@_quote.structures[i].roofComplexity</span>
+                                            </div>
+                                            <div class="col">
+                                                <label>Slope</label>
+                                                <span>@_quote.structures[i].slope</span>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </DxTabPage>
+
+                    <DxTabPage Id="Panel-Products" Text="@productsCountLabel">
+
+                        <div class="container">
+                            @{
+                                for (var i = 0; i < @_quote.products.Count; i++)
+                                {
+                                    currentItemIndex = i + 1;
+
+                                    var priceLabel = @_quote.products[i].priceInfo.priceType;
+                                    if (priceLabel == "BasicFinancing")
+                                        priceLabel = "Basic";
+                                    else
+                                        priceLabel = @_quote.products[i].priceInfo.priceType;
+
+                                    <b>Product #@currentItemIndex</b>
+
+                                    <div class="item-details-container">
+
+                                        <div class="row">
+                                            <div class="col">
+                                                <label>Name</label>
+                                                <span>@_quote.products[i].name</span>
+                                            </div>
+                                            <div class="col">
+                                                <label>Waste Factor</label>
+                                                <span>@_quote.products[i].wasteFactorMainRoof</span>
+                                            </div>
+                                            <div class="col">
+                                                <label>Price Type</label>
+                                                <span>@priceLabel</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col">
+                                                <label>Total Quote</label>
+                                                <span>@_quote.products[i].priceInfo.total.ToString("C0")</span>
+                                            </div>
+                                            <div class="col">
+                                                <label>Per Square</label>
+                                                <span>@_quote.products[i].priceInfo.pricePerSquare.ToString("C0")</span>
+                                            </div>
+                                            <div class="col">
+                                                <label>Monthly</label>
+                                                <span>@_quote.products[i].priceInfo.monthly.ToString("C0")</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col">
+                                                <label>APR</label>
+                                                <span>@_quote.products[i].priceInfo.apr%</span>
+                                            </div>
+                                            <div class="col">
+                                                <label>Months</label>
+                                                <span>@_quote.products[i].priceInfo.months</span>
+                                            </div>
+                                            <div class="col">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                    </DxTabPage>
+
+                    <DxTabPage Id="Panel-Send-Files" Text="@_emailTabLabel">
+                        <DxUpload Name="fileUpload1"
+                                  SelectButtonText="Upload"
+                                  AllowMultiFileUpload="true"
+                                  UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                  SelectedFilesChanged="@SelectedFilesChanged"
+                                  MaxFileSize="15000000"
+                                  AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
+                                  AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
+                                  CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
+                        </DxUpload>
+                        <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
+                    </DxTabPage>
+
+                    <DxTabPage Id="Panel-Attach-Files" Text="Attachments">
+                        <DxUpload Name="fileUpload2"
+                                  SelectButtonText="Upload"
+                                  AllowMultiFileUpload="true"
+                                  UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                  SelectedFilesChanged="@SelectedFilesChanged"
+                                  MaxFileSize="15000000"
+                                  AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
+                                  AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
+                                  CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
+                        </DxUpload>
+
+                        @foreach (Attachment attachment in _quote.attachments)
+                        {
+                            if (!attachment.IsDeleted)
+                            {
+                                <div class="note-row">
+                                    <div>
+                                        <label>@attachmentsCount) @attachment.Date</label>
+                                    </div>
+
+                                    <span class="hyperlink-warning" @onclick="() => SelectAttachmentToDelete(_quote, attachment)">Delete</span>
+
+                                    <span class="bar-spacer">|</span>
+                                    <a href="@attachment.MediaUrl" target="_blank">
+                                        <span>@attachment.MediaDescription</span>
+                                    </a>
+                                    <span class="bar-spacer">|</span>
+                                    <label>File Type</label>
+                                    <span>@FileType</span>
+                                    <span class="bar-spacer">|</span>
+                                    <label>Source</label>
+                                    <span>@attachment.Author.FirstName @attachment.Author.LastName</span>
+                                </div>
+
+                                attachmentsCount--;
+                            }
+                        }
+                    </DxTabPage>
+
+                    <DxTabPage Id="Panel-Notes" Text="Notes">
+                        <button class="btn btn-primary doc-select-button add-item-button" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
+                        @foreach (Note note in _quote.notes)
+                        {
+                            if (!note.IsDeleted)
+                            {
+                                <div class="note-row">
+                                    <div>
+                                        <label>@notesCount) @note.Date</label>
+                                    </div>
+
+                                    <span class="hyperlink-warning" @onclick="() => SelectNoteToDelete(_quote, note)">Delete</span>
+
+                                    <span class="bar-spacer">|</span>
+                                    <span>@note.Details</span>
+
+                                    <span class="bar-spacer">|</span>
+                                    <label>Source</label>
+                                    <span>@note.Author.FirstName @note.Author.LastName</span>
+                                </div>
+
+                                notesCount--;
+                            }
+                        }
+                    </DxTabPage>
+
+                    <DxTabPage Id="Panel-History" Text="History">
+                        @foreach (Event _event in _quote.events)
+                        {
+                            <div class="note-row">
+                                <div class="">
+                                    <label>@eventsCount) @_event.DateTime</label>
+                                </div>
+
+                                <span class="bar-spacer">|</span>
+                                <span>@_event.Details</span>
+
+                                <span class="bar-spacer">|</span>
+                                <label>Source</label>
+                                <span>@_event.Author.FirstName @_event.Author.LastName</span>
+                            </div>
+
+                            eventsCount--;
+                        }
+                    </DxTabPage>
+
+                    <DxTabPage Id="Panel-Origination" Text="Origination">
+                        <table id="table-origin" class="table-detail">
+                            <tbody>
+
+                                <tr>
+                                    <td>
+                                        <label>Market</label>
+                                        <span>@_quote.market</span>
+                                    </td>
+                                    <td>
+                                        <label>Rep Name</label>
+                                        <span>@_quote.repName</span>
+                                    </td>
+                                    <td>
+                                        <label>Rep Email</label>
+                                        <a href="mailto:@_quote.repEmail">
+                                            <span>@_quote.repEmail</span>
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <label>RecId</label>
+                                        <span>@_quote._id</span>
+                                    </td>
+                                    <td>
+                                        <label>Referrer</label>
+                                        <a href="@_quote.externalUrl" target="_blank">
+                                            <span>@_quote.externalUrl</span>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <label>Session</label>
+                                        <span>@_quote.sessionId</span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <label>RefId</label>
+                                        <span>@_quote.leadId</span>
+                                    </td>
+                                    <td>
+                                        <label>Created</label>
+                                        <span>@_quote.timestamp</span>
+                                    </td>
+                                    <td>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </DxTabPage>
+
+                </DxTabs>
+
+                <br />
+
+                <div class="quote-detail-controls-container">
+                    <button class="btn btn-primary" @onclick="@(() => IsAssignPopupVisible = true)">Assign</button>
+                    <button class="btn btn-primary" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
+                    <button class="btn btn-primary" @onclick="CloseDetails">Close</button>
+                </div>
+
+            }
+        </DetailRowTemplate> *@
+
+    </DxGrid>
+}
+
+<DxPopup @bind-Visible="@IsAssignPopupVisible"
+         ShowFooter="true"
+         HeaderText="Please select a Project Manager for assignment">
+    <BodyContentTemplate>
+        <DxListBox Data="@ProjectManagers"
+                   @bind-Values="@Values"
+                   CssClass="popup-grid"
+                   SelectedItemsChanged="@((IEnumerable<ApplicationUser> values) => SelectedProjectManagerChanged(values))"
+                   SelectionMode="ListBoxSelectionMode.Single"
+                   ShowCheckboxes="true">
+            <Columns>
+                <DxListEditorColumn FieldName="LastName" Caption="Last" />
+                <DxListEditorColumn FieldName="FirstName" Caption="First" />
+                <DxListEditorColumn FieldName="Email" Caption="Email" />
+                <DxListEditorColumn FieldName="Id" Visible="false" Caption="Id" />
+            </Columns>
+        </DxListBox>
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" Enabled="true" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsAssignPopupVisible = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxPopup @bind-Visible="@IsPopupVisibleSelectAttachmentToDelete" ShowFooter="true" HeaderText="Delete File">
+    <BodyContentTemplate>
+        Are you sure you want to delete "@selectedAttachment.MediaDescription"?
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteSelectedAttachment" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleSelectAttachmentToDelete = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxPopup @bind-Visible="@IsPopupVisibleSelectNoteToDelete" ShowFooter="true" HeaderText="Delete Note">
+    <BodyContentTemplate>
+        Are you sure you want to delete "@selectedNote.Details"?
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteSelectedNote" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleSelectNoteToDelete = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxPopup @bind-Visible="@IsPopupVisibleAddNote" ShowFooter="true" HeaderText="Add Note">
+    <BodyContentTemplate>
+        <p>Please type in your notes below.</p>
+        <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AddNote" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleAddNote = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxPopup @bind-Visible="@IsArchivePopupVisible" ShowFooter="true" HeaderText="Please type in a reason for Archival below">
+    <BodyContentTemplate>
+        <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Archive" Click="ArchiveLead" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsArchivePopupVisible = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxPopup @bind-Visible="@IsPopupVisibleHelpSendFiles" ShowFooter="true" HeaderText="Send Documents Help?">
+    <BodyContentTemplate>
+        <p>Send Documents details...</p>
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpSendFiles = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxPopup @bind-Visible="@IsPopupVisibleHelpFileAttachments" ShowFooter="true" HeaderText="File Attachments Help?">
+    <BodyContentTemplate>
+        <p>File Attachments details...</p>
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpFileAttachments = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxPopup @bind-Visible="@IsPopupVisibleHelpFileNotes" ShowFooter="true" HeaderText="File Notes Help?">
+    <BodyContentTemplate>
+        <p>File Notes details...</p>
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpFileNotes = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxLoadingPanel @bind-Visible=@LoadingPanelVisible
+                PositionTarget="body"
+                ApplyBackgroundShading="true"
+                CssClass="w-100">
+</DxLoadingPanel>
 
 @code {
 
     [Parameter]
     public string id { get; set; }
 
+    // public string LeadTypeFilterLabel { get; set; } = "Types (Complete Info)";
+
+    // public string TradesFilterLabel { get; set; } = "Trades (All)";
+
+    // public bool IsLeadTypeListOpen { get; set; } = false;
+
+    // public List<ListItem> LeadTypeList = new List<ListItem>();
+
+    // public bool IsTradesListOpen { get; set; } = false;
+
+    // public List<ListItem> TradesList = new List<ListItem>();
+
+    // public bool emailSentStatus = false;
+
+    // public bool ShowTestData = true;
+
+    // public virtual void ShowHideTestData()
+    // {
+    //     if (ShowTestDataButtonText == "Show Test Data")
+    //     {
+    //         ShowTestData = true;
+    //         ShowTestDataButtonText = "Hide Test Data";
+    //     }
+    //     else
+    //     {
+    //         ShowTestData = false;
+    //         ShowTestDataButtonText = "Show Test Data";
+    //     }
+    // }
+
+    public QuoteLeaderboard leaderboardStats = new QuoteLeaderboard();
+
+    Utils utils = new Utils();
+
+    async void OnLocationChanged(object sender, LocationChangedEventArgs args)
+    {
+        TimerDispose();
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+
+    // async Task Grid_DataItemDeleting(GridDataItemDeletingEventArgs e)
+    // {
+    //     Quote selectedQuote = (Quote)e.DataItem;
+    //     // selectedQuote.status = "Deleted";
+    //     selectedQuote.status = "Archive";
+
+    //     Event _event = new Event();
+    //     _event.Name = "Deleted Quote";
+    //     _event.DateTime = DateTime.UtcNow;
+    //     _event.Details = "Admin deleted Quote";
+
+    //     _event.Author = currentUser;
+
+    //     selectedQuote.events.Add(_event);
+
+    //     // Let's delete this quote
+    //     WebServices.UpdateQuote(selectedQuote);
+    // }
+
+    public ApplicationUser currentUser = new ApplicationUser();
+    public bool isSystemAdmin = false;
+    public bool isUserAdmin = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // var ownerId = "";
+        // var ownerType = "";
+        // var fromAddress = "admin@facilitate.org";
+        // var toAddress = "joseph.baranauskas@gmail.com";
+        // var subject = "Testing Email Services";
+        // var body = "This is just a test of the emergenct broadcast system. Had this been an actual emergency, you are toast!";
+        // var isBodyHtml = true;
+
+        // var emailSent = WebServices.SendEmail(ownerId, ownerType, fromAddress, toAddress, subject, body, isBodyHtml);
+
+        var _utils = new Utils();
+
+        if (firstRender)
+        {
+            try
+            {
+                // LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
+                // LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
+                // LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
+
+                // TradesList.Add(new ListItem() { Text = "All", Value = "All" });
+                // var tradeList = WebServices.GetTradesList();
+                // foreach (var trade in tradeList)
+                // {
+                //     TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
+                // }
+
+                var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+                var loggedInUser = authstate.User;
+                var loggedInName = loggedInUser.Identity.Name;
+
+                if (loggedInName != null && loggedInName != "")
+                    currentUser = await UserManager.FindByNameAsync(loggedInName);
+
+                if(currentUser.IsEnabled)
+                {
+                    isSystemAdmin = await UserManager.IsInRoleAsync(currentUser, "System Admin");
+
+                    var isSiteAdmin = await UserManager.IsInRoleAsync(currentUser, "Site Admin");
+                    var isGroupAdmin = await UserManager.IsInRoleAsync(currentUser, "Group Admin");
+
+                    if (isSystemAdmin || isSiteAdmin || isGroupAdmin)
+                    {
+                        isUserAdmin = true;
+                    }
+
+                    List<ApplicationUser> adminUsers = new List<ApplicationUser>();
+                    List<ApplicationUser> tmpUsers = UserManager.Users.ToList();
+                    foreach (ApplicationUser adminUser in tmpUsers)
+                    {
+                        if (adminUser.IsEnabled)
+                        {
+                            var list = await UserManager.IsInRoleAsync(adminUser, "Project Manager");
+                            adminUsers.Add(adminUser);
+                        }
+                    }
+
+                    ProjectManagers = SortByLastNameUsingLinq(adminUsers);
+                    TimerRefresh();
+
+                    GetIpAddress();
+                }
+                else
+                {
+                    UserSignOut();
+                }
+            }
+            catch (Exception ex)
+            {
+                var errMsg = ex.Message;
+                return;
+            }
+        }
+    }
+
+    private void UserSignOut()
+    {
+        try{
+
+            SignInManager.SignOutAsync();
+
+            NavigationManager.NavigateTo("/Account/Lockout");
+        }
+        catch(Exception ex)
+        {
+            var errMsg = ex.Message;
+        }
+    }
+
+    private readonly IClaimsProvider _claimsProvider;
+
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    public int currentItemIndex = 0;
+
+    public int noteCount = 0;
+
+    IEnumerable<string> Values { get; set; }
+    // IEnumerable<string> LeadTypeValues { get; set; }
+    // IEnumerable<string> TradeTypeValues { get; set; }
+
+    public int roofsCount = 0;
+    public int productsCount = 0;
+
+    public string roofsCountLabel = "";
+    public string productsCountLabel = "";
+
+    public QuoteHeader selectedQuote { get; set; }
+    public Attachment selectedAttachment { get; set; }
+    public Note selectedNote { get; set; }
+
+    bool LoadingPanelVisible { get; set; } = true;
+
+    WebServices webServices = new WebServices();
+
+    public bool IsAssignButtonEnabled = false;
+    IEnumerable<ApplicationUser> SelectedProjectManager { get; set; }
+    public List<ApplicationUser>? ProjectManagers = new List<ApplicationUser>();
+
+    #region Private Properties
+
+    private List<QuoteHeader>? quotes;
+
+    int SelectedFilesCount { get; set; }
+
+    ObjectId SelectedFileId { get; set; }
+
+    IGrid QuoteGrid { get; set; }
+
+    IGrid EventGrid { get; set; }
+
+    EntityInstantFeedbackSource InstantFeedbackSource { get; set; }
+
+    bool isBulkInsert = false;
+
+    string FileType { get; set; } = ".pdf";
+    string Author { get; set; } = "unknown";
+
+    string NoteDetails { get; set; } = "";
+
+    #endregion
+
+    #region Public Properties
+
+    [Inject] public IJSRuntime jsRuntime { get; set; }
+
+    public Timer _timer;
+
+    public string ClientIP = "";
+    public string selectedQuoteId = "";
+
+    public interface IQueryable : System.Collections.IEnumerable;
+
+    public int currentItem = 0;
+    public int selectedIndex = 0;
+
+    public string SubmissionUserIP { get; set; }
+
+    public int itemsToCreate = 100;
+    public string updateStatus = "Fetching ";
+
+    public int attachmentsCount = 0;
+    public int notesCount = 0;
+    public int eventsCount = 0;
+
+    #endregion
+
+    #region Popup properties
+
+    bool IsAssignPopupVisible { get; set; }
+
+    bool IsPopupVisibleAddFile { get; set; }
+    bool IsPopupVisibleSelectAttachmentToDelete { get; set; }
+
+    bool IsPopupVisibleAddNote { get; set; }
+    bool IsPopupVisibleSelectNoteToDelete { get; set; }
+
+    bool IsPopupVisibleMakeCustomer { get; set; }
+    bool IsArchivePopupVisible { get; set; }
+
+    bool IsPopupVisibleHelpSendFiles { get; set; }
+    bool IsPopupVisibleHelpFileAttachments { get; set; }
+    bool IsPopupVisibleHelpFileNotes { get; set; }
+
+    #endregion
+
+    #region Parameters
+
+    [Parameter]
+    public string DisplayFormat { get; set; }
+
+    [Parameter]
+    public List<string> AcceptedFileTypes { get; set; }
+
+    [Parameter]
+    public GridDetailRowDisplayMode DetailRowDisplayMode { get; set; }
+
+    [Parameter]
+    public string RefreshStatus { get; set; } = "";
+
+    [Parameter]
+    public string StatusContainerClass { get; set; } = "container-action-buttons-hide";
+
+    [Parameter]
+    public string StatusClass { get; set; } = "message-normal";
+
+    [Parameter]
+    public string ShowTestDataButtonText { get; set; } = "Hide Test Data";
+
+    [Parameter]
+    public string RefreshButtonText { get; set; } = "Pause Refresh";
+
+    [Parameter]
+    public string RefreshButtonClass { get; set; } = "btn btn-outline-primary btn-refresh-active";
+
+    [Parameter]
+    public bool RefreshDisabled { get; set; } = false;
+
+    [Parameter]
+    public bool CreateLeadDisabled { get; set; } = true;
+
+    [Parameter]
+    public bool CreateLeadsDisabled { get; set; } = true;
+
+    [Parameter]
+    public bool SendDocsDisabled { get; set; } = true;
+
+    [Parameter]
+    public bool ArchiveLeadsDisabled { get; set; } = true;
+
+    [Parameter]
+    public object SelectedQuoteItem { get; set; }
+
+    [Parameter]
+    public object SelectedEventItem { get; set; }
+
+    [Parameter]
+    public int VisibleIndex { get; set; }
+
+    [Parameter]
+    public bool ClearFilterButtonVisible { get; set; }
+
+    [Parameter]
+    public string SelectedLeadType { get; set; } = "New";
+
+    [Parameter]
+    public string SelectedTradeType { get; set; } = "All";
+
+    #endregion
+
+    #region Methods
+
+    void SelectedProjectManagerChanged(IEnumerable<ApplicationUser> selectedProjectManager)
+    {
+        if(selectedProjectManager.Count() > 0)
+        {
+            SelectedProjectManager = selectedProjectManager;
+
+            if (SelectedProjectManager.Count() > 0)
+                IsAssignButtonEnabled = true;
+            else
+                IsAssignButtonEnabled = false;
+        }
+    }
+
+    // void FilterLeadTypes(IEnumerable<ListItem> selectedLeadType)
+    // {
+    //     SelectedLeadType = "New";
+
+    //     foreach(var item in selectedLeadType)
+    //     {
+    //         if (item.Value == "Complete Info")
+    //         {
+    //             SelectedLeadType = "New";
+    //             LeadTypeFilterLabel = "Types (Complete Info)";
+    //         }
+    //         else
+    //         {
+    //             SelectedLeadType = item.Value;
+    //             LeadTypeFilterLabel = "Types (" + SelectedLeadType + ")";
+    //         }
+    //     }
+
+    //     IsLeadTypeListOpen = false;
+    // }
+
+    // void FilterTradeType(IEnumerable<ListItem> selectedTradeType)
+    // {
+    //     LeadTypeList.Clear();
+
+    //     foreach(var item in selectedTradeType)
+    //     {
+    //         SelectedTradeType = item.Value;
+    //         if(SelectedTradeType == "Roofing")
+    //         {
+    //             LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
+    //             LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
+    //             LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
+    //         }
+    //         else
+    //         {
+    //             LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
+    //         }
+    //     }
+
+    //     TradesFilterLabel = "Trades (" + SelectedTradeType + ")";
+    //     IsTradesListOpen = false;
+    // }
+
+    public List<ApplicationUser> SortByLastNameUsingLinq(List<ApplicationUser> originalList)
+    {
+        return originalList.OrderBy(x => x.LastName).ToList();
+    }
+
+    void OnRowClick(GridRowClickEventArgs args)
+    {
+        PauseRefresh(true);
+
+        selectedIndex = args.VisibleIndex;
+        selectedQuote = quotes[selectedIndex];
+
+        var selectedQuoteId = selectedQuote._id;
+
+        NavigationManager.NavigateTo("/Quotes/Details?id=" + selectedQuoteId);
+
+        // var selectedDetailExpanded = QuoteGrid.IsDetailRowExpanded(selectedIndex);
+        // if (selectedDetailExpanded)
+        // {
+        //     QuoteGrid.CollapseDetailRow(selectedIndex);
+
+        //     PauseRefresh(false);
+        // }
+        // else
+        // {
+        //     QuoteGrid.CollapseAllDetailRows();
+        //     QuoteGrid.ExpandDetailRow(selectedIndex);
+
+        //     PauseRefresh(true);
+        // }
+    }
+
+    public async Task<string> GetIpAddress()
+    {
+        try
+        {
+            SubmissionUserIP = await jsRuntime.InvokeAsync<string>("getIpAddress").ConfigureAwait(true);
+
+            return SubmissionUserIP;
+        }
+        catch (Exception e)
+        {
+            //If your request was blocked by CORS or some extension like uBlock Origin then you will get an exception.
+            return string.Empty;
+        }
+    }
+
+    protected void SelectedFilesChanged(IEnumerable<UploadFileInfo> files)
+    {
+        SelectedFilesCount = files.ToList().Count;
+        InvokeAsync(StateHasChanged);
+
+        SendDocsDisabled = false;
+    }
+
+    protected void EmailFiles()
+    {
+        var tmpVal = "";
+    }
+
+    protected string GetUploadUrl(string url)
+    {
+        var absoluteUri = NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
+
+        return absoluteUri;
+    }
+
+    public void AssignLead()
+    {
+        // PauseRefresh(true);
+
+        // LoadingPanelVisible = true;
+
+        // QuoteGrid.CollapseDetailRow(selectedIndex);
+
+        // selectedQuote.status = "Opportunity";
+        // selectedQuote.projectManager = SelectedProjectManager.ToList()[0];
+
+        // var sysUser = new ApplicationUser();
+        // sysUser.FirstName = "System";
+
+        // if (selectedQuote.attachments.Count == 0)
+        // {
+        //     // Workflow and Subsequent Document Requirements
+        //     Attachment workflowRequirements = new Attachment();
+        //     workflowRequirements.MediaDescription = "Workflow and Subsequent Document Requirements";
+        //     workflowRequirements.MediaUrl = "/docs/templates/misc/Workflow and Subsequent Document Requirements.pdf";
+        //     workflowRequirements.Author = sysUser;
+        //     selectedQuote.attachments.Add(workflowRequirements);
+
+        //     Event workflowRequirementsEvent = new Event();
+        //     workflowRequirementsEvent.Details = workflowRequirements.MediaDescription + " sent to " + selectedQuote.email;
+        //     workflowRequirementsEvent.Author = sysUser;
+        //     selectedQuote.events.Add(workflowRequirementsEvent);
+
+        //     // Facilitate Engagement Agreement
+        //     Attachment engagementAgreement = new Attachment();
+        //     engagementAgreement.MediaDescription = "Facilitate Engagement Agreement";
+        //     engagementAgreement.MediaUrl = "/docs/templates/agreements/Facilitate Engagement Agreement.docx";
+        //     engagementAgreement.Author = sysUser;
+        //     selectedQuote.attachments.Add(engagementAgreement);
+
+        //     Event engagementAgreementEvent = new Event();
+        //     engagementAgreementEvent.Details = engagementAgreement.MediaDescription + " sent to " + selectedQuote.email;
+        //     engagementAgreementEvent.Author = sysUser;
+        //     selectedQuote.events.Add(engagementAgreementEvent);
+
+        //     // Welcome Letter
+        //     Attachment welcomeLetter = new Attachment();
+        //     welcomeLetter.MediaDescription = "Welcome to Facilitate.org";
+        //     welcomeLetter.MediaUrl = "/docs/templates/boilerplate/Welcome to Facilitate.docx";
+        //     welcomeLetter.Author = sysUser;
+        //     selectedQuote.attachments.Add(welcomeLetter);
+
+        //     Event welcomeLetterEvent = new Event();
+        //     welcomeLetterEvent.Details = welcomeLetter.MediaDescription + " sent to " + selectedQuote.email;
+        //     welcomeLetterEvent.Author = sysUser;
+        //     selectedQuote.events.Add(welcomeLetterEvent);
+        // }
+
+        // Event statusChanged = new Event();
+        // statusChanged.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Opportunity";
+        // statusChanged.Author = currentUser;
+        // selectedQuote.events.Add(statusChanged);
+
+        // var projectManager = selectedQuote.projectManager;
+
+        // // Assignment event
+        // Event assignmentEvent = new Event();
+        // assignmentEvent.Name = "Assignment";
+        // assignmentEvent.Details = "Lead assigned to Project Manager (" + projectManager.FirstName + " " + projectManager.LastName + "), moved to Opportunities and emailed to: " + projectManager.Email;
+        // assignmentEvent.Author = currentUser;
+
+        // // Email PM and Client here...
+
+
+        // selectedQuote.events.Add(assignmentEvent);
+
+        // WebServices.UpdateQuote(selectedQuote);
+
+        // IsAssignPopupVisible = false;
+        // IsAssignButtonEnabled = false;
+
+        // PauseRefresh(false);
+    }
+
+    public void ArchiveLead()
+    {
+        // PauseRefresh(true);
+
+        // selectedQuote.status = "Archive";
+
+        // QuoteGrid.CollapseDetailRow(selectedIndex);
+
+        // Note note = new Note();
+        // note.Summary = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
+        // note.Details = @NoteDetails;
+        // note.Author = currentUser;
+
+        // selectedQuote.notes.Add(note);
+
+        // Event _event = new Event();
+        // _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
+        // _event.Author = currentUser;
+        // selectedQuote.events.Add(_event);
+
+        // WebServices.UpdateQuote(selectedQuote);
+
+        // IsArchivePopupVisible = false;
+        // NoteDetails = "";
+
+        // PauseRefresh(false);
+    }
+
+    public void AddNote()
+    {
+        // PauseRefresh(true);
+
+        // QuoteGrid.CollapseDetailRow(selectedIndex);
+
+        // Note note = new Note();
+        // note.Summary = "Note Added";
+        // note.Details = @NoteDetails;
+        // note.Author = currentUser;
+
+        // selectedQuote.notes.Add(note);
+
+        // Event _event = new Event();
+        // _event.Details = "Note (" + note.Details + ") added to Quote";
+        // _event.Author = currentUser;
+
+        // selectedQuote.events.Add(_event);
+
+        // IsPopupVisibleAddNote = false;
+        // NoteDetails = "";
+
+        // WebServices.UpdateQuote(selectedQuote);
+
+        // TimerRefresh();
+        // quotes = webServices.GetQuotes("New");
+
+        // QuoteGrid.ExpandDetailRow(selectedIndex);
+
+        // PauseRefresh(true);
+    }
+
+    public void CloseDetails()
+    {
+        QuoteGrid.CollapseDetailRow(selectedIndex);
+
+        PauseRefresh(false);
+    }
+
+    public void SelectAttachmentToDelete(Quote quote, Attachment attachment)
+    {
+        // selectedQuote = quote;
+        // selectedAttachment = attachment;
+
+        // IsPopupVisibleSelectAttachmentToDelete = true;
+
+        // TimerRefresh();
+    }
+
+    public void SelectNoteToDelete(Quote quote, Note note)
+    {
+        // selectedQuote = quote;
+        // selectedNote = note;
+
+        // IsPopupVisibleSelectNoteToDelete = true;
+    }
+
+    public void DeleteSelectedAttachment()
+    {
+        // selectedAttachment.IsDeleted = true;
+
+        // Event _event = new Event();
+        // _event.Details = "Deleted attachment (" + selectedAttachment.MediaDescription + ") from Quote";
+        // _event.Author = currentUser;
+
+        // selectedQuote.events.Add(_event);
+
+        // WebServices.UpdateQuote(selectedQuote);
+
+        // TimerRefresh();
+
+        // IsPopupVisibleSelectAttachmentToDelete = false;
+
+        // attachmentsCount--;
+    }
+
+    public void DeleteSelectedNote()
+    {
+        // selectedNote.IsDeleted = true;
+
+        // Event _event = new Event();
+        // _event.Details = "Deleted note (" + selectedNote.Details + ") from Quote";
+        // _event.Author = currentUser;
+
+        // selectedQuote.events.Add(_event);
+
+        // WebServices.UpdateQuote(selectedQuote);
+
+        // TimerRefresh();
+
+        // IsPopupVisibleSelectNoteToDelete = false;
+
+        // notesCount--;
+    }
+
+    public virtual void PauseRefresh(bool isPaused)
+    {
+        RefreshDisabled = isPaused;
+
+        CreateLeadDisabled = isPaused;
+        CreateLeadsDisabled = isPaused;
+
+        if (isPaused)
+        {
+            RefreshDisabled = false;
+
+            CreateLeadDisabled = false;
+            CreateLeadsDisabled = false;
+
+            RefreshButtonText = "Resume Refresh";
+            RefreshButtonClass = "btn btn-outline-primary btn-refresh-inactive";
+            StatusClass = "message-warning";
+            RefreshStatus = " Auto refresh paused...";
+
+            TimerDispose();
+        }
+        else
+        {
+            CreateLeadDisabled = true;
+            CreateLeadsDisabled = true;
+
+            RefreshButtonText = "Pause Refresh";
+            RefreshButtonClass = "btn btn-outline-primary btn-refresh-active";
+            StatusClass = "message";
+            RefreshStatus = "";
+
+            TimerRefresh();
+        }
+    }
+
+    public virtual void ToggleRefresh()
+    {
+        if (RefreshButtonText == "Pause Refresh")
+        {
+            PauseRefresh(true);
+        }
+        else
+        {
+            PauseRefresh(false);
+        }
+
+        RefreshDisabled = false;
+    }
+
+    public void TimerDispose()
+    {
+        _timer?.Dispose();
+        _timer = null;
+    }
+
+    private async Task TimerRefresh()
+    {
+        TimerDispose();
+
+        LoadingPanelVisible = true;
+
+        _timer = new Timer(new TimerCallback(_ =>
+        {
+            // Check to see if user IsEnabled. If not, log them out an redirect to login page
+            //var isUserEnabled = IsUserEnabled();
+
+            if (isSystemAdmin)
+            {
+                bool ShowTestData = true;
+
+                leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
+                if (SelectedTradeType.Contains("All"))
+                {
+                    quotes = webServices.GetSummaries("New", ShowTestData);
+                }
+                else
+                {
+                    quotes = webServices.GetSummaries(SelectedTradeType, "New", ShowTestData);
+                }
+            }
+            else
+            {
+                leaderboardStats = WebServices.GetLeaderBoardStats(currentUser.Email);
+                quotes = webServices.GetSummaries("New", currentUser.Email);
+            }
+
+            updateStatus = quotes.Count().ToString("N0");
+            StatusContainerClass = "container-action-buttons-show";
+
+            InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
+        }), null, 1000, 1000);
+
+        LoadingPanelVisible = false;
+    }
+
+    private async Task<bool> IsUserEnabled()
+    {
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var user = authstate.User;
+        var name = user.Identity.Name;
+
+        if (name != null && name != "")
+            currentUser = await UserManager.FindByNameAsync(name);
+
+        return currentUser.IsEnabled;
+    }
+
+    #endregion
 }
