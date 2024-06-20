@@ -868,23 +868,23 @@ else
 
     void OnRowClick(GridRowClickEventArgs args)
     {
-        selectedIndex = args.VisibleIndex;
-        selectedQuote = quotes[selectedIndex];
+        // selectedIndex = args.VisibleIndex;
+        // selectedQuote = quotes[selectedIndex];
 
-        var selectedDetailExpanded = QuoteGrid.IsDetailRowExpanded(selectedIndex);
-        if (selectedDetailExpanded)
-        {
-            QuoteGrid.CollapseDetailRow(selectedIndex);
+        // var selectedDetailExpanded = QuoteGrid.IsDetailRowExpanded(selectedIndex);
+        // if (selectedDetailExpanded)
+        // {
+        //     QuoteGrid.CollapseDetailRow(selectedIndex);
 
-            PauseRefresh(false);
-        }
-        else
-        {
-            QuoteGrid.CollapseAllDetailRows();
-            QuoteGrid.ExpandDetailRow(selectedIndex);
+        //     PauseRefresh(false);
+        // }
+        // else
+        // {
+        //     QuoteGrid.CollapseAllDetailRows();
+        //     QuoteGrid.ExpandDetailRow(selectedIndex);
 
-            PauseRefresh(true);
-        }
+        //     PauseRefresh(true);
+        // }
     }
 
     public async Task<string> GetIpAddress()
@@ -1187,24 +1187,7 @@ else
 
         _timer = new Timer(new TimerCallback(_ =>
         {
-            // Check to see if user IsEnabled. If not, log them out an redirect to login page
-            //var isUserEnabled = IsUserEnabled();
-
-            if (isSystemAdmin)
-            {
-                // leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
-                bool ShowTestData = true;
-
-                quotes = webServices.GetQuotes(SelectedTradeType, SelectedLeadType, ShowTestData);
-            }
-            else
-            {
-                // leaderboardStats = WebServices.GetLeaderBoardStats(currentUser.Email);
-                quotes = webServices.GetQuotes("New", currentUser.Email);
-            }
-
-            updateStatus = quotes.Count().ToString("N0");
-            StatusContainerClass = "container-action-buttons-show";
+            quotes = webServices.GetQuote(QuoteId);
 
             InvokeAsync(() =>
             {

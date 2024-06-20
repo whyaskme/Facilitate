@@ -590,7 +590,7 @@ namespace Facilitate.Admin.Data
             return null;
         }
 
-        public Quote GetQuote(string quoteId)
+        public List<Quote> GetQuote(string quoteId)
         {
             try
             {
@@ -600,7 +600,7 @@ namespace Facilitate.Admin.Data
                 var sortedQuotes = _mongoDBCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
                 if (sortedQuotes.Count > 0)
                 {
-                    return sortedQuotes[0];
+                    return sortedQuotes;
                 }
                 else
                 {
