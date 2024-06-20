@@ -1,5 +1,5 @@
 ﻿@page "/quotes/details"
-@page "/quotes/details{id}"
+@page "/quotes/details{QuoteId}"
 
 @using Facilitate.Admin.Data;
 @using Facilitate.Libraries.Models;
@@ -8,7 +8,6 @@
 @using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 @using Microsoft.AspNetCore.Mvc;
 @using Microsoft.AspNetCore.Mvc.Rendering;
-@using Microsoft.AspNetCore.Mvc.Routing
 @using Microsoft.AspNetCore.WebUtilities;
 
 @using MongoDB.Bson;
@@ -67,70 +66,6 @@
 }
 else
 {
-@*     <div class="quotes-leaderboard-page-header">
-        <div class="col-md-3 stat-element">
-            <span class="stat-value"><b>@leaderboardStats.TotalQuoteCount.ToString("N0") Quotes</b></span>
-            <span class="stat-divider">|</span>
-            <span class="stat-value">@leaderboardStats.TotalQuoteValue.ToString("C0")</span>
-            <span class="stat-divider">|</span>
-            <span class="stat-value">@leaderboardStats.TotalQuoteSqFt.ToString("N0")sqft</span>
-            <span class="stat-divider">|</span>
-        </div>
-        <div class="col-md-1 stat-element">
-            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
-                <Authorized>
-                    <a href="/quotes/leads">Leads</a>
-                    <span class="stat-value"><b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
-                </Authorized>
-                <NotAuthorized></NotAuthorized>
-            </AuthorizeView>
-        </div>
-        <div class="col-md-1 stat-element">
-            <a href="/quotes/opportunities">Opportunities</a>
-            <span class="stat-value"><b>@leaderboardStats.OpportunityCount.ToString("N0")</b></span>
-        </div>
-        <div class="col-md-1 stat-element">
-            <a href="/quotes/customers">Customers</a>
-            <span class="stat-value"><b>@leaderboardStats.CustomerCount.ToString("N0")</b></span>
-        </div>
-        <div class="col-md-1 stat-element">
-            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
-                <Authorized>
-                    <a href="/quotes/completed">Completions</a>
-                    <span class="stat-value"><b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
-                </Authorized>
-                <NotAuthorized></NotAuthorized>
-            </AuthorizeView>
-        </div>
-        <div class="col-md-1 stat-element">
-            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
-                <Authorized>
-                    <a href="/quotes/archives">Archives</a>
-                    <span class="stat-value"><b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
-                </Authorized>
-                <NotAuthorized></NotAuthorized>
-            </AuthorizeView>
-        </div>
-        <div class="col-md-1 stat-element">
-            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
-                <Authorized>
-                    <a href="/quotes/warranties">Warranties</a>
-                    <span class="stat-value"><b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
-                </Authorized>
-                <NotAuthorized></NotAuthorized>
-            </AuthorizeView>
-        </div>
-    </div>
-
-    <div class="quote-stats-header">
-        <span class="quote-stats-count">@updateStatus Leads</span>
-        <span class="quote-stats-value">@leaderboardStats.LeadValue.ToString("C0")</span>
-        <span class="quote-stats-sqft">@leaderboardStats.LeadSqFt.ToString("N0")sqft</span>
-    </div>
-    <div class="quote-stats-hints">
-        Select row to expand details. Click column headers to sort. Type and hit enter in any empty cell to search that column. If you have grouped columns below, drag and drop the column back into the grid header to restore.
-    </div> *@
-
     <DxPopup @bind-Visible="@IsAssignPopupVisible"
              ShowFooter="true"
              HeaderText="Please select a Project Manager for assignment">
@@ -173,11 +108,9 @@ else
             PageSizeSelectorAllRowsItemVisible="false"
             KeyboardNavigationEnabled="true">
         <Columns>
-            <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" />
             <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Width="125" Caption="First" FieldName="firstName" />
             <DxGridDataColumn Width="150" Caption="Last" FieldName="lastName" />
-            <DxGridDataColumn Width="150" Caption="Email" FieldName="email" />
             <DxGridDataColumn Width="auto" Caption="Street" FieldName="street" />
             <DxGridDataColumn Width="150" Caption="City" FieldName="city" />
             <DxGridDataColumn Width="75" Caption="State" FieldName="state" />
@@ -188,7 +121,7 @@ else
             <DxGridCommandColumn Width="150px" Caption="Actions" EditButtonVisible="false" DeleteButtonVisible="true" />
         </Columns>
 
-       @*  <DetailRowTemplate>
+        <DetailRowTemplate>
             @{
                 var _quote = (Quote)context.DataItem;
 
@@ -551,7 +484,7 @@ else
                 </div>
 
             }
-        </DetailRowTemplate> *@
+        </DetailRowTemplate>
 
     </DxGrid>
 }
@@ -657,39 +590,9 @@ else
 @code {
 
     [Parameter]
-    public string id { get; set; }
+    public string QuoteId { get; set; }
 
-    // public string LeadTypeFilterLabel { get; set; } = "Types (Complete Info)";
-
-    // public string TradesFilterLabel { get; set; } = "Trades (All)";
-
-    // public bool IsLeadTypeListOpen { get; set; } = false;
-
-    // public List<ListItem> LeadTypeList = new List<ListItem>();
-
-    // public bool IsTradesListOpen { get; set; } = false;
-
-    // public List<ListItem> TradesList = new List<ListItem>();
-
-    // public bool emailSentStatus = false;
-
-    // public bool ShowTestData = true;
-
-    // public virtual void ShowHideTestData()
-    // {
-    //     if (ShowTestDataButtonText == "Show Test Data")
-    //     {
-    //         ShowTestData = true;
-    //         ShowTestDataButtonText = "Hide Test Data";
-    //     }
-    //     else
-    //     {
-    //         ShowTestData = false;
-    //         ShowTestDataButtonText = "Show Test Data";
-    //     }
-    // }
-
-    public QuoteLeaderboard leaderboardStats = new QuoteLeaderboard();
+    public bool emailSentStatus = false;
 
     Utils utils = new Utils();
 
@@ -698,25 +601,6 @@ else
         TimerDispose();
         NavigationManager.LocationChanged -= OnLocationChanged;
     }
-
-    // async Task Grid_DataItemDeleting(GridDataItemDeletingEventArgs e)
-    // {
-    //     Quote selectedQuote = (Quote)e.DataItem;
-    //     // selectedQuote.status = "Deleted";
-    //     selectedQuote.status = "Archive";
-
-    //     Event _event = new Event();
-    //     _event.Name = "Deleted Quote";
-    //     _event.DateTime = DateTime.UtcNow;
-    //     _event.Details = "Admin deleted Quote";
-
-    //     _event.Author = currentUser;
-
-    //     selectedQuote.events.Add(_event);
-
-    //     // Let's delete this quote
-    //     WebServices.UpdateQuote(selectedQuote);
-    // }
 
     public ApplicationUser currentUser = new ApplicationUser();
     public bool isSystemAdmin = false;
@@ -734,23 +618,10 @@ else
 
         // var emailSent = WebServices.SendEmail(ownerId, ownerType, fromAddress, toAddress, subject, body, isBodyHtml);
 
-        var _utils = new Utils();
-
         if (firstRender)
         {
             try
             {
-                // LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
-                // LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
-                // LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
-
-                // TradesList.Add(new ListItem() { Text = "All", Value = "All" });
-                // var tradeList = WebServices.GetTradesList();
-                // foreach (var trade in tradeList)
-                // {
-                //     TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
-                // }
-
                 var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
                 var loggedInUser = authstate.User;
                 var loggedInName = loggedInUser.Identity.Name;
@@ -825,8 +696,6 @@ else
     public int noteCount = 0;
 
     IEnumerable<string> Values { get; set; }
-    // IEnumerable<string> LeadTypeValues { get; set; }
-    // IEnumerable<string> TradeTypeValues { get; set; }
 
     public int roofsCount = 0;
     public int productsCount = 0;
@@ -834,7 +703,7 @@ else
     public string roofsCountLabel = "";
     public string productsCountLabel = "";
 
-    public QuoteHeader selectedQuote { get; set; }
+    public Quote selectedQuote { get; set; }
     public Attachment selectedAttachment { get; set; }
     public Note selectedNote { get; set; }
 
@@ -848,7 +717,7 @@ else
 
     #region Private Properties
 
-    private List<QuoteHeader>? quotes;
+    private List<Quote>? quotes;
 
     int SelectedFilesCount { get; set; }
 
@@ -934,7 +803,7 @@ else
     public string StatusClass { get; set; } = "message-normal";
 
     [Parameter]
-    public string ShowTestDataButtonText { get; set; } = "Hide Test Data";
+    public string ShowTestDataButtonText { get; set; } = "Show Test Data";
 
     [Parameter]
     public string RefreshButtonText { get; set; } = "Pause Refresh";
@@ -973,7 +842,7 @@ else
     public string SelectedLeadType { get; set; } = "New";
 
     [Parameter]
-    public string SelectedTradeType { get; set; } = "All";
+    public string SelectedTradeType { get; set; } = "Roofing";
 
     #endregion
 
@@ -992,50 +861,6 @@ else
         }
     }
 
-    // void FilterLeadTypes(IEnumerable<ListItem> selectedLeadType)
-    // {
-    //     SelectedLeadType = "New";
-
-    //     foreach(var item in selectedLeadType)
-    //     {
-    //         if (item.Value == "Complete Info")
-    //         {
-    //             SelectedLeadType = "New";
-    //             LeadTypeFilterLabel = "Types (Complete Info)";
-    //         }
-    //         else
-    //         {
-    //             SelectedLeadType = item.Value;
-    //             LeadTypeFilterLabel = "Types (" + SelectedLeadType + ")";
-    //         }
-    //     }
-
-    //     IsLeadTypeListOpen = false;
-    // }
-
-    // void FilterTradeType(IEnumerable<ListItem> selectedTradeType)
-    // {
-    //     LeadTypeList.Clear();
-
-    //     foreach(var item in selectedTradeType)
-    //     {
-    //         SelectedTradeType = item.Value;
-    //         if(SelectedTradeType == "Roofing")
-    //         {
-    //             LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
-    //             LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
-    //             LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
-    //         }
-    //         else
-    //         {
-    //             LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
-    //         }
-    //     }
-
-    //     TradesFilterLabel = "Trades (" + SelectedTradeType + ")";
-    //     IsTradesListOpen = false;
-    // }
-
     public List<ApplicationUser> SortByLastNameUsingLinq(List<ApplicationUser> originalList)
     {
         return originalList.OrderBy(x => x.LastName).ToList();
@@ -1043,29 +868,23 @@ else
 
     void OnRowClick(GridRowClickEventArgs args)
     {
-        PauseRefresh(true);
-
         selectedIndex = args.VisibleIndex;
         selectedQuote = quotes[selectedIndex];
 
-        var selectedQuoteId = selectedQuote._id;
+        var selectedDetailExpanded = QuoteGrid.IsDetailRowExpanded(selectedIndex);
+        if (selectedDetailExpanded)
+        {
+            QuoteGrid.CollapseDetailRow(selectedIndex);
 
-        NavigationManager.NavigateTo("/Quotes/Details?id=" + selectedQuoteId);
+            PauseRefresh(false);
+        }
+        else
+        {
+            QuoteGrid.CollapseAllDetailRows();
+            QuoteGrid.ExpandDetailRow(selectedIndex);
 
-        // var selectedDetailExpanded = QuoteGrid.IsDetailRowExpanded(selectedIndex);
-        // if (selectedDetailExpanded)
-        // {
-        //     QuoteGrid.CollapseDetailRow(selectedIndex);
-
-        //     PauseRefresh(false);
-        // }
-        // else
-        // {
-        //     QuoteGrid.CollapseAllDetailRows();
-        //     QuoteGrid.ExpandDetailRow(selectedIndex);
-
-        //     PauseRefresh(true);
-        // }
+            PauseRefresh(true);
+        }
     }
 
     public async Task<string> GetIpAddress()
@@ -1105,141 +924,141 @@ else
 
     public void AssignLead()
     {
-        // PauseRefresh(true);
+        PauseRefresh(true);
 
-        // LoadingPanelVisible = true;
+        LoadingPanelVisible = true;
 
-        // QuoteGrid.CollapseDetailRow(selectedIndex);
+        QuoteGrid.CollapseDetailRow(selectedIndex);
 
-        // selectedQuote.status = "Opportunity";
-        // selectedQuote.projectManager = SelectedProjectManager.ToList()[0];
+        selectedQuote.status = "Opportunity";
+        selectedQuote.projectManager = SelectedProjectManager.ToList()[0];
 
-        // var sysUser = new ApplicationUser();
-        // sysUser.FirstName = "System";
+        var sysUser = new ApplicationUser();
+        sysUser.FirstName = "System";
 
-        // if (selectedQuote.attachments.Count == 0)
-        // {
-        //     // Workflow and Subsequent Document Requirements
-        //     Attachment workflowRequirements = new Attachment();
-        //     workflowRequirements.MediaDescription = "Workflow and Subsequent Document Requirements";
-        //     workflowRequirements.MediaUrl = "/docs/templates/misc/Workflow and Subsequent Document Requirements.pdf";
-        //     workflowRequirements.Author = sysUser;
-        //     selectedQuote.attachments.Add(workflowRequirements);
+        if (selectedQuote.attachments.Count == 0)
+        {
+            // Workflow and Subsequent Document Requirements
+            Attachment workflowRequirements = new Attachment();
+            workflowRequirements.MediaDescription = "Workflow and Subsequent Document Requirements";
+            workflowRequirements.MediaUrl = "/docs/templates/misc/Workflow and Subsequent Document Requirements.pdf";
+            workflowRequirements.Author = sysUser;
+            selectedQuote.attachments.Add(workflowRequirements);
 
-        //     Event workflowRequirementsEvent = new Event();
-        //     workflowRequirementsEvent.Details = workflowRequirements.MediaDescription + " sent to " + selectedQuote.email;
-        //     workflowRequirementsEvent.Author = sysUser;
-        //     selectedQuote.events.Add(workflowRequirementsEvent);
+            Event workflowRequirementsEvent = new Event();
+            workflowRequirementsEvent.Details = workflowRequirements.MediaDescription + " sent to " + selectedQuote.email;
+            workflowRequirementsEvent.Author = sysUser;
+            selectedQuote.events.Add(workflowRequirementsEvent);
 
-        //     // Facilitate Engagement Agreement
-        //     Attachment engagementAgreement = new Attachment();
-        //     engagementAgreement.MediaDescription = "Facilitate Engagement Agreement";
-        //     engagementAgreement.MediaUrl = "/docs/templates/agreements/Facilitate Engagement Agreement.docx";
-        //     engagementAgreement.Author = sysUser;
-        //     selectedQuote.attachments.Add(engagementAgreement);
+            // Facilitate Engagement Agreement
+            Attachment engagementAgreement = new Attachment();
+            engagementAgreement.MediaDescription = "Facilitate Engagement Agreement";
+            engagementAgreement.MediaUrl = "/docs/templates/agreements/Facilitate Engagement Agreement.docx";
+            engagementAgreement.Author = sysUser;
+            selectedQuote.attachments.Add(engagementAgreement);
 
-        //     Event engagementAgreementEvent = new Event();
-        //     engagementAgreementEvent.Details = engagementAgreement.MediaDescription + " sent to " + selectedQuote.email;
-        //     engagementAgreementEvent.Author = sysUser;
-        //     selectedQuote.events.Add(engagementAgreementEvent);
+            Event engagementAgreementEvent = new Event();
+            engagementAgreementEvent.Details = engagementAgreement.MediaDescription + " sent to " + selectedQuote.email;
+            engagementAgreementEvent.Author = sysUser;
+            selectedQuote.events.Add(engagementAgreementEvent);
 
-        //     // Welcome Letter
-        //     Attachment welcomeLetter = new Attachment();
-        //     welcomeLetter.MediaDescription = "Welcome to Facilitate.org";
-        //     welcomeLetter.MediaUrl = "/docs/templates/boilerplate/Welcome to Facilitate.docx";
-        //     welcomeLetter.Author = sysUser;
-        //     selectedQuote.attachments.Add(welcomeLetter);
+            // Welcome Letter
+            Attachment welcomeLetter = new Attachment();
+            welcomeLetter.MediaDescription = "Welcome to Facilitate.org";
+            welcomeLetter.MediaUrl = "/docs/templates/boilerplate/Welcome to Facilitate.docx";
+            welcomeLetter.Author = sysUser;
+            selectedQuote.attachments.Add(welcomeLetter);
 
-        //     Event welcomeLetterEvent = new Event();
-        //     welcomeLetterEvent.Details = welcomeLetter.MediaDescription + " sent to " + selectedQuote.email;
-        //     welcomeLetterEvent.Author = sysUser;
-        //     selectedQuote.events.Add(welcomeLetterEvent);
-        // }
+            Event welcomeLetterEvent = new Event();
+            welcomeLetterEvent.Details = welcomeLetter.MediaDescription + " sent to " + selectedQuote.email;
+            welcomeLetterEvent.Author = sysUser;
+            selectedQuote.events.Add(welcomeLetterEvent);
+        }
 
-        // Event statusChanged = new Event();
-        // statusChanged.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Opportunity";
-        // statusChanged.Author = currentUser;
-        // selectedQuote.events.Add(statusChanged);
+        Event statusChanged = new Event();
+        statusChanged.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Opportunity";
+        statusChanged.Author = currentUser;
+        selectedQuote.events.Add(statusChanged);
 
-        // var projectManager = selectedQuote.projectManager;
+        var projectManager = selectedQuote.projectManager;
 
-        // // Assignment event
-        // Event assignmentEvent = new Event();
-        // assignmentEvent.Name = "Assignment";
-        // assignmentEvent.Details = "Lead assigned to Project Manager (" + projectManager.FirstName + " " + projectManager.LastName + "), moved to Opportunities and emailed to: " + projectManager.Email;
-        // assignmentEvent.Author = currentUser;
+        // Assignment event
+        Event assignmentEvent = new Event();
+        assignmentEvent.Name = "Assignment";
+        assignmentEvent.Details = "Lead assigned to Project Manager (" + projectManager.FirstName + " " + projectManager.LastName + "), moved to Opportunities and emailed to: " + projectManager.Email;
+        assignmentEvent.Author = currentUser;
 
-        // // Email PM and Client here...
+        // Email PM and Client here...
 
 
-        // selectedQuote.events.Add(assignmentEvent);
+        selectedQuote.events.Add(assignmentEvent);
 
-        // WebServices.UpdateQuote(selectedQuote);
+        WebServices.UpdateQuote(selectedQuote);
 
-        // IsAssignPopupVisible = false;
-        // IsAssignButtonEnabled = false;
+        IsAssignPopupVisible = false;
+        IsAssignButtonEnabled = false;
 
-        // PauseRefresh(false);
+        PauseRefresh(false);
     }
 
     public void ArchiveLead()
     {
-        // PauseRefresh(true);
+        PauseRefresh(true);
 
-        // selectedQuote.status = "Archive";
+        selectedQuote.status = "Archive";
 
-        // QuoteGrid.CollapseDetailRow(selectedIndex);
+        QuoteGrid.CollapseDetailRow(selectedIndex);
 
-        // Note note = new Note();
-        // note.Summary = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
-        // note.Details = @NoteDetails;
-        // note.Author = currentUser;
+        Note note = new Note();
+        note.Summary = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
+        note.Details = @NoteDetails;
+        note.Author = currentUser;
 
-        // selectedQuote.notes.Add(note);
+        selectedQuote.notes.Add(note);
 
-        // Event _event = new Event();
-        // _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
-        // _event.Author = currentUser;
-        // selectedQuote.events.Add(_event);
+        Event _event = new Event();
+        _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
+        _event.Author = currentUser;
+        selectedQuote.events.Add(_event);
 
-        // WebServices.UpdateQuote(selectedQuote);
+        WebServices.UpdateQuote(selectedQuote);
 
-        // IsArchivePopupVisible = false;
-        // NoteDetails = "";
+        IsArchivePopupVisible = false;
+        NoteDetails = "";
 
-        // PauseRefresh(false);
+        PauseRefresh(false);
     }
 
     public void AddNote()
     {
-        // PauseRefresh(true);
+        PauseRefresh(true);
 
-        // QuoteGrid.CollapseDetailRow(selectedIndex);
+        QuoteGrid.CollapseDetailRow(selectedIndex);
 
-        // Note note = new Note();
-        // note.Summary = "Note Added";
-        // note.Details = @NoteDetails;
-        // note.Author = currentUser;
+        Note note = new Note();
+        note.Summary = "Note Added";
+        note.Details = @NoteDetails;
+        note.Author = currentUser;
 
-        // selectedQuote.notes.Add(note);
+        selectedQuote.notes.Add(note);
 
-        // Event _event = new Event();
-        // _event.Details = "Note (" + note.Details + ") added to Quote";
-        // _event.Author = currentUser;
+        Event _event = new Event();
+        _event.Details = "Note (" + note.Details + ") added to Quote";
+        _event.Author = currentUser;
 
-        // selectedQuote.events.Add(_event);
+        selectedQuote.events.Add(_event);
 
-        // IsPopupVisibleAddNote = false;
-        // NoteDetails = "";
+        IsPopupVisibleAddNote = false;
+        NoteDetails = "";
 
-        // WebServices.UpdateQuote(selectedQuote);
+        WebServices.UpdateQuote(selectedQuote);
 
-        // TimerRefresh();
-        // quotes = webServices.GetQuotes("New");
+        TimerRefresh();
+        quotes = webServices.GetQuotes("New");
 
-        // QuoteGrid.ExpandDetailRow(selectedIndex);
+        QuoteGrid.ExpandDetailRow(selectedIndex);
 
-        // PauseRefresh(true);
+        PauseRefresh(true);
     }
 
     public void CloseDetails()
@@ -1251,58 +1070,58 @@ else
 
     public void SelectAttachmentToDelete(Quote quote, Attachment attachment)
     {
-        // selectedQuote = quote;
-        // selectedAttachment = attachment;
+        selectedQuote = quote;
+        selectedAttachment = attachment;
 
-        // IsPopupVisibleSelectAttachmentToDelete = true;
+        IsPopupVisibleSelectAttachmentToDelete = true;
 
-        // TimerRefresh();
+        TimerRefresh();
     }
 
     public void SelectNoteToDelete(Quote quote, Note note)
     {
-        // selectedQuote = quote;
-        // selectedNote = note;
+        selectedQuote = quote;
+        selectedNote = note;
 
-        // IsPopupVisibleSelectNoteToDelete = true;
+        IsPopupVisibleSelectNoteToDelete = true;
     }
 
     public void DeleteSelectedAttachment()
     {
-        // selectedAttachment.IsDeleted = true;
+        selectedAttachment.IsDeleted = true;
 
-        // Event _event = new Event();
-        // _event.Details = "Deleted attachment (" + selectedAttachment.MediaDescription + ") from Quote";
-        // _event.Author = currentUser;
+        Event _event = new Event();
+        _event.Details = "Deleted attachment (" + selectedAttachment.MediaDescription + ") from Quote";
+        _event.Author = currentUser;
 
-        // selectedQuote.events.Add(_event);
+        selectedQuote.events.Add(_event);
 
-        // WebServices.UpdateQuote(selectedQuote);
+        WebServices.UpdateQuote(selectedQuote);
 
-        // TimerRefresh();
+        TimerRefresh();
 
-        // IsPopupVisibleSelectAttachmentToDelete = false;
+        IsPopupVisibleSelectAttachmentToDelete = false;
 
-        // attachmentsCount--;
+        attachmentsCount--;
     }
 
     public void DeleteSelectedNote()
     {
-        // selectedNote.IsDeleted = true;
+        selectedNote.IsDeleted = true;
 
-        // Event _event = new Event();
-        // _event.Details = "Deleted note (" + selectedNote.Details + ") from Quote";
-        // _event.Author = currentUser;
+        Event _event = new Event();
+        _event.Details = "Deleted note (" + selectedNote.Details + ") from Quote";
+        _event.Author = currentUser;
 
-        // selectedQuote.events.Add(_event);
+        selectedQuote.events.Add(_event);
 
-        // WebServices.UpdateQuote(selectedQuote);
+        WebServices.UpdateQuote(selectedQuote);
 
-        // TimerRefresh();
+        TimerRefresh();
 
-        // IsPopupVisibleSelectNoteToDelete = false;
+        IsPopupVisibleSelectNoteToDelete = false;
 
-        // notesCount--;
+        notesCount--;
     }
 
     public virtual void PauseRefresh(bool isPaused)
@@ -1373,22 +1192,15 @@ else
 
             if (isSystemAdmin)
             {
+                // leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
                 bool ShowTestData = true;
 
-                leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
-                if (SelectedTradeType.Contains("All"))
-                {
-                    quotes = webServices.GetSummaries("New", ShowTestData);
-                }
-                else
-                {
-                    quotes = webServices.GetSummaries(SelectedTradeType, "New", ShowTestData);
-                }
+                quotes = webServices.GetQuotes(SelectedTradeType, SelectedLeadType, ShowTestData);
             }
             else
             {
-                leaderboardStats = WebServices.GetLeaderBoardStats(currentUser.Email);
-                quotes = webServices.GetSummaries("New", currentUser.Email);
+                // leaderboardStats = WebServices.GetLeaderBoardStats(currentUser.Email);
+                quotes = webServices.GetQuotes("New", currentUser.Email);
             }
 
             updateStatus = quotes.Count().ToString("N0");
