@@ -601,7 +601,9 @@ else
     {
         TimerDispose();
 
-        var selectedRow = (QuoteHeader) QuoteGrid.GetDataItem(args.VisibleIndex);
+        var selectedRowIndex = args.VisibleIndex;
+
+        var selectedRow = (Quote)QuoteGrid.GetDataItem(selectedRowIndex);
         var quoteId = selectedRow._id;
 
         NavigationManager.NavigateTo("/quotes/details/" + quoteId);

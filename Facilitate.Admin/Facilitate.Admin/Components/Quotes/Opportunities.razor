@@ -489,7 +489,7 @@ else
     public string RefreshButtonText { get; set; } = "Pause Refresh";
 
     [Parameter]
-    public string RefreshButtonClass { get; set; } = "btn btn-outline-primary btn-refresh-active";
+    public string RefreshButtonClass { get; set; } = "btn-refresh-active";
 
     [Parameter]
     public bool RefreshDisabled { get; set; } = false;
@@ -596,7 +596,7 @@ else
     {
         TimerDispose();
 
-        var selectedRow = (QuoteHeader) QuoteGrid.GetDataItem(args.VisibleIndex);
+        var selectedRow = (QuoteHeader)QuoteGrid.GetDataItem(args.VisibleIndex);
         var quoteId = selectedRow._id;
 
         NavigationManager.NavigateTo("/quotes/details/" + quoteId);
@@ -836,7 +836,7 @@ else
         else
         {
             RefreshButtonText = "Pause Refresh";
-            RefreshButtonClass = "btn btn-outline-primary btn-refresh-active";
+            RefreshButtonClass = "btn-refresh-active";
             StatusClass = "message";
             RefreshStatus = "";
 
