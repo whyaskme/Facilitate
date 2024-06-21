@@ -66,48 +66,71 @@
 }
 else
 {
-    <DxPopup @bind-Visible="@IsAssignPopupVisible"
-             ShowFooter="true"
-             HeaderText="Please select a Project Manager for assignment">
-        <BodyContentTemplate>
-            <DxListBox Data="@ProjectManagers"
-                       @bind-Values="@Values"
-                       SelectedItemsChanged="@((IEnumerable<ApplicationUser> values) => SelectedProjectManagerChanged(values))"
-                       SelectionMode="ListBoxSelectionMode.Single"
-                       ShowCheckboxes="true">
-                <Columns>
-                    <DxListEditorColumn FieldName="LastName" Caption="Last" />
-                    <DxListEditorColumn FieldName="FirstName" Caption="First" />
-                    <DxListEditorColumn FieldName="Email" Caption="Email" />
-                    <DxListEditorColumn FieldName="Id" Visible="false" Caption="Id" />
-                </Columns>
-            </DxListBox>
-        </BodyContentTemplate>
-        <FooterContentTemplate>
-            <DxButton CssClass="popup-button my-1 ms-2" Enabled="@IsAssignButtonEnabled" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
-            <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsAssignPopupVisible = false)" />
-        </FooterContentTemplate>
-    </DxPopup>
+    <div class="quotes-leaderboard-page-header">
+        <div class="col-md-3 stat-element">
+            <span class="stat-value"><b>@leaderboardStats.TotalQuoteCount.ToString("N0") Quotes</b></span>
+            <span class="stat-divider">|</span>
+            <span class="stat-value">@leaderboardStats.TotalQuoteValue.ToString("C0")</span>
+            <span class="stat-divider">|</span>
+            <span class="stat-value">@leaderboardStats.TotalQuoteSqFt.ToString("N0")sqft</span>
+            <span class="stat-divider">|</span>
+        </div>
+        <div class="col-md-1 stat-element">
+            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+                <Authorized>
+                    <a href="/quotes/leads">Leads</a>
+                    <span class="stat-value"><b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
+                </Authorized>
+                <NotAuthorized></NotAuthorized>
+            </AuthorizeView>
+        </div>
+        <div class="col-md-1 stat-element">
+            <a href="/quotes/opportunities">Opportunities</a>
+            <span class="stat-value"><b>@leaderboardStats.OpportunityCount.ToString("N0")</b></span>
+        </div>
+        <div class="col-md-1 stat-element">
+            <a href="/quotes/customers">Customers</a>
+            <span class="stat-value"><b>@leaderboardStats.CustomerCount.ToString("N0")</b></span>
+        </div>
+        <div class="col-md-1 stat-element">
+            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+                <Authorized>
+                    <a href="/quotes/completed">Completions</a>
+                    <span class="stat-value"><b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
+                </Authorized>
+                <NotAuthorized></NotAuthorized>
+            </AuthorizeView>
+        </div>
+        <div class="col-md-1 stat-element">
+            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+                <Authorized>
+                    <a href="/quotes/archives">Archives</a>
+                    <span class="stat-value"><b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
+                </Authorized>
+                <NotAuthorized></NotAuthorized>
+            </AuthorizeView>
+        </div>
+        <div class="col-md-1 stat-element">
+            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+                <Authorized>
+                    <a href="/quotes/warranties">Warranties</a>
+                    <span class="stat-value"><b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
+                </Authorized>
+                <NotAuthorized></NotAuthorized>
+            </AuthorizeView>
+        </div>
+    </div>
 
     <DxGrid @ref="QuoteGrid"
             Data="@quotes"
             KeyFieldName="_id"
-            PageSize="10"
-            PagerPosition="GridPagerPosition.Bottom"
-            ShowGroupPanel="true"
-            AutoExpandAllGroupRows="true"
-            ShowFilterRow="true"
+            PageSize="1"
+            ShowFilterRow="false"
             CssClass="mw-1100"
-            RowClick="OnRowClick"
-            AllowSelectRowByClick="true"
-            SelectionMode="GridSelectionMode.Single"
-            @bind-SelectedDataItem="@SelectedQuoteItem"
-            TextWrapEnabled="false"
-            PagerNavigationMode="PagerNavigationMode.InputBox"
-            PageSizeSelectorVisible="true"
-            PageSizeSelectorAllRowsItemVisible="false"
-            KeyboardNavigationEnabled="true">
+            TextWrapEnabled="false">
         <Columns>
+            <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
+            <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" />
             <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Width="125" Caption="First" FieldName="firstName" />
             <DxGridDataColumn Width="150" Caption="Last" FieldName="lastName" />
@@ -118,7 +141,7 @@ else
             <DxGridDataColumn Width="75" Caption="Roofs" FieldName="numberOfIncludedStructures" />
             <DxGridDataColumn Width="75" Caption="SqFt" FieldName="totalSquareFeet" />
             <DxGridDataColumn Width="100" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
-            <DxGridCommandColumn Width="150px" Caption="Actions" EditButtonVisible="false" DeleteButtonVisible="true" />
+@*             <DxGridCommandColumn Width="150px" Caption="Actions" EditButtonVisible="false" DeleteButtonVisible="true" /> *@
         </Columns>
 
         <DetailRowTemplate>
@@ -588,6 +611,8 @@ else
 </DxLoadingPanel>
 
 @code {
+
+    public QuoteLeaderboard leaderboardStats = new QuoteLeaderboard();
 
     [Parameter]
     public string QuoteId { get; set; }
@@ -1187,6 +1212,10 @@ else
 
         _timer = new Timer(new TimerCallback(_ =>
         {
+            var ShowTestData = true;
+
+            leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
+
             quotes = webServices.GetQuote(QuoteId);
 
             InvokeAsync(() =>

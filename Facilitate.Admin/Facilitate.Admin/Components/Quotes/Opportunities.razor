@@ -213,6 +213,8 @@ else
             PageSizeSelectorAllRowsItemVisible="false"
             KeyboardNavigationEnabled="true">
         <Columns>
+            <DxGridDataColumn Visible="false" Width="200" Caption="Id" FieldName="_id" />
+            <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
             <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" />
             <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Width="175" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
@@ -229,107 +231,6 @@ else
         </Columns>
     </DxGrid>
 }
-
-<DxPopup @bind-Visible="@IsPopupVisibleMakeCustomer" ShowFooter="true" HeaderText="Make Customer">
-    <BodyContentTemplate>
-        If this Opportunity is fully qualified to meet Customer criteria, then click Save.
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="MakeCustomer" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleMakeCustomer = false)" />
-    </FooterContentTemplate>
-</DxPopup>
-
-<DxPopup @bind-Visible="@IsAssignPopupVisible"
-         ShowFooter="true"
-         HeaderText="Please select a Project Manager for assignment">
-    <BodyContentTemplate>
-        <DxListBox Data="@ProjectManagers"
-                   @bind-Values="@Values"
-                   SelectedItemsChanged="@((IEnumerable<ApplicationUser> values) => SelectedProjectManagerChanged(values))"
-                   SelectionMode="ListBoxSelectionMode.Single"
-                   ShowCheckboxes="true">
-            <Columns>
-                <DxListEditorColumn FieldName="LastName" Caption="Last" />
-                <DxListEditorColumn FieldName="FirstName" Caption="First" />
-                <DxListEditorColumn FieldName="Email" Caption="Email" />
-                <DxListEditorColumn FieldName="Id" Visible="false" Caption="Id" />
-            </Columns>
-        </DxListBox>
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" Enabled="@IsAssignButtonEnabled" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsAssignPopupVisible = false)" />
-    </FooterContentTemplate>
-</DxPopup>
-
-<DxPopup @bind-Visible="@IsPopupVisibleSelectAttachmentToDelete" ShowFooter="true" HeaderText="Delete File">
-    <BodyContentTemplate>
-        Are you sure you want to delete "@selectedAttachment.MediaDescription"?
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteSelectedAttachment" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleSelectAttachmentToDelete = false)" />
-    </FooterContentTemplate>
-</DxPopup>
-
-<DxPopup @bind-Visible="@IsPopupVisibleSelectNoteToDelete" ShowFooter="true" HeaderText="Delete Note">
-    <BodyContentTemplate>
-        Are you sure you want to delete "@selectedNote.Details"?
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteSelectedNote" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleSelectNoteToDelete = false)" />
-    </FooterContentTemplate>
-</DxPopup>
-
-<DxPopup @bind-Visible="@IsPopupVisibleAddNote" ShowFooter="true" HeaderText="Add Note">
-    <BodyContentTemplate>
-        <p>Please type in your notes below.</p>
-        <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AddNote" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleAddNote = false)" />
-    </FooterContentTemplate>
-</DxPopup>
-
-<DxPopup @bind-Visible="@IsArchivePopupVisible" ShowFooter="true" HeaderText="Please type in a reason for Archival below">
-    <BodyContentTemplate>
-        <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Archive" Click="ArchiveLead" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsArchivePopupVisible = false)" />
-    </FooterContentTemplate>
-</DxPopup>
-
-<DxPopup @bind-Visible="@IsPopupVisibleHelpSendFiles" ShowFooter="true" HeaderText="Send Documents Help?">
-    <BodyContentTemplate>
-        <p>Send Documents details...</p>
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpSendFiles = false)" />
-    </FooterContentTemplate>
-</DxPopup>
-
-<DxPopup @bind-Visible="@IsPopupVisibleHelpFileAttachments" ShowFooter="true" HeaderText="File Attachments Help?">
-    <BodyContentTemplate>
-        <p>File Attachments details...</p>
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpFileAttachments = false)" />
-    </FooterContentTemplate>
-</DxPopup>
-
-<DxPopup @bind-Visible="@IsPopupVisibleHelpFileNotes" ShowFooter="true" HeaderText="File Notes Help?">
-    <BodyContentTemplate>
-        <p>File Notes details...</p>
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpFileNotes = false)" />
-    </FooterContentTemplate>
-</DxPopup>
 
 <DxLoadingPanel @bind-Visible=@LoadingPanelVisible
                 PositionTarget="body"
@@ -694,31 +595,13 @@ else
 
     void OnRowClick(GridRowClickEventArgs args)
     {
-        PauseRefresh(true);
+        TimerDispose();
 
-        selectedIndex = args.VisibleIndex;
-        selectedQuote = quotes[selectedIndex];
+        var selectedRow = (QuoteHeader) QuoteGrid.GetDataItem(args.VisibleIndex);
+        var quoteId = selectedRow._id;
 
-        var selectedQuoteId = selectedQuote._id;
-
-        NavigationManager.NavigateTo("/quotes/details/" + selectedQuote._id);
-
-        // var selectedDetailExpanded = QuoteGrid.IsDetailRowExpanded(selectedIndex);
-        // if (selectedDetailExpanded)
-        // {
-        //     QuoteGrid.CollapseDetailRow(selectedIndex);
-
-        //     PauseRefresh(false);
-        // }
-        // else
-        // {
-        //     QuoteGrid.CollapseAllDetailRows();
-        //     QuoteGrid.ExpandDetailRow(selectedIndex);
-
-        //     PauseRefresh(true);
-        // }
+        NavigationManager.NavigateTo("/quotes/details/" + quoteId);
     }
-
     public async Task<string> GetIpAddress()
     {
         try

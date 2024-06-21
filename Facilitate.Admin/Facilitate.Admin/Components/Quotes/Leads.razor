@@ -213,29 +213,6 @@ else
         Select row to expand details. Click column headers to sort. Type and hit enter in any empty cell to search that column. If you have grouped columns below, drag and drop the column back into the grid header to restore.
     </div>
 
-    <DxPopup @bind-Visible="@IsAssignPopupVisible"
-             ShowFooter="true"
-             HeaderText="Please select a Project Manager for assignment">
-        <BodyContentTemplate>
-            <DxListBox Data="@ProjectManagers"
-                       @bind-Values="@Values"
-                       SelectedItemsChanged="@((IEnumerable<ApplicationUser> values) => SelectedProjectManagerChanged(values))"
-                       SelectionMode="ListBoxSelectionMode.Single"
-                       ShowCheckboxes="true">
-                <Columns>
-                    <DxListEditorColumn FieldName="LastName" Caption="Last" />
-                    <DxListEditorColumn FieldName="FirstName" Caption="First" />
-                    <DxListEditorColumn FieldName="Email" Caption="Email" />
-                    <DxListEditorColumn FieldName="Id" Visible="false" Caption="Id" />
-                </Columns>
-            </DxListBox>
-        </BodyContentTemplate>
-        <FooterContentTemplate>
-            <DxButton CssClass="popup-button my-1 ms-2" Enabled="@IsAssignButtonEnabled" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
-            <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsAssignPopupVisible = false)" />
-        </FooterContentTemplate>
-    </DxPopup>
-
     <DxGrid @ref="QuoteGrid"
             Data="@quotes"
             KeyFieldName="_id"
@@ -256,8 +233,9 @@ else
             DataItemDeleting="Grid_DataItemDeleting"
             KeyboardNavigationEnabled="true">
         <Columns>
-            <DxGridDataColumn Width="200" Caption="Id" FieldName="_id" />
-@*             <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" /> *@
+            <DxGridDataColumn Visible="false" Width="200" Caption="Id" FieldName="_id" />
+            <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
+            <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" />
             <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Width="125" Caption="First" FieldName="firstName" />
             <DxGridDataColumn Width="150" Caption="Last" FieldName="lastName" />
@@ -274,98 +252,6 @@ else
 
     </DxGrid>
 }
-
-<DxPopup @bind-Visible="@IsAssignPopupVisible"
-         ShowFooter="true"
-         HeaderText="Please select a Project Manager for assignment">
-    <BodyContentTemplate>
-        <DxListBox Data="@ProjectManagers"
-                   @bind-Values="@Values"
-                   CssClass="popup-grid"
-                   SelectedItemsChanged="@((IEnumerable<ApplicationUser> values) => SelectedProjectManagerChanged(values))"
-                   SelectionMode="ListBoxSelectionMode.Single"
-                   ShowCheckboxes="true">
-            <Columns>
-                <DxListEditorColumn FieldName="LastName" Caption="Last" />
-                <DxListEditorColumn FieldName="FirstName" Caption="First" />
-                <DxListEditorColumn FieldName="Email" Caption="Email" />
-                <DxListEditorColumn FieldName="Id" Visible="false" Caption="Id" />
-            </Columns>
-        </DxListBox>
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" Enabled="true" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsAssignPopupVisible = false)" />
-    </FooterContentTemplate>
-</DxPopup>
-
-<DxPopup @bind-Visible="@IsPopupVisibleSelectAttachmentToDelete" ShowFooter="true" HeaderText="Delete File">
-    <BodyContentTemplate>
-        Are you sure you want to delete "@selectedAttachment.MediaDescription"?
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteSelectedAttachment" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleSelectAttachmentToDelete = false)" />
-    </FooterContentTemplate>
-</DxPopup>
-
-<DxPopup @bind-Visible="@IsPopupVisibleSelectNoteToDelete" ShowFooter="true" HeaderText="Delete Note">
-    <BodyContentTemplate>
-        Are you sure you want to delete "@selectedNote.Details"?
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteSelectedNote" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleSelectNoteToDelete = false)" />
-    </FooterContentTemplate>
-</DxPopup>
-
-<DxPopup @bind-Visible="@IsPopupVisibleAddNote" ShowFooter="true" HeaderText="Add Note">
-    <BodyContentTemplate>
-        <p>Please type in your notes below.</p>
-        <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AddNote" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleAddNote = false)" />
-    </FooterContentTemplate>
-</DxPopup>
-
-<DxPopup @bind-Visible="@IsArchivePopupVisible" ShowFooter="true" HeaderText="Please type in a reason for Archival below">
-    <BodyContentTemplate>
-        <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Archive" Click="ArchiveLead" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsArchivePopupVisible = false)" />
-    </FooterContentTemplate>
-</DxPopup>
-
-<DxPopup @bind-Visible="@IsPopupVisibleHelpSendFiles" ShowFooter="true" HeaderText="Send Documents Help?">
-    <BodyContentTemplate>
-        <p>Send Documents details...</p>
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpSendFiles = false)" />
-    </FooterContentTemplate>
-</DxPopup>
-
-<DxPopup @bind-Visible="@IsPopupVisibleHelpFileAttachments" ShowFooter="true" HeaderText="File Attachments Help?">
-    <BodyContentTemplate>
-        <p>File Attachments details...</p>
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpFileAttachments = false)" />
-    </FooterContentTemplate>
-</DxPopup>
-
-<DxPopup @bind-Visible="@IsPopupVisibleHelpFileNotes" ShowFooter="true" HeaderText="File Notes Help?">
-    <BodyContentTemplate>
-        <p>File Notes details...</p>
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpFileNotes = false)" />
-    </FooterContentTemplate>
-</DxPopup>
 
 <DxLoadingPanel @bind-Visible=@LoadingPanelVisible
                 PositionTarget="body"
@@ -699,19 +585,6 @@ else
 
     #region Methods
 
-    void SelectedProjectManagerChanged(IEnumerable<ApplicationUser> selectedProjectManager)
-    {
-        if(selectedProjectManager.Count() > 0)
-        {
-            SelectedProjectManager = selectedProjectManager;
-
-            if (SelectedProjectManager.Count() > 0)
-                IsAssignButtonEnabled = true;
-            else
-                IsAssignButtonEnabled = false;
-        }
-    }
-
     void FilterLeadTypes(IEnumerable<ListItem> selectedLeadType)
     {
         SelectedLeadType = "New";
@@ -763,29 +636,12 @@ else
 
     void OnRowClick(GridRowClickEventArgs args)
     {
-        PauseRefresh(true);
+        TimerDispose();
 
-        selectedIndex = args.VisibleIndex;
-        selectedQuote = quotes[selectedIndex];
+        var selectedRow = (QuoteHeader) QuoteGrid.GetDataItem(args.VisibleIndex);
+        var quoteId = selectedRow._id;
 
-        var selectedQuoteId = selectedQuote._id;
-
-        NavigationManager.NavigateTo("/quotes/details/" + selectedQuote._id);
-
-        // var selectedDetailExpanded = QuoteGrid.IsDetailRowExpanded(selectedIndex);
-        // if (selectedDetailExpanded)
-        // {
-        //     QuoteGrid.CollapseDetailRow(selectedIndex);
-
-        //     PauseRefresh(false);
-        // }
-        // else
-        // {
-        //     QuoteGrid.CollapseAllDetailRows();
-        //     QuoteGrid.ExpandDetailRow(selectedIndex);
-
-        //     PauseRefresh(true);
-        // }
+        NavigationManager.NavigateTo("/quotes/details/" + quoteId);
     }
 
     public async Task<string> GetIpAddress()
@@ -821,208 +677,6 @@ else
         var absoluteUri = NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
 
         return absoluteUri;
-    }
-
-    public void AssignLead()
-    {
-        // PauseRefresh(true);
-
-        // LoadingPanelVisible = true;
-
-        // QuoteGrid.CollapseDetailRow(selectedIndex);
-
-        // selectedQuote.status = "Opportunity";
-        // selectedQuote.projectManager = SelectedProjectManager.ToList()[0];
-
-        // var sysUser = new ApplicationUser();
-        // sysUser.FirstName = "System";
-
-        // if (selectedQuote.attachments.Count == 0)
-        // {
-        //     // Workflow and Subsequent Document Requirements
-        //     Attachment workflowRequirements = new Attachment();
-        //     workflowRequirements.MediaDescription = "Workflow and Subsequent Document Requirements";
-        //     workflowRequirements.MediaUrl = "/docs/templates/misc/Workflow and Subsequent Document Requirements.pdf";
-        //     workflowRequirements.Author = sysUser;
-        //     selectedQuote.attachments.Add(workflowRequirements);
-
-        //     Event workflowRequirementsEvent = new Event();
-        //     workflowRequirementsEvent.Details = workflowRequirements.MediaDescription + " sent to " + selectedQuote.email;
-        //     workflowRequirementsEvent.Author = sysUser;
-        //     selectedQuote.events.Add(workflowRequirementsEvent);
-
-        //     // Facilitate Engagement Agreement
-        //     Attachment engagementAgreement = new Attachment();
-        //     engagementAgreement.MediaDescription = "Facilitate Engagement Agreement";
-        //     engagementAgreement.MediaUrl = "/docs/templates/agreements/Facilitate Engagement Agreement.docx";
-        //     engagementAgreement.Author = sysUser;
-        //     selectedQuote.attachments.Add(engagementAgreement);
-
-        //     Event engagementAgreementEvent = new Event();
-        //     engagementAgreementEvent.Details = engagementAgreement.MediaDescription + " sent to " + selectedQuote.email;
-        //     engagementAgreementEvent.Author = sysUser;
-        //     selectedQuote.events.Add(engagementAgreementEvent);
-
-        //     // Welcome Letter
-        //     Attachment welcomeLetter = new Attachment();
-        //     welcomeLetter.MediaDescription = "Welcome to Facilitate.org";
-        //     welcomeLetter.MediaUrl = "/docs/templates/boilerplate/Welcome to Facilitate.docx";
-        //     welcomeLetter.Author = sysUser;
-        //     selectedQuote.attachments.Add(welcomeLetter);
-
-        //     Event welcomeLetterEvent = new Event();
-        //     welcomeLetterEvent.Details = welcomeLetter.MediaDescription + " sent to " + selectedQuote.email;
-        //     welcomeLetterEvent.Author = sysUser;
-        //     selectedQuote.events.Add(welcomeLetterEvent);
-        // }
-
-        // Event statusChanged = new Event();
-        // statusChanged.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Opportunity";
-        // statusChanged.Author = currentUser;
-        // selectedQuote.events.Add(statusChanged);
-
-        // var projectManager = selectedQuote.projectManager;
-
-        // // Assignment event
-        // Event assignmentEvent = new Event();
-        // assignmentEvent.Name = "Assignment";
-        // assignmentEvent.Details = "Lead assigned to Project Manager (" + projectManager.FirstName + " " + projectManager.LastName + "), moved to Opportunities and emailed to: " + projectManager.Email;
-        // assignmentEvent.Author = currentUser;
-
-        // // Email PM and Client here...
-
-
-        // selectedQuote.events.Add(assignmentEvent);
-
-        // WebServices.UpdateQuote(selectedQuote);
-
-        // IsAssignPopupVisible = false;
-        // IsAssignButtonEnabled = false;
-
-        // PauseRefresh(false);
-    }
-
-    public void ArchiveLead()
-    {
-        // PauseRefresh(true);
-
-        // selectedQuote.status = "Archive";
-
-        // QuoteGrid.CollapseDetailRow(selectedIndex);
-
-        // Note note = new Note();
-        // note.Summary = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
-        // note.Details = @NoteDetails;
-        // note.Author = currentUser;
-
-        // selectedQuote.notes.Add(note);
-
-        // Event _event = new Event();
-        // _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
-        // _event.Author = currentUser;
-        // selectedQuote.events.Add(_event);
-
-        // WebServices.UpdateQuote(selectedQuote);
-
-        // IsArchivePopupVisible = false;
-        // NoteDetails = "";
-
-        // PauseRefresh(false);
-    }
-
-    public void AddNote()
-    {
-        // PauseRefresh(true);
-
-        // QuoteGrid.CollapseDetailRow(selectedIndex);
-
-        // Note note = new Note();
-        // note.Summary = "Note Added";
-        // note.Details = @NoteDetails;
-        // note.Author = currentUser;
-
-        // selectedQuote.notes.Add(note);
-
-        // Event _event = new Event();
-        // _event.Details = "Note (" + note.Details + ") added to Quote";
-        // _event.Author = currentUser;
-
-        // selectedQuote.events.Add(_event);
-
-        // IsPopupVisibleAddNote = false;
-        // NoteDetails = "";
-
-        // WebServices.UpdateQuote(selectedQuote);
-
-        // TimerRefresh();
-        // quotes = webServices.GetQuotes("New");
-
-        // QuoteGrid.ExpandDetailRow(selectedIndex);
-
-        // PauseRefresh(true);
-    }
-
-    public void CloseDetails()
-    {
-        QuoteGrid.CollapseDetailRow(selectedIndex);
-
-        PauseRefresh(false);
-    }
-
-    public void SelectAttachmentToDelete(Quote quote, Attachment attachment)
-    {
-        // selectedQuote = quote;
-        // selectedAttachment = attachment;
-
-        // IsPopupVisibleSelectAttachmentToDelete = true;
-
-        // TimerRefresh();
-    }
-
-    public void SelectNoteToDelete(Quote quote, Note note)
-    {
-        // selectedQuote = quote;
-        // selectedNote = note;
-
-        // IsPopupVisibleSelectNoteToDelete = true;
-    }
-
-    public void DeleteSelectedAttachment()
-    {
-        // selectedAttachment.IsDeleted = true;
-
-        // Event _event = new Event();
-        // _event.Details = "Deleted attachment (" + selectedAttachment.MediaDescription + ") from Quote";
-        // _event.Author = currentUser;
-
-        // selectedQuote.events.Add(_event);
-
-        // WebServices.UpdateQuote(selectedQuote);
-
-        // TimerRefresh();
-
-        // IsPopupVisibleSelectAttachmentToDelete = false;
-
-        // attachmentsCount--;
-    }
-
-    public void DeleteSelectedNote()
-    {
-        // selectedNote.IsDeleted = true;
-
-        // Event _event = new Event();
-        // _event.Details = "Deleted note (" + selectedNote.Details + ") from Quote";
-        // _event.Author = currentUser;
-
-        // selectedQuote.events.Add(_event);
-
-        // WebServices.UpdateQuote(selectedQuote);
-
-        // TimerRefresh();
-
-        // IsPopupVisibleSelectNoteToDelete = false;
-
-        // notesCount--;
     }
 
     public virtual void PauseRefresh(bool isPaused)

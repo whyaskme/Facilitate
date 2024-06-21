@@ -597,7 +597,7 @@ namespace Facilitate.Admin.Data
                 var builder = Builders<Quote>.Filter;
                 var filter = builder.Eq(f => f._id, quoteId);
 
-                var sortedQuotes = _mongoDBCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
+                var sortedQuotes = _mongoDBCollection.Find(filter).ToList();
                 if (sortedQuotes.Count > 0)
                 {
                     return sortedQuotes;
