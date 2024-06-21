@@ -692,6 +692,15 @@ else
         NavigationManager.NavigateTo(previousPageUrl);
     }
 
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if(QuoteGrid != null)
+        {
+            QuoteGrid.ExpandDetailRow(0);
+        }
+    }
+
+
     bool IsPopupVisibleMakeCustomer { get; set; }
 
     public QuoteLeaderboard leaderboardStats = new QuoteLeaderboard();
