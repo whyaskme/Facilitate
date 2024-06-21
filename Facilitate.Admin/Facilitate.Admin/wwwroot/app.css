@@ -6,6 +6,21 @@ html, body {
     overflow: auto !important;
 }
 
+.action-button {
+    border: solid 1px #000000 !important;
+    color: #ffffff !important;
+    background-color: #000000 !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+}
+
+    .action-button:hover {
+        border: solid 1px #016501 !important;
+        color: #ffffff !important;
+        background-color: #016501 !important;
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
 
 .dxbl-btn-link {
     border: solid 1px #eee !important;
@@ -55,6 +70,9 @@ button {
     position: relative !important;
     margin: 25px !important;
     text-align: center !important;
+    color: #000000 !important;
+    font-style: italic !important;
+    font-size: 2.0em !important;
 }
 
 /*#btnLeadTypes {

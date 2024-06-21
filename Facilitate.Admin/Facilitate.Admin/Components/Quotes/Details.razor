@@ -136,26 +136,22 @@ else
             @bind-SelectedDataItem="@SelectedQuoteItem"
             TextWrapEnabled="false">
         <Columns>
-            @*             <DxGridDataColumn Width="100" Caption="Status" FieldName="status" /> *@
+            <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
             <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" />
             <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Width="175" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-@*             <DxGridDataColumn Width="125" Caption="First" FieldName="firstName" />
-            <DxGridDataColumn Width="150" Caption="Last" FieldName="lastName" /> *@
             <DxGridDataColumn Width="auto" Caption="Street" FieldName="street" />
             <DxGridDataColumn Width="175" Caption="City" FieldName="city" />
             <DxGridDataColumn Width="75" Caption="State" FieldName="state" />
             <DxGridDataColumn Width="75" Caption="Zip" FieldName="zip" />
-@*             <DxGridDataColumn Width="75" Caption="Roofs" FieldName="numberOfIncludedStructures" /> *@
             <DxGridDataColumn Width="75" Caption="SqFt" FieldName="totalSquareFeet" />
             <DxGridDataColumn Width="100" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
             <DxGridDataColumn Width="175" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
-@*             <DxGridCommandColumn Width="150px" Caption="Actions" EditButtonVisible="true" DeleteButtonVisible="false" /> *@
         </Columns>
 
         <DetailRowTemplate>
             @{
-                //selectedQuote = (Quote)context.DataItem;
+                selectedQuote = (Quote)context.DataItem;
 
                 var _emailTabLabel = "Email " + @selectedQuote.firstName + " Documents";
 
@@ -547,29 +543,29 @@ else
 
                 <div class="quote-detail-controls-container">
                 @{
-                    <button @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
+                    <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
 
                     switch(selectedQuote.status)
                     {
                         case "New":
                             break;
                         case "Opportunity":
-                            <button @onclick="@(() => IsPopupVisibleMakeCustomer = true)">Make Customer</button>
+                            <button class="action-button" @onclick="@(() => IsPopupVisibleMakeCustomer = true)">Make Customer</button>
                             break;
                         case "Customer":
-                            <button @onclick="@(() => IsArchivePopupVisible = true)">Complete</button>
+                            <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Complete</button>
                             break;
                         case "Complete":
-                            // <button @onclick="@(() => IsArchivePopupVisible = true)">Warranty Claim</button>
+                            // <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Warranty Claim</button>
                             break;
                         case "Archive":
-                            <button @onclick="@(() => IsArchivePopupVisible = true)">Warranty Claim</button>
+                            <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Warranty Claim</button>
                             break;
                         case "Warranty":
-                            <button @onclick="@(() => IsArchivePopupVisible = true)">Close Claim</button>
+                            <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Close Claim</button>
                             break;
                     }
-                    <button @onclick="ReturnPreviousPage">Close</button>
+                    <button class="action-button" @onclick="ReturnPreviousPage">Close</button>
                 }
                 </div>
 

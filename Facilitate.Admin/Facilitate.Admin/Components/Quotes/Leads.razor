@@ -128,19 +128,19 @@ else
             if (isSystemAdmin)
             {
                 <div class="div-filter">
-                    <DxButton Click="ShowHideTestData">@ShowTestDataButtonText</DxButton>
+                    <DxButton CssClass="action-button" Click="ShowHideTestData">@ShowTestDataButtonText</DxButton>
                 </div>
             }
         }
 
         <div class="div-filter">
-            <DxButton Click="ToggleRefresh">@RefreshButtonText</DxButton>
+            <DxButton CssClass="action-button" Click="ToggleRefresh">@RefreshButtonText</DxButton>
         </div>
 
         <div class="div-filter">
 
             <div id="dropdown-customization-target-container-trades">
-                <DxButton Id="btnTrades" Click="() => IsTradesListOpen = !IsTradesListOpen">@TradesFilterLabel</DxButton>
+                <DxButton CssClass="action-button" Id="btnTrades" Click="() => IsTradesListOpen = !IsTradesListOpen">@TradesFilterLabel</DxButton>
             </div>
             <DxDropDown
                 @bind-IsOpen="@IsTradesListOpen"
@@ -172,7 +172,7 @@ else
 
         <div class="div-filter">
             <div id="dropdown-customization-target-container">
-                <DxButton Id="btnLeadTypes" Click="() => IsLeadTypeListOpen = !IsLeadTypeListOpen">@LeadTypeFilterLabel</DxButton>
+                <DxButton CssClass="action-button" Id="btnLeadTypes" Click="() => IsLeadTypeListOpen = !IsLeadTypeListOpen">@LeadTypeFilterLabel</DxButton>
             </div>
             <DxDropDown
                 @bind-IsOpen="@IsLeadTypeListOpen"
@@ -210,7 +210,7 @@ else
         <span class="quote-stats-sqft">@leaderboardStats.LeadSqFt.ToString("N0")sqft</span>
     </div>
     <div class="quote-stats-hints">
-        Select row to expand details. Click column headers to sort. Type and hit enter in any empty cell to search that column. If you have grouped columns below, drag and drop the column back into the grid header to restore.
+        Select row to view details. Click column headers to sort. Type and hit enter in any empty cell to search that column. If you have grouped columns below, drag and drop the column back into the grid header to restore.
     </div>
 
     <DxGrid @ref="QuoteGrid"
