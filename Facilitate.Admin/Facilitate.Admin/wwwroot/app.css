@@ -487,13 +487,13 @@ td {
 .hyperlink-manager-assignment {
     /*    color: #b10505 !important;*/
     text-decoration: underline !important;
-    border-right: solid 1px #c0c0c0 !important;
-    padding-right: 15px !important;
-    margin-right: 10px !important;
+    border-right: solid 0px #c0c0c0 !important;
+/*    padding-bottom: 25px !important;
+    margin-bottom: 25px !important;*/
 }
 
     .hyperlink-manager-assignment:hover {
-        color: #b10505 !important;
+/*        color: #b10505 !important;*/
         text-decoration: underline !important;
         cursor: pointer !important;
     }
