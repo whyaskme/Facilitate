@@ -143,19 +143,19 @@ else
 @*             <DxGridDataColumn Width="125" Caption="First" FieldName="firstName" />
             <DxGridDataColumn Width="150" Caption="Last" FieldName="lastName" /> *@
             <DxGridDataColumn Width="auto" Caption="Street" FieldName="street" />
-            <DxGridDataColumn Width="150" Caption="City" FieldName="city" />
+            <DxGridDataColumn Width="175" Caption="City" FieldName="city" />
             <DxGridDataColumn Width="75" Caption="State" FieldName="state" />
             <DxGridDataColumn Width="75" Caption="Zip" FieldName="zip" />
             <DxGridDataColumn Width="75" Caption="Roofs" FieldName="numberOfIncludedStructures" />
             <DxGridDataColumn Width="75" Caption="SqFt" FieldName="totalSquareFeet" />
             <DxGridDataColumn Width="100" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
             <DxGridDataColumn Width="175" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
-@*             <DxGridCommandColumn Width="150px" Caption="Actions" EditButtonVisible="false" DeleteButtonVisible="false" /> *@
+@*             <DxGridCommandColumn Width="150px" Caption="Actions" EditButtonVisible="true" DeleteButtonVisible="false" /> *@
         </Columns>
 
         <DetailRowTemplate>
             @{
-                selectedQuote = (Quote)context.DataItem;
+                //selectedQuote = (Quote)context.DataItem;
 
                 var _emailTabLabel = "Email " + @selectedQuote.firstName + " Documents";
 
@@ -175,7 +175,7 @@ else
                 notesCount = selectedQuote.notes.Count;
                 eventsCount = selectedQuote.events.Count;
 
-                <h6>Homeowner</h6>
+                // <h6>Homeowner</h6>
                 <div class="row">
                     <div class="col">
                         <label>Name</label>
@@ -209,9 +209,9 @@ else
                     <div class="col"></div>
                 </div>
 
-                <div class="table-spacer" />
+                // <div class="table-spacer" />
 
-                <br />
+                <br /><br />
 
                 <DxTabs CssClass="tabs-container">
 
