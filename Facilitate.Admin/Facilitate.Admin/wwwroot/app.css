@@ -6,6 +6,35 @@ html, body {
     overflow: auto !important;
 }
 
+a, .btn-link,
+a:hover, .btn-link:hover {
+    color: #000000;
+}
+
+button,
+.btn,
+.btn-close,
+.btn-primary,
+.btn-primary:hover {
+    color: #fff !important;
+    background-color: #000000 !important;
+    border: solid 1px #000000 !important;
+    border-radius: 5px !important;
+    margin-right: 10px !important;
+    margin-bottom: 25px !important;
+    padding: 5px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.btn-close {
+    margin-left: 25px !important;
+}
+
 .details-header {
     border: solid 0px #ff0000 !important;
     position: relative !important;
@@ -298,24 +327,6 @@ h6 {
     color: #ff0000 !important;
 }
 
-a, .btn-link,
-a:hover, .btn-link:hover
-{
-    color: #000000;
-}
-
-.btn-primary,
-.btn-primary:hover {
-    color: #fff;
-    background-color: #000000;
-    border-color: #000000;
-    margin-bottom: 25px !important;
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
 .content {
     padding-top: 1.1rem;
 }
@@ -417,7 +428,7 @@ table {
 
 
 .popup-button,
-.dxbl-grid-edit-form-buttons button,
+.dxbl-grid-edit-form-buttons,
 .dxbl-grid-selected-row,
 .dxbl-grid-selected-row:hover {
     background-color: #000000 !important;

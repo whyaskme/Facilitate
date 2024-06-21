@@ -136,8 +136,8 @@ else
             @bind-SelectedDataItem="@SelectedQuoteItem"
             TextWrapEnabled="false">
         <Columns>
-@*             <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
-            <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" /> *@
+            @*             <DxGridDataColumn Width="100" Caption="Status" FieldName="status" /> *@
+            <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" />
             <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Width="175" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
 @*             <DxGridDataColumn Width="125" Caption="First" FieldName="firstName" />
@@ -547,26 +547,29 @@ else
 
                 <div class="quote-detail-controls-container">
                 @{
-
+                    <button @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
 
                     switch(selectedQuote.status)
                     {
                         case "New":
-                            <button class="btn btn-primary" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
                             break;
                         case "Opportunity":
-                            <button class="btn btn-primary" @onclick="@(() => IsPopupVisibleMakeCustomer = true)">Make Customer</button>
+                            <button @onclick="@(() => IsPopupVisibleMakeCustomer = true)">Make Customer</button>
                             break;
                         case "Customer":
-                            <button class="btn btn-primary" @onclick="@(() => IsArchivePopupVisible = true)">Complete</button>
+                            <button @onclick="@(() => IsArchivePopupVisible = true)">Complete</button>
+                            break;
+                        case "Complete":
+                            // <button @onclick="@(() => IsArchivePopupVisible = true)">Warranty Claim</button>
                             break;
                         case "Archive":
-                            <button class="btn btn-primary" @onclick="@(() => IsArchivePopupVisible = true)">Warranty Claim</button>
+                            <button @onclick="@(() => IsArchivePopupVisible = true)">Warranty Claim</button>
                             break;
                         case "Warranty":
-                            <button class="btn btn-primary" @onclick="@(() => IsArchivePopupVisible = true)">Close Claim</button>
+                            <button @onclick="@(() => IsArchivePopupVisible = true)">Close Claim</button>
                             break;
                     }
+                    <button @onclick="ReturnPreviousPage">Close</button>
                 }
                 </div>
 
@@ -685,6 +688,13 @@ else
 </DxLoadingPanel>
 
 @code {
+
+    public void ReturnPreviousPage()
+    {
+        var previousPageUrl = "/quotes/leads";
+
+        NavigationManager.NavigateTo(previousPageUrl);
+    }
 
     bool IsPopupVisibleMakeCustomer { get; set; }
 
