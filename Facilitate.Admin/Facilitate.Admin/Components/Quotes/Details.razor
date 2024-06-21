@@ -546,9 +546,28 @@ else
                 <br />
 
                 <div class="quote-detail-controls-container">
-                    <button class="btn btn-primary" @onclick="@(() => IsAssignPopupVisible = true)">Assign</button>
-                    <button class="btn btn-primary" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
-                    <button class="btn btn-primary" @onclick="CloseDetails">Close</button>
+                @{
+
+
+                    switch(selectedQuote.status)
+                    {
+                        case "New":
+                            <button class="btn btn-primary" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
+                            break;
+                        case "Opportunity":
+                            <button class="btn btn-primary" @onclick="@(() => IsPopupVisibleMakeCustomer = true)">Make Customer</button>
+                            break;
+                        case "Customer":
+                            <button class="btn btn-primary" @onclick="@(() => IsArchivePopupVisible = true)">Complete</button>
+                            break;
+                        case "Archive":
+                            <button class="btn btn-primary" @onclick="@(() => IsArchivePopupVisible = true)">Warranty Claim</button>
+                            break;
+                        case "Warranty":
+                            <button class="btn btn-primary" @onclick="@(() => IsArchivePopupVisible = true)">Close Claim</button>
+                            break;
+                    }
+                }
                 </div>
 
             }
@@ -556,6 +575,16 @@ else
 
     </DxGrid>
 }
+
+<DxPopup @bind-Visible="@IsPopupVisibleMakeCustomer" ShowFooter="true" HeaderText="Make Customer">
+    <BodyContentTemplate>
+        If this Opportunity is fully qualified to meet Customer criteria, then click Save.
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="MakeCustomer" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleMakeCustomer = false)" />
+    </FooterContentTemplate>
+</DxPopup>
 
 <DxPopup @bind-Visible="@IsAssignPopupVisible"
          ShowFooter="true"
@@ -657,6 +686,8 @@ else
 
 @code {
 
+    bool IsPopupVisibleMakeCustomer { get; set; }
+
     public QuoteLeaderboard leaderboardStats = new QuoteLeaderboard();
 
     [Parameter]
@@ -738,6 +769,27 @@ else
                 return;
             }
         }
+    }
+
+    public void MakeCustomer()
+    {
+        selectedQuote.status = "Customer";
+
+        QuoteGrid.CollapseDetailRow(selectedIndex);
+
+        var projectManager = selectedQuote.projectManager;
+
+        Event _event = new Event();
+        _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Customer";
+        _event.Author = currentUser;
+
+        selectedQuote.events.Add(_event);
+
+        WebServices.UpdateQuote(selectedQuote);
+
+        IsPopupVisibleMakeCustomer = false;
+
+        PauseRefresh(false);
     }
 
     private void UserSignOut()
@@ -843,7 +895,6 @@ else
     bool IsPopupVisibleAddNote { get; set; }
     bool IsPopupVisibleSelectNoteToDelete { get; set; }
 
-    bool IsPopupVisibleMakeCustomer { get; set; }
     bool IsArchivePopupVisible { get; set; }
 
     bool IsPopupVisibleHelpSendFiles { get; set; }
