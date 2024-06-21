@@ -30,7 +30,7 @@
   }
 </script>
 
-<button class="btn btn-primary" @onclick="GetIpAddress">Get My IP (@ipAddress)</button>
+<button @onclick="GetIpAddress">Get My IP (@ipAddress)</button>
 
 @code {
     [Inject] public IJSRuntime jsRuntime { get; set; }

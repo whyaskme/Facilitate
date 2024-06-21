@@ -221,19 +221,18 @@ else
             KeyboardNavigationEnabled="true">
         <Columns>
             <DxGridDataColumn Visible="false" Width="200" Caption="Id" FieldName="_id" />
-@*             <DxGridDataColumn Width="100" Caption="Status" FieldName="status" /> *@
-            <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" />
-            <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
-            <DxGridDataColumn Width="175" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-            <DxGridDataColumn Width="125" Caption="First" FieldName="firstName" />
-            <DxGridDataColumn Width="150" Caption="Last" FieldName="lastName" />
+            <DxGridDataColumn Width="85" Caption="Trade" FieldName="applicationType" />
+            <DxGridDataColumn Width="150" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+            <DxGridDataColumn Width="150" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+            <DxGridDataColumn Width="100" Caption="First" FieldName="firstName" />
+            <DxGridDataColumn Width="125" Caption="Last" FieldName="lastName" />
+            <DxGridDataColumn Width="200" Caption="Email" FieldName="email" />
             <DxGridDataColumn Width="auto" Caption="Street" FieldName="street" />
-            <DxGridDataColumn Width="150" Caption="City" FieldName="city" />
-            <DxGridDataColumn Width="75" Caption="State" FieldName="state" />
-            <DxGridDataColumn Width="75" Caption="Zip" FieldName="zip" />
-            <DxGridDataColumn Width="75" Caption="Roofs" FieldName="numberOfIncludedStructures" />
-            <DxGridDataColumn Width="75" Caption="SqFt" FieldName="totalSquareFeet" />
-            <DxGridDataColumn Width="100" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
+            <DxGridDataColumn Width="125" Caption="City" FieldName="city" />
+            <DxGridDataColumn Width="50" Caption="State" FieldName="state" />
+            <DxGridDataColumn Width="65" Caption="Zip" FieldName="zip" />
+            <DxGridDataColumn Width="65" Caption="SqFt" FieldName="totalSquareFeet" />
+            <DxGridDataColumn Width="75" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
             <DxGridDataColumn Width="175" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
         </Columns>
     </DxGrid>

@@ -66,7 +66,7 @@
 }
 else
 {
-    <div class="quotes-leaderboard-page-header">
+@*     <div class="quotes-leaderboard-page-header">
         <div class="col-md-3 stat-element">
             <span class="stat-value"><b>@leaderboardStats.TotalQuoteCount.ToString("N0") Quotes</b></span>
             <span class="stat-divider">|</span>
@@ -119,7 +119,7 @@ else
                 <NotAuthorized></NotAuthorized>
             </AuthorizeView>
         </div>
-    </div>
+    </div> *@
 
     <h1 class="details-header">@selectedQuote.status Details for @selectedQuote.firstName @selectedQuote.lastName</h1>
 
@@ -146,7 +146,7 @@ else
             <DxGridDataColumn Width="175" Caption="City" FieldName="city" />
             <DxGridDataColumn Width="75" Caption="State" FieldName="state" />
             <DxGridDataColumn Width="75" Caption="Zip" FieldName="zip" />
-            <DxGridDataColumn Width="75" Caption="Roofs" FieldName="numberOfIncludedStructures" />
+@*             <DxGridDataColumn Width="75" Caption="Roofs" FieldName="numberOfIncludedStructures" /> *@
             <DxGridDataColumn Width="75" Caption="SqFt" FieldName="totalSquareFeet" />
             <DxGridDataColumn Width="100" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
             <DxGridDataColumn Width="175" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
@@ -397,7 +397,7 @@ else
                                   AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
                                   CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
                         </DxUpload>
-                        <button class="btn btn-primary doc-select-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
+                        <button disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
                     </DxTabPage>
 
                     <DxTabPage Id="Panel-Attach-Files" Text="Attachments">
@@ -441,7 +441,7 @@ else
                     </DxTabPage>
 
                     <DxTabPage Id="Panel-Notes" Text="Notes">
-                        <button class="btn btn-primary doc-select-button add-item-button" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
+                        <button @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
                         @foreach (Note note in selectedQuote.notes)
                         {
                             if (!note.IsDeleted)
@@ -940,7 +940,7 @@ else
     public string RefreshButtonText { get; set; } = "Pause Refresh";
 
     [Parameter]
-    public string RefreshButtonClass { get; set; } = "btn btn-outline-primary btn-refresh-active";
+    public string RefreshButtonClass { get; set; } = "btn-refresh-active";
 
     [Parameter]
     public bool RefreshDisabled { get; set; } = false;
@@ -1270,7 +1270,7 @@ else
             CreateLeadsDisabled = false;
 
             RefreshButtonText = "Resume Refresh";
-            RefreshButtonClass = "btn btn-outline-primary btn-refresh-inactive";
+            RefreshButtonClass = "btn-refresh-inactive";
             StatusClass = "message-warning";
             RefreshStatus = " Auto refresh paused...";
 
@@ -1282,7 +1282,7 @@ else
             CreateLeadsDisabled = true;
 
             RefreshButtonText = "Pause Refresh";
-            RefreshButtonClass = "btn btn-outline-primary btn-refresh-active";
+            RefreshButtonClass = "btn-refresh-active";
             StatusClass = "message";
             RefreshStatus = "";
 
@@ -1312,9 +1312,9 @@ else
 
     private async Task TimerRefresh()
     {
-        TimerDispose();
-
         LoadingPanelVisible = true;
+
+        TimerDispose();
 
         _timer = new Timer(new TimerCallback(_ =>
         {
@@ -1334,8 +1334,8 @@ else
 
         LoadingPanelVisible = false;
 
-        if(QuoteGrid != null)
-            QuoteGrid.ExpandDetailRow(0);
+        // if(@QuoteGrid != null)
+        //     QuoteGrid.ExpandDetailRow(0);
     }
 
     private async Task<bool> IsUserEnabled()

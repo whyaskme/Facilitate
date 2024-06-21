@@ -6,34 +6,49 @@ html, body {
     overflow: auto !important;
 }
 
+
+.dxbl-btn-link {
+    border: solid 1px #eee !important;
+}
+
+.dxbl-btn-caption {
+    border: solid 0px #ff0000 !important;
+    text-decoration: none !important;
+}
+
+.dxbl-spin-btn-inc,
+.dxbl-spin-btn-dec,
+.dxbl-spin-btn-inc:hover,
+.dxbl-spin-btn-dec:hover {
+    border: solid 0px #ff0000 !important;
+    padding: 0px !important;
+    margin: 3px !important;
+}
+
 a, .btn-link,
 a:hover, .btn-link:hover {
     color: #000000;
 }
 
-button,
-.btn,
-.btn-close,
-.btn-primary,
-.btn-primary:hover {
-    color: #fff !important;
-    background-color: #000000 !important;
-    border: solid 1px #000000 !important;
+button {
+    color: #000000 !important;
+    background-color: #c0c0c0 !important;
+    border: solid 1px #c0c0c0 !important;
     border-radius: 5px !important;
-    margin-right: 10px !important;
-    margin-bottom: 25px !important;
-    padding: 5px !important;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
+    margin-right: 3px !important;
+    padding: 2px !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-.btn-close {
-    margin-left: 25px !important;
-}
+    button:hover,
+    button:hover:before,
+    button:hover:after{
+        color: #eee !important;
+        background-color: #000000 !important;
+        border: solid 1px #000000 !important;
+        cursor: pointer !important;
+    }
 
 .details-header {
     border: solid 0px #ff0000 !important;
@@ -42,10 +57,11 @@ button,
     text-align: center !important;
 }
 
-#btnLeadTypes {
+/*#btnLeadTypes {
     background-color: #000000 !important;
     color: #ffffff !important;
 }
+*/
 
 li.dxbl-list-box-item-selected {
     background-color: #000000 !important;
@@ -134,10 +150,10 @@ h1.text-danger {
     z-index: 1000 !important;
 }
 
-.quotes-leaderboard-page-header span,
-.quotes-leaderboard-page-header a {
-    color: #eee !important;
-}
+    .quotes-leaderboard-page-header span,
+    .quotes-leaderboard-page-header a {
+        color: #eee !important;
+    }
 
 .stat-element {
     border: solid 0px #ff0000 !important;
@@ -225,8 +241,7 @@ h1.text-danger {
     font-style: italic !important;
 }
 
-.quote-stats-hints
-{
+.quote-stats-hints {
     border: solid 0px #ff0000 !important;
     font-size: 0.8em;
     margin-top: 15px !important;
@@ -278,16 +293,15 @@ h1.text-danger {
     color: #000000 !important;
 }
 
-.nav-pills a.active,
-.nav-pills a.active :hover 
-{
-    background-color: #000000 !important;
-    color: #fff !important;
-    border: solid 0px #ff0000 !important;
-    background-color: #000000 !important;
-}
+    .nav-pills a.active,
+    .nav-pills a.active :hover {
+        background-color: #000000 !important;
+        color: #fff !important;
+        border: solid 0px #ff0000 !important;
+        background-color: #000000 !important;
+    }
 
-h1,h2,h3,h4,h5,h6{
+h1, h2, h3, h4, h5, h6 {
     color: #808080 !important;
 }
 
@@ -439,10 +453,10 @@ table {
     border: solid 1px #c0c0c0 !important;
 }
 
-.popup-grid tr.dxbl-list-box-item-selected {
-    background-color: #000000 !important;
-    color: #ffffff !important;
-}
+    .popup-grid tr.dxbl-list-box-item-selected {
+        background-color: #000000 !important;
+        color: #ffffff !important;
+    }
 
 td {
     padding: 5px;
@@ -491,20 +505,20 @@ td {
     left: 5px !important;
 }
 
-.icon-help:hover {
-    cursor: pointer;
-}
+    .icon-help:hover {
+        cursor: pointer;
+    }
 
 .hyperlink-manager-assignment {
     /*    color: #b10505 !important;*/
     text-decoration: underline !important;
     border-right: solid 0px #c0c0c0 !important;
-/*    padding-bottom: 25px !important;
+    /*    padding-bottom: 25px !important;
     margin-bottom: 25px !important;*/
 }
 
     .hyperlink-manager-assignment:hover {
-/*        color: #b10505 !important;*/
+        /*        color: #b10505 !important;*/
         text-decoration: underline !important;
         cursor: pointer !important;
     }
@@ -713,11 +727,6 @@ h6 {
     font-weight: normal !important;
 }
 
-.btn-primary:disabled {
-    border: solid 1px #dad7d7 !important;
-    background-color: #dad7d7 !important;
-}
-
 .container-action-buttons-show {
     text-align: center !important;
     visibility: visible !important;
@@ -754,11 +763,6 @@ h6 {
     color: #fff !important;
     margin-right: 25px !important;
 }
-
-/*.dxbl-text-edit-input {
-    border: solid 1px #808080 !important;
-    background-color: #fff !important;
-}*/
 
 .dxbl-text-edit-input:focus {
     background-color: #fff !important;
@@ -805,4 +809,3 @@ h6 {
         right: 0.75rem;
         top: 0.5rem;
     }
-
