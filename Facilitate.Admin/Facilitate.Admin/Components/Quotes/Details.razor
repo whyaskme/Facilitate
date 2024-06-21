@@ -121,19 +121,27 @@ else
         </div>
     </div>
 
+    <h1 class="details-header">@selectedQuote.status Details for @selectedQuote.firstName @selectedQuote.lastName</h1>
+
     <DxGrid @ref="QuoteGrid"
             Data="@quotes"
             KeyFieldName="_id"
             PageSize="1"
             ShowFilterRow="false"
             CssClass="mw-1100"
+            AutoExpandAllGroupRows="true"
+            RowClick="OnRowClick"
+            AllowSelectRowByClick="true"
+            SelectionMode="GridSelectionMode.Single"
+            @bind-SelectedDataItem="@SelectedQuoteItem"
             TextWrapEnabled="false">
         <Columns>
-            <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
-            <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" />
+@*             <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
+            <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" /> *@
             <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
-            <DxGridDataColumn Width="125" Caption="First" FieldName="firstName" />
-            <DxGridDataColumn Width="150" Caption="Last" FieldName="lastName" />
+            <DxGridDataColumn Width="175" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+@*             <DxGridDataColumn Width="125" Caption="First" FieldName="firstName" />
+            <DxGridDataColumn Width="150" Caption="Last" FieldName="lastName" /> *@
             <DxGridDataColumn Width="auto" Caption="Street" FieldName="street" />
             <DxGridDataColumn Width="150" Caption="City" FieldName="city" />
             <DxGridDataColumn Width="75" Caption="State" FieldName="state" />
@@ -142,54 +150,54 @@ else
             <DxGridDataColumn Width="75" Caption="SqFt" FieldName="totalSquareFeet" />
             <DxGridDataColumn Width="100" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
             <DxGridDataColumn Width="175" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
-@*             <DxGridCommandColumn Width="150px" Caption="Actions" EditButtonVisible="false" DeleteButtonVisible="true" /> *@
+@*             <DxGridCommandColumn Width="150px" Caption="Actions" EditButtonVisible="false" DeleteButtonVisible="false" /> *@
         </Columns>
 
         <DetailRowTemplate>
             @{
-                var _quote = (Quote)context.DataItem;
+                selectedQuote = (Quote)context.DataItem;
 
-                var _emailTabLabel = "Email " + @_quote.firstName + " Documents";
+                var _emailTabLabel = "Email " + @selectedQuote.firstName + " Documents";
 
-                roofsCount = _quote.structures.Count;
+                roofsCount = selectedQuote.structures.Count;
                 if (roofsCount <= 1)
                     roofsCountLabel = roofsCount.ToString() + " Roof Project";
                 else
                     roofsCountLabel = roofsCount.ToString() + " Roof Projects";
 
-                productsCount = _quote.products.Count;
+                productsCount = selectedQuote.products.Count;
                 if (productsCount <= 1)
                     productsCountLabel = productsCount.ToString() + " Product Quoted";
                 else
                     productsCountLabel = productsCount.ToString() + " Products Quoted";
 
-                attachmentsCount = _quote.attachments.Count;
-                notesCount = _quote.notes.Count;
-                eventsCount = _quote.events.Count;
+                attachmentsCount = selectedQuote.attachments.Count;
+                notesCount = selectedQuote.notes.Count;
+                eventsCount = selectedQuote.events.Count;
 
                 <h6>Homeowner</h6>
                 <div class="row">
                     <div class="col">
                         <label>Name</label>
-                        <span>@_quote.firstName @_quote.lastName</span>
+                        <span>@selectedQuote.firstName @selectedQuote.lastName</span>
                     </div>
                     <div class="col">
                         <label>Email</label>
-                        <a href="mailto:@_quote.email">
-                            <span>@_quote.email</span>
+                        <a href="mailto:@selectedQuote.email">
+                            <span>@selectedQuote.email</span>
                         </a>
                     </div>
                     <div class="col">
                         <label>Phone</label>
-                        <span>@_quote.phone</span>
+                        <span>@selectedQuote.phone</span>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col">
                         <label>Address</label>
-                        <a href="https://www.google.com/maps/search/@_quote.street @_quote.city, @_quote.state @_quote.zip" target="_blank">
-                            @_quote.street @_quote.city, @_quote.state @_quote.zip
+                        <a href="https://www.google.com/maps/search/@selectedQuote.street @selectedQuote.city, @selectedQuote.state @selectedQuote.zip" target="_blank">
+                            @selectedQuote.street @selectedQuote.city, @selectedQuote.state @selectedQuote.zip
                         </a>
                     </div>
                     <div class="col">
@@ -214,15 +222,15 @@ else
                             <div class="row item-details-container">
                                 <div class="col">
                                     <label>Total Quote</label>
-                                    <span><b>@_quote.totalQuote.ToString("C0")</b></span>
+                                    <span><b>@selectedQuote.totalQuote.ToString("C0")</b></span>
                                 </div>
                                 <div class="col">
                                     <label>Total Sqft</label>
-                                    <span><b>@_quote.totalSquareFeet.ToString("N0")</b></span>
+                                    <span><b>@selectedQuote.totalSquareFeet.ToString("N0")</b></span>
                                 </div>
                                 <div class="col">
                                     <label>Included Roofs</label>
-                                    <span><b>@_quote.numberOfIncludedStructures.ToString("N0")</b></span>
+                                    <span><b>@selectedQuote.numberOfIncludedStructures.ToString("N0")</b></span>
                                 </div>
                                 <div class="col">
                                 </div>
@@ -232,7 +240,7 @@ else
                                 @{
                                     currentItemIndex = 0;
 
-                                    for (var i = 0; i < @_quote.structures.Count; i++)
+                                    for (var i = 0; i < @selectedQuote.structures.Count; i++)
                                     {
                                         currentItemIndex = i + 1;
 
@@ -241,7 +249,7 @@ else
                                             <div class="col">
                                                 <label>Included</label>
                                                 @{
-                                                    if(@_quote.structures[i].isIncluded)
+                                                    if(@selectedQuote.structures[i].isIncluded)
                                                     {
                                                         <span>Yes</span>
                                                     }
@@ -253,19 +261,19 @@ else
                                             </div>
                                             <div class="col">
                                                 <label>Name</label>
-                                                <span>@_quote.structures[i].name</span>
+                                                <span>@selectedQuote.structures[i].name</span>
                                             </div>
                                             <div class="col">
                                                 <label>SqFt</label>
-                                                <span>@_quote.structures[i].squareFeet.ToString("N0")</span>
+                                                <span>@selectedQuote.structures[i].squareFeet.ToString("N0")</span>
                                             </div>
                                             <div class="col">
                                                 <label>Complexity</label>
-                                                <span>@_quote.structures[i].roofComplexity</span>
+                                                <span>@selectedQuote.structures[i].roofComplexity</span>
                                             </div>
                                             <div class="col">
                                                 <label>Slope</label>
-                                                <span>@_quote.structures[i].slope</span>
+                                                <span>@selectedQuote.structures[i].slope</span>
                                             </div>
                                         </div>
                                     }
@@ -278,15 +286,15 @@ else
 
                         <div class="container">
                             @{
-                                for (var i = 0; i < @_quote.products.Count; i++)
+                                for (var i = 0; i < @selectedQuote.products.Count; i++)
                                 {
                                     currentItemIndex = i + 1;
 
-                                    var priceLabel = @_quote.products[i].priceInfo.priceType;
+                                    var priceLabel = @selectedQuote.products[i].priceInfo.priceType;
                                     if (priceLabel == "BasicFinancing")
                                         priceLabel = "Basic";
                                     else
-                                        priceLabel = @_quote.products[i].priceInfo.priceType;
+                                        priceLabel = @selectedQuote.products[i].priceInfo.priceType;
 
                                     <b>Product #@currentItemIndex</b>
 
@@ -295,11 +303,11 @@ else
                                         <div class="row">
                                             <div class="col">
                                                 <label>Name</label>
-                                                <span>@_quote.products[i].name</span>
+                                                <span>@selectedQuote.products[i].name</span>
                                             </div>
                                             <div class="col">
                                                 <label>Waste Factor</label>
-                                                <span>@_quote.products[i].wasteFactorMainRoof</span>
+                                                <span>@selectedQuote.products[i].wasteFactorMainRoof</span>
                                             </div>
                                             <div class="col">
                                                 <label>Price Type</label>
@@ -310,26 +318,26 @@ else
                                         <div class="row">
                                             <div class="col">
                                                 <label>Total Quote</label>
-                                                <span>@_quote.products[i].priceInfo.total.ToString("C0")</span>
+                                                <span>@selectedQuote.products[i].priceInfo.total.ToString("C0")</span>
                                             </div>
                                             <div class="col">
                                                 <label>Per Square</label>
-                                                <span>@_quote.products[i].priceInfo.pricePerSquare.ToString("C0")</span>
+                                                <span>@selectedQuote.products[i].priceInfo.pricePerSquare.ToString("C0")</span>
                                             </div>
                                             <div class="col">
                                                 <label>Monthly</label>
-                                                <span>@_quote.products[i].priceInfo.monthly.ToString("C0")</span>
+                                                <span>@selectedQuote.products[i].priceInfo.monthly.ToString("C0")</span>
                                             </div>
                                         </div>
 
                                         <div class="row">
                                             <div class="col">
                                                 <label>APR</label>
-                                                <span>@_quote.products[i].priceInfo.apr%</span>
+                                                <span>@selectedQuote.products[i].priceInfo.apr%</span>
                                             </div>
                                             <div class="col">
                                                 <label>Months</label>
-                                                <span>@_quote.products[i].priceInfo.months</span>
+                                                <span>@selectedQuote.products[i].priceInfo.months</span>
                                             </div>
                                             <div class="col">
                                             </div>
@@ -368,7 +376,7 @@ else
                                   CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
                         </DxUpload>
 
-                        @foreach (Attachment attachment in _quote.attachments)
+                        @foreach (Attachment attachment in selectedQuote.attachments)
                         {
                             if (!attachment.IsDeleted)
                             {
@@ -377,7 +385,7 @@ else
                                         <label>@attachmentsCount) @attachment.Date</label>
                                     </div>
 
-                                    <span class="hyperlink-warning" @onclick="() => SelectAttachmentToDelete(_quote, attachment)">Delete</span>
+                                    <span class="hyperlink-warning" @onclick="() => SelectAttachmentToDelete(selectedQuote, attachment)">Delete</span>
 
                                     <span class="bar-spacer">|</span>
                                     <a href="@attachment.MediaUrl" target="_blank">
@@ -398,7 +406,7 @@ else
 
                     <DxTabPage Id="Panel-Notes" Text="Notes">
                         <button class="btn btn-primary doc-select-button add-item-button" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
-                        @foreach (Note note in _quote.notes)
+                        @foreach (Note note in selectedQuote.notes)
                         {
                             if (!note.IsDeleted)
                             {
@@ -407,7 +415,7 @@ else
                                         <label>@notesCount) @note.Date</label>
                                     </div>
 
-                                    <span class="hyperlink-warning" @onclick="() => SelectNoteToDelete(_quote, note)">Delete</span>
+                                    <span class="hyperlink-warning" @onclick="() => SelectNoteToDelete(selectedQuote, note)">Delete</span>
 
                                     <span class="bar-spacer">|</span>
                                     <span>@note.Details</span>
@@ -423,7 +431,7 @@ else
                     </DxTabPage>
 
                     <DxTabPage Id="Panel-History" Text="History">
-                        @foreach (Event _event in _quote.events)
+                        @foreach (Event _event in selectedQuote.events)
                         {
                             <div class="note-row">
                                 <div class="">
@@ -449,16 +457,16 @@ else
                                 <tr>
                                     <td>
                                         <label>Market</label>
-                                        <span>@_quote.market</span>
+                                        <span>@selectedQuote.market</span>
                                     </td>
                                     <td>
                                         <label>Rep Name</label>
-                                        <span>@_quote.repName</span>
+                                        <span>@selectedQuote.repName</span>
                                     </td>
                                     <td>
                                         <label>Rep Email</label>
-                                        <a href="mailto:@_quote.repEmail">
-                                            <span>@_quote.repEmail</span>
+                                        <a href="mailto:@selectedQuote.repEmail">
+                                            <span>@selectedQuote.repEmail</span>
                                         </a>
                                     </td>
                                 </tr>
@@ -466,28 +474,28 @@ else
                                 <tr>
                                     <td>
                                         <label>RecId</label>
-                                        <span>@_quote._id</span>
+                                        <span>@selectedQuote._id</span>
                                     </td>
                                     <td>
                                         <label>Referrer</label>
-                                        <a href="@_quote.externalUrl" target="_blank">
-                                            <span>@_quote.externalUrl</span>
+                                        <a href="@selectedQuote.externalUrl" target="_blank">
+                                            <span>@selectedQuote.externalUrl</span>
                                         </a>
                                     </td>
                                     <td>
                                         <label>Session</label>
-                                        <span>@_quote.sessionId</span>
+                                        <span>@selectedQuote.sessionId</span>
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td>
                                         <label>RefId</label>
-                                        <span>@_quote.leadId</span>
+                                        <span>@selectedQuote.leadId</span>
                                     </td>
                                     <td>
                                         <label>Created</label>
-                                        <span>@_quote.timestamp</span>
+                                        <span>@selectedQuote.timestamp</span>
                                     </td>
                                     <td>
                                     </td>
@@ -894,23 +902,23 @@ else
 
     void OnRowClick(GridRowClickEventArgs args)
     {
-        // selectedIndex = args.VisibleIndex;
-        // selectedQuote = quotes[selectedIndex];
+        selectedIndex = args.VisibleIndex;
+        selectedQuote = quotes[selectedIndex];
 
-        // var selectedDetailExpanded = QuoteGrid.IsDetailRowExpanded(selectedIndex);
-        // if (selectedDetailExpanded)
-        // {
-        //     QuoteGrid.CollapseDetailRow(selectedIndex);
+        var selectedDetailExpanded = QuoteGrid.IsDetailRowExpanded(selectedIndex);
+        if (selectedDetailExpanded)
+        {
+            QuoteGrid.CollapseDetailRow(selectedIndex);
 
-        //     PauseRefresh(false);
-        // }
-        // else
-        // {
-        //     QuoteGrid.CollapseAllDetailRows();
-        //     QuoteGrid.ExpandDetailRow(selectedIndex);
+            PauseRefresh(false);
+        }
+        else
+        {
+            QuoteGrid.CollapseAllDetailRows();
+            QuoteGrid.ExpandDetailRow(selectedIndex);
 
-        //     PauseRefresh(true);
-        // }
+            PauseRefresh(true);
+        }
     }
 
     public async Task<string> GetIpAddress()
@@ -1219,6 +1227,8 @@ else
 
             quotes = webServices.GetQuote(QuoteId);
 
+            selectedQuote = quotes[0];
+
             InvokeAsync(() =>
             {
                 StateHasChanged();
@@ -1226,6 +1236,9 @@ else
         }), null, 1000, 1000);
 
         LoadingPanelVisible = false;
+
+        if(QuoteGrid != null)
+            QuoteGrid.ExpandDetailRow(0);
     }
 
     private async Task<bool> IsUserEnabled()

@@ -6,7 +6,14 @@ html, body {
     overflow: auto !important;
 }
 
-#btnLeadTypes{
+.details-header {
+    border: solid 0px #ff0000 !important;
+    position: relative !important;
+    margin: 25px !important;
+    text-align: center !important;
+}
+
+#btnLeadTypes {
     background-color: #000000 !important;
     color: #ffffff !important;
 }
