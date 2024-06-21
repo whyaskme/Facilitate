@@ -1,5 +1,6 @@
 ﻿@page "/quotes/details"
 @page "/quotes/details/{QuoteId}"
+@page "/quotes/details/{QuoteId}/{Referrer}"
 
 @using Facilitate.Admin.Data;
 @using Facilitate.Libraries.Models;
@@ -35,6 +36,8 @@
 @inject IEmailSender<ApplicationUser> EmailSender
 @inject RoleManager<IdentityRole> roleManager
 
+@inject IJSRuntime JSRuntime
+
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
 
 @attribute [IgnoreAntiforgeryToken]
@@ -57,6 +60,10 @@
             .then((data) => {
                 return data.ip
             })
+    }
+
+    function getReferrer() {
+        return document.referrer;
     }
 </script>
 
@@ -121,7 +128,9 @@ else
         </div>
     </div> *@
 
-    <h1 class="details-header">@selectedQuote.status Details for @selectedQuote.firstName @selectedQuote.lastName</h1>
+    <div class="details-header">
+       @selectedQuote.status Details for @selectedQuote.firstName @selectedQuote.lastName
+    </div>
 
     <DxGrid @ref="QuoteGrid"
             Data="@quotes"
@@ -136,17 +145,16 @@ else
             @bind-SelectedDataItem="@SelectedQuoteItem"
             TextWrapEnabled="false">
         <Columns>
-            <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
-            <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" />
-            <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
-            <DxGridDataColumn Width="175" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+            <DxGridDataColumn Width="200" Caption="Id" FieldName="_id" />
+            <DxGridDataColumn Width="85" Caption="Trade" FieldName="applicationType" />
+            <DxGridDataColumn Width="150" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+            <DxGridDataColumn Width="150" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
             <DxGridDataColumn Width="auto" Caption="Street" FieldName="street" />
-            <DxGridDataColumn Width="175" Caption="City" FieldName="city" />
-            <DxGridDataColumn Width="75" Caption="State" FieldName="state" />
-            <DxGridDataColumn Width="75" Caption="Zip" FieldName="zip" />
-            <DxGridDataColumn Width="75" Caption="SqFt" FieldName="totalSquareFeet" />
-            <DxGridDataColumn Width="100" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
-            <DxGridDataColumn Width="175" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
+            <DxGridDataColumn Width="125" Caption="City" FieldName="city" />
+            <DxGridDataColumn Width="50" Caption="State" FieldName="state" />
+            <DxGridDataColumn Width="65" Caption="Zip" FieldName="zip" />
+            <DxGridDataColumn Width="65" Caption="SqFt" FieldName="totalSquareFeet" />
+            <DxGridDataColumn Width="75" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
         </Columns>
 
         <DetailRowTemplate>
@@ -685,9 +693,13 @@ else
 
 @code {
 
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
     public void ReturnPreviousPage()
     {
-        var previousPageUrl = "/quotes/leads";
+        var previousPageUrl = "/quotes/" + Referrer;
 
         NavigationManager.NavigateTo(previousPageUrl);
     }
@@ -700,13 +712,15 @@ else
         }
     }
 
-
     bool IsPopupVisibleMakeCustomer { get; set; }
 
     public QuoteLeaderboard leaderboardStats = new QuoteLeaderboard();
 
     [Parameter]
     public string QuoteId { get; set; }
+
+    [Parameter]
+    public string Referrer { get; set; }
 
     public bool emailSentStatus = false;
 

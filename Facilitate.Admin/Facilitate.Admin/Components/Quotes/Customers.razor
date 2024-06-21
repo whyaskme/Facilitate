@@ -606,7 +606,8 @@ else
         var selectedRow = (Quote)QuoteGrid.GetDataItem(selectedRowIndex);
         var quoteId = selectedRow._id;
 
-        NavigationManager.NavigateTo("/quotes/details/" + quoteId);
+        var referrerUrl = "/customers/";
+        NavigationManager.NavigateTo("/quotes/details/" + quoteId + referrerUrl);
     }
 
     public async Task<string> GetIpAddress()
