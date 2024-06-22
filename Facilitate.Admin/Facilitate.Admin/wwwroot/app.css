@@ -73,11 +73,28 @@ button {
     text-align: center !important;
     color: #ffff !important;
     background-color: #000000 !important;
-    font-style: italic !important;
-    font-size: 1.5em !important;
+    font-style: normal !important;
+    font-size: 1.2em !important;
     width: 100% !important;
     padding: 10px !important;
-    margin-bottom: 10px !important;
+    margin-bottom: 20px !important;
+}
+
+.section-header {
+    border: solid 0px #ff0000 !important;
+    border-radius: 0px !important;
+    position: relative !important;
+    margin-top: 20px !important;
+    text-align: left !important;
+    color: #fff !important;
+    background-color: #808080 !important;
+    font-style: normal !important;
+    font-size: 1.0em !important;
+    font-weight: normal !important;
+    width: 100% !important;
+    padding: 10px !important;
+    padding-left: 20px !important;
+    margin-bottom: 0px !important;
 }
 
 .warranty-header {
@@ -85,14 +102,15 @@ button {
     border-radius: 0px !important;
     position: relative !important;
     margin-top: 20px !important;
-    text-align: center !important;
+    text-align: left !important;
     color: #ffff !important;
     background-color: #b10505 !important;
-    font-style: italic !important;
-    font-size: 1.2em !important;
+    font-style: normal !important;
+    font-size: 1.0em !important;
     width: 100% !important;
-    padding: 5px !important;
-    margin-bottom: -20px !important;
+    padding: 10px !important;
+    padding-left: 20px !important;
+    margin-bottom: 0px !important;
 }
 
 /*#btnLeadTypes {
