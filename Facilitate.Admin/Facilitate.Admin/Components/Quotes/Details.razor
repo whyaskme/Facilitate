@@ -551,20 +551,21 @@ else
 
                 <div class="quote-detail-controls-container">
                 @{
-                    <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
-
                     switch(selectedQuote.status)
                     {
                         case "New":
+                            <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
                             break;
                         case "Opportunity":
+                                <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
                             <button class="action-button" @onclick="@(() => IsPopupVisibleMakeCustomer = true)">Make Customer</button>
                             break;
                         case "Customer":
-                            <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Complete</button>
+                            // <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Complete</button>
+                            <button class="action-button" @onclick="@(() => IsPopupVisibleCompleteCustomer = true)">Complete Customer</button>
                             break;
                         case "Complete":
-                            // <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Warranty Claim</button>
+                            <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
                             break;
                         case "Archive":
                             <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Warranty Claim</button>
@@ -582,6 +583,16 @@ else
 
     </DxGrid>
 }
+
+<DxPopup @bind-Visible="@IsPopupVisibleCompleteCustomer" ShowFooter="true" HeaderText="Complete Customer">
+    <BodyContentTemplate>
+        If this is fully qualified to Complete Customer criteria, then click Save.
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="CompleteCustomer" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleCompleteCustomer = false)" />
+    </FooterContentTemplate>
+</DxPopup>
 
 <DxPopup @bind-Visible="@IsPopupVisibleMakeCustomer" ShowFooter="true" HeaderText="Make Customer">
     <BodyContentTemplate>
@@ -925,6 +936,7 @@ else
     bool IsPopupVisibleSelectNoteToDelete { get; set; }
 
     bool IsArchivePopupVisible { get; set; }
+    bool IsPopupVisibleCompleteCustomer { get; set; }
 
     bool IsPopupVisibleHelpSendFiles { get; set; }
     bool IsPopupVisibleHelpFileAttachments { get; set; }
@@ -1076,59 +1088,64 @@ else
     {
         PauseRefresh(true);
 
+        var sysUser = new ApplicationUser();
+        sysUser.FirstName = "System";
+
         LoadingPanelVisible = true;
 
         QuoteGrid.CollapseDetailRow(selectedIndex);
 
-        selectedQuote.status = "Opportunity";
-        selectedQuote.projectManager = SelectedProjectManager.ToList()[0];
-
-        var sysUser = new ApplicationUser();
-        sysUser.FirstName = "System";
-
-        if (selectedQuote.attachments.Count == 0)
+        // Only change status when assigning the first time.
+        if (selectedQuote.status == "New")
         {
-            // Workflow and Subsequent Document Requirements
-            Attachment workflowRequirements = new Attachment();
-            workflowRequirements.MediaDescription = "Workflow and Subsequent Document Requirements";
-            workflowRequirements.MediaUrl = "/docs/templates/misc/Workflow and Subsequent Document Requirements.pdf";
-            workflowRequirements.Author = sysUser;
-            selectedQuote.attachments.Add(workflowRequirements);
+            selectedQuote.status = "Opportunity";
 
-            Event workflowRequirementsEvent = new Event();
-            workflowRequirementsEvent.Details = workflowRequirements.MediaDescription + " sent to " + selectedQuote.email;
-            workflowRequirementsEvent.Author = sysUser;
-            selectedQuote.events.Add(workflowRequirementsEvent);
+            if (selectedQuote.attachments.Count == 0)
+            {
+                // Workflow and Subsequent Document Requirements
+                Attachment workflowRequirements = new Attachment();
+                workflowRequirements.MediaDescription = "Workflow and Subsequent Document Requirements";
+                workflowRequirements.MediaUrl = "/docs/templates/misc/Workflow and Subsequent Document Requirements.pdf";
+                workflowRequirements.Author = sysUser;
+                selectedQuote.attachments.Add(workflowRequirements);
 
-            // Facilitate Engagement Agreement
-            Attachment engagementAgreement = new Attachment();
-            engagementAgreement.MediaDescription = "Facilitate Engagement Agreement";
-            engagementAgreement.MediaUrl = "/docs/templates/agreements/Facilitate Engagement Agreement.docx";
-            engagementAgreement.Author = sysUser;
-            selectedQuote.attachments.Add(engagementAgreement);
+                Event workflowRequirementsEvent = new Event();
+                workflowRequirementsEvent.Details = workflowRequirements.MediaDescription + " sent to " + selectedQuote.email;
+                workflowRequirementsEvent.Author = sysUser;
+                selectedQuote.events.Add(workflowRequirementsEvent);
 
-            Event engagementAgreementEvent = new Event();
-            engagementAgreementEvent.Details = engagementAgreement.MediaDescription + " sent to " + selectedQuote.email;
-            engagementAgreementEvent.Author = sysUser;
-            selectedQuote.events.Add(engagementAgreementEvent);
+                // Facilitate Engagement Agreement
+                Attachment engagementAgreement = new Attachment();
+                engagementAgreement.MediaDescription = "Facilitate Engagement Agreement";
+                engagementAgreement.MediaUrl = "/docs/templates/agreements/Facilitate Engagement Agreement.docx";
+                engagementAgreement.Author = sysUser;
+                selectedQuote.attachments.Add(engagementAgreement);
 
-            // Welcome Letter
-            Attachment welcomeLetter = new Attachment();
-            welcomeLetter.MediaDescription = "Welcome to Facilitate.org";
-            welcomeLetter.MediaUrl = "/docs/templates/boilerplate/Welcome to Facilitate.docx";
-            welcomeLetter.Author = sysUser;
-            selectedQuote.attachments.Add(welcomeLetter);
+                Event engagementAgreementEvent = new Event();
+                engagementAgreementEvent.Details = engagementAgreement.MediaDescription + " sent to " + selectedQuote.email;
+                engagementAgreementEvent.Author = sysUser;
+                selectedQuote.events.Add(engagementAgreementEvent);
 
-            Event welcomeLetterEvent = new Event();
-            welcomeLetterEvent.Details = welcomeLetter.MediaDescription + " sent to " + selectedQuote.email;
-            welcomeLetterEvent.Author = sysUser;
-            selectedQuote.events.Add(welcomeLetterEvent);
+                // Welcome Letter
+                Attachment welcomeLetter = new Attachment();
+                welcomeLetter.MediaDescription = "Welcome to Facilitate.org";
+                welcomeLetter.MediaUrl = "/docs/templates/boilerplate/Welcome to Facilitate.docx";
+                welcomeLetter.Author = sysUser;
+                selectedQuote.attachments.Add(welcomeLetter);
+
+                Event welcomeLetterEvent = new Event();
+                welcomeLetterEvent.Details = welcomeLetter.MediaDescription + " sent to " + selectedQuote.email;
+                welcomeLetterEvent.Author = sysUser;
+                selectedQuote.events.Add(welcomeLetterEvent);
+            }
+
+            Event statusChanged = new Event();
+            statusChanged.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Opportunity";
+            statusChanged.Author = currentUser;
+            selectedQuote.events.Add(statusChanged);
         }
 
-        Event statusChanged = new Event();
-        statusChanged.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Opportunity";
-        statusChanged.Author = currentUser;
-        selectedQuote.events.Add(statusChanged);
+        selectedQuote.projectManager = SelectedProjectManager.ToList()[0];
 
         var projectManager = selectedQuote.projectManager;
 
@@ -1139,7 +1156,6 @@ else
         assignmentEvent.Author = currentUser;
 
         // Email PM and Client here...
-
 
         selectedQuote.events.Add(assignmentEvent);
 
@@ -1272,6 +1288,27 @@ else
         IsPopupVisibleSelectNoteToDelete = false;
 
         notesCount--;
+    }
+
+    public void CompleteCustomer()
+    {
+        selectedQuote.status = "Complete";
+
+        QuoteGrid.CollapseDetailRow(selectedIndex);
+
+        var projectManager = selectedQuote.projectManager;
+
+        Event _event = new Event();
+        _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Completed Customer";
+        _event.Author = currentUser;
+
+        selectedQuote.events.Add(_event);
+
+        WebServices.UpdateQuote(selectedQuote);
+
+        IsPopupVisibleCompleteCustomer = false;
+
+        PauseRefresh(false);
     }
 
     public virtual void PauseRefresh(bool isPaused)
