@@ -568,7 +568,7 @@ else
                             <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
                             break;
                         case "Archive":
-                            <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Warranty Claim</button>
+                            <button class="action-button" @onclick="@(() => IsPopupVisibleMakeWarrantyClaim = true)">Make Warranty Claim</button>
                             break;
                         case "Warranty":
                             <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Close Claim</button>
@@ -583,6 +583,17 @@ else
 
     </DxGrid>
 }
+
+<DxPopup @bind-Visible="@IsPopupVisibleMakeWarrantyClaim" ShowFooter="true" HeaderText="Make a Warranty Claim?">
+    <BodyContentTemplate>
+        <p>Why are you making a Warranty Claim on this archived project?</p>
+        <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="MakeWarrantyClaim" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleMakeWarrantyClaim = false)" />
+    </FooterContentTemplate>
+</DxPopup>
 
 <DxPopup @bind-Visible="@IsPopupVisibleCompleteCustomer" ShowFooter="true" HeaderText="Complete Customer">
     <BodyContentTemplate>
@@ -937,6 +948,7 @@ else
 
     bool IsArchivePopupVisible { get; set; }
     bool IsPopupVisibleCompleteCustomer { get; set; }
+    bool IsPopupVisibleMakeWarrantyClaim { get; set; }
 
     bool IsPopupVisibleHelpSendFiles { get; set; }
     bool IsPopupVisibleHelpFileAttachments { get; set; }
@@ -1288,6 +1300,43 @@ else
         IsPopupVisibleSelectNoteToDelete = false;
 
         notesCount--;
+    }
+
+    public void MakeWarrantyClaim()
+    {
+        selectedQuote.status = "Warranty";
+
+        QuoteGrid.CollapseDetailRow(selectedIndex);
+
+        var projectManager = selectedQuote.projectManager;
+
+        Warranty warranty = new Warranty();
+        warranty.Type = "Claim";
+        warranty.Summary = "Warranty Claim";
+        warranty.Details = @NoteDetails;
+        warranty.Author = currentUser;
+
+        selectedQuote.warranties.Add(warranty);
+
+        Note note = new Note();
+        note.Summary = "Note Added (Make Warranty Claim)";
+        note.Details = @NoteDetails;
+        note.Author = currentUser;
+
+        selectedQuote.notes.Add(note);
+
+        Event _event = new Event();
+        _event.Details = "Archive converted to Warranty Claim";
+        _event.Author = currentUser;
+
+        selectedQuote.events.Add(_event);
+
+        WebServices.UpdateQuote(selectedQuote);
+
+        IsPopupVisibleMakeWarrantyClaim = false;
+        NoteDetails = "";
+
+        PauseRefresh(false);
     }
 
     public void CompleteCustomer()
