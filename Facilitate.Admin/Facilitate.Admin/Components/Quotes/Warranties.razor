@@ -37,7 +37,7 @@
     <Authorized></Authorized>
     <NotAuthorized>
         @{
-            NavigationManager.NavigateTo("/Account/Login");
+            NavigationManager.NavigateTo("/Account/Login?returnurl=" + NavigationManager.Uri);
         }
     </NotAuthorized>
 </AuthorizeView>
@@ -51,13 +51,6 @@
             })
     }
 </script>
-
-<AuthorizeView>
-    <Authorized></Authorized>
-    <NotAuthorized>@{
-            NavigationManager.NavigateTo("/Account/Login");
-        }</NotAuthorized>
-</AuthorizeView>
 
 @if (quotes == null)
 {

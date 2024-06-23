@@ -51,13 +51,7 @@
     <Authorized></Authorized>
     <NotAuthorized>
         @{
-            var tmpPath = NavigationManager.Uri;
-
-            NavigationManager.NavigateTo("/Account/Login?returnurl=" + tmpPath);
-
-            //NavigationManager.NavigateTo("/Account/Login");
-            
-            //Response.Redirect("loginpage?returnurl=" + Server.UrlEncode(Request.Url.AbsoluteUri));
+            NavigationManager.NavigateTo("/Account/Login?returnurl=" + NavigationManager.Uri);
         }
     </NotAuthorized>
 </AuthorizeView>

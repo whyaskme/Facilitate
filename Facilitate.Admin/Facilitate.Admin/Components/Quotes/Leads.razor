@@ -46,7 +46,7 @@
     <Authorized></Authorized>
     <NotAuthorized>
         @{
-            NavigationManager.NavigateTo("/Account/Login");
+            NavigationManager.NavigateTo("/Account/Login?returnurl=" + NavigationManager.Uri);
         }
     </NotAuthorized>
 </AuthorizeView>
