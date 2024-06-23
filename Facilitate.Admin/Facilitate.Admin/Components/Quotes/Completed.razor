@@ -368,21 +368,11 @@ else
 
     public int currentItemIndex = 0;
 
-    public int noteCount = 0;
-
     IEnumerable<string> Values { get; set; }
     IEnumerable<string> LeadTypeValues { get; set; }
     IEnumerable<string> TradeTypeValues { get; set; }
 
-    public int roofsCount = 0;
-    public int productsCount = 0;
-
-    public string roofsCountLabel = "";
-    public string productsCountLabel = "";
-
     public QuoteHeader selectedQuote { get; set; }
-    public Attachment selectedAttachment { get; set; }
-    public Note selectedNote { get; set; }
 
     bool LoadingPanelVisible { get; set; } = true;
 
@@ -398,22 +388,7 @@ else
 
     private List<QuoteHeader>? quotes;
 
-    int SelectedFilesCount { get; set; }
-
-    ObjectId SelectedFileId { get; set; }
-
     IGrid QuoteGrid { get; set; }
-
-    IGrid EventGrid { get; set; }
-
-    EntityInstantFeedbackSource InstantFeedbackSource { get; set; }
-
-    bool isBulkInsert = false;
-
-    string FileType { get; set; } = ".pdf";
-    string Author { get; set; } = "unknown";
-
-    string NoteDetails { get; set; } = "";
 
     #endregion
 
@@ -442,9 +417,6 @@ else
     public string DisplayFormat { get; set; }
 
     [Parameter]
-    public GridDetailRowDisplayMode DetailRowDisplayMode { get; set; }
-
-    [Parameter]
     public string RefreshStatus { get; set; } = "";
 
     [Parameter]
@@ -464,12 +436,6 @@ else
 
     [Parameter]
     public bool RefreshDisabled { get; set; } = false;
-
-    [Parameter]
-    public bool SendDocsDisabled { get; set; } = true;
-
-    [Parameter]
-    public bool ArchiveLeadsDisabled { get; set; } = true;
 
     [Parameter]
     public object SelectedQuoteItem { get; set; }
@@ -592,7 +558,7 @@ else
     public virtual void PauseRefresh(bool isPaused)
     {
         RefreshDisabled = isPaused;
-        ArchiveLeadsDisabled = isPaused;
+        // ArchiveLeadsDisabled = isPaused;
 
         if(isPaused)
         {
