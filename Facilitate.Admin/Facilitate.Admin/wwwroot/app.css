@@ -6,6 +6,16 @@ html, body {
     overflow: auto !important;
 }
 
+.col-visible {
+    border: solid 0px #ff0000 !important;
+}
+
+.google-map {
+    border: solid 1px #808080 !important;
+    border-radius: 5px !important;
+    background-color: #fff !important;
+}
+
 .action-button {
     border: solid 1px #000000 !important;
     color: #ffffff !important;

@@ -11,11 +11,26 @@ using ServiceStack;
 using System;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 
-// To get Http Context
-//builder.Services.AddHttpContextAccessor();
+builder.Services.AddCors(x => x.AddPolicy("externalRequests",
+                    policy => policy
+                .WithOrigins(
+                "https://jsonip.com",
+                "https://www.google.com/maps"
+                )));
+
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy(name: MyAllowSpecificOrigins,
+//                      policy =>
+//                      {
+//                          policy.WithOrigins("https://jsonip.com",
+//                                              "https://www.google.com/maps");
+//                      });
+//});
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -40,10 +55,6 @@ builder.Services.AddScoped<IClaimsProvider>(provider =>
 });
 
 builder.Services.AddSingleton<WebServices>();
-
-builder.Services.AddCors(x => x.AddPolicy("externalRequests",
-                    policy => policy
-                .WithOrigins("https://jsonip.com")));
 
 builder.Services.AddAuthentication(options =>
     {
@@ -144,6 +155,8 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+//app.UseCors(MyAllowSpecificOrigins);
 
 app.UseHttpsRedirection();
 

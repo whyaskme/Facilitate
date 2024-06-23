@@ -184,37 +184,43 @@ else
 
                 // <h6>Homeowner</h6>
                 <div class="row">
-                    <div class="col">
-                        <label>Name</label>
-                        <span>@selectedQuote.firstName @selectedQuote.lastName</span>
+                    <div class="col-md-9 col-visible">
+                        <div class="row">
+                            <div class="col">
+                                <label>Name</label>
+                                <span>@selectedQuote.firstName @selectedQuote.lastName</span>
+                            </div>
+                            <div class="col">
+                                <label>Address</label>
+                                <a href="https://www.google.com/maps/search/@selectedQuote.street @selectedQuote.city, @selectedQuote.state @selectedQuote.zip" target="_blank">
+                                    @selectedQuote.street @selectedQuote.city, @selectedQuote.state @selectedQuote.zip
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label>Email</label>
+                                <a href="mailto:@selectedQuote.email">
+                                    <span>@selectedQuote.email</span>
+                                </a>
+                            </div>
+                            <div class="col">
+                                <label>Phone</label>
+                                <span>@selectedQuote.phone</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col">
-                        <label>Email</label>
-                        <a href="mailto:@selectedQuote.email">
-                            <span>@selectedQuote.email</span>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <label>Phone</label>
-                        <span>@selectedQuote.phone</span>
+                    <div class="col-md-3 col-visible">
+                        <iframe src="/test.html" class="google-map"></iframe>
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col">
-                        <label>Address</label>
-                        <a href="https://www.google.com/maps/search/@selectedQuote.street @selectedQuote.city, @selectedQuote.state @selectedQuote.zip" target="_blank">
-                            @selectedQuote.street @selectedQuote.city, @selectedQuote.state @selectedQuote.zip
-                        </a>
-                    </div>
-                    <div class="col">
-                        <label>IP</label>
-                        <a href="https://whatismyipaddress.com/ip/@SubmissionUserIP" target="_blank">
-                            <span>Location</span>
-                        </a>
-                    </div>
-                    <div class="col"></div>
-                </div>
+                // <div class="col">
+                //     <label>IP</label>
+                //     <a href="https://whatismyipaddress.com/ip/@SubmissionUserIP" target="_blank">
+                //         <span>Location</span>
+                //     </a>
+                // </div>
 
                 // <div class="table-spacer" />
 
