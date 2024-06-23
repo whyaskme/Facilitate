@@ -14,6 +14,9 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// To get Http Context
+//builder.Services.AddHttpContextAccessor();
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -37,9 +40,6 @@ builder.Services.AddScoped<IClaimsProvider>(provider =>
 });
 
 builder.Services.AddSingleton<WebServices>();
-
-//builder.Services.AddScoped<QuoteLeaderboard>();
-//builder.Services.AddSingleton<QuoteLeaderboard>();
 
 builder.Services.AddCors(x => x.AddPolicy("externalRequests",
                     policy => policy

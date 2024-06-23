@@ -45,12 +45,6 @@
                     <p>
                         <a href="Account/ForgotPassword">Forgot your password?</a>
                     </p>
-@*                     <p>
-                        <a href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register as a new user</a>
-                    </p> *@
-@*                     <p>
-                        <a href="Account/ResendEmailConfirmation">Resend email confirmation</a>
-                    </p> *@
                 </div>
             </EditForm>
         </section>
@@ -124,26 +118,40 @@
             var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
             {
-                ReturnUrl = "/Quotes/Opportunities";
+                //ReturnUrl = "/Quotes/Opportunities";
 
                 bool isInRole = false;
 
                 isInRole = await UserManager.IsInRoleAsync(applicationUser, "System Admin");
                 if(isInRole)
                 {
-                    ReturnUrl = "/Quotes/Leads";
+                    if (ReturnUrl == null || ReturnUrl == "")
+                    {
+                        ReturnUrl = "/Quotes/Leads";
+                    }
                 }
 
                 isInRole = await UserManager.IsInRoleAsync(applicationUser, "Site Admin");
                 if (isInRole)
                 {
-                    ReturnUrl = "/Quotes/Leads";
+                    if (ReturnUrl == null || ReturnUrl == "")
+                    {
+                        ReturnUrl = "/Quotes/Leads";
+                    }
                 }
 
                 isInRole = await UserManager.IsInRoleAsync(applicationUser, "Group Admin");
                 if (isInRole)
                 {
-                    ReturnUrl = "/Quotes/Leads";
+                    if (ReturnUrl == null || ReturnUrl == "")
+                    {
+                        ReturnUrl = "/Quotes/Leads";
+                    }
+                }
+
+                if (ReturnUrl == null || ReturnUrl == "")
+                {
+                    ReturnUrl = "/Quotes/Opportunities";
                 }
 
                 // var userRoles = await UserManager.GetRolesAsync(applicationUser);

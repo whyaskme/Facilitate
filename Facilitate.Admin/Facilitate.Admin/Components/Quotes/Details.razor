@@ -11,6 +11,9 @@
 @using Microsoft.AspNetCore.Mvc.Rendering;
 @using Microsoft.AspNetCore.WebUtilities;
 
+@* @using Microsoft.AspNetCore.Http.Extensions; *@
+@using Microsoft.AspNetCore.Http;
+
 @using MongoDB.Bson;
 
 @using System.Text.Json;
@@ -48,7 +51,13 @@
     <Authorized></Authorized>
     <NotAuthorized>
         @{
-            NavigationManager.NavigateTo("/Account/Login");
+            var tmpPath = NavigationManager.Uri;
+
+            NavigationManager.NavigateTo("/Account/Login?returnurl=" + tmpPath);
+
+            //NavigationManager.NavigateTo("/Account/Login");
+            
+            //Response.Redirect("loginpage?returnurl=" + Server.UrlEncode(Request.Url.AbsoluteUri));
         }
     </NotAuthorized>
 </AuthorizeView>
