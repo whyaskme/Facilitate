@@ -478,6 +478,7 @@ else
     [Inject] public IJSRuntime jsRuntime { get; set; }
 
     public Timer _timer;
+    public string updateStatus = "Fetching ";
 
     public string ClientIP = "";
     public string selectedQuoteId = "";
@@ -489,41 +490,12 @@ else
 
     public string SubmissionUserIP { get; set; }
 
-    public int itemsToCreate = 100;
-    public string updateStatus = "Fetching ";
-
-    public int attachmentsCount = 0;
-    public int notesCount = 0;
-    public int eventsCount = 0;
-
-    #endregion
-
-    #region Popup properties
-
-    bool IsAssignPopupVisible { get; set; }
-
-    bool IsPopupVisibleAddFile { get; set; }
-    bool IsPopupVisibleSelectAttachmentToDelete { get; set; }
-
-    bool IsPopupVisibleAddNote { get; set; }
-    bool IsPopupVisibleSelectNoteToDelete { get; set; }
-
-    bool IsPopupVisibleMakeCustomer { get; set; }
-    bool IsArchivePopupVisible { get; set; }
-
-    bool IsPopupVisibleHelpSendFiles { get; set; }
-    bool IsPopupVisibleHelpFileAttachments { get; set; }
-    bool IsPopupVisibleHelpFileNotes { get; set; }
-
     #endregion
 
     #region Parameters
 
     [Parameter]
     public string DisplayFormat { get; set; }
-
-    [Parameter]
-    public List<string> AcceptedFileTypes { get; set; }
 
     [Parameter]
     public GridDetailRowDisplayMode DetailRowDisplayMode { get; set; }
@@ -657,26 +629,6 @@ else
             //If your request was blocked by CORS or some extension like uBlock Origin then you will get an exception.
             return string.Empty;
         }
-    }
-
-    protected void SelectedFilesChanged(IEnumerable<UploadFileInfo> files)
-    {
-        SelectedFilesCount = files.ToList().Count;
-        InvokeAsync(StateHasChanged);
-
-        SendDocsDisabled = false;
-    }
-
-    protected void EmailFiles()
-    {
-        var tmpVal = "";
-    }
-
-    protected string GetUploadUrl(string url)
-    {
-        var absoluteUri = NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
-
-        return absoluteUri;
     }
 
     public virtual void PauseRefresh(bool isPaused)

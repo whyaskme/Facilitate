@@ -415,6 +415,7 @@ else
     [Inject] public IJSRuntime jsRuntime { get; set; }
 
     public Timer _timer;
+    public string updateStatus = "Fetching ";
 
     public string ClientIP = "";
     public string selectedQuoteId = "";
@@ -426,49 +427,12 @@ else
 
     public string SubmissionUserIP { get; set; }
 
-    public int itemsToCreate = 10;
-    public string updateStatus = "Fetching ";
-
-    public int attachmentsCount = 0;
-    public int notesCount = 0;
-    public int eventsCount = 0;
-
-    public int roofsCount = 0;
-    public int productsCount = 0;
-
-    public string roofsCountLabel = "";
-    public string productsCountLabel = "";
-
-    #endregion
-
-    #region Popup properties
-
-    bool IsAssignPopupVisible { get; set; }
-
-    bool IsPopupVisibleAddFile { get; set; }
-    bool IsPopupVisibleSelectAttachmentToDelete { get; set; }
-
-    bool IsPopupVisibleAddNote { get; set; }
-    bool IsPopupVisibleSelectNoteToDelete { get; set; }
-
-    bool IsPopupVisibleMakeCustomer { get; set; }
-
-    bool IsPopupVisibleCompleteCustomer { get; set; }
-    bool IsArchivePopupVisible { get; set; }
-
-    bool IsPopupVisibleHelpSendFiles { get; set; }
-    bool IsPopupVisibleHelpFileAttachments { get; set; }
-    bool IsPopupVisibleHelpFileNotes { get; set; }
-
     #endregion
 
     #region Parameters
 
     [Parameter]
     public string DisplayFormat { get; set; }
-
-    [Parameter]
-    public List<string> AcceptedFileTypes { get; set; }
 
     [Parameter]
     public GridDetailRowDisplayMode DetailRowDisplayMode { get; set; }
@@ -615,209 +579,6 @@ else
             //If your request was blocked by CORS or some extension like uBlock Origin then you will get an exception.
             return string.Empty;
         }
-    }
-
-    protected void SelectedFilesChanged(IEnumerable<UploadFileInfo> files)
-    {
-        SelectedFilesCount = files.ToList().Count;
-        InvokeAsync(StateHasChanged);
-
-        SendDocsDisabled = false;
-    }
-
-    protected void EmailFiles()
-    {
-        var tmpVal = "";
-    }
-
-    protected string GetUploadUrl(string url)
-    {
-        var absoluteUri = NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
-
-        return absoluteUri;
-    }
-
-    public void AssignLead()
-    {
-        // LoadingPanelVisible = true;
-
-        // QuoteGrid.CollapseDetailRow(selectedIndex);
-
-        // Event statusChanged = new Event();
-        // statusChanged.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Opportunity";
-        // statusChanged.Author = currentUser;
-        // selectedQuote.events.Add(statusChanged);
-
-        // var previousProjectManager = selectedQuote.projectManager;
-
-        // selectedQuote.projectManager = SelectedProjectManager.ToList()[0];
-
-        // // Assignment event
-        // var projectManager = selectedQuote.projectManager;
-        // Event assignmentEvent = new Event();
-        // assignmentEvent.Name = "Assignment";
-        // assignmentEvent.Author = currentUser;
-
-        // if (previousProjectManager != null)
-        // {
-        //     // Current PM to replace
-        //     assignmentEvent.Details = "Project Manager (" + previousProjectManager.FirstName + " " + previousProjectManager.LastName + "), replaced by (" + projectManager.FirstName + " " + projectManager.LastName + ") and emailed to: " + projectManager.Email;
-        // }
-        // else
-        // {
-        //     assignmentEvent.Details = "Lead assigned to Project Manager (" + projectManager.FirstName + "), moved to Opportunities and emailed to: " + projectManager.Email;
-        // }
-
-        // selectedQuote.events.Add(assignmentEvent);
-
-        // WebServices.UpdateQuote(selectedQuote);
-
-        // IsAssignPopupVisible = false;
-        // IsAssignButtonEnabled = false;
-
-        // PauseRefresh(false);
-    }
-
-    public void ArchiveLead()
-    {
-        // selectedQuote.status = "Archive";
-
-        // QuoteGrid.CollapseDetailRow(selectedIndex);
-
-        // Note note = new Note();
-        // note.Summary = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
-        // note.Details = @NoteDetails;
-        // note.Author = currentUser;
-
-        // selectedQuote.notes.Add(note);
-
-
-        // Event _event = new Event();
-        // _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
-        // _event.Author = currentUser;
-
-        // selectedQuote.events.Add(_event);
-
-        // WebServices.UpdateQuote(selectedQuote);
-
-        // IsArchivePopupVisible = false;
-        // NoteDetails = "";
-
-        // PauseRefresh(false);
-    }
-
-    public void AddNote()
-    {
-        // QuoteGrid.CollapseDetailRow(selectedIndex);
-
-        // Note note = new Note();
-        // note.Summary = "Note Added";
-        // note.Details = @NoteDetails;
-        // note.Author = currentUser;
-
-        // selectedQuote.notes.Add(note);
-
-        // Event _event = new Event();
-        // _event.Details = "Note (" + note.Details + ") added to Quote";
-        // _event.Author = currentUser;
-
-        // selectedQuote.events.Add(_event);
-
-        // IsPopupVisibleAddNote = false;
-        // NoteDetails = "";
-
-        // WebServices.UpdateQuote(selectedQuote);
-
-        // TimerRefresh();
-        // quotes = webServices.GetQuotes("New");
-
-        // QuoteGrid.ExpandDetailRow(selectedIndex);
-
-        // PauseRefresh(true);
-    }
-
-    public void CloseDetails()
-    {
-        QuoteGrid.CollapseDetailRow(selectedIndex);
-
-        PauseRefresh(false);
-    }
-
-    public void SelectAttachmentToDelete(Quote quote, Attachment attachment)
-    {
-        // selectedQuote = quote;
-        // selectedAttachment = attachment;
-
-        // IsPopupVisibleSelectAttachmentToDelete = true;
-
-        // TimerRefresh();
-    }
-
-    public void SelectNoteToDelete(Quote quote, Note note)
-    {
-        // selectedQuote = quote;
-        // selectedNote = note;
-
-        // IsPopupVisibleSelectNoteToDelete = true;
-    }
-
-    public void DeleteSelectedAttachment()
-    {
-        // selectedAttachment.IsDeleted = true;
-
-        // Event _event = new Event();
-        // _event.Details = "Deleted attachment (" + selectedAttachment.MediaDescription + ") from Quote";
-        // _event.Author = currentUser;
-
-        // selectedQuote.events.Add(_event);
-
-        // WebServices.UpdateQuote(selectedQuote);
-
-        // TimerRefresh();
-
-        // IsPopupVisibleSelectAttachmentToDelete = false;
-
-        // attachmentsCount--;
-    }
-
-    public void DeleteSelectedNote()
-    {
-        // selectedNote.IsDeleted = true;
-
-        // Event _event = new Event();
-        // _event.Details = "Deleted note (" + selectedNote.Details + ") from Quote";
-        // _event.Author = currentUser;
-
-        // selectedQuote.events.Add(_event);
-
-        // WebServices.UpdateQuote(selectedQuote);
-
-        // TimerRefresh();
-
-        // IsPopupVisibleSelectNoteToDelete = false;
-
-        // notesCount--;
-    }
-
-    public void MakeCustomer()
-    {
-        // selectedQuote.status = "Customer";
-
-        // QuoteGrid.CollapseDetailRow(selectedIndex);
-
-        // var projectManager = selectedQuote.projectManager;
-
-        // Event _event = new Event();
-        // _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Customer";
-        // _event.Author = currentUser;
-
-        // selectedQuote.events.Add(_event);
-
-        // WebServices.UpdateQuote(selectedQuote);
-
-        // IsPopupVisibleMakeCustomer = false;
-
-        // PauseRefresh(false);
     }
 
     public virtual void PauseRefresh(bool isPaused)
