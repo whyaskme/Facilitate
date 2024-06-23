@@ -61,8 +61,10 @@ namespace Facilitate.Admin.Data
 
                 var fields = Builders<Quote>.Projection.Include(p => p.firstName)
                     .Include(p => p.lastName)
+                    .Include(p => p._id)
                     .Include(p => p.email)
                     .Include(p => p.status)
+                    .Include(p => p.projectManager)
                     .Include(p => p.applicationType)
                     .Include(p => p.numberOfStructures)
                     .Include(p => p.numberOfIncludedStructures)
@@ -92,6 +94,7 @@ namespace Facilitate.Admin.Data
                 {
                     QuoteHeader _header = new QuoteHeader();
                     _header._id = quotes[i]._id;
+                    _header.projectManager = quotes[i].projectManager;
                     _header.applicationType = quotes[i].applicationType;
                     _header.firstName = quotes[i].firstName;
                     _header.lastName = quotes[i].lastName;

@@ -383,7 +383,7 @@ else
 
     #region Private Properties
 
-    private List<Quote>? quotes;
+    private List<QuoteHeader>? quotes;
 
     public int currentItemIndex = 0;
 
@@ -532,9 +532,7 @@ else
     {
         TimerDispose();
 
-        var selectedRowIndex = args.VisibleIndex;
-
-        var selectedRow = (Quote)QuoteGrid.GetDataItem(selectedRowIndex);
+        var selectedRow = (QuoteHeader)QuoteGrid.GetDataItem(args.VisibleIndex);
         var quoteId = selectedRow._id;
 
         var referrerUrl = "/customers/";
@@ -614,17 +612,17 @@ else
                 leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
                 if (SelectedTradeType.Contains("All"))
                 {
-                    quotes = webServices.GetQuotes("Customer", ShowTestData);
+                    quotes = webServices.GetSummaries("Customer", ShowTestData);
                 }
                 else
                 {
-                    quotes = webServices.GetQuotes(SelectedTradeType, "Customer", ShowTestData);
+                    quotes = webServices.GetSummaries(SelectedTradeType, "Customer", ShowTestData);
                 }
             }
             else
             {
                 leaderboardStats = WebServices.GetLeaderBoardStats(currentUser.Email);
-                quotes = webServices.GetQuotes("Customer", currentUser.Email);
+                quotes = webServices.GetSummaries("Customer", currentUser.Email);
             }
 
             updateStatus = quotes.Count().ToString("N0");
