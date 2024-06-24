@@ -132,6 +132,7 @@ else
     </div> *@
 
     <div class="details-header">
+        <button class="action-button header-return-button" @onclick="ReturnPreviousPage">Return</button>
        @selectedQuote.status Details for @selectedQuote.firstName @selectedQuote.lastName
     </div>
 
@@ -669,11 +670,6 @@ else
                                         <DxTabPage Id="Panel-Warranty-Claim" CssClass="tab-container" Text="@claimLabel">
                                             <div class="row">
                                                 <div class="col">
-                                                    <b>Details</b>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col">
                                                     <label>Date</label>
                                                     <span>@warranty.DateCreated</span>
                                                 </div>
@@ -699,12 +695,6 @@ else
 
                                             <div class="row">
                                                 <div class="col">
-                                                    <b>Assertions</b>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col">
                                                     <label>Completed?</label>
                                                     <span>@warranty.isCompleted</span>
                                                 </div>
@@ -718,14 +708,20 @@ else
                                                 </div>
                                             </div>
 
-                                            <div class="row"></div>
-
                                             <hr />
+
+                                            <div class="row">
+                                                <div class="col">&nbsp;</div>                                            
+                                            </div>
 
                                             <div class="row">
                                                 <div class="col" style="text-align: center !important;">
                                                     <button class="action-button" @onclick="@(() => IsPopupVisibleCloseWarrantyClaim = true)">Close Warranty Claim</button>
                                                 </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col">&nbsp;</div>                                            
                                             </div>
                                         </DxTabPage>
                                         break;
@@ -760,7 +756,7 @@ else
                             // <button class="action-button" @onclick="@(() => IsPopupVisibleCloseWarrantyClaim = true)">Close Warranty Claim</button>
                             break;
                     }
-                    <button class="action-button" @onclick="ReturnPreviousPage">Close</button>
+                    <button class="action-button" @onclick="ReturnPreviousPage">Return</button>
                 }
                 </div>
 

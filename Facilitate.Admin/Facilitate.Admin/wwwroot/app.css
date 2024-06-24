@@ -352,8 +352,8 @@ h1.text-danger {
     color: #808080 !important;
 }
 
-b{
-    color: #808080 !important;
+.header-return-button {
+    border: solid 1px #ff0000 !important;
 }
 
 .dxbl-text {
