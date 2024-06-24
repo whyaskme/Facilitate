@@ -148,7 +148,7 @@ else
             @bind-SelectedDataItem="@SelectedQuoteItem"
             TextWrapEnabled="false">
         <Columns>
-            <DxGridDataColumn Width="auto" Caption="Id" FieldName="_id" />
+            <DxGridDataColumn Width="200" Caption="Id" FieldName="_id" />
             <DxGridDataColumn Width="auto" Caption="Trade" FieldName="applicationType" />
             <DxGridDataColumn Width="auto" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Width="auto" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
@@ -873,6 +873,7 @@ else
         if(QuoteGrid != null)
         {
             QuoteGrid.ExpandDetailRow(0);
+            QuoteGrid.SelectAllAsync(true);
         }
     }
 
