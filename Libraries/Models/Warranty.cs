@@ -14,9 +14,9 @@ namespace Facilitate.Libraries.Models
     {
         public Warranty()
         {
-            id = ObjectId.GenerateNewId();
-            Type = string.Empty;
-            
+            _id = ObjectId.GenerateNewId().ToString();
+            _t = "Warranty";
+
             DateCreated = DateTime.UtcNow;
 
             isCompleted = false;
@@ -29,10 +29,9 @@ namespace Facilitate.Libraries.Models
             Author = new ApplicationUser();
         }
 
-        
-        public ObjectId id { get; set; }
 
-        public string Type { get; set; }
+        public string _id { get; set; }
+        public string _t { get; set; }
 
         public DateTime? DateCreated { get; set; }
 

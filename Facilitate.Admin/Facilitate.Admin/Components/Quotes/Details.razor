@@ -616,10 +616,11 @@ else
                 if (@selectedQuote.warranties.Count > 0)
                 {
                     var claimsInitialized = false;
+
                     <div class="warranty-header">
                         Warranty Info
                     </div>
-                    // <br />
+
                     <DxTabs Id="tabs-Warranty-Info" CssClass="tabs-container">
                         @{
                             var claimCount = 0;
@@ -627,10 +628,24 @@ else
 
                             foreach (Warranty warranty in @selectedQuote.warranties)
                             {
-                                switch (warranty.Type)
+                                switch (warranty._t)
                                 {
                                     case "Assertion":
                                         <DxTabPage Id="Panel-Warranty-Assertion" CssClass="tab-container" Text="Coverage Statement">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label>Claim #</label>
+                                                    <span>@warranty._id</span>
+                                                </div>
+                                                <div class="col">
+                                                    <label>Summary</label>
+                                                    <span>@warranty._t</span>
+                                                </div>
+                                                <div class="col">
+                                                    <label>Author</label>
+                                                    <span>@warranty.Author.FirstName @warranty.Author.LastName</span>
+                                                </div>
+                                            </div>
                                             <div class="row">
                                                 <div class="col">
                                                     <label>Date</label>
@@ -649,35 +664,67 @@ else
                                         break;
                                     case "Claim":
                                         claimCount++;
-                                        claimLabel = "Claim " + claimCount;
+                                        claimLabel = "Claim " + claimCount + " - Id: " + @warranty._id + "";
 
                                         <DxTabPage Id="Panel-Warranty-Claim" CssClass="tab-container" Text="@claimLabel">
                                             <div class="row">
                                                 <div class="col">
-                                                    <label>Claim Date</label>
+                                                    <b>Details</b>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label>Date</label>
                                                     <span>@warranty.DateCreated</span>
                                                 </div>
+                                                <div class="col">
+                                                    <label>Author</label>
+                                                    <span>@warranty.Author.FirstName @warranty.Author.LastName</span>
+                                                </div>
+                                                <div class="col"></div>
+                                            </div>
+                                            <div class="row">
                                                 <div class="col">
                                                     <label>Summary</label>
                                                     <span>@warranty.Summary</span>
                                                 </div>
                                                 <div class="col">
-                                                    <label>Claim Reason</label>
+                                                    <label>Reason</label>
                                                     <span>@warranty.Details</span>
                                                 </div>
+                                                <div class="col"></div>
                                             </div>
+
+                                            <hr />
+
+                                            <div class="row">
+                                                <div class="col">
+                                                    <b>Assertions</b>
+                                                </div>
+                                            </div>
+
                                             <div class="row">
                                                 <div class="col">
                                                     <label>Completed?</label>
                                                     <span>@warranty.isCompleted</span>
                                                 </div>
                                                 <div class="col">
-                                                    <label>Date Completed</label>
+                                                    <label>Completed</label>
                                                     <span>@warranty.DateCompleted</span>
                                                 </div>
                                                 <div class="col">
-                                                    <label>Completion Notes</label>
+                                                    <label>Notes</label>
                                                     <span>@warranty.CompletionDetails</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row"></div>
+
+                                            <hr />
+
+                                            <div class="row">
+                                                <div class="col" style="text-align: center !important;">
+                                                    <button class="action-button" @onclick="@(() => IsPopupVisibleCloseWarrantyClaim = true)">Close Warranty Claim</button>
                                                 </div>
                                             </div>
                                         </DxTabPage>
@@ -688,8 +735,6 @@ else
                     </DxTabs>
                     <br />
                 }
-
-                // <br />
 
                 <div class="quote-detail-controls-container">
                 @{
@@ -703,7 +748,6 @@ else
                             <button class="action-button" @onclick="@(() => IsPopupVisibleMakeCustomer = true)">Make Customer</button>
                             break;
                         case "Customer":
-                            // <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Complete</button>
                             <button class="action-button" @onclick="@(() => IsPopupVisibleCompleteCustomer = true)">Complete Customer</button>
                             break;
                         case "Complete":
@@ -713,7 +757,7 @@ else
                             <button class="action-button" @onclick="@(() => IsPopupVisibleMakeWarrantyClaim = true)">Make Warranty Claim</button>
                             break;
                         case "Warranty":
-                            <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Close Claim</button>
+                            // <button class="action-button" @onclick="@(() => IsPopupVisibleCloseWarrantyClaim = true)">Close Warranty Claim</button>
                             break;
                     }
                     <button class="action-button" @onclick="ReturnPreviousPage">Close</button>
@@ -734,6 +778,17 @@ else
     <FooterContentTemplate>
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="MakeWarrantyClaim" />
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleMakeWarrantyClaim = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxPopup @bind-Visible="@IsPopupVisibleCloseWarrantyClaim" ShowFooter="true" HeaderText="Close Warranty Claim?">
+    <BodyContentTemplate>
+        <p>Has this Warranty Claim been completed?</p>
+        <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="CloseWarrantyClaim" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleCloseWarrantyClaim = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -980,8 +1035,6 @@ else
         WebServices.UpdateQuote(selectedQuote);
 
         IsPopupVisibleMakeCustomer = false;
-
-        PauseRefresh(false);
     }
 
     private void UserSignOut()
@@ -1090,6 +1143,7 @@ else
     bool IsArchivePopupVisible { get; set; }
     bool IsPopupVisibleCompleteCustomer { get; set; }
     bool IsPopupVisibleMakeWarrantyClaim { get; set; }
+    bool IsPopupVisibleCloseWarrantyClaim { get; set; }
 
     bool IsPopupVisibleHelpSendFiles { get; set; }
     bool IsPopupVisibleHelpFileAttachments { get; set; }
@@ -1183,18 +1237,6 @@ else
 
     void OnRowClick(GridRowClickEventArgs args)
     {
-        selectedIndex = args.VisibleIndex;
-        selectedQuote = quotes[selectedIndex];
-
-        var selectedDetailExpanded = QuoteGrid.IsDetailRowExpanded(selectedIndex);
-        if (selectedDetailExpanded)
-        {
-            PauseRefresh(false);
-        }
-        else
-        {
-            PauseRefresh(true);
-        }
     }
 
     public async Task<string> GetIpAddress()
@@ -1234,12 +1276,8 @@ else
 
     public void AssignLead()
     {
-        PauseRefresh(true);
-
         var sysUser = new ApplicationUser();
         sysUser.FirstName = "System";
-
-        LoadingPanelVisible = true;
 
         // Only change status when assigning the first time.
         if (selectedQuote.status == "New")
@@ -1309,14 +1347,10 @@ else
 
         IsAssignPopupVisible = false;
         IsAssignButtonEnabled = false;
-
-        PauseRefresh(false);
     }
 
     public void ArchiveLead()
     {
-        PauseRefresh(true);
-
         selectedQuote.status = "Archive";
 
         Note note = new Note();
@@ -1335,14 +1369,10 @@ else
 
         IsArchivePopupVisible = false;
         NoteDetails = "";
-
-        PauseRefresh(false);
     }
 
     public void AddNote()
     {
-        PauseRefresh(true);
-
         Note note = new Note();
         note.Summary = "Note Added";
         note.Details = @NoteDetails;
@@ -1360,15 +1390,10 @@ else
         NoteDetails = "";
 
         WebServices.UpdateQuote(selectedQuote);
-
-        TimerRefresh();
-
-        PauseRefresh(true);
     }
 
     public void CloseDetails()
     {
-        PauseRefresh(false);
     }
 
     public void SelectAttachmentToDelete(Quote quote, Attachment attachment)
@@ -1377,8 +1402,6 @@ else
         selectedAttachment = attachment;
 
         IsPopupVisibleSelectAttachmentToDelete = true;
-
-        TimerRefresh();
     }
 
     public void SelectNoteToDelete(Quote quote, Note note)
@@ -1401,8 +1424,6 @@ else
 
         WebServices.UpdateQuote(selectedQuote);
 
-        TimerRefresh();
-
         IsPopupVisibleSelectAttachmentToDelete = false;
 
         attachmentsCount--;
@@ -1420,8 +1441,6 @@ else
 
         WebServices.UpdateQuote(selectedQuote);
 
-        TimerRefresh();
-
         IsPopupVisibleSelectNoteToDelete = false;
 
         notesCount--;
@@ -1434,7 +1453,7 @@ else
         var projectManager = selectedQuote.projectManager;
 
         Warranty warranty = new Warranty();
-        warranty.Type = "Claim";
+        warranty._t = "Claim";
         warranty.Summary = "Warranty Claim";
         warranty.Details = @NoteDetails;
         warranty.Author = currentUser;
@@ -1458,8 +1477,64 @@ else
 
         IsPopupVisibleMakeWarrantyClaim = false;
         NoteDetails = "";
+    }
 
-        PauseRefresh(false);
+    public void CloseWarrantyClaim()
+    {
+        List<Warranty> warranties = new List<Warranty>();
+
+        selectedQuote.status = "Archive";
+
+        try
+        {
+            foreach (Warranty warranty in selectedQuote.warranties)
+            {
+                if (warranty._t == "Claim")
+                {
+                    Warranty _warranty = new Warranty();
+                    _warranty._t = warranty._t;
+                    _warranty.DateCreated = warranty.DateCreated;
+                    _warranty.Summary = warranty.Summary;
+                    _warranty.Details = warranty.Details;
+                    _warranty.Author = currentUser;
+
+                    _warranty.isCompleted = true;
+                    _warranty.DateCompleted = DateTime.UtcNow;
+                    _warranty.CompletionDetails = @NoteDetails;
+
+                    warranties.Add(_warranty);
+
+                    //selectedQuote.warranties.Remove(warranty);
+                }
+            }
+
+            selectedQuote.warranties.Clear();
+
+            selectedQuote.warranties.AddRange(warranties);
+
+            var projectManager = selectedQuote.projectManager;
+
+            Note note = new Note();
+            note.Summary = "Note Added (Close Warranty Claim)";
+            note.Details = @NoteDetails;
+
+            selectedQuote.notes.Add(note);
+
+            Event _event = new Event();
+            _event.Details = "Warranty Claim moved back to Archive";
+            _event.Author = currentUser;
+
+            selectedQuote.events.Add(_event);
+
+            WebServices.UpdateQuote(selectedQuote);
+
+            IsPopupVisibleCloseWarrantyClaim = false;
+            NoteDetails = "";
+        }
+        catch(Exception ex)
+        {
+            var errMsg = ex.Message;
+        }
     }
 
     public void CompleteCustomer()
@@ -1477,57 +1552,6 @@ else
         WebServices.UpdateQuote(selectedQuote);
 
         IsPopupVisibleCompleteCustomer = false;
-
-        PauseRefresh(false);
-    }
-
-    public virtual void PauseRefresh(bool isPaused)
-    {
-        RefreshDisabled = isPaused;
-
-        CreateLeadDisabled = isPaused;
-        CreateLeadsDisabled = isPaused;
-
-        if (isPaused)
-        {
-            RefreshDisabled = false;
-
-            CreateLeadDisabled = false;
-            CreateLeadsDisabled = false;
-
-            RefreshButtonText = "Resume Refresh";
-            RefreshButtonClass = "btn-refresh-inactive";
-            StatusClass = "message-warning";
-            RefreshStatus = " Auto refresh paused...";
-
-            TimerDispose();
-        }
-        else
-        {
-            CreateLeadDisabled = true;
-            CreateLeadsDisabled = true;
-
-            RefreshButtonText = "Pause Refresh";
-            RefreshButtonClass = "btn-refresh-active";
-            StatusClass = "message";
-            RefreshStatus = "";
-
-            TimerRefresh();
-        }
-    }
-
-    public virtual void ToggleRefresh()
-    {
-        if (RefreshButtonText == "Pause Refresh")
-        {
-            PauseRefresh(true);
-        }
-        else
-        {
-            PauseRefresh(false);
-        }
-
-        RefreshDisabled = false;
     }
 
     public void TimerDispose()
@@ -1538,8 +1562,6 @@ else
 
     private async Task TimerRefresh()
     {
-        LoadingPanelVisible = true;
-
         TimerDispose();
 
         _timer = new Timer(new TimerCallback(_ =>
@@ -1550,7 +1572,8 @@ else
 
             quotes = webServices.GetQuote(QuoteId);
 
-            selectedQuote = quotes[0];
+            if(quotes != null)
+                selectedQuote = quotes[0];
 
             InvokeAsync(() =>
             {
@@ -1559,9 +1582,6 @@ else
         }), null, 1000, 1000);
 
         LoadingPanelVisible = false;
-
-        // if(@QuoteGrid != null)
-        //     QuoteGrid.ExpandDetailRow(0);
     }
 
     private async Task<bool> IsUserEnabled()
