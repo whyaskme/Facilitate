@@ -56,8 +56,6 @@ namespace Facilitate.Admin.Data
         {
             try
             {
-                var condition = Builders<Quote>.Filter.Eq(f => f.status, status);
-
                 var fields = Builders<Quote>.Projection.Include(p => p.firstName)
                     .Include(p => p.lastName)
                     .Include(p => p._id)
@@ -75,7 +73,6 @@ namespace Facilitate.Admin.Data
                     .Include(p => p.city)
                     .Include(p => p.state)
                     .Include(p => p.zip);
-
 
                 var builder = Builders<Quote>.Filter;
                 var filter = Builders<Quote>.Filter.Where(p => p.status.Contains(status));
@@ -98,15 +95,14 @@ namespace Facilitate.Admin.Data
 
         public List<QuoteHeader> GetSummaries(string tradeType, string status, bool showHideTestData)
         {
-            List<QuoteHeader> QuoteHeaders = new List<QuoteHeader>();
             try
             {
-                var condition = Builders<Quote>.Filter.Eq(f => f.status, status);
-
                 var fields = Builders<Quote>.Projection.Include(p => p.firstName)
                     .Include(p => p.lastName)
+                    .Include(p => p._id)
                     .Include(p => p.email)
                     .Include(p => p.status)
+                    .Include(p => p.projectManager)
                     .Include(p => p.applicationType)
                     .Include(p => p.numberOfStructures)
                     .Include(p => p.numberOfIncludedStructures)
@@ -119,10 +115,6 @@ namespace Facilitate.Admin.Data
                     .Include(p => p.state)
                     .Include(p => p.zip);
 
-
-                //var builder = Builders<Quote>.Filter;
-                //var filter = Builders<Quote>.Filter.Where(p => p.status.Contains(status));
-
                 var filterBuilder = Builders<Quote>.Filter;
                 var filter = filterBuilder.Eq("status", status) & filterBuilder.Eq("applicationType", utils.TitleCaseString(tradeType));
 
@@ -132,44 +124,14 @@ namespace Facilitate.Admin.Data
 
                     filter = Builders<Quote>.Filter.And(filter, dataSourceFilter);
                 }
-
-                List<Quote> quotes = _mongoDBCollection.Find(filter).Project<Quote>(fields).ToList();
-
-                for (var i = 0; i < quotes.Count; i++)
-                {
-                    QuoteHeader _header = new QuoteHeader();
-                    _header._id = quotes[i]._id;
-                    _header.applicationType = quotes[i].applicationType;
-                    _header.firstName = quotes[i].firstName;
-                    _header.lastName = quotes[i].lastName;
-                    _header.email = quotes[i].email;
-                    _header.status = quotes[i].status;
-
-                    _header.street = quotes[i].street;
-                    _header.city = quotes[i].city;
-                    _header.state = quotes[i].state;
-                    _header.zip = quotes[i].zip;
-
-                    _header.numberOfStructures = quotes[i].numberOfStructures;
-                    _header.numberOfIncludedStructures = quotes[i].numberOfIncludedStructures;
-
-                    _header.totalQuote = quotes[i].totalQuote;
-                    _header.totalSquareFeet = quotes[i].totalSquareFeet;
-
-                    _header.timestamp = quotes[i].timestamp.ToLocalTime();
-                    _header.lastUpdated = quotes[i].lastUpdated.ToLocalTime();
-
-                    QuoteHeaders.Add(_header);
-                }
-
-                return QuoteHeaders;
+                return _mongoDBCollection.Find(filter).Project<QuoteHeader>(fields).ToList();
             }
             catch (Exception ex)
             {
                 resultMsg = ex.Message;
             }
 
-            return QuoteHeaders;
+            return null;
         }
 
         public List<QuoteHeader> GetSummaries(string status, string userId)
