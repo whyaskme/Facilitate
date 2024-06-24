@@ -6,6 +6,16 @@ html, body {
     overflow: auto !important;
 }
 
+.header-return-button {
+    border: solid 1px #ffffff !important;
+    float: left !important;
+    font-size: 0.8em !important;
+/*    color: #ffffff !important;
+    background-color: #014b01 !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;*/
+}
+
 .dxuc-select-button,
 .dxuc-select-button:hover {
     background-color: #000000 !important;
@@ -350,10 +360,6 @@ h1.text-danger {
     text-align: center !important;
     font-style: italic !important;
     color: #808080 !important;
-}
-
-.header-return-button {
-    border: solid 1px #ff0000 !important;
 }
 
 .dxbl-text {
