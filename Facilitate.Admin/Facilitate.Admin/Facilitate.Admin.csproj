@@ -18,8 +18,11 @@
   <ItemGroup>
     <PackageReference Include="AspNetCore.Identity.Mongo" Version="8.3.3" />
     <PackageReference Include="Blazor.UI" Version="1.0.22" />
-    <PackageReference Include="BootstrapBlazor" Version="8.6.2" />
+    <PackageReference Include="BootstrapBlazor" Version="8.6.3" />
     <PackageReference Include="DevExpress.Blazor" Version="23.2.4" />
+    <PackageReference Include="GoogleMaps.LocationServices" Version="1.2.0.5" />
+    <PackageReference Include="GoogleMapsApi" Version="1.2.1" />
+    <PackageReference Include="jquery.iframeDialog" Version="1.2.1" />
     <PackageReference Include="Json.Net" Version="1.0.33" />
     <PackageReference Include="MaxMind.Db" Version="4.1.0" />
     <PackageReference Include="MaxMind.GeoIP2" Version="5.2.0" />
@@ -35,8 +38,8 @@
     <PackageReference Include="MongoDB.Driver" Version="2.26.0" />
     <PackageReference Include="MongoDB.Driver.Core" Version="2.26.0" />
     <PackageReference Include="MongoDB.Driver.GridFS" Version="2.26.0" />
-    <PackageReference Include="ServiceStack.Client" Version="8.2.2" />
-    <PackageReference Include="Syncfusion.Blazor.Core" Version="26.1.35" />
+    <PackageReference Include="ServiceStack.Client" Version="8.3.0" />
+    <PackageReference Include="Syncfusion.Blazor.Core" Version="26.1.38" />
   </ItemGroup>
 
   <ItemGroup>

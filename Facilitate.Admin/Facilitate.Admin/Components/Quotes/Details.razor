@@ -148,16 +148,16 @@ else
             @bind-SelectedDataItem="@SelectedQuoteItem"
             TextWrapEnabled="false">
         <Columns>
-            <DxGridDataColumn Width="200" Caption="Id" FieldName="_id" />
-            <DxGridDataColumn Width="85" Caption="Trade" FieldName="applicationType" />
-            <DxGridDataColumn Width="150" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
-            <DxGridDataColumn Width="150" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+            <DxGridDataColumn Width="auto" Caption="Id" FieldName="_id" />
+            <DxGridDataColumn Width="auto" Caption="Trade" FieldName="applicationType" />
+            <DxGridDataColumn Width="auto" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+            <DxGridDataColumn Width="auto" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
             <DxGridDataColumn Width="auto" Caption="Street" FieldName="street" />
-            <DxGridDataColumn Width="125" Caption="City" FieldName="city" />
-            <DxGridDataColumn Width="50" Caption="State" FieldName="state" />
-            <DxGridDataColumn Width="65" Caption="Zip" FieldName="zip" />
-            <DxGridDataColumn Width="65" Caption="SqFt" FieldName="totalSquareFeet" />
-            <DxGridDataColumn Width="75" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
+            <DxGridDataColumn Width="auto" Caption="City" FieldName="city" />
+            <DxGridDataColumn Width="auto" Caption="State" FieldName="state" />
+            <DxGridDataColumn Width="auto" Caption="Zip" FieldName="zip" />
+@*             <DxGridDataColumn Width="65" Caption="SqFt" FieldName="totalSquareFeet" />
+            <DxGridDataColumn Width="75" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" /> *@
         </Columns>
 
         <DetailRowTemplate>
@@ -168,9 +168,9 @@ else
 
                 roofsCount = selectedQuote.structures.Count;
                 if (roofsCount <= 1)
-                    roofsCountLabel = roofsCount.ToString() + " Roof Project";
+                    roofsCountLabel = roofsCount.ToString() + " Roof Selected";
                 else
-                    roofsCountLabel = roofsCount.ToString() + " Roof Projects";
+                    roofsCountLabel = roofsCount.ToString() + " Roofs Selected";
 
                 productsCount = selectedQuote.products.Count;
                 if (productsCount <= 1)
@@ -182,93 +182,90 @@ else
                 notesCount = selectedQuote.notes.Count;
                 eventsCount = selectedQuote.events.Count;
 
-                // <h6>Homeowner</h6>
                 <div class="row">
-                    <div class="col-md-9 col-visible">
-                        <div class="row">
-                            <div class="col">
-                                <label>Name</label>
-                                <span>@selectedQuote.firstName @selectedQuote.lastName</span>
-                            </div>
-                            <div class="col">
-                                <label>Address</label>
-                                <a href="https://www.google.com/maps/search/@selectedQuote.street @selectedQuote.city, @selectedQuote.state @selectedQuote.zip" target="_blank">
-                                    @selectedQuote.street @selectedQuote.city, @selectedQuote.state @selectedQuote.zip
-                                </a>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <label>Email</label>
-                                <a href="mailto:@selectedQuote.email">
-                                    <span>@selectedQuote.email</span>
-                                </a>
-                            </div>
-                            <div class="col">
-                                <label>Phone</label>
-                                <span>@selectedQuote.phone</span>
-                            </div>
-                        </div>
+                    <div class="col-md-4">
+                        <label>Name</label>
+                        <span>@selectedQuote.firstName @selectedQuote.lastName</span>
                     </div>
-                    <div class="col-md-3 col-visible">
-                        <iframe src="/test.html" class="google-map"></iframe>
+                    <div class="col-md-4">
+                        <label>Address</label>
+                        <a href="https://www.google.com/maps/search/@selectedQuote.street @selectedQuote.city, @selectedQuote.state @selectedQuote.zip" target="_blank">
+                            @selectedQuote.street @selectedQuote.city, @selectedQuote.state @selectedQuote.zip
+                        </a>
+                    </div>
+                    <div class="col-md-4 quote-total">
+                        <span class="">@selectedQuote.totalSquareFeet.ToString("N0")</span>
+                        <span class="">sqft &raquo;</span>
+                        <span class="">@selectedQuote.totalQuote.ToString("C0")</span>
                     </div>
                 </div>
-
-                // <div class="col">
-                //     <label>IP</label>
-                //     <a href="https://whatismyipaddress.com/ip/@SubmissionUserIP" target="_blank">
-                //         <span>Location</span>
-                //     </a>
-                // </div>
-
-                // <div class="table-spacer" />
-
-                // <br /><br />
-
-                <div class="table-spacer" />
-
-                if(isSystemAdmin)
-                {
-                    <a class="hyperlink-manager-assignment" @onclick="@(() => IsAssignPopupVisible = true)">Manager Assignment</a>
-                }
-                
-                if(selectedQuote.projectManager != null)
-                {
-                    <div class="row">
-                        <div class="col">
-                            <label>Project Manager</label>
-                            <span class="detail-item">@selectedQuote.projectManager.FirstName</span><span class="detail-item">@selectedQuote.projectManager.LastName</span>
-                        </div>
-
-                        <div class="col">
-                            <label>Phone</label>
-                            <span class="detail-item">@selectedQuote.projectManager.Phone</span>
-                        </div>
-                        <div class="col">
-                            <label>Email</label>
-                            <a href="mailto:@selectedQuote.projectManager.Email" target="_blank">
-                                <span class="detail-item">@selectedQuote.projectManager.Email</span>
-                            </a>
-                        </div>
-                        <div class="col">
-                            <label>Market</label>
-                            <a href="https://www.google.com/maps/search/@selectedQuote.projectManager.City, @selectedQuote.projectManager.State @selectedQuote.projectManager.Zip" target="_blank">
-                                @selectedQuote.projectManager.City, @selectedQuote.projectManager.State
-                            </a>
-                        </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Email</label>
+                        <a href="mailto:@selectedQuote.email">
+                            <span>@selectedQuote.email</span>
+                        </a>
                     </div>
-                }
-
-                // <br /><br />
+                    <div class="col-md-4">
+                        <label>Phone</label>
+                        <span>@selectedQuote.phone</span>
+                    </div>
+                    <div class="col-md-4"></div>
+                </div>
 
                 <div class="section-header">
-                    Project Summary
+                    Project Dashboard
                 </div>
-                // <br />
+
                 <DxTabs CssClass="tabs-container">
 
-                    <DxTabPage Id="Panel-Project-Manager" CssClass="tab-container" Text="@roofsCountLabel">
+                    <DxTabPage Id="Panel-Project-Manager" Text="Project Management">
+                    @{
+                        if (isSystemAdmin)
+                        {
+                            <button class="action-button" @onclick="@(() => IsAssignPopupVisible = true)">Manager Assignment</button>
+                            <br /><br />
+                        }
+
+                        if (selectedQuote.projectManager != null)
+                        {
+                            <div class="row">
+                                <div class="col">
+                                    <label>Project Manager</label>
+                                    <span class="detail-item">@selectedQuote.projectManager.FirstName</span><span class="detail-item">@selectedQuote.projectManager.LastName</span>
+                                </div>
+
+                                <div class="col">
+                                    <label>Phone</label>
+                                    <span class="detail-item">@selectedQuote.projectManager.Phone</span>
+                                </div>
+                                <div class="col">
+                                    <label>Email</label>
+                                    <a href="mailto:@selectedQuote.projectManager.Email" target="_blank">
+                                        <span class="detail-item">@selectedQuote.projectManager.Email</span>
+                                    </a>
+                                </div>
+                                <div class="col">
+                                    <label>Market</label>
+                                    <a href="https://www.google.com/maps/search/@selectedQuote.projectManager.City, @selectedQuote.projectManager.State @selectedQuote.projectManager.Zip" target="_blank">
+                                        @selectedQuote.projectManager.City, @selectedQuote.projectManager.State
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    }
+                    </DxTabPage>
+
+                    @{
+                        if (@selectedQuote.status != "New" && @selectedQuote.status != "Opportunity")
+                        {
+                            <DxTabPage Id="Panel-Project-Schedule" Text="Project Schedule">
+                                Scheduling component here...
+                            </DxTabPage>
+                        }
+                    }
+
+                    <DxTabPage Id="Panel-Project-Summary" CssClass="tab-container" Text="@roofsCountLabel">
 
                         <div class="container">
 
@@ -403,105 +400,110 @@ else
 
                     </DxTabPage>
 
-                    <DxTabPage Id="Panel-Send-Files" Text="@_emailTabLabel">
-                        <DxUpload Name="fileUpload1"
-                                  SelectButtonText="Upload"
-                                  AllowMultiFileUpload="true"
-                                  UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
-                                  SelectedFilesChanged="@SelectedFilesChanged"
-                                  MaxFileSize="15000000"
-                                  AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
-                                  AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
-                                  CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
-                        </DxUpload>
-                        <button disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
-                    </DxTabPage>
-
-                    <DxTabPage Id="Panel-Attach-Files" Text="Attachments">
-                        <DxUpload Name="fileUpload2"
-                                  SelectButtonText="Upload"
-                                  AllowMultiFileUpload="true"
-                                  UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
-                                  SelectedFilesChanged="@SelectedFilesChanged"
-                                  MaxFileSize="15000000"
-                                  AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
-                                  AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
-                                  CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
-                        </DxUpload>
-
-                        @foreach (Attachment attachment in selectedQuote.attachments)
+                    @{
+                        if (@selectedQuote.status != "New")
                         {
-                            if (!attachment.IsDeleted)
-                            {
-                                <div class="note-row">
-                                    <div>
-                                        <label>@attachmentsCount) @attachment.Date</label>
+                            <DxTabPage Id="Panel-Send-Files" Text="@_emailTabLabel">
+                                <DxUpload Name="fileUpload1"
+                                          SelectButtonText="Upload"
+                                          AllowMultiFileUpload="true"
+                                          UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                          SelectedFilesChanged="@SelectedFilesChanged"
+                                          MaxFileSize="15000000"
+                                          AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
+                                          AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
+                                          CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
+                                </DxUpload>
+                                <button class="action-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
+                            </DxTabPage>
+
+                            <DxTabPage Id="Panel-Attach-Files" Text="Attachments">
+                                <DxUpload Name="fileUpload2"
+                                          SelectButtonText="Upload"
+                                          AllowMultiFileUpload="true"
+                                          UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                          SelectedFilesChanged="@SelectedFilesChanged"
+                                          MaxFileSize="15000000"
+                                          AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
+                                          AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
+                                          CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
+                                </DxUpload>
+
+                                @foreach (Attachment attachment in selectedQuote.attachments)
+                                {
+                                    if (!attachment.IsDeleted)
+                                    {
+                                        <div class="note-row">
+                                            <div>
+                                                <label>@attachmentsCount) @attachment.Date</label>
+                                            </div>
+
+                                            <span class="hyperlink-warning" @onclick="() => SelectAttachmentToDelete(selectedQuote, attachment)">Delete</span>
+
+                                            <span class="bar-spacer">|</span>
+                                            <a href="@attachment.MediaUrl" target="_blank">
+                                                <span>@attachment.MediaDescription</span>
+                                            </a>
+                                            <span class="bar-spacer">|</span>
+                                            <label>File Type</label>
+                                            <span>@FileType</span>
+                                            <span class="bar-spacer">|</span>
+                                            <label>Source</label>
+                                            <span>@attachment.Author.FirstName @attachment.Author.LastName</span>
+                                        </div>
+
+                                        attachmentsCount--;
+                                    }
+                                }
+                            </DxTabPage>
+
+                            <DxTabPage Id="Panel-Notes" Text="Notes">
+                                <button class="action-button" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
+                                @foreach (Note note in selectedQuote.notes)
+                                {
+                                    if (!note.IsDeleted)
+                                    {
+                                        <div class="note-row">
+                                            <div>
+                                                <label>@notesCount) @note.Date</label>
+                                            </div>
+
+                                            <span class="hyperlink-warning" @onclick="() => SelectNoteToDelete(selectedQuote, note)">Delete</span>
+
+                                            <span class="bar-spacer">|</span>
+                                            <span>@note.Details</span>
+
+                                            <span class="bar-spacer">|</span>
+                                            <label>Source</label>
+                                            <span>@note.Author.FirstName @note.Author.LastName</span>
+                                        </div>
+
+                                        notesCount--;
+                                    }
+                                }
+                            </DxTabPage>
+
+                            <DxTabPage Id="Panel-History" Text="History">
+                                @foreach (Event _event in selectedQuote.events)
+                                {
+                                    <div class="note-row">
+                                        <div class="">
+                                            <label>@eventsCount) @_event.DateTime</label>
+                                        </div>
+
+                                        <span class="bar-spacer">|</span>
+                                        <span>@_event.Details</span>
+
+                                        <span class="bar-spacer">|</span>
+                                        <label>Source</label>
+                                        <span>@_event.Author.FirstName @_event.Author.LastName</span>
                                     </div>
 
-                                    <span class="hyperlink-warning" @onclick="() => SelectAttachmentToDelete(selectedQuote, attachment)">Delete</span>
-
-                                    <span class="bar-spacer">|</span>
-                                    <a href="@attachment.MediaUrl" target="_blank">
-                                        <span>@attachment.MediaDescription</span>
-                                    </a>
-                                    <span class="bar-spacer">|</span>
-                                    <label>File Type</label>
-                                    <span>@FileType</span>
-                                    <span class="bar-spacer">|</span>
-                                    <label>Source</label>
-                                    <span>@attachment.Author.FirstName @attachment.Author.LastName</span>
-                                </div>
-
-                                attachmentsCount--;
-                            }
+                                    eventsCount--;
+                                }
+                            </DxTabPage>
                         }
-                    </DxTabPage>
-
-                    <DxTabPage Id="Panel-Notes" Text="Notes">
-                        <button @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
-                        @foreach (Note note in selectedQuote.notes)
-                        {
-                            if (!note.IsDeleted)
-                            {
-                                <div class="note-row">
-                                    <div>
-                                        <label>@notesCount) @note.Date</label>
-                                    </div>
-
-                                    <span class="hyperlink-warning" @onclick="() => SelectNoteToDelete(selectedQuote, note)">Delete</span>
-
-                                    <span class="bar-spacer">|</span>
-                                    <span>@note.Details</span>
-
-                                    <span class="bar-spacer">|</span>
-                                    <label>Source</label>
-                                    <span>@note.Author.FirstName @note.Author.LastName</span>
-                                </div>
-
-                                notesCount--;
-                            }
-                        }
-                    </DxTabPage>
-
-                    <DxTabPage Id="Panel-History" Text="History">
-                        @foreach (Event _event in selectedQuote.events)
-                        {
-                            <div class="note-row">
-                                <div class="">
-                                    <label>@eventsCount) @_event.DateTime</label>
-                                </div>
-
-                                <span class="bar-spacer">|</span>
-                                <span>@_event.Details</span>
-
-                                <span class="bar-spacer">|</span>
-                                <label>Source</label>
-                                <span>@_event.Author.FirstName @_event.Author.LastName</span>
-                            </div>
-
-                            eventsCount--;
-                        }
-                    </DxTabPage>
+                    }
 
                     <DxTabPage Id="Panel-Origination" Text="Origination">
                         <table id="table-origin" class="table-detail">
@@ -966,8 +968,6 @@ else
     {
         selectedQuote.status = "Customer";
 
-        QuoteGrid.CollapseDetailRow(selectedIndex);
-
         var projectManager = selectedQuote.projectManager;
 
         Event _event = new Event();
@@ -1188,15 +1188,10 @@ else
         var selectedDetailExpanded = QuoteGrid.IsDetailRowExpanded(selectedIndex);
         if (selectedDetailExpanded)
         {
-            QuoteGrid.CollapseDetailRow(selectedIndex);
-
             PauseRefresh(false);
         }
         else
         {
-            QuoteGrid.CollapseAllDetailRows();
-            QuoteGrid.ExpandDetailRow(selectedIndex);
-
             PauseRefresh(true);
         }
     }
@@ -1244,8 +1239,6 @@ else
         sysUser.FirstName = "System";
 
         LoadingPanelVisible = true;
-
-        QuoteGrid.CollapseDetailRow(selectedIndex);
 
         // Only change status when assigning the first time.
         if (selectedQuote.status == "New")
@@ -1325,8 +1318,6 @@ else
 
         selectedQuote.status = "Archive";
 
-        QuoteGrid.CollapseDetailRow(selectedIndex);
-
         Note note = new Note();
         note.Summary = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
         note.Details = @NoteDetails;
@@ -1351,8 +1342,6 @@ else
     {
         PauseRefresh(true);
 
-        QuoteGrid.CollapseDetailRow(selectedIndex);
-
         Note note = new Note();
         note.Summary = "Note Added";
         note.Details = @NoteDetails;
@@ -1372,17 +1361,12 @@ else
         WebServices.UpdateQuote(selectedQuote);
 
         TimerRefresh();
-        quotes = webServices.GetQuotes("New");
-
-        QuoteGrid.ExpandDetailRow(selectedIndex);
 
         PauseRefresh(true);
     }
 
     public void CloseDetails()
     {
-        QuoteGrid.CollapseDetailRow(selectedIndex);
-
         PauseRefresh(false);
     }
 
@@ -1446,8 +1430,6 @@ else
     {
         selectedQuote.status = "Warranty";
 
-        QuoteGrid.CollapseDetailRow(selectedIndex);
-
         var projectManager = selectedQuote.projectManager;
 
         Warranty warranty = new Warranty();
@@ -1482,8 +1464,6 @@ else
     public void CompleteCustomer()
     {
         selectedQuote.status = "Complete";
-
-        QuoteGrid.CollapseDetailRow(selectedIndex);
 
         var projectManager = selectedQuote.projectManager;
 
