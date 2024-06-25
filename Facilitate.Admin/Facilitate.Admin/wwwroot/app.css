@@ -6,11 +6,15 @@ html, body {
     overflow: auto !important;
 }
 
+button.btn-primary {
+    margin-bottom: 25px !important;
+}
+
 .header-return-button {
     border: solid 1px #ffffff !important;
     float: left !important;
     font-size: 0.8em !important;
-/*    color: #ffffff !important;
+    /*    color: #ffffff !important;
     background-color: #014b01 !important;
     padding-left: 15px !important;
     padding-right: 15px !important;*/

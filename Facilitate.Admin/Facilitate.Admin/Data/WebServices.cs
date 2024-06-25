@@ -282,10 +282,7 @@ namespace Facilitate.Admin.Data
             List<Quote> sortedQuotes = new List<Quote>();
             try
             {
-                //var filter = Builders<Quote>.Filter.Where(p => p.status.Contains(status));
-
                 var tradeFilter = Builders<Quote>.Filter.Where(p => p.applicationType.Contains(utils.TitleCaseString(tradeType)));
-                //filter = Builders<Quote>.Filter.And(filter, tradeFilter);
 
                 var filterBuilder = Builders<Quote>.Filter;
                 var filter = filterBuilder.Eq("status", status) & filterBuilder.Eq("applicationType", utils.TitleCaseString(tradeType));
@@ -603,25 +600,6 @@ namespace Facilitate.Admin.Data
             return null;
         }
 
-        //public string CreateQuote(Quote quote)
-        //{
-        //    try
-        //    {
-        //        _mongoDBCollection.InsertOne(quote);
-
-        //        resultMsg = "Added Quote!";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        resultMsg = ex.Message;
-        //    }
-        //    finally
-        //    {
-
-        //    }
-        //    return resultMsg;
-        //}
-
         public async Task<string> CreateQuoteApi(int numQuotesToCreate)
         {
             try
@@ -797,6 +775,120 @@ namespace Facilitate.Admin.Data
                 else
                 {
                     var countsByQuoteStatus = _mongoDBCollection.Aggregate()
+                              .Group(
+                                  x => x.status,
+                                  g => new QuoteStat
+                                  {
+                                      QuoteType = g.Key,
+                                      QuoteCount = g.Count(),
+                                      QuoteValue = g.Sum(x => x.totalQuote),
+                                      QuoteSqFt = g.Sum(x => x.totalSquareFeet)
+                                  }).ToList();
+
+                    searchResults = countsByQuoteStatus;
+                }
+
+                foreach (var item in searchResults)
+                {
+                    if (item.QuoteType == "New")
+                    {
+                        quoteLeaderboard.LeadCount = item.QuoteCount;
+                        quoteLeaderboard.LeadValue = item.QuoteValue;
+                        quoteLeaderboard.LeadSqFt = item.QuoteSqFt;
+                    }
+                    else if (item.QuoteType == "Opportunity")
+                    {
+                        quoteLeaderboard.OpportunityCount = item.QuoteCount;
+                        quoteLeaderboard.OpportunityValue = item.QuoteValue;
+                        quoteLeaderboard.OpportunitySqFt = item.QuoteSqFt;
+                    }
+                    else if (item.QuoteType == "Customer")
+                    {
+                        quoteLeaderboard.CustomerCount = item.QuoteCount;
+                        quoteLeaderboard.CustomerValue = item.QuoteValue;
+                        quoteLeaderboard.CustomerSqFt = item.QuoteSqFt;
+                    }
+                    else if (item.QuoteType == "Complete")
+                    {
+                        quoteLeaderboard.CompletionCount = item.QuoteCount;
+                        quoteLeaderboard.CompletionValue = item.QuoteValue;
+                        quoteLeaderboard.CompletionSqFt = item.QuoteSqFt;
+                    }
+                    else if (item.QuoteType == "Archive")
+                    {
+                        quoteLeaderboard.ArchiveCount = item.QuoteCount;
+                        quoteLeaderboard.ArchiveValue = item.QuoteValue;
+                        quoteLeaderboard.ArchiveSqFt = item.QuoteSqFt;
+                    }
+                    else if (item.QuoteType == "Warranty")
+                    {
+                        quoteLeaderboard.WarrantyCount = item.QuoteCount;
+                        quoteLeaderboard.WarrantyValue = item.QuoteValue;
+                        quoteLeaderboard.WarrantySqFt = item.QuoteSqFt;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
+
+            quoteLeaderboard.TotalQuoteCount = quoteLeaderboard.LeadCount + quoteLeaderboard.OpportunityCount + quoteLeaderboard.CustomerCount + quoteLeaderboard.CompletionCount + quoteLeaderboard.ArchiveCount + quoteLeaderboard.WarrantyCount;
+            quoteLeaderboard.TotalQuoteValue = quoteLeaderboard.LeadValue + quoteLeaderboard.OpportunityValue + quoteLeaderboard.CustomerValue + quoteLeaderboard.CompletionValue + quoteLeaderboard.ArchiveValue + quoteLeaderboard.WarrantyValue;
+            quoteLeaderboard.TotalQuoteSqFt = quoteLeaderboard.LeadSqFt + quoteLeaderboard.OpportunitySqFt + quoteLeaderboard.CustomerSqFt + quoteLeaderboard.CompletionSqFt + quoteLeaderboard.ArchiveSqFt + quoteLeaderboard.WarrantySqFt;
+
+            return quoteLeaderboard;
+        }
+
+        public QuoteLeaderboard GetLeaderBoardStats(string tradeType, string status, bool showHideTestData)
+        {
+            QuoteLeaderboard quoteLeaderboard = new QuoteLeaderboard();
+
+            quoteLeaderboard.Trades = GetTradesList();
+
+            var searchResults = new List<QuoteStat>();
+            var dataSourceFilter = Builders<Quote>.Filter.Not(Builders<Quote>.Filter.Eq(p => p.externalUrl, "Auto-generated WebApi"));
+
+            //var tradeFilter = Builders<Quote>.Filter.Where(p => p.applicationType.Contains(utils.TitleCaseString(tradeType)));
+
+            var filterBuilder = Builders<Quote>.Filter;
+            var filter = filterBuilder.Eq("status", status) & filterBuilder.Eq("applicationType", utils.TitleCaseString(tradeType));
+
+            if (!showHideTestData)
+            {
+                dataSourceFilter = Builders<Quote>.Filter.Not(Builders<Quote>.Filter.Eq(p => p.externalUrl, "Auto-generated WebApi"));
+
+                filter = Builders<Quote>.Filter.And(filter, dataSourceFilter);
+            }
+
+            try
+            {
+                if (!showHideTestData)
+                {
+
+                    var countsByQuoteStatus = _mongoDBCollection.Aggregate()
+                        .Match(filter)
+                              .Group(
+                                  x => x.status,
+                                  g => new QuoteStat
+                                  {
+                                      QuoteType = g.Key,
+                                      QuoteCount = g.Count(),
+                                      QuoteValue = g.Sum(x => x.totalQuote),
+                                      QuoteSqFt = g.Sum(x => x.totalSquareFeet)
+                                  }
+                                  ).ToList();
+
+                    searchResults = countsByQuoteStatus;
+                }
+                else
+                {
+                    var countsByQuoteStatus = _mongoDBCollection.Aggregate()
+                        .Match(filter)
                               .Group(
                                   x => x.status,
                                   g => new QuoteStat

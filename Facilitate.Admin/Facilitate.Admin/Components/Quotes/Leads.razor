@@ -665,14 +665,15 @@ else
 
             if (isSystemAdmin)
             {
-                leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
                 if (SelectedTradeType.Contains("All"))
                 {
                     quotes = webServices.GetSummaries("New", ShowTestData);
+                    leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
                 }
                 else
                 {
                     quotes = webServices.GetSummaries(SelectedTradeType, "New", ShowTestData);
+                    leaderboardStats = WebServices.GetLeaderBoardStats(SelectedTradeType, "New", ShowTestData);
                 }
             }
             else

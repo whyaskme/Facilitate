@@ -612,14 +612,15 @@ else
         {
             if (isSystemAdmin)
             {
-                leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
                 if (SelectedTradeType.Contains("All"))
                 {
                     quotes = webServices.GetSummaries("Warranty", ShowTestData);
+                    leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
                 }
                 else
                 {
                     quotes = webServices.GetSummaries(SelectedTradeType, "Warranty", ShowTestData);
+                    leaderboardStats = WebServices.GetLeaderBoardStats(SelectedTradeType, "Warranty", ShowTestData);
                 }
             }
             else
