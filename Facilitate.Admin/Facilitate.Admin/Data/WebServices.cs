@@ -83,7 +83,15 @@ namespace Facilitate.Admin.Data
 
                     filter = Builders<Quote>.Filter.And(filter, dataSourceFilter);
                 }
-                return _mongoDBCollection.Find(filter).Project<QuoteHeader>(fields).ToList();
+
+                List<QuoteHeader> quoteHeaders = _mongoDBCollection.Find(filter).Project<QuoteHeader>(fields).ToList();
+                foreach (var quote in quoteHeaders)
+                {
+                    quote.lastUpdated = quote.lastUpdated.ToLocalTime();
+                    quote.timestamp = quote.timestamp.ToLocalTime();
+                }
+
+                return quoteHeaders;
             }
             catch (Exception ex)
             {
@@ -124,7 +132,15 @@ namespace Facilitate.Admin.Data
 
                     filter = Builders<Quote>.Filter.And(filter, dataSourceFilter);
                 }
-                return _mongoDBCollection.Find(filter).Project<QuoteHeader>(fields).ToList();
+
+                List<QuoteHeader> quoteHeaders = _mongoDBCollection.Find(filter).Project<QuoteHeader>(fields).ToList();
+                foreach(var quote in quoteHeaders)
+                {
+                    quote.lastUpdated = quote.lastUpdated.ToLocalTime();
+                    quote.timestamp = quote.timestamp.ToLocalTime();
+                }
+
+                return quoteHeaders;
             }
             catch (Exception ex)
             {
