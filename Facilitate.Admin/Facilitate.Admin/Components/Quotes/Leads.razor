@@ -544,12 +544,16 @@ else
 
     void FilterTradeType(IEnumerable<ListItem> selectedTradeType)
     {
+        var index = 0;
+
         LeadTypeList.Clear();
 
-        foreach(var item in selectedTradeType)
+        foreach (var item in selectedTradeType)
         {
+            index++;
+
             SelectedTradeType = item.Value;
-            if(SelectedTradeType == "Roofing")
+            if (SelectedTradeType == "Roofing")
             {
                 LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
                 LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });

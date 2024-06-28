@@ -495,10 +495,14 @@ else
 
     void FilterTradeType(IEnumerable<ListItem> selectedTradeType)
     {
+        var index = 0;
+
         LeadTypeList.Clear();
 
         foreach (var item in selectedTradeType)
         {
+            index++;
+
             SelectedTradeType = item.Value;
             if (SelectedTradeType == "Roofing")
             {
