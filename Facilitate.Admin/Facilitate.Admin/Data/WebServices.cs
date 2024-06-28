@@ -525,11 +525,22 @@ namespace Facilitate.Admin.Data
             {
                 var filter = new BsonDocument();
 
-                var statusFilter = Builders<Quote>.Filter.Where(p => p.status.Contains(status));
+                if(status == "All")
+                {
+                    var statusFilter = Builders<Quote>.Filter.Where(p => p._t == "Quote");
 
-                var tradesList = _mongoDBCollection.Distinct(s => s.applicationType, statusFilter);
+                    var tradesList = _mongoDBCollection.Distinct(s => s.applicationType, statusFilter);
 
-                return tradesList.ToList();
+                    return tradesList.ToList();
+                }
+                else
+                {
+                    var statusFilter = Builders<Quote>.Filter.Where(p => p.status.Contains(status));
+
+                    var tradesList = _mongoDBCollection.Distinct(s => s.applicationType, statusFilter);
+
+                    return tradesList.ToList();
+                }
             }
             catch (Exception ex)
             {
@@ -762,11 +773,11 @@ namespace Facilitate.Admin.Data
             return quoteLeaderboard;
         }
 
-        public QuoteLeaderboard GetLeaderBoardStats(bool showHideTestData)
+        public QuoteLeaderboard GetLeaderBoardStats(string status, bool showHideTestData)
         {
             QuoteLeaderboard quoteLeaderboard = new QuoteLeaderboard();
 
-            //quoteLeaderboard.Trades = GetTradesList();
+            quoteLeaderboard.Trades = GetTradesList(status);
 
             var searchResults = new List<QuoteStat>();
             var dataSourceFilter = Builders<Quote>.Filter.Not(Builders<Quote>.Filter.Eq(p => p.externalUrl, "Auto-generated WebApi"));
@@ -867,7 +878,7 @@ namespace Facilitate.Admin.Data
         {
             QuoteLeaderboard quoteLeaderboard = new QuoteLeaderboard();
 
-            //quoteLeaderboard.Trades = GetTradesList(status);
+            quoteLeaderboard.Trades = GetTradesList(status);
 
             var searchResults = new List<QuoteStat>();
             var dataSourceFilter = Builders<Quote>.Filter.Not(Builders<Quote>.Filter.Eq(p => p.externalUrl, "Auto-generated WebApi"));

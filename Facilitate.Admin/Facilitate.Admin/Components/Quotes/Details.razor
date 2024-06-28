@@ -1499,8 +1499,6 @@ else
                     _warranty.CompletionDetails = @NoteDetails;
 
                     warranties.Add(_warranty);
-
-                    //selectedQuote.warranties.Remove(warranty);
                 }
             }
 
@@ -1564,7 +1562,7 @@ else
         {
             var ShowTestData = true;
 
-            leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
+            leaderboardStats = WebServices.GetLeaderBoardStats(selectedQuote.status, ShowTestData);
 
             quotes = webServices.GetQuote(QuoteId);
 

@@ -18,7 +18,6 @@
 @using DevExpress.Data;
 @using DevExpress.Data.Linq;
 @using DevExpress.Web;
-@* @using static DevExpress.XtraPrinting.Native.ExportOptionsPropertiesNames *@
 
 @using Microsoft.AspNetCore.Html;
 
@@ -230,7 +229,6 @@ else
             PagerNavigationMode="PagerNavigationMode.InputBox"
             PageSizeSelectorVisible="true"
             PageSizeSelectorAllRowsItemVisible="false"
-            DataItemDeleting="Grid_DataItemDeleting"
             KeyboardNavigationEnabled="true">
         <Columns>
             <DxGridDataColumn Visible="false" Width="200" Caption="Id" FieldName="_id" />
@@ -299,43 +297,14 @@ else
         NavigationManager.LocationChanged -= OnLocationChanged;
     }
 
-    async Task Grid_DataItemDeleting(GridDataItemDeletingEventArgs e)
-    {
-        Quote selectedQuote = (Quote)e.DataItem;
-        // selectedQuote.status = "Deleted";
-        selectedQuote.status = "Archive";
-
-        Event _event = new Event();
-        _event.Name = "Deleted Quote";
-        _event.DateTime = DateTime.UtcNow;
-        _event.Details = "Admin deleted Quote";
-
-        _event.Author = currentUser;
-
-        selectedQuote.events.Add(_event);
-
-        // Let's delete this quote
-        WebServices.UpdateQuote(selectedQuote);
-    }
-
     public ApplicationUser currentUser = new ApplicationUser();
     public bool isSystemAdmin = false;
     public bool isUserAdmin = false;
 
+    public Utils _utils = new Utils();
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // var ownerId = "";
-        // var ownerType = "";
-        // var fromAddress = "admin@facilitate.org";
-        // var toAddress = "joseph.baranauskas@gmail.com";
-        // var subject = "Testing Email Services";
-        // var body = "This is just a test of the emergenct broadcast system. Had this been an actual emergency, you are toast!";
-        // var isBodyHtml = true;
-
-        // var emailSent = WebServices.SendEmail(ownerId, ownerType, fromAddress, toAddress, subject, body, isBodyHtml);
-
-        var _utils = new Utils();
-
         if (firstRender)
         {
             try
@@ -343,14 +312,6 @@ else
                 LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
                 LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
                 LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
-
-                TradesList.Add(new ListItem() { Text = "All", Value = "All" });
-
-                var tradeList = WebServices.GetTradesList("New");
-                foreach (var trade in tradeList)
-                {
-                    TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
-                }
 
                 var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
                 var loggedInUser = authstate.User;
@@ -551,16 +512,19 @@ else
         {
             index++;
 
-            SelectedTradeType = item.Value;
-            if (SelectedTradeType == "Roofing")
+            if(item != null)
             {
-                LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
-                LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
-                LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
-            }
-            else
-            {
-                LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
+                SelectedTradeType = item.Value;
+                if (SelectedTradeType == "Roofing")
+                {
+                    LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
+                    LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
+                    LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
+                }
+                else
+                {
+                    LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
+                }
             }
         }
 
@@ -655,14 +619,14 @@ else
         _timer = new Timer(new TimerCallback(_ =>
         {
             // Check to see if user IsEnabled. If not, log them out an redirect to login page
-            //// var isUserEnabled = IsUserEnabled();
+            // var isUserEnabled = IsUserEnabled();
 
             if (isSystemAdmin)
             {
                 if (SelectedTradeType.Contains("All"))
                 {
                     quotes = webServices.GetSummaries("New", ShowTestData);
-                    leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
+                    leaderboardStats = WebServices.GetLeaderBoardStats("New", ShowTestData);
                 }
                 else
                 {
@@ -678,6 +642,13 @@ else
 
             updateStatus = quotes.Count().ToString("N0");
             StatusContainerClass = "container-action-buttons-show";
+
+            TradesList.Clear();
+            TradesList.Add(new ListItem() { Text = "All", Value = "All" });
+            foreach (var trade in leaderboardStats.Trades)
+            {
+                TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
+            }
 
             InvokeAsync(() =>
             {
