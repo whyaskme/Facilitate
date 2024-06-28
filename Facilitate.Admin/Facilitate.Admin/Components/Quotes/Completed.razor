@@ -290,7 +290,7 @@ else
                 LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
 
                 TradesList.Add(new ListItem() { Text = "All", Value = "All" });
-                var tradeList = WebServices.GetTradesList();
+                var tradeList = WebServices.GetTradesList("Complete");
                 foreach (var trade in tradeList)
                 {
                     TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });

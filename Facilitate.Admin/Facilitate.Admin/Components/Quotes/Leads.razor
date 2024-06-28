@@ -345,7 +345,8 @@ else
                 LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
 
                 TradesList.Add(new ListItem() { Text = "All", Value = "All" });
-                var tradeList = WebServices.GetTradesList();
+
+                var tradeList = WebServices.GetTradesList("New");
                 foreach (var trade in tradeList)
                 {
                     TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
@@ -380,8 +381,6 @@ else
                             adminUsers.Add(adminUser);
 
                             // var userRoles = await UserManager.GetRolesAsync(adminUser);
-
-                            // var tmp = "";
                         }
                     }
 
@@ -605,15 +604,9 @@ else
     {
         RefreshDisabled = isPaused;
 
-        // CreateLeadDisabled = isPaused;
-        // CreateLeadsDisabled = isPaused;
-
         if (isPaused)
         {
             RefreshDisabled = false;
-
-            // CreateLeadDisabled = false;
-            // CreateLeadsDisabled = false;
 
             RefreshButtonText = "Resume Refresh";
             RefreshButtonClass = "btn btn-outline-primary btn-refresh-inactive";
@@ -624,9 +617,6 @@ else
         }
         else
         {
-            // CreateLeadDisabled = true;
-            // CreateLeadsDisabled = true;
-
             RefreshButtonText = "Pause Refresh";
             RefreshButtonClass = "btn-refresh-active";
             StatusClass = "message";
