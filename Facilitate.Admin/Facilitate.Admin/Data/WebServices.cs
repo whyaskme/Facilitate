@@ -519,12 +519,15 @@ namespace Facilitate.Admin.Data
             return sortedQuotes;
         }
 
-        public List<string> GetTradesList()
+        public List<string> GetTradesList(string status)
         {
             try
             {
                 var filter = new BsonDocument();
-                var tradesList = _mongoDBCollection.Distinct(s => s.applicationType, new BsonDocument());
+
+                var statusFilter = Builders<Quote>.Filter.Where(p => p.status.Contains(status));
+
+                var tradesList = _mongoDBCollection.Distinct(s => s.applicationType, statusFilter);
 
                 return tradesList.ToList();
             }
@@ -763,7 +766,7 @@ namespace Facilitate.Admin.Data
         {
             QuoteLeaderboard quoteLeaderboard = new QuoteLeaderboard();
 
-            quoteLeaderboard.Trades = GetTradesList();
+            //quoteLeaderboard.Trades = GetTradesList();
 
             var searchResults = new List<QuoteStat>();
             var dataSourceFilter = Builders<Quote>.Filter.Not(Builders<Quote>.Filter.Eq(p => p.externalUrl, "Auto-generated WebApi"));
@@ -864,7 +867,7 @@ namespace Facilitate.Admin.Data
         {
             QuoteLeaderboard quoteLeaderboard = new QuoteLeaderboard();
 
-            quoteLeaderboard.Trades = GetTradesList();
+            //quoteLeaderboard.Trades = GetTradesList(status);
 
             var searchResults = new List<QuoteStat>();
             var dataSourceFilter = Builders<Quote>.Filter.Not(Builders<Quote>.Filter.Eq(p => p.externalUrl, "Auto-generated WebApi"));
