@@ -408,11 +408,11 @@ else
                                 <DxUpload Name="fileUpload1"
                                           SelectButtonText="Upload"
                                           AllowMultiFileUpload="true"
-                                          UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                          UploadUrl="@GetUploadUrl("api/FileServices/")"
                                           SelectedFilesChanged="@SelectedFilesChanged"
-                                          MaxFileSize="15000000"
-                                          AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
-                                          AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
+                                          MaxFileSize="@MaxFileSize"
+                                          AllowedFileExtensions="@allowedFileExtensions"
+                                          AcceptedFileTypes="@acceptableFileTypes"
                                           CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
                                 </DxUpload>
                                 <button class="action-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
@@ -422,11 +422,11 @@ else
                                 <DxUpload Name="fileUpload2"
                                           SelectButtonText="Upload"
                                           AllowMultiFileUpload="true"
-                                          UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
+                                          UploadUrl="@GetUploadUrl("api/FileServices/")"
                                           SelectedFilesChanged="@SelectedFilesChanged"
-                                          MaxFileSize="15000000"
-                                          AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
-                                          AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
+                                          MaxFileSize="@MaxFileSize"
+                                          AllowedFileExtensions="@allowedFileExtensions"
+                                          AcceptedFileTypes="@acceptableFileTypes"
                                           CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
                                 </DxUpload>
 
@@ -908,6 +908,10 @@ else
 
 @code {
 
+    public List<string> allowedFileExtensions = new List<string> { ".jpeg", ".jpg", ".gif", ".mpg", ".mp4" };
+    public List<string> acceptableFileTypes = new List<string> { "image/*", "video/*" };
+    public int MaxFileSize = 15000000;
+
     protected override async Task OnInitializedAsync()
     {
     }
@@ -1255,6 +1259,23 @@ else
         SelectedFilesCount = files.ToList().Count;
         InvokeAsync(StateHasChanged);
 
+        foreach(UploadFileInfo file in files)
+        {
+            var fileGuid = file.Guid;
+            var IsFileExtensionValid = allowedFileExtensions.Contains(file.Type);
+            var fileIsMaxSizeValid = file.Size < MaxFileSize; // 1000MB
+            var fileIsMinSizeValid = file.Size > 0;
+            var fileLastModified = file.LastModified;
+            var fileLoadedBtyes = file.LoadedBytes;
+            // var fileRequestData = file.RequestData;
+            // var fileRequestHeaders = file.RequestHeaders;
+            var fileName = file.Name;
+            var fileSize = file.Size;
+            var fileType = file.Type;
+
+            var tmpVal = "";
+        }
+
         SendDocsDisabled = false;
     }
 
@@ -1561,8 +1582,6 @@ else
         _timer = new Timer(new TimerCallback(_ =>
         {
             var ShowTestData = true;
-
-            leaderboardStats = WebServices.GetLeaderBoardStats(selectedQuote.status, ShowTestData);
 
             quotes = webServices.GetQuote(QuoteId);
 
