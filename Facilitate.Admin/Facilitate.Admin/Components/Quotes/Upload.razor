@@ -1,12 +1,24 @@
-﻿@page "/upload"
+﻿@page "/quotes/upload"
 
-@using Facilitate.Admin.Data
+@using DevExpress.Blazor;
 @using DevExpress.Data
 @using DevExpress.Data.Linq
-@using Facilitate.Libraries.Models;
+@using DevExpress.Web;
+
 @using MongoDB.Bson;
 
 @using Json.Net;
+
+@using Facilitate.Admin.Data;
+@using Facilitate.Libraries.Models;
+
+@using Microsoft.AspNetCore.Html;
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Identity;
+@using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.AspNetCore.Mvc.Rendering;
+@using Microsoft.AspNetCore.WebUtilities;
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
@@ -28,14 +40,48 @@
     UploadMode=UploadMode.OnButtonClick
     AllowMultiFileUpload="true"
     UploadUrl="@GetUploadUrl("https://localhost:7235/api/fileservices")"
+    FileUploadError="@OnUploadError"
+    FileUploadStarted="@OnFileUploadStarted"
     SelectedFilesChanged="@SelectedFilesChanged"
-    MaxFileSize="15000000"
+    MaxFileSize="@MaxFileSize"
+    AllowedFileExtensions="@allowedFileExtensions"
+    AcceptedFileTypes="@acceptableFileTypes"
     CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
 </DxUpload>
 
-<DxButton Text="Upload the First File" Click=OnButtonClick />
+<DxButton Text="Save Uploads" Click=OnButtonClick />
 
 @code {
+
+    public void processUpload()
+    {
+        var tmpVal = "";
+    }
+
+    public List<string> allowedFileExtensions = new List<string> { ".jpeg", ".jpg", ".gif", ".mpg", ".mp4" };
+    public List<string> acceptableFileTypes = new List<string> { "audio/*", "doc/*", "image/*", "video/*" };
+
+    public UploadHttpRequestInfo RequestInfo { get; }
+
+    public int MaxFileSize = 15000000;
+
+    bool ErrorVisible { get; set; } = false;
+    string MyError { get; set; }
+
+    void OnUploadError(FileUploadErrorEventArgs e)
+    {
+        MyError = e.RequestInfo.ResponseText;
+        ErrorVisible = true;
+        InvokeAsync(StateHasChanged);
+    }
+
+    void OnFileUploadStarted(FileUploadEventArgs e) 
+    {
+        var MyMessage = "Upload of the " + e.FileInfo.Name + " file was started.";
+
+        InvokeAsync(StateHasChanged);
+    }
+
     int SelectedFilesCount { get; set; }
 
     bool UploadVisible { get; set; } = false;
@@ -57,8 +103,10 @@
     {
         try
         {
-            FirstFile = Files.First();
-            MyUpload.UploadFile(FirstFile);
+            foreach(var file in Files)
+            {
+                MyUpload.UploadFile(file);
+            }
         }
         catch(Exception ex)
         {
@@ -68,6 +116,10 @@
 
     protected string GetUploadUrl(string url)
     {
-        return NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
+        var tmpVal = NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
+
+        //tmpVal = "/quotes/upload/";
+
+        return tmpVal;
     }
 }
