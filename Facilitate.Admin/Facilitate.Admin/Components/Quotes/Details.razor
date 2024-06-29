@@ -76,61 +76,6 @@
 }
 else
 {
-@*     <div class="quotes-leaderboard-page-header">
-        <div class="col-md-3 stat-element">
-            <span class="stat-value"><b>@leaderboardStats.TotalQuoteCount.ToString("N0") Quotes</b></span>
-            <span class="stat-divider">|</span>
-            <span class="stat-value">@leaderboardStats.TotalQuoteValue.ToString("C0")</span>
-            <span class="stat-divider">|</span>
-            <span class="stat-value">@leaderboardStats.TotalQuoteSqFt.ToString("N0")sqft</span>
-            <span class="stat-divider">|</span>
-        </div>
-        <div class="col-md-1 stat-element">
-            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
-                <Authorized>
-                    <a href="/quotes/leads">Leads</a>
-                    <span class="stat-value"><b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
-                </Authorized>
-                <NotAuthorized></NotAuthorized>
-            </AuthorizeView>
-        </div>
-        <div class="col-md-1 stat-element">
-            <a href="/quotes/opportunities">Opportunities</a>
-            <span class="stat-value"><b>@leaderboardStats.OpportunityCount.ToString("N0")</b></span>
-        </div>
-        <div class="col-md-1 stat-element">
-            <a href="/quotes/customers">Customers</a>
-            <span class="stat-value"><b>@leaderboardStats.CustomerCount.ToString("N0")</b></span>
-        </div>
-        <div class="col-md-1 stat-element">
-            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
-                <Authorized>
-                    <a href="/quotes/completed">Completions</a>
-                    <span class="stat-value"><b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
-                </Authorized>
-                <NotAuthorized></NotAuthorized>
-            </AuthorizeView>
-        </div>
-        <div class="col-md-1 stat-element">
-            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
-                <Authorized>
-                    <a href="/quotes/archives">Archives</a>
-                    <span class="stat-value"><b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
-                </Authorized>
-                <NotAuthorized></NotAuthorized>
-            </AuthorizeView>
-        </div>
-        <div class="col-md-1 stat-element">
-            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
-                <Authorized>
-                    <a href="/quotes/warranties">Warranties</a>
-                    <span class="stat-value"><b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
-                </Authorized>
-                <NotAuthorized></NotAuthorized>
-            </AuthorizeView>
-        </div>
-    </div> *@
-
     <div class="details-header">
         <button class="action-button header-return-button" @onclick="ReturnPreviousPage">Return</button>
        @selectedQuote.status Details for @selectedQuote.firstName @selectedQuote.lastName
@@ -408,13 +353,15 @@ else
                                 <DxUpload Name="fileUpload1"
                                           SelectButtonText="Upload"
                                           AllowMultiFileUpload="true"
-                                          UploadUrl="@GetUploadUrl("api/FileServices/")"
+                                          UploadUrl="@GetUploadUrl("https://localhost:7235/api/fileservices")"
+                                          FileUploadStarted="@OnFileUploadStarted"
                                           SelectedFilesChanged="@SelectedFilesChanged"
                                           MaxFileSize="@MaxFileSize"
                                           AllowedFileExtensions="@allowedFileExtensions"
                                           AcceptedFileTypes="@acceptableFileTypes"
                                           CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
                                 </DxUpload>
+
                                 <button class="action-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
                             </DxTabPage>
 
@@ -422,7 +369,8 @@ else
                                 <DxUpload Name="fileUpload2"
                                           SelectButtonText="Upload"
                                           AllowMultiFileUpload="true"
-                                          UploadUrl="@GetUploadUrl("api/FileServices/")"
+                                          UploadUrl="@GetUploadUrl("https://localhost:7235/api/fileservices")"
+                                          FileUploadStarted="@OnFileUploadStarted"
                                           SelectedFilesChanged="@SelectedFilesChanged"
                                           MaxFileSize="@MaxFileSize"
                                           AllowedFileExtensions="@allowedFileExtensions"
@@ -912,6 +860,50 @@ else
     public List<string> acceptableFileTypes = new List<string> { "image/*", "video/*" };
     public int MaxFileSize = 15000000;
 
+    void OnFileUploadStarted(FileUploadEventArgs e) 
+    {
+        var MyMessage = "Upload of the " + e.FileInfo.Name + " file was started.";
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    protected void SelectedFilesChanged(IEnumerable<UploadFileInfo> files)
+    {
+        SelectedFilesCount = files.ToList().Count;
+        InvokeAsync(StateHasChanged);
+
+        foreach (UploadFileInfo file in files)
+        {
+            var fileGuid = file.Guid;
+            var IsFileExtensionValid = allowedFileExtensions.Contains(file.Type);
+            var fileIsMaxSizeValid = file.Size < MaxFileSize; // 1000MB
+            var fileIsMinSizeValid = file.Size > 0;
+            var fileLastModified = file.LastModified;
+            var fileLoadedBtyes = file.LoadedBytes;
+            // var fileRequestData = file.RequestData;
+            // var fileRequestHeaders = file.RequestHeaders;
+            var fileName = file.Name;
+            var fileSize = file.Size;
+            var fileType = file.Type;
+
+            var tmpVal = "";
+        }
+
+        SendDocsDisabled = false;
+    }
+
+    protected void EmailFiles()
+    {
+        var tmpVal = "";
+    }
+
+    protected string GetUploadUrl(string url)
+    {
+        var absoluteUri = NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
+
+        return absoluteUri;
+    }
+
     protected override async Task OnInitializedAsync()
     {
     }
@@ -1252,43 +1244,6 @@ else
             //If your request was blocked by CORS or some extension like uBlock Origin then you will get an exception.
             return string.Empty;
         }
-    }
-
-    protected void SelectedFilesChanged(IEnumerable<UploadFileInfo> files)
-    {
-        SelectedFilesCount = files.ToList().Count;
-        InvokeAsync(StateHasChanged);
-
-        foreach(UploadFileInfo file in files)
-        {
-            var fileGuid = file.Guid;
-            var IsFileExtensionValid = allowedFileExtensions.Contains(file.Type);
-            var fileIsMaxSizeValid = file.Size < MaxFileSize; // 1000MB
-            var fileIsMinSizeValid = file.Size > 0;
-            var fileLastModified = file.LastModified;
-            var fileLoadedBtyes = file.LoadedBytes;
-            // var fileRequestData = file.RequestData;
-            // var fileRequestHeaders = file.RequestHeaders;
-            var fileName = file.Name;
-            var fileSize = file.Size;
-            var fileType = file.Type;
-
-            var tmpVal = "";
-        }
-
-        SendDocsDisabled = false;
-    }
-
-    protected void EmailFiles()
-    {
-        var tmpVal = "";
-    }
-
-    protected string GetUploadUrl(string url)
-    {
-        var absoluteUri = NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
-
-        return absoluteUri;
     }
 
     public void AssignLead()
