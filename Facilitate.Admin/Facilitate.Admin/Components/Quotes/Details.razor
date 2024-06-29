@@ -354,6 +354,7 @@ else
                                           SelectButtonText="Upload"
                                           AllowMultiFileUpload="true"
                                           UploadUrl="@GetUploadUrl("https://localhost:7235/api/fileservices")"
+                                          FileUploadError="@OnUploadError"
                                           FileUploadStarted="@OnFileUploadStarted"
                                           SelectedFilesChanged="@SelectedFilesChanged"
                                           MaxFileSize="@MaxFileSize"
@@ -361,7 +362,7 @@ else
                                           AcceptedFileTypes="@acceptableFileTypes"
                                           CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
                                 </DxUpload>
-
+                                <div class="alert alert-danger @(ErrorVisible? " visible" : " invisible")">@MyError</div>
                                 <button class="action-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
                             </DxTabPage>
 
@@ -370,6 +371,7 @@ else
                                           SelectButtonText="Upload"
                                           AllowMultiFileUpload="true"
                                           UploadUrl="@GetUploadUrl("https://localhost:7235/api/fileservices")"
+                                          FileUploadError="@OnUploadError"
                                           FileUploadStarted="@OnFileUploadStarted"
                                           SelectedFilesChanged="@SelectedFilesChanged"
                                           MaxFileSize="@MaxFileSize"
@@ -377,7 +379,7 @@ else
                                           AcceptedFileTypes="@acceptableFileTypes"
                                           CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
                                 </DxUpload>
-
+                                <div class="alert alert-danger @(ErrorVisible? " visible" : " invisible")">@MyError</div>
                                 @foreach (Attachment attachment in selectedQuote.attachments)
                                 {
                                     if (!attachment.IsDeleted)
@@ -857,8 +859,21 @@ else
 @code {
 
     public List<string> allowedFileExtensions = new List<string> { ".jpeg", ".jpg", ".gif", ".mpg", ".mp4" };
-    public List<string> acceptableFileTypes = new List<string> { "image/*", "video/*" };
+    public List<string> acceptableFileTypes = new List<string> { "audio/*", "doc/*", "image/*", "video/*" };
+
+    public UploadHttpRequestInfo RequestInfo { get; }
+
     public int MaxFileSize = 15000000;
+
+    bool ErrorVisible { get; set; } = false;
+    string MyError { get; set; }
+
+    void OnUploadError(FileUploadErrorEventArgs e)
+    {
+        MyError = e.RequestInfo.ResponseText;
+        ErrorVisible = true;
+        InvokeAsync(StateHasChanged);
+    }
 
     void OnFileUploadStarted(FileUploadEventArgs e) 
     {

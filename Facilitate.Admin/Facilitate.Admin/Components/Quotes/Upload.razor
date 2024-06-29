@@ -27,7 +27,7 @@
     Name="MyUpload"
     UploadMode=UploadMode.OnButtonClick
     AllowMultiFileUpload="true"
-          UploadUrl="@GetUploadUrl("api/FileService/")"
+    UploadUrl="@GetUploadUrl("https://localhost:7235/api/fileservices")"
     SelectedFilesChanged="@SelectedFilesChanged"
     MaxFileSize="15000000"
     CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
