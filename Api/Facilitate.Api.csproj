@@ -29,7 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\DevExpress Upload Example\blazor-dxgrid-upload-image-with-dxupload-24.1.2-\CS\UsingUploadEditDataGrid\UsingUploadEditDataGrid.csproj" />
     <ProjectReference Include="..\Libraries\Facilitate.Libraries.csproj" />
   </ItemGroup>
 
