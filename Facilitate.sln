@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Facilitate.Admin", "Facilit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Facilitate.Api", "Api\Facilitate.Api.csproj", "{A016EE59-102B-49E5-856C-522E865212F4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UsingUploadEditDataGrid", "..\DevExpress Upload Example\blazor-dxgrid-upload-image-with-dxupload-24.1.2-\CS\UsingUploadEditDataGrid\UsingUploadEditDataGrid.csproj", "{574A5E0C-2DEF-40F8-A238-4535DD6818D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{A016EE59-102B-49E5-856C-522E865212F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A016EE59-102B-49E5-856C-522E865212F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A016EE59-102B-49E5-856C-522E865212F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{574A5E0C-2DEF-40F8-A238-4535DD6818D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{574A5E0C-2DEF-40F8-A238-4535DD6818D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{574A5E0C-2DEF-40F8-A238-4535DD6818D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{574A5E0C-2DEF-40F8-A238-4535DD6818D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
