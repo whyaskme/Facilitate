@@ -1,10 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using UsingUploadEditDataGrid.Data;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using Microsoft.AspNetCore.Http;
+
+using MongoDB.Bson;
+
+using System.Text.Json;
+
+using DevExpress.Blazor;
+using DevExpress.Data;
+using DevExpress.Data.Linq;
+using DevExpress.Web;
 
 namespace Facilitate.Api.Controllers
 {
@@ -23,8 +33,7 @@ namespace Facilitate.Api.Controllers
     public class FileServicesController : ControllerBase
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
-
-        FileUrlStorageService _fileUrlStorageService = new FileUrlStorageService();
+        FileUrlStorageService _fileUrlStorageService;
 
         //public FileServicesController(IWebHostEnvironment hostingEnvironment, FileUrlStorageService fileUrlStorageService)
         //{
@@ -32,121 +41,35 @@ namespace Facilitate.Api.Controllers
         //    _fileUrlStorageService = fileUrlStorageService;
         //}
 
-        //public FileServicesController(FileUrlStorageService fileUrlStorageService)
-        //{
-        //    _fileUrlStorageService = fileUrlStorageService;
-        //}
-
         public FileServicesController(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
+            _fileUrlStorageService = new FileUrlStorageService();
         }
 
         // GET: api/<FileServicesController>
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            var tmpVal = new string[] { "value1", "value2" };
+            var resutMsg = new string[] { "value1", "value2" };
 
-            return tmpVal;
+            return resutMsg;
         }
 
+        // POST api/<FileServicesController>
         [HttpPost]
-        [Route("UploadFile")]
-        [DisableRequestSizeLimit]
-        public ActionResult UploadFile(IFormFile ImageUpload, string chunkMetadata)
+        public string Post([FromBody] string value)
         {
-            var tempPath = Path.Combine(_hostingEnvironment.WebRootPath, "uploads");
-            // Removes temporary files
-            RemoveTempFilesAfterDelay(tempPath, new TimeSpan(0, 5, 0));
+            var fileId = ObjectId.GenerateNewId().ToString();
 
-            try
-            {
-                if (!string.IsNullOrEmpty(chunkMetadata))
-                {
-                    var metaDataObject = JsonSerializer.Deserialize<ChunkMetadata>(chunkMetadata);
-                    var tempFilePath = Path.Combine(tempPath, metaDataObject.FileGuid + ".tmp");
-                    if (!Directory.Exists(tempPath))
-                        Directory.CreateDirectory(tempPath);
-
-                    AppendContentToFile(tempFilePath, ImageUpload);
-
-                    if (metaDataObject.Index == (metaDataObject.TotalCount - 1))
-                    {
-                        ProcessUploadedFile(tempFilePath, metaDataObject.FileName);
-                        _fileUrlStorageService.Add(Guid.Parse(metaDataObject.FileGuid), @"uploads\" + metaDataObject.FileName);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest();
-            }
-            return Ok();
+            return fileId;
         }
-
-        void RemoveTempFilesAfterDelay(string path, TimeSpan delay)
-        {
-            var dir = new DirectoryInfo(path);
-            if (dir.Exists)
-                foreach (var file in dir.GetFiles("*.tmp").Where(f => f.LastWriteTimeUtc.Add(delay) < DateTime.UtcNow))
-                    file.Delete();
-        }
-
-        void ProcessUploadedFile(string tempFilePath, string fileName)
-        {
-            var path = Path.Combine(_hostingEnvironment.WebRootPath, "Uploads");
-
-            var newFileName = "" + Guid.NewGuid().ToString() + " - " + fileName;
-
-            var imagePath = Path.Combine(path, newFileName);
-            if (System.IO.File.Exists(imagePath))
-            {
-                System.IO.File.Delete(imagePath);
-            }
-
-            System.IO.File.Copy(tempFilePath, imagePath);
-
-            // Cleanup
-            System.IO.File.Delete(tempFilePath);
-        }
-
-        void AppendContentToFile(string path, IFormFile content)
-        {
-            using (var stream = new FileStream(path, FileMode.Append, FileAccess.Write))
-            {
-                content.CopyTo(stream);
-            }
-        }
-
-        // PUT api/<FileServicesController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //    var tmpVal = "value";
-        //}
-
-        // DELETE api/<FileServicesController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //    var tmpVal = "value";
-        //}
 
         // GET api/<FileServicesController>/5
         //[HttpGet("{id}")]
         //public string Get(int id)
         //{
-        //    var tmpVal = "value";
-
         //    return "value";
-        //}
-
-        // POST api/<FileServicesController>
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //    var tmpVal = "value";
         //}
     }
 }

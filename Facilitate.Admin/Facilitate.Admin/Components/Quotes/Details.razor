@@ -24,6 +24,7 @@
 @using DevExpress.Web;
 
 @using Microsoft.AspNetCore.Html;
+@using UsingUploadEditDataGrid.Data
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
@@ -42,6 +43,8 @@
 @inject IJSRuntime JSRuntime
 
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
+
+@* @inject FileUrlStorageService _fileUrlStorageService *@
 
 @attribute [IgnoreAntiforgeryToken]
 
@@ -350,17 +353,18 @@ else
                         if (@selectedQuote.status != "New")
                         {
                             <DxTabPage Id="Panel-Send-Files" Text="@_emailTabLabel">
-                                <DxUpload Name="fileUpload1"
-                                          SelectButtonText="Upload"
-                                          AllowMultiFileUpload="true"
-                                          UploadUrl="@GetUploadUrl("https://localhost:7235/api/fileservices")"
-                                          FileUploadError="@OnUploadError"
-                                          FileUploadStarted="@OnFileUploadStarted"
-                                          SelectedFilesChanged="@SelectedFilesChanged"
-                                          MaxFileSize="@MaxFileSize"
-                                          AllowedFileExtensions="@allowedFileExtensions"
-                                          AcceptedFileTypes="@acceptableFileTypes"
-                                          CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
+                                <DxUpload
+                                    Name="ImageUpload"
+                                    AllowMultiFileUpload="true"
+                                    UploadUrl="@GetUploadUrl(@uploadUrl)"
+                                    ChunkSize="@chunkSize"
+                                    ShowFileList="true"
+                                    AllowedFileExtensions="@allowedFileExtensions"
+                                    AcceptedFileTypes="@acceptableFileTypes"
+                                    FileUploadError="@OnUploadError"
+                                    FileUploadStarted="@OnFileUploadStarted"
+                                    SelectedFilesChanged="@SelectedFilesChanged"
+                                    MaxFileSize="@MaxFileSize">
                                 </DxUpload>
                                 <div class="alert alert-danger @(ErrorVisible? " visible" : " invisible")">@MyError</div>
                                 <button class="action-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
@@ -858,15 +862,36 @@ else
 
 @code {
 
-    public List<string> allowedFileExtensions = new List<string> { ".jpeg", ".jpg", ".gif", ".mpg", ".mp4" };
+    public string uploadUrl = "/api/upload/UploadFile/";
+
+    public int MaxFileSize = 1000000000; // 1000MB
+    public int chunkSize = 20000;
+
+    public List<string> allowedFileExtensions = new List<string> { ".jpeg", ".jpg", ".gif", ".mpg", ".mpeg", ".mp4" };
     public List<string> acceptableFileTypes = new List<string> { "audio/*", "doc/*", "image/*", "video/*" };
-
-    public UploadHttpRequestInfo RequestInfo { get; }
-
-    public int MaxFileSize = 15000000;
 
     bool ErrorVisible { get; set; } = false;
     string MyError { get; set; }
+
+    public FileUrlStorageService _fileUrlStorageService;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _fileUrlStorageService = new FileUrlStorageService();
+    }
+
+    protected string GetUploadUrl(string url)
+    {
+        var navUrl = NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
+
+        return navUrl;
+    }
+
+    protected void OnFileUploaded(FileUploadEventArgs args, TestModel item)
+    {
+        var fileUrl = _fileUrlStorageService.Get(Guid.Parse(args.FileInfo.Guid));
+        item.ImageUrl = fileUrl;
+    }
 
     void OnUploadError(FileUploadErrorEventArgs e)
     {
@@ -910,17 +935,6 @@ else
     protected void EmailFiles()
     {
         var tmpVal = "";
-    }
-
-    protected string GetUploadUrl(string url)
-    {
-        var absoluteUri = NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
-
-        return absoluteUri;
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
     }
 
     public void ReturnPreviousPage()
