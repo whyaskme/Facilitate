@@ -1,4 +1,9 @@
-﻿@page
+﻿@page "/"
+
+@* @inject NavigationManager NavigationManager
+@inject TestModelService _testModelService
+@inject FileUrlStorageService _fileUrlStorageService *@
+
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";

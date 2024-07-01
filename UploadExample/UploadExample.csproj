@@ -10,4 +10,8 @@
     <PackageReference Include="DevExpress.Blazor" Version="23.2.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Uploads\" />
+  </ItemGroup>
+
 </Project>
