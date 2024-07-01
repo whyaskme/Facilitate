@@ -354,35 +354,38 @@ else
                         if (@selectedQuote.status != "New")
                         {
                             <DxTabPage Id="Panel-Send-Files" Text="@_emailTabLabel">
-                                <DxUpload
-                                    Name="ImageUpload"
-                                    AllowMultiFileUpload="true"
-                                    UploadUrl="@GetUploadUrl(@uploadUrl)"
-                                    ChunkSize="@chunkSize"
-                                    ShowFileList="true"
-                                    AllowedFileExtensions="@allowedFileExtensions"
-                                    AcceptedFileTypes="@acceptableFileTypes"
-                                    FileUploadError="@OnUploadError"
-                                    FileUploadStarted="@OnFileUploadStarted"
-                                    SelectedFilesChanged="@SelectedFilesChanged"
-                                    MaxFileSize="@MaxFileSize">
+
+                                <DxUpload Name="ImageUpload"
+                                          SelectButtonText="Select Files"
+                                          AllowMultiFileUpload="true"
+                                          UploadUrl="@GetUploadUrl(@uploadUrl)"
+                                          ChunkSize="@chunkSize"
+                                          ShowFileList="true"
+                                          AllowedFileExtensions="@allowedFileExtensions"
+                                          AcceptedFileTypes="@acceptableFileTypes"
+                                          FileUploadError="@OnUploadError"
+                                          FileUploadStarted="@OnFileUploadStarted"
+                                          SelectedFilesChanged="@SelectedFilesChanged"
+                                          MaxFileSize="@MaxFileSize">
                                 </DxUpload>
+
                                 <div class="alert alert-danger @(ErrorVisible? " visible" : " invisible")">@MyError</div>
                                 <button class="action-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
                             </DxTabPage>
 
                             <DxTabPage Id="Panel-Attach-Files" Text="Attachments">
-                                <DxUpload Name="fileUpload2"
-                                          SelectButtonText="Upload"
-                                          AllowMultiFileUpload="true"
-                                          UploadUrl="@GetUploadUrl("https://localhost:7235/api/fileservices")"
-                                          FileUploadError="@OnUploadError"
-                                          FileUploadStarted="@OnFileUploadStarted"
-                                          SelectedFilesChanged="@SelectedFilesChanged"
-                                          MaxFileSize="@MaxFileSize"
-                                          AllowedFileExtensions="@allowedFileExtensions"
-                                          AcceptedFileTypes="@acceptableFileTypes"
-                                          CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
+                                <DxUpload 
+                                    Name="fileUpload2"
+                                    SelectButtonText="Upload"
+                                    AllowMultiFileUpload="true"
+                                    UploadUrl="@GetUploadUrl(@uploadUrl)"
+                                    FileUploadError="@OnUploadError"
+                                    FileUploadStarted="@OnFileUploadStarted"
+                                    SelectedFilesChanged="@SelectedFilesChanged"
+                                    MaxFileSize="@MaxFileSize"
+                                    AllowedFileExtensions="@allowedFileExtensions"
+                                    AcceptedFileTypes="@acceptableFileTypes"
+                                    CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
                                 </DxUpload>
                                 <div class="alert alert-danger @(ErrorVisible? " visible" : " invisible")">@MyError</div>
                                 @foreach (Attachment attachment in selectedQuote.attachments)
@@ -930,7 +933,7 @@ else
             var tmpVal = "";
         }
 
-        SendDocsDisabled = false;
+        SendDocsDisabled = true;
     }
 
     protected void EmailFiles()

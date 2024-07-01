@@ -16,6 +16,9 @@ using DevExpress.Data;
 using DevExpress.Data.Linq;
 using DevExpress.Web;
 
+using System.Net.Http;
+using System.Web.Http.Cors;
+
 namespace Facilitate.Api.Controllers
 {
     public class ChunkMetadata
@@ -28,6 +31,7 @@ namespace Facilitate.Api.Controllers
         public string? FileGuid { get; set; }
     }
 
+    [DisableCors]
     [Route("api/[controller]")]
     [ApiController]
     public class FileServicesController : ControllerBase

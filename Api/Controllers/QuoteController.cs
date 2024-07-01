@@ -2,8 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 
+using System.Net.Http;
+using System.Web.Http.Cors;
+
 namespace Facilitate.Api.Controllers
 {
+    [DisableCors]   
     [Route("api/[controller]")]
     [ApiController]
     public class QuoteController : ControllerBase

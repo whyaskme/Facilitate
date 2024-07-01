@@ -2,6 +2,7 @@ using Facilitate.Admin.Components;
 using Facilitate.Admin.Components.Account;
 using Facilitate.Admin.Data;
 using Facilitate.Libraries.Models;
+using Facilitate.Admin.Components.Upload;
 
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -55,6 +56,7 @@ builder.Services.AddScoped<IClaimsProvider>(provider =>
 });
 
 builder.Services.AddSingleton<WebServices>();
+builder.Services.AddSingleton<FileUrlStorageService>();
 
 builder.Services.AddAuthentication(options =>
     {
