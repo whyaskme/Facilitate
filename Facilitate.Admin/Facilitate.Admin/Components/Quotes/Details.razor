@@ -2,6 +2,7 @@
 @page "/quotes/details/{QuoteId}"
 @page "/quotes/details/{QuoteId}/{Referrer}"
 
+@using Facilitate.Admin.Components.Upload
 @using Facilitate.Admin.Data;
 @using Facilitate.Libraries.Models;
 
@@ -873,11 +874,11 @@ else
     bool ErrorVisible { get; set; } = false;
     string MyError { get; set; }
 
-    // public FileUrlStorageService _fileUrlStorageService;
+    public FileUrlStorageService _fileUrlStorageService;
 
     protected override async Task OnInitializedAsync()
     {
-        // _fileUrlStorageService = new FileUrlStorageService();
+        _fileUrlStorageService = new FileUrlStorageService();
     }
 
     protected string GetUploadUrl(string url)
@@ -889,7 +890,7 @@ else
 
     protected void OnFileUploaded(FileUploadEventArgs args, TestModel item)
     {
-        // var fileUrl = _fileUrlStorageService.Get(Guid.Parse(args.FileInfo.Guid));
+        var fileUrl = _fileUrlStorageService.Get(Guid.Parse(args.FileInfo.Guid));
         // item.ImageUrl = fileUrl;
     }
 
