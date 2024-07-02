@@ -11,7 +11,9 @@ builder.Services.Configure<DevExpress.Blazor.Configuration.GlobalOptions>(option
 });
 builder.Services.AddSingleton<TestModelService>();
 builder.Services.AddSingleton<FileUrlStorageService>();
+
 builder.Services.AddControllers();
+
 builder.WebHost.UseWebRoot("wwwroot");
 builder.WebHost.UseStaticWebAssets();
 

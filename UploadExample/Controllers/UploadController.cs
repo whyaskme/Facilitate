@@ -28,6 +28,27 @@ namespace UploadExample.Controllers
             _fileUrlStorageService = fileUrlStorageService;
         }
 
+        [HttpGet]
+        public IActionResult Get()
+        {
+            string resultMsg = "";
+
+            try
+            {
+                resultMsg = "Inside Upload Controller";
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+                return BadRequest(resultMsg);
+            }
+            finally
+            {
+
+            }
+            return Ok(resultMsg);
+        }
+
         [HttpPost]
         [Route("UploadFile")]
         [DisableRequestSizeLimit]

@@ -866,7 +866,7 @@ else
 
 @code {
 
-    public string uploadUrl = "/api/Upload/Upload/UploadFile";
+    public string uploadUrl = "/api/Upload/UploadFile";
 
     public int MaxFileSize = 1000000000; // 1000MB
     public int chunkSize = 20000;
@@ -882,6 +882,8 @@ else
     protected override async Task OnInitializedAsync()
     {
         _fileUrlStorageService = new FileUrlStorageService();
+
+        uploadUrl = "/api/Upload/UploadFile";
     }
 
     protected string GetUploadUrl(string url)
@@ -894,7 +896,6 @@ else
     protected void OnFileUploaded(FileUploadEventArgs args, TestModel item)
     {
         var fileUrl = _fileUrlStorageService.Get(Guid.Parse(args.FileInfo.Guid));
-        // item.ImageUrl = fileUrl;
     }
 
     void OnUploadError(FileUploadErrorEventArgs e)
