@@ -4,10 +4,23 @@ body, html {
     height: 100%;
 }
 
-.logo
-{
+.logo {
     border: solid 0px #ff0000 !important;
-    max-height: 35px !important;
+    height: 50px !important;
+
+}
+
+.dx-toolbar-item-content {
+    border: solid 0px #ff0000 !important;
+    width: 250px !important;
+    position: relative !important;
+    left: 25px !important;
+    top: 10px !important;
+}
+
+.dx-toolbar-button,
+.menu-button {
+    display: none !important;
 }
 
 #app-side-nav-outer-toolbar {
@@ -18,10 +31,12 @@ body, html {
 }
 
 .layout-header {
+    border: solid 0px #ff0000 !important;
     flex: 0 0 auto;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     position: relative;
     z-index: 1501;
+    height: 75px !important;
 }
 
 .dx-toolbar .dx-toolbar-item.menu-button {

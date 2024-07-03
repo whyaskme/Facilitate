@@ -124,8 +124,20 @@
                         .Selected(IsCurrentUrl("/Index"));
 
                     items.Add()
-                        .Text("Quotes")
+                        .Text("Manage Users")
                         .Icon("info")
+                    .Option("path", GetUrl("/Users/Index"))
+                    .Selected(IsCurrentUrl("/Users/Index"));
+
+                    items.Add()
+                    .Text("My Account")
+                    .Icon("info")
+                    .Option("path", GetUrl("/Account/Index"))
+                    .Selected(IsCurrentUrl("/Account/Index"));
+
+                    items.Add()
+                    .Text("Quotes")
+                    .Icon("info")
                     .Option("path", GetUrl("/Quotes/Index"))
                     .Selected(IsCurrentUrl("/Quotes/Index"));
 
@@ -134,6 +146,16 @@
                     .Icon("info")
                     .Option("path", GetUrl("/Upload"))
                     .Selected(IsCurrentUrl("/Upload"));
+
+                    items.Add()
+                    .Text("Facilitate.org")
+                    .Icon("info")
+                    .Option("path", GetUrl("https://facilitate.org"));
+
+                    items.Add()
+                    .Text("WebApi")
+                    .Icon("info")
+                    .Option("path", GetUrl("https://api.facilitate.org"));
                 })
                 .ExpandEvent(TreeViewExpandEvent.Click)
                 .SelectionMode(NavSelectionMode.Single)
