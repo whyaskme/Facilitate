@@ -14,7 +14,7 @@
   <ItemGroup>
     <PackageReference Include="AspNetCore.Identity.Mongo" Version="8.3.3" />
     <PackageReference Include="Blazor.UI" Version="1.0.22" />
-    <PackageReference Include="BootstrapBlazor" Version="8.6.3" />
+    <PackageReference Include="BootstrapBlazor" Version="8.7.0" />
     <PackageReference Include="DevExpress.Blazor" Version="23.2.4" />
     <PackageReference Include="GoogleMaps.LocationServices" Version="1.2.0.5" />
     <PackageReference Include="GoogleMapsApi" Version="1.2.1" />
@@ -30,12 +30,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Identity.Client" Version="4.61.3" />
-    <PackageReference Include="MongoDB.Bson" Version="2.26.0" />
-    <PackageReference Include="MongoDB.Driver" Version="2.26.0" />
-    <PackageReference Include="MongoDB.Driver.Core" Version="2.26.0" />
-    <PackageReference Include="MongoDB.Driver.GridFS" Version="2.26.0" />
+    <PackageReference Include="MongoDB.Bson" Version="2.27.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.27.0" />
+    <PackageReference Include="MongoDB.Driver.Core" Version="2.27.0" />
+    <PackageReference Include="MongoDB.Driver.GridFS" Version="2.27.0" />
     <PackageReference Include="ServiceStack.Client" Version="8.3.0" />
-    <PackageReference Include="Syncfusion.Blazor.Core" Version="26.1.38" />
+    <PackageReference Include="Syncfusion.Blazor.Core" Version="26.1.40" />
   </ItemGroup>
 
   <ItemGroup>
