@@ -1,0 +1,42 @@
+﻿@page "/upload"
+
+@using DevXtreme.Admin.Controllers
+@using Microsoft.AspNetCore.Components
+
+@inject NavigationManager NavigationManager
+@inject FileUrlStorageService _fileUrlStorageService
+@* @inject TestModelService _testModelService *@
+
+@model DevXtreme.Admin.Pages.UploadModel
+@{
+    ViewData["Title"] = "Upload";
+}
+
+<h2>Upload</h2>
+
+<DxUpload UploadUrl="/api/fileservices/UploadFile"
+          UploadMode="UploadMode.Instant"
+          Name="ImageUpload"
+          Id="ImageUpload"
+          SelectButtonText="Select Files"
+          AllowMultiFileUpload="true"
+          AllowCancel="true"
+          AllowPause="true"
+@*           ChunkSize="@chunkSize" *@
+          ShowFileList="true"
+@*           AllowedFileExtensions="@allowedFileExtensions"
+          AcceptedFileTypes="@acceptableFileTypes"
+          FileReloaded="@OnFileReloaded"
+          FileUploaded="@((args) => OnFileUploaded(args))"
+          FileUploadAborted="@OnFileUploadAborted"
+          FileUploadPaused="@OnFileUploadPaused"
+          FileUploadError="@OnFileUploadError"
+          FileUploadStart="@((args) => OnFileUploadStart(args))"
+          FileUploadStarted="@OnFileUploadStarted"
+          FileUploadProgressChanged="@((args) => OnFileUploadProgressChanged(args))"
+          SelectedFilesChanged="@SelectedFilesChanged"
+          MaxFileSize="@MaxFileSize" *@
+          >
+</DxUpload>
+
+

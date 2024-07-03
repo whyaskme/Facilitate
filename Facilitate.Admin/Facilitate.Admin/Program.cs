@@ -23,16 +23,6 @@ builder.Services.AddCors(x => x.AddPolicy("externalRequests",
                 "https://www.google.com/maps"
                 )));
 
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy(name: MyAllowSpecificOrigins,
-//                      policy =>
-//                      {
-//                          policy.WithOrigins("https://jsonip.com",
-//                                              "https://www.google.com/maps");
-//                      });
-//});
-
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -242,5 +232,11 @@ catch(Exception ex)
 {
     Console.WriteLine(ex.Message);
 }
+
+//app.UseRouting();
+
+//app.MapBlazorHub();
+//app.MapFallbackToPage("/_Host");
+//app.MapControllers();
 
 app.Run();
