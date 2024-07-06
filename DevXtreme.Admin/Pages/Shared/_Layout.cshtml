@@ -105,6 +105,18 @@
         </div>
     </div>
 
+    <DxMenu Title="DevExpress" Target="_self">
+        <Items>
+            <DxMenuItem Text="Home" NavigateUrl="https://www.devexpress.com" />
+            <DxMenuItem Text="Blazor Components" NavigateUrl="https://www.devexpress.com/blazor/" />
+            <DxMenuItem Text="Support">
+                <Items>
+                    <DxMenuItem Text="Submit a ticket" NavigateUrl="https://supportcenter.devexpress.com/ticket/list" Target="_blank" />
+                </Items>
+            </DxMenuItem>
+        </Items>
+    </DxMenu>
+
     @using(Html.DevExtreme().NamedTemplate("navigation-menu")) {
         <div class="menu-container dx-swatch-additional">
 
@@ -150,12 +162,14 @@
                     items.Add()
                     .Text("Facilitate.org")
                     .Icon("info")
-                    .Option("path", GetUrl("https://facilitate.org"));
+                    .Option("target", "_blank")
+                    .Option("path", "https://facilitate.org");
 
                     items.Add()
                     .Text("WebApi")
                     .Icon("info")
-                    .Option("path", GetUrl("https://api.facilitate.org"));
+                    .Option("target", "_blank")
+                    .Option("path", "https://api.facilitate.org/swagger");
                 })
                 .ExpandEvent(TreeViewExpandEvent.Click)
                 .SelectionMode(NavSelectionMode.Single)
@@ -270,6 +284,11 @@
             DevXtreme_Admin.init();
         });
     </script>
+
+    @{
+
+    }
+
 </body>
 
 </html>
