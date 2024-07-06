@@ -171,49 +171,48 @@ else
 
                     <DxTabPage Id="Panel-Project-Manager" Text="Project Management">
                     @{
-                        if (isSystemAdmin)
-                        {
-                            <button class="action-button" @onclick="@(() => IsAssignPopupVisible = true)">Manager Assignment</button>
-                            <br /><br />
-                        }
+
+                        <div class="row">
+                            <div class="col">
+                                <h5>Relationships</h5>
+                            </div>
+                        </div>
+
+ 
 
                         if (selectedQuote.projectManager != null)
                         {
-                            <div class="row">
-                                <h5>Relationships</h5>
-
-                                    <div class="row line-item">
-                                    <div class="col">
-                                        <span>1</span>
-                                    </div>
-                                    <div class="col">
-                                        <label>Id</label>
-                                        <span class="detail-item">???</span>
-                                    </div>
-                                    <div class="col">
-                                        <label>Type</label>
-                                        <span class="detail-item">Project Manager</span>
-                                    </div>
-                                    <div class="col">
-                                        <label>Name</label>
-                                        <span class="detail-item">@selectedQuote.projectManager.FirstName</span><span class="detail-item">@selectedQuote.projectManager.LastName</span>
-                                    </div>
-                                    <div class="col">
-                                        <label>Phone</label>
-                                        <span class="detail-item">@selectedQuote.projectManager.Phone</span>
-                                    </div>
-                                    <div class="col">
-                                        <label>Email</label>
-                                        <a href="mailto:@selectedQuote.projectManager.Email" target="_blank">
-                                            <span class="detail-item">@selectedQuote.projectManager.Email</span>
-                                        </a>
-                                    </div>
-                                    <div class="col">
-                                        <label>Market</label>
-                                        <a href="https://www.google.com/maps/search/@selectedQuote.projectManager.City, @selectedQuote.projectManager.State @selectedQuote.projectManager.Zip" target="_blank">
-                                            @selectedQuote.projectManager.City, @selectedQuote.projectManager.State
-                                        </a>
-                                    </div>
+                            <div class="row line-item">
+                                <div class="col">
+                                    <span>1</span>
+                                </div>
+                                <div class="col">
+                                    <label>Id</label>
+                                    <span class="detail-item">???</span>
+                                </div>
+                                <div class="col">
+                                    <label>Type</label>
+                                    <span class="detail-item">Project Manager</span>
+                                </div>
+                                <div class="col">
+                                    <label>Name</label>
+                                    <span class="detail-item">@selectedQuote.projectManager.FirstName</span><span class="detail-item">@selectedQuote.projectManager.LastName</span>
+                                </div>
+                                <div class="col">
+                                    <label>Phone</label>
+                                    <span class="detail-item">@selectedQuote.projectManager.Phone</span>
+                                </div>
+                                <div class="col">
+                                    <label>Email</label>
+                                    <a href="mailto:@selectedQuote.projectManager.Email" target="_blank">
+                                        <span class="detail-item">@selectedQuote.projectManager.Email</span>
+                                    </a>
+                                </div>
+                                <div class="col">
+                                    <label>Market</label>
+                                    <a href="https://www.google.com/maps/search/@selectedQuote.projectManager.City, @selectedQuote.projectManager.State @selectedQuote.projectManager.Zip" target="_blank">
+                                        @selectedQuote.projectManager.City, @selectedQuote.projectManager.State
+                                    </a>
                                 </div>
                             </div>
 
