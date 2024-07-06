@@ -1,17 +1,16 @@
 ﻿@page "/quotes/upload"
 
+@using DevExpress.Blazor
 @using Facilitate.Admin.Components.Upload
 
 @inject NavigationManager NavigationManager
 @inject FileUrlStorageService _fileUrlStorageService
 
-@* @inject TestModelService _testModelService *@
-
 <h1>Upload</h1>
 
 @code {
 
-    object? Data { get; set; }
+    public class FileUploadEventArgs : EventArgs;
 
     public string uploadUrl = "/api/Upload/UploadFile";
     //public string uploadUrl = "http://localhost:51916/api/fileservices/UploadFile";
@@ -31,8 +30,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Data = await _testModelService.GetDataSourceAsync();
-
         var tmpVal = "";
     }
 
@@ -46,68 +43,68 @@
         var tmpVal = "";
     }
 
-    // void OnFileUploadAborted(FileUploadEventArgs args)
-    // {
-    //     var tmpVal = "";
-    // }
+    void OnFileUploadAborted(FileUploadEventArgs args)
+    {
+        var tmpVal = "";
+    }
 
-    // void OnFileUploadPaused(FileUploadEventArgs args)
-    // {
-    //     var tmpVal = "";
-    // }
+    void OnFileUploadPaused(FileUploadEventArgs args)
+    {
+        var tmpVal = "";
+    }
 
-    // void OnFileUploadProgressChanged(FileUploadEventArgs args)
-    // {
-    //     var tmpVal = "";
-    // }
+    void OnFileUploadProgressChanged(FileUploadEventArgs args)
+    {
+        var tmpVal = "";
+    }
 
-    // void OnFileUploadStart(FileUploadEventArgs args)
-    // {
-    //     var tmpVal = "";
-    // }
+    void OnFileUploadStart(FileUploadEventArgs args)
+    {
+        var tmpVal = "";
+    }
 
-    // void SelectedFilesChanged(IEnumerable<UploadFileInfo> files)
-    // {
-    //     InvokeAsync(StateHasChanged);
+    void SelectedFilesChanged(IEnumerable<UploadFileInfo> files)
+    {
+        InvokeAsync(StateHasChanged);
 
-    //     foreach (UploadFileInfo file in files)
-    //     {
-    //         var fileGuid = file.Guid;
-    //         var IsFileExtensionValid = allowedFileExtensions.Contains(file.Type);
-    //         var fileIsMaxSizeValid = file.Size < MaxFileSize;
-    //         var fileIsMinSizeValid = file.Size > 0;
-    //         var fileLastModified = file.LastModified;
-    //         var fileLoadedBtyes = file.LoadedBytes;
-    //         var fileName = file.Name;
-    //         var fileSize = file.Size;
-    //         var fileType = file.Type;
-    //     }
-    // }
+        foreach (UploadFileInfo file in files)
+        {
+            var fileGuid = file.Guid;
+            var IsFileExtensionValid = allowedFileExtensions.Contains(file.Type);
+            var fileIsMaxSizeValid = file.Size < MaxFileSize;
+            var fileIsMinSizeValid = file.Size > 0;
+            var fileLastModified = file.LastModified;
+            var fileLoadedBtyes = file.LoadedBytes;
+            var fileName = file.Name;
+            var fileSize = file.Size;
+            var fileType = file.Type;
+        }
+    }
 
-    // protected void OnFileUploaded(FileUploadEventArgs args)
-    // {
-    //     var fileUrl = _fileUrlStorageService.Get(Guid.Parse(args.FileInfo.Guid));
-    // }
+    protected void OnFileUploaded(FileUploadEventArgs args)
+    {
+        // var fileUrl = _fileUrlStorageService.Get(Guid.Parse(args.FileInfo.Guid));
+    }
 
-    // void OnFileUploadError(FileUploadErrorEventArgs e)
-    // {
-    //     MyError = e.RequestInfo.ResponseText;
-    //     ErrorVisible = true;
-    //     InvokeAsync(StateHasChanged);
-    // }
+    void OnFileUploadError(FileUploadErrorEventArgs e)
+    {
+        MyError = e.RequestInfo.ResponseText;
+        ErrorVisible = true;
+        InvokeAsync(StateHasChanged);
+    }
 
-    // void OnFileUploadStarted(FileUploadEventArgs e)
-    // {
-    //     var MyMessage = "Upload of the " + e.FileInfo.Name + " file was started.";
+    void OnFileUploadStarted(FileUploadEventArgs e)
+    {
+        // var MyMessage = "Upload of the " + e.FileInfo.Name + " file was started.";
 
-    //     InvokeAsync(StateHasChanged);
-    // }
+        InvokeAsync(StateHasChanged);
+    }
 
-    // async Task OnEditModelSaving(GridEditModelSavingEventArgs e)
-    // {
-    // }
+    async Task OnEditModelSaving(GridEditModelSavingEventArgs e)
+    {
+    }
 
-    // async Task OnDataItemDeleting(GridDataItemDeletingEventArgs e)
-    // {
-    // }
+    async Task OnDataItemDeleting(GridDataItemDeletingEventArgs e)
+    {
+    }
 }
