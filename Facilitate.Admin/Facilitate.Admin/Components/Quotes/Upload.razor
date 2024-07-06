@@ -8,6 +8,22 @@
 
 <h1>Upload</h1>
 
+<DxUpload UploadUrl="@GetUploadUrl(@uploadUrl)"
+          UploadMode="UploadMode.Instant"
+          Name="ImageUpload"
+          Id="ImageUpload"
+          SelectButtonText="Select Files"
+          AllowMultiFileUpload="true"
+          AllowCancel="true"
+          AllowPause="true"
+          ChunkSize="@chunkSize"
+          ShowFileList="true"
+          AllowedFileExtensions="@allowedFileExtensions"
+          AcceptedFileTypes="@acceptableFileTypes"
+          FileUploadError="@OnFileUploadError"
+          MaxFileSize="@MaxFileSize">
+</DxUpload>
+
 @code {
 
     public class FileUploadEventArgs : EventArgs;
@@ -43,22 +59,22 @@
         var tmpVal = "";
     }
 
-    void OnFileUploadAborted(FileUploadEventArgs args)
+    void OnFileUploadAborted()
     {
         var tmpVal = "";
     }
 
-    void OnFileUploadPaused(FileUploadEventArgs args)
+    void OnFileUploadPaused()
     {
         var tmpVal = "";
     }
 
-    void OnFileUploadProgressChanged(FileUploadEventArgs args)
+    void OnFileUploadProgressChanged()
     {
         var tmpVal = "";
     }
 
-    void OnFileUploadStart(FileUploadEventArgs args)
+    void OnFileUploadStart()
     {
         var tmpVal = "";
     }
@@ -81,7 +97,7 @@
         }
     }
 
-    protected void OnFileUploaded(FileUploadEventArgs args)
+    protected void OnFileUploaded()
     {
         // var fileUrl = _fileUrlStorageService.Get(Guid.Parse(args.FileInfo.Guid));
     }
@@ -93,7 +109,7 @@
         InvokeAsync(StateHasChanged);
     }
 
-    void OnFileUploadStarted(FileUploadEventArgs e)
+    void OnFileUploadStarted()
     {
         // var MyMessage = "Upload of the " + e.FileInfo.Name + " file was started.";
 
