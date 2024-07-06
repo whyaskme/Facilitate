@@ -22,6 +22,10 @@
     public List<string> allowedFileExtensions = new List<string> { ".jpeg", ".jpg", ".gif", ".mpg", ".mpeg", ".mp4" };
     public List<string> acceptableFileTypes = new List<string> { "audio/*", "doc/*", "image/*", "video/*" };
 
+    public Upload()
+    {
+    }
+
     bool ErrorVisible { get; set; } = false;
     string MyError { get; set; }
 
@@ -32,4 +36,78 @@
         var tmpVal = "";
     }
 
+    protected string GetUploadUrl(string url)
+    {
+        return NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
+    }
+
+    void OnFileReloaded()
+    {
+        var tmpVal = "";
+    }
+
+    // void OnFileUploadAborted(FileUploadEventArgs args)
+    // {
+    //     var tmpVal = "";
+    // }
+
+    // void OnFileUploadPaused(FileUploadEventArgs args)
+    // {
+    //     var tmpVal = "";
+    // }
+
+    // void OnFileUploadProgressChanged(FileUploadEventArgs args)
+    // {
+    //     var tmpVal = "";
+    // }
+
+    // void OnFileUploadStart(FileUploadEventArgs args)
+    // {
+    //     var tmpVal = "";
+    // }
+
+    // void SelectedFilesChanged(IEnumerable<UploadFileInfo> files)
+    // {
+    //     InvokeAsync(StateHasChanged);
+
+    //     foreach (UploadFileInfo file in files)
+    //     {
+    //         var fileGuid = file.Guid;
+    //         var IsFileExtensionValid = allowedFileExtensions.Contains(file.Type);
+    //         var fileIsMaxSizeValid = file.Size < MaxFileSize;
+    //         var fileIsMinSizeValid = file.Size > 0;
+    //         var fileLastModified = file.LastModified;
+    //         var fileLoadedBtyes = file.LoadedBytes;
+    //         var fileName = file.Name;
+    //         var fileSize = file.Size;
+    //         var fileType = file.Type;
+    //     }
+    // }
+
+    // protected void OnFileUploaded(FileUploadEventArgs args)
+    // {
+    //     var fileUrl = _fileUrlStorageService.Get(Guid.Parse(args.FileInfo.Guid));
+    // }
+
+    // void OnFileUploadError(FileUploadErrorEventArgs e)
+    // {
+    //     MyError = e.RequestInfo.ResponseText;
+    //     ErrorVisible = true;
+    //     InvokeAsync(StateHasChanged);
+    // }
+
+    // void OnFileUploadStarted(FileUploadEventArgs e)
+    // {
+    //     var MyMessage = "Upload of the " + e.FileInfo.Name + " file was started.";
+
+    //     InvokeAsync(StateHasChanged);
+    // }
+
+    // async Task OnEditModelSaving(GridEditModelSavingEventArgs e)
+    // {
+    // }
+
+    // async Task OnDataItemDeleting(GridDataItemDeletingEventArgs e)
+    // {
+    // }
 }
