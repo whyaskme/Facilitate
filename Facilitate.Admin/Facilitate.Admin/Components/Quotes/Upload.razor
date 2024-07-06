@@ -1,7 +1,35 @@
 ﻿@page "/quotes/upload"
 
-<h3>Upload</h3>
+@using Facilitate.Admin.Components.Upload
+
+@inject NavigationManager NavigationManager
+@inject FileUrlStorageService _fileUrlStorageService
+
+@* @inject TestModelService _testModelService *@
+
+<h1>Upload</h1>
 
 @code {
+
+    object? Data { get; set; }
+
+    public string uploadUrl = "/api/Upload/UploadFile";
+    //public string uploadUrl = "http://localhost:51916/api/fileservices/UploadFile";
+
+    public int MaxFileSize = 1000000000; // 1000MB
+    public int chunkSize = 20000;
+
+    public List<string> allowedFileExtensions = new List<string> { ".jpeg", ".jpg", ".gif", ".mpg", ".mpeg", ".mp4" };
+    public List<string> acceptableFileTypes = new List<string> { "audio/*", "doc/*", "image/*", "video/*" };
+
+    bool ErrorVisible { get; set; } = false;
+    string MyError { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Data = await _testModelService.GetDataSourceAsync();
+
+        var tmpVal = "";
+    }
 
 }
