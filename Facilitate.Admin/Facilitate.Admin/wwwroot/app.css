@@ -8,6 +8,9 @@ html, body {
 
 .project-manager-summary {
     border: solid 1px #ff0000 !important;
+    position: relative !important;
+    top: 10px !important;
+    margin-bottom: 15px !important;
 }
 
 .line-item {
