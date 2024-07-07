@@ -6,9 +6,13 @@ html, body {
     overflow: auto !important;
 }
 
+.project-manager-summary {
+    border: solid 1px #ff0000 !important;
+}
+
 .line-item {
-    border: solid 3px #ff0000 !important;
-/*    position: relative !important;
+    border: solid 1px #ff0000 !important;
+    /*    position: relative !important;
     top: 0px !important;
     margin: 0px !important;
     height: 25px !important;
@@ -90,7 +94,8 @@ button.btn-primary {
         padding-right: 15px !important;
     }
 
-.action-button-small {
+.action-button-small,
+..action-button-small:hover{
     border: solid 0px #ff0000 !important;
     width: 75px !important;
     font-size: 1.0em !important;
