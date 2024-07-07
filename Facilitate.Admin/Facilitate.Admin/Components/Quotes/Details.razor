@@ -116,11 +116,11 @@ else
 
                 var _emailTabLabel = "Email " + @selectedQuote.firstName + " Documents";
 
-                roofsCount = selectedQuote.structures.Count;
-                if (roofsCount <= 1)
-                    roofsCountLabel = roofsCount.ToString() + " Roof Selected";
+                tradesCount = selectedQuote.structures.Count;
+                if (tradesCount <= 1)
+                    tradesCountLabel = tradesCount.ToString() + " " + selectedQuote.applicationType + " Selected";
                 else
-                    roofsCountLabel = roofsCount.ToString() + " Roofs Selected";
+                    tradesCountLabel = tradesCount.ToString() + " " + selectedQuote.applicationType + " Selected";
 
                 productsCount = selectedQuote.products.Count;
                 if (productsCount <= 1)
@@ -177,9 +177,7 @@ else
                             <h6>Project Manager</h6>
                             <div class="row">
                                 <div class="col">
-                                    <span>
-                                        <a href="">Reassign</a>
-                                    </span>
+                                    <button class="action-button" @onclick="@(() => IsAssignPopupVisible = true)">Reassign</button>
                                 </div>
                                 <div class="col">
                                     <label>Type</label>
@@ -215,15 +213,12 @@ else
                             //     var tmpVal = "";
                             // }
 
-                            <h6>Additions</h6>
+                            <h6>Project Additions</h6>
                             <div class="row">
-                                <div class="col">
-                                    <span><a href="/quotes/details/667b207bf14995e42772cacc/opportunities/">View</a></span>
-                                    <label>|</label>
-                                    <span><a href="">Reassign</a></span>
-                                    <label>|</label>
-                                    <span><a href="">Delete</a></span>
-                                </div>
+                                    <div class="col">
+                                        <button class="action-button action-button-small" @onclick="@RedirectToQuoteDetails">View</button>
+                                        <button class="action-button action-button-small" @onclick="@(() => IsAssignPopupVisible = true)">Delete</button>
+                                    </div>
                                 <div class="col">
                                     <label>Type</label>
                                     <span class="detail-item">Gutter Project</span>
@@ -251,11 +246,8 @@ else
 
                             <div class="row">
                                 <div class="col">
-                                        <span><a href="/quotes/details/667b207bf14995e42772cacc/opportunities/">View</a></span>
-                                    <label>|</label>
-                                    <span><a href="">Reassign</a></span>
-                                    <label>|</label>
-                                    <span><a href="">Delete</a></span>
+                                        <button class="action-button action-button-small" @onclick="@RedirectToQuoteDetails">View</button>
+                                    <button class="action-button action-button-small" @onclick="@(() => IsAssignPopupVisible = true)">Delete</button>
                                 </div>
                                 <div class="col">
                                     <label>Type</label>
@@ -284,11 +276,8 @@ else
 
                             <div class="row">
                                 <div class="col">
-                                        <span><a href="/quotes/details/667b207bf14995e42772cacc/opportunities/">View</a></span>
-                                    <label>|</label>
-                                    <span><a href="">Reassign</a></span>
-                                    <label>|</label>
-                                    <span><a href="">Delete</a></span>
+                                        <button class="action-button action-button-small" @onclick="@RedirectToQuoteDetails">View</button>
+                                    <button class="action-button action-button-small" @onclick="@(() => IsAssignPopupVisible = true)">Delete</button>
                                 </div>
                                 <div class="col">
                                     <label>Type</label>
@@ -318,7 +307,7 @@ else
                              <hr />
 
                             <div class="quote-detail-controls-container">
-                                <button class="action-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Add Trade</button>
+                                <button class="action-button" @onclick="@(() => IsPopupVisibleAddTrade = true)">Add Trade</button>
                             </div>
                         }
                     }
@@ -333,7 +322,7 @@ else
                         }
                     }
 
-                    <DxTabPage Id="Panel-Project-Summary" CssClass="tab-container" Text="@roofsCountLabel">
+                    <DxTabPage Id="Panel-Project-Summary" CssClass="tab-container" Text="@tradesCountLabel">
 
                         <div class="container">
 
@@ -347,7 +336,7 @@ else
                                     <span><b>@selectedQuote.totalSquareFeet.ToString("N0")</b></span>
                                 </div>
                                 <div class="col">
-                                    <label>Included Roofs</label>
+                                    <label>Included Targets</label>
                                     <span><b>@selectedQuote.numberOfIncludedStructures.ToString("N0")</b></span>
                                 </div>
                                 <div class="col">
@@ -842,6 +831,16 @@ else
     </DxGrid>
 }
 
+<DxPopup @bind-Visible="@IsPopupVisibleAddTrade" ShowFooter="true" HeaderText="Select a new Trade Project to add">
+    <BodyContentTemplate>
+        Trades list here....
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AddTrade" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleAddTrade = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
 <DxPopup @bind-Visible="@IsPopupVisibleMakeWarrantyClaim" ShowFooter="true" HeaderText="Make a Warranty Claim?">
     <BodyContentTemplate>
         <p>Why are you making a Warranty Claim on this archived project?</p>
@@ -983,6 +982,11 @@ else
 </DxLoadingPanel>
 
 @code {
+
+    public void RedirectToQuoteDetails()
+    {
+        var tmpUrl = "";
+    }
 
     public string uploadUrl = "/api/Upload/UploadFile";
 
@@ -1208,10 +1212,10 @@ else
 
     IEnumerable<string> Values { get; set; }
 
-    public int roofsCount = 0;
+    public int tradesCount = 0;
     public int productsCount = 0;
 
-    public string roofsCountLabel = "";
+    public string tradesCountLabel = "";
     public string productsCountLabel = "";
 
     public Quote selectedQuote { get; set; }
@@ -1288,6 +1292,8 @@ else
     bool IsPopupVisibleCompleteCustomer { get; set; }
     bool IsPopupVisibleMakeWarrantyClaim { get; set; }
     bool IsPopupVisibleCloseWarrantyClaim { get; set; }
+
+    bool IsPopupVisibleAddTrade { get; set; }
 
     bool IsPopupVisibleHelpSendFiles { get; set; }
     bool IsPopupVisibleHelpFileAttachments { get; set; }
@@ -1568,6 +1574,11 @@ else
         IsPopupVisibleSelectNoteToDelete = false;
 
         notesCount--;
+    }
+
+    public void AddTrade()
+    {
+        var tmpVal = "";
     }
 
     public void MakeWarrantyClaim()

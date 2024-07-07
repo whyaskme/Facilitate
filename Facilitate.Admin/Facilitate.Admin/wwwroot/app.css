@@ -90,6 +90,12 @@ button.btn-primary {
         padding-right: 15px !important;
     }
 
+.action-button-small {
+    border: solid 0px #ff0000 !important;
+    width: 75px !important;
+    font-size: 1.0em !important;
+}
+
 .dxbl-btn-link {
     border: solid 1px #eee !important;
 }
@@ -799,15 +805,6 @@ label {
     label:after {
         content: '' !important;
     }
-
-h6 {
-    border-bottom: dashed 0px #808080 !important;
-    font-size: 1.3em;
-    font-weight: normal;
-    font-style: normal;
-    color: #808080 !important;
-    margin-bottom: 0px !important;
-}
 
 .quote-detail-controls-container {
     position: relative !important;
