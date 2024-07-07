@@ -144,6 +144,7 @@ else
                         </a>
                     </div>
                     <div class="col-md-4 quote-total">
+                        <span class="">Total:</span>
                         <span class="">@selectedQuote.totalSquareFeet.ToString("N0")</span>
                         <span class="">sqft &raquo;</span>
                         <span class="">@selectedQuote.totalQuote.ToString("C0")</span>
@@ -169,26 +170,16 @@ else
 
                 <DxTabs CssClass="tabs-container">
 
-                    <DxTabPage Id="Panel-Project-Manager" Text="Project Management">
+                    <DxTabPage Id="Panel-Project-Manager" Text="Relationships">
                     @{
-
-                        <div class="row">
-                            <div class="col">
-                                <h5>Relationships</h5>
-                            </div>
-                        </div>
-
- 
-
                         if (selectedQuote.projectManager != null)
                         {
-                            <div class="row line-item">
+                            <h6>Project Manager</h6>
+                            <div class="row">
                                 <div class="col">
-                                    <span>1</span>
-                                </div>
-                                <div class="col">
-                                    <label>Id</label>
-                                    <span class="detail-item">???</span>
+                                    <span>
+                                        <a href="">Reassign</a>
+                                    </span>
                                 </div>
                                 <div class="col">
                                     <label>Type</label>
@@ -214,30 +205,120 @@ else
                                         @selectedQuote.projectManager.City, @selectedQuote.projectManager.State
                                     </a>
                                 </div>
+                                <div class="col">&nbsp;</div>
                             </div>
 
-                            <div class="row line-item">
+                            <hr />
+
+                            // for(int j == 0; j++; j < 3)
+                            // {
+                            //     var tmpVal = "";
+                            // }
+
+                            <h6>Additions</h6>
+                            <div class="row">
                                 <div class="col">
-                                    <span>2</span>
+                                    <span><a href="/quotes/details/667b207bf14995e42772cacc/opportunities/">View</a></span>
+                                    <label>|</label>
+                                    <span><a href="">Reassign</a></span>
+                                    <label>|</label>
+                                    <span><a href="">Delete</a></span>
                                 </div>
                                 <div class="col">
-                                    <label>Id</label>
-                                    <span class="detail-item">???</span>
+                                    <label>Type</label>
+                                    <span class="detail-item">Gutter Project</span>
+                                </div>
+                                <div class="col">
+                                        <label>Manager</label>
+                                        <span class="detail-item">Matthew Lamz</span>
+                                </div>
+                                <div class="col">
+                                    <label>Phone</label>
+                                    <span class="detail-item">(555) 555-1212</span>
+                                </div>
+                                <div class="col">
+                                    <label>Email</label>
+                                    <a href="mailto:@selectedQuote.projectManager.Email" target="_blank">
+                                            <span class="detail-item">Matthew Lamz</span>
+                                    </a>
+                                </div>
+                                <div class="col">
+                                    <label>Amount</label>
+                                    <span class="detail-item">$0.00</span>
+                                </div>
+                                    <div class="col">&nbsp;</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                        <span><a href="/quotes/details/667b207bf14995e42772cacc/opportunities/">View</a></span>
+                                    <label>|</label>
+                                    <span><a href="">Reassign</a></span>
+                                    <label>|</label>
+                                    <span><a href="">Delete</a></span>
                                 </div>
                                 <div class="col">
                                     <label>Type</label>
                                     <span class="detail-item">Siding Project</span>
                                 </div>
                                 <div class="col">
-                                    <label>Name</label>
-                                    <span class="detail-item">Project Name</span>
+                                        <label>Manager</label>
+                                        <span class="detail-item">Matthew Lamz</span>
+                                </div>
+                                <div class="col">
+                                    <label>Phone</label>
+                                        <span class="detail-item">(555) 555-1212</span>
+                                </div>
+                                <div class="col">
+                                    <label>Email</label>
+                                    <a href="mailto:@selectedQuote.projectManager.Email" target="_blank">
+                                            <span class="detail-item">Matthew Lamz</span>
+                                    </a>
                                 </div>
                                 <div class="col">
                                     <label>Amount</label>
                                     <span class="detail-item">$0.00</span>
                                 </div>
-                                <div class="col"></div>
-                                <div class="col"></div>
+                                    <div class="col">&nbsp;</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                        <span><a href="/quotes/details/667b207bf14995e42772cacc/opportunities/">View</a></span>
+                                    <label>|</label>
+                                    <span><a href="">Reassign</a></span>
+                                    <label>|</label>
+                                    <span><a href="">Delete</a></span>
+                                </div>
+                                <div class="col">
+                                    <label>Type</label>
+                                    <span class="detail-item">Window Project</span>
+                                </div>
+                                <div class="col">
+                                    <label>Manager</label>
+                                    <span class="detail-item">Matthew Lamz</span>
+                                </div>
+                                <div class="col">
+                                    <label>Phone</label>
+                                    <span class="detail-item">(555) 555-1212</span>
+                                </div>
+                                <div class="col">
+                                    <label>Email</label>
+                                    <a href="mailto:@selectedQuote.projectManager.Email" target="_blank">
+                                        <span class="detail-item">Matthew Lamz</span>
+                                    </a>
+                                </div>
+                                <div class="col">
+                                    <label>Amount</label>
+                                    <span class="detail-item">$0.00</span>
+                                </div>
+                                <div class="col">&nbsp;</div>
+                            </div>
+
+                             <hr />
+
+                            <div class="quote-detail-controls-container">
+                                <button class="action-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Add Trade</button>
                             </div>
                         }
                     }
