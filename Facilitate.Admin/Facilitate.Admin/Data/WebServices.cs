@@ -541,11 +541,14 @@ namespace Facilitate.Admin.Data
 
                 foreach (var trade in tradesList)
                 {
-                    ListItem tradeItem = new ListItem();
-                    tradeItem.Text = trade;
-                    tradeItem.Value = trade;
+                    if(!trade.Contains("Aggregate"))
+                    {
+                        ListItem tradeItem = new ListItem();
+                        tradeItem.Text = trade;
+                        tradeItem.Value = trade;
 
-                    masterList.Add(tradeItem);
+                        masterList.Add(tradeItem);
+                    }
                 }
 
                 return masterList;
