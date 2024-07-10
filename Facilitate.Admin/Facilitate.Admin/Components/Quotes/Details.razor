@@ -132,6 +132,11 @@ else
                 notesCount = selectedQuote.notes.Count;
                 eventsCount = selectedQuote.events.Count;
 
+                if (selectedQuote.relationships.Count > 0)
+                {
+                    <div class="summary-header">Aggregate (Summary) Quote</div>
+                }
+
                 <div class="row">
                     <div class="col-md-4">
                         <label>Name</label>
@@ -165,7 +170,7 @@ else
                 </div>
 
                 <div class="section-header">
-                    Project Dashboard
+                    (@selectedQuote.applicationType) Project Dashboard
                 </div>
 
                 <DxTabs CssClass="tabs-container">
@@ -954,12 +959,17 @@ else
     [Parameter]
     public EventCallback<IEnumerable<ListItem>> SelectedItemsChanged { get; set; }
 
+    [Parameter]
+    public string SelectedQuoteStatus { get; set; }
+
     IEnumerable<ListItem> SelectedTradesToAdd = new List<ListItem>();
 
     List<ListItem> TradesList = new List<ListItem>();
 
     public void RedirectToQuoteDetails(string quoteId)
     {
+        var tmpVal = SelectedQuoteStatus;
+
         var tmpUrl = "/quotes/details/" + quoteId + "/opportunities/";
 
         NavigationManager.NavigateTo(tmpUrl);
@@ -1648,7 +1658,7 @@ else
         Quote masterQuote = new Quote();
         var masterQuoteId = masterQuote._id;
 
-        masterQuote.applicationType = selectedQuote.applicationType;
+        masterQuote.applicationType = "Aggregate";
         masterQuote.status = selectedQuote.status;
 
         masterQuote.address = selectedQuote.address;
@@ -1686,16 +1696,18 @@ else
         Relationship relationship = new Relationship();
         relationship.ParentId = selectedQuote._id;
         relationship.Type = "Quote";
-        relationship.Name = "Parent () Project";
+        relationship.Name = "Parent (" + selectedQuote.applicationType + ") Project";
         selectedQuote.relationships.Add(relationship);
 
         WebServices.UpdateQuote(selectedQuote);
 
         IsPopupVisibleAddTrade = false;
 
-        var referrerUrl = "/archives/";
-        referrerUrl = "";
-        NavigationManager.NavigateTo("/quotes/details/" + masterQuoteId + referrerUrl);
+        // var referrerUrl = "/archives/";
+        // referrerUrl = "";
+        // NavigationManager.NavigateTo("/quotes/details/" + masterQuoteId + referrerUrl);
+
+        RedirectToQuoteDetails(masterQuoteId);
     }
 
     public void DeleteTrade()
