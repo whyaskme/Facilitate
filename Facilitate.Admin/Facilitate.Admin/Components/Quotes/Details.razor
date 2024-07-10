@@ -1618,11 +1618,6 @@ else
         siblingRelationship.Type = "Quote";
         siblingRelationship.Name = "Sibling (" + selectedQuote.applicationType + ") project";
 
-        Relationship originalQuoteRelationship = new Relationship();
-        originalQuoteRelationship.ParentId = selectedQuote._id;
-        originalQuoteRelationship.Type = "Quote";
-        originalQuoteRelationship.Name = "Parent (" + selectedQuote.applicationType + ") project";
-
         foreach(var selectedTrade in SelectedTradesToAdd)
         {
             // Create child quotes and relationships
@@ -1698,38 +1693,37 @@ else
         masterQuote.warranties = selectedQuote.warranties;
         masterQuote.zip = selectedQuote.zip;
 
-        //masterQuote.relationships = selectedQuote.relationships;
-
-        foreach(Quote quote in childQuoteList)
+        foreach(Quote childQuote in childQuoteList)
         {
             // Add Parent relationship to each child quote
-            quote.relationships.Add(parentRelationship);
+            childQuote.relationships.Add(parentRelationship);
 
-            //childRelationship.Name = "Child (" + selectedQuote.applicationType + ") project";
             masterQuote.relationships.Add(childRelationship);
 
             // Add Siblings to each child quote
 
-
             WebServices.CreateQuote(quote);
 
             Event _event = new Event();
-            _event.Details = "Trade (" + quote.applicationType + ") added to Quote";
+            _event.Details = "Trade (" + childQuote.applicationType + ") added to Quote";
             _event.Name = "Trade Added";
 
             selectedQuote.events.Add(_event);
         }
 
-        masterQuote.relationships.Add(originalQuoteRelationship);
+        //masterQuote.relationships = selectedQuote.relationships;
+        masterQuote.relationships.Add(parentRelationship);
 
         masterQuote.events = selectedQuote.events;
 
+        // Create new Master (Summary) aggregate
         WebServices.CreateQuote(masterQuote);
 
+        // Update original quote with new Master relationship
         Relationship relationship = new Relationship();
-        relationship.ParentId = selectedQuote._id;
+        relationship.ParentId = masterQuoteId;
         relationship.Type = "Quote";
-        relationship.Name = "Child (" + selectedQuote.applicationType + ") project";
+        relationship.Name = "Master (" + selectedQuote.applicationType + ") project";
         selectedQuote.relationships.Add(relationship);
 
         WebServices.UpdateQuote(selectedQuote);
