@@ -135,7 +135,7 @@ else
                 <div class="row">
                     <div class="col-md-4">
                         <label>Name</label>
-                        <span>@selectedQuote.firstName @selectedQuote.lastName</span>
+                        <span class="quote-title">@selectedQuote.firstName @selectedQuote.lastName</span>
                     </div>
                     <div class="col-md-4">
                         <label>Address</label>
@@ -1592,7 +1592,7 @@ else
             Relationship parentRelationship = new Relationship();
             parentRelationship.RelatedToId = selectedQuote._id;
             parentRelationship.Type = "Quote";
-            parentRelationship.Name = "Child Project";
+            parentRelationship.Name = "Parent (" + childQuote.applicationType + ") Project";
 
             childQuote.relationships.Add(parentRelationship);
 
@@ -1600,7 +1600,7 @@ else
             Relationship childRelationship = new Relationship();
             childRelationship.RelatedToId = selectedQuote._id;
             childRelationship.Type = "Quote";
-            childRelationship.Name = "Parent Project";
+            childRelationship.Name = "Child (" + childQuote.applicationType + ") Project";
 
             selectedQuote.relationships.Add(childRelationship);
         }

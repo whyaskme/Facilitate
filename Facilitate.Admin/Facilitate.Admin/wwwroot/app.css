@@ -6,6 +6,16 @@ html, body {
     overflow: auto !important;
 }
 
+.quote-title,
+.quote-total {
+    color: #808080 !important;
+    font-weight: bold !important;
+    font-size: 1.2em !important;
+    border: solid 0px #ff0000 !important;
+    text-align: right !important;
+    padding-right: 50px !important;
+}
+
 .project-manager-summary {
     border: solid 1px #ff0000 !important;
     position: relative !important;
@@ -60,15 +70,6 @@ button.btn-primary {
 #tabs-Customer-Qualifications {
     padding: 25px !important;
     background-color: #ffffff !important;
-}
-
-.quote-total {
-    color: #808080 !important;
-    font-weight: bold !important;
-    font-size: 1.3em !important;
-    border: solid 0px #ff0000 !important;
-    text-align: right !important;
-    padding-right: 50px !important;
 }
 
 .col-visible {
