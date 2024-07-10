@@ -218,101 +218,11 @@ else
 
                             <hr />
 
-                            // for(int j == 0; j++; j < 3)
-                            // {
-                            //     var tmpVal = "";
-                            // }
-
                             <h6>Project Trades</h6>
-                            <div class="row">
-                                <div class="col">
-                                    <button class="action-button action-button-small" @onclick='() => RedirectToQuoteDetails("667b228df14995e427b8d468")'>View</button>
-                                    <button class="action-button action-button-small" @onclick="@(() => IsPopupVisibleDeleteTrade = true)">Remove</button>
-                                </div>
-                                <div class="col">
-                                    <label>Type</label>
-                                    <span class="detail-item">Gutter Project</span>
-                                </div>
-                                <div class="col">
-                                        <label>Manager</label>
-                                        <span class="detail-item">Matthew Lamz</span>
-                                </div>
-                                <div class="col">
-                                    <label>Ph</label>
-                                    <span class="detail-item">(555) 555-1212</span>
-                                </div>
-                                <div class="col">
-                                    <label>Email</label>
-                                    <a href="mailto:@selectedQuote.projectManager.Email" target="_blank">
-                                            <span class="detail-item">Matthew Lamz</span>
-                                    </a>
-                                </div>
-                                <div class="col">
-                                    <label>Amount</label>
-                                    <span class="detail-item">$0.00</span>
-                                </div>
-                                    <div class="col">&nbsp;</div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col">
-                                    <button class="action-button action-button-small" @onclick='() => RedirectToQuoteDetails("667b228df14995e427b8d468")'>View</button>
-                                    <button class="action-button action-button-small" @onclick="@(() => IsPopupVisibleDeleteTrade = true)">Remove</button>
-                                </div>
-                                <div class="col">
-                                    <label>Type</label>
-                                    <span class="detail-item">Siding Project</span>
-                                </div>
-                                <div class="col">
-                                        <label>Manager</label>
-                                        <span class="detail-item">Matthew Lamz</span>
-                                </div>
-                                <div class="col">
-                                    <label>Ph</label>
-                                        <span class="detail-item">(555) 555-1212</span>
-                                </div>
-                                <div class="col">
-                                    <label>Email</label>
-                                    <a href="mailto:@selectedQuote.projectManager.Email" target="_blank">
-                                            <span class="detail-item">Matthew Lamz</span>
-                                    </a>
-                                </div>
-                                <div class="col">
-                                    <label>Amount</label>
-                                    <span class="detail-item">$0.00</span>
-                                </div>
-                                    <div class="col">&nbsp;</div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col">
-                                        <button class="action-button action-button-small" @onclick='() => RedirectToQuoteDetails("667b228df14995e427b8d468")'>View</button>
-                                        <button class="action-button action-button-small" @onclick="@(() => IsPopupVisibleDeleteTrade = true)">Remove</button>
-                                </div>
-                                <div class="col">
-                                    <label>Type</label>
-                                    <span class="detail-item">Window Project</span>
-                                </div>
-                                <div class="col">
-                                    <label>Manager</label>
-                                    <span class="detail-item">Matthew Lamz</span>
-                                </div>
-                                <div class="col">
-                                    <label>Ph</label>
-                                    <span class="detail-item">(555) 555-1212</span>
-                                </div>
-                                <div class="col">
-                                    <label>Email</label>
-                                    <a href="mailto:@selectedQuote.projectManager.Email" target="_blank">
-                                        <span class="detail-item">Matthew Lamz</span>
-                                    </a>
-                                </div>
-                                <div class="col">
-                                    <label>Amount</label>
-                                    <span class="detail-item">$0.00</span>
-                                </div>
-                                <div class="col">&nbsp;</div>
-                            </div>
+                            foreach(var trade in @selectedQuote.relationships)
+                            {
+                                    
+                            }
 
                              <hr />
 
@@ -841,9 +751,17 @@ else
     </DxGrid>
 }
 
-<DxPopup @bind-Visible="@IsPopupVisibleAddTrade" ShowFooter="true" HeaderText="Select a new Trade Project to add">
+<DxPopup @bind-Visible="@IsPopupVisibleAddTrade" ShowHeader="false" ShowFooter="true" HeaderText="Select Trade(s) to add">
     <BodyContentTemplate>
-        Trades list here....
+        <DxListBox Data="@TradesList"
+                   @bind-Values="@TradeValues"
+                   CssClass="popup-grid"
+                   SelectionMode="ListBoxSelectionMode.Multiple"
+                   ShowCheckboxes="true">
+            <Columns>
+                <DxListEditorColumn FieldName="Value" Caption="Select Trade(s) to add" />
+            </Columns>
+        </DxListBox>
     </BodyContentTemplate>
     <FooterContentTemplate>
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AddTrade" />
@@ -908,7 +826,7 @@ else
          HeaderText="Please select a Project Manager for assignment">
     <BodyContentTemplate>
         <DxListBox Data="@ProjectManagers"
-                   @bind-Values="@Values"
+                   @bind-Values="@QuoteValues"
                    CssClass="popup-grid"
                    SelectedItemsChanged="@((IEnumerable<ApplicationUser> values) => SelectedProjectManagerChanged(values))"
                    SelectionMode="ListBoxSelectionMode.Single"
@@ -1002,6 +920,8 @@ else
 </DxLoadingPanel>
 
 @code {
+
+    List<ListItem> TradesList = new List<ListItem>();
 
     public void RedirectToQuoteDetails(string quoteId)
     {
@@ -1099,6 +1019,8 @@ else
         {
             QuoteGrid.ExpandDetailRow(0);
             QuoteGrid.SelectAllAsync(true);
+
+            TradesList = webServices.GetTradesList(true, selectedQuote.applicationType);
         }
     }
 
@@ -1232,7 +1154,8 @@ else
 
     public int noteCount = 0;
 
-    IEnumerable<string> Values { get; set; }
+    IEnumerable<string> QuoteValues { get; set; }
+    IEnumerable<string> TradeValues { get; set; }
 
     public int tradesCount = 0;
     public int productsCount = 0;

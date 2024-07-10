@@ -1,4 +1,5 @@
-﻿using Facilitate.Admin.Components.Account;
+﻿using DevExpress.Office.Utils;
+using Facilitate.Admin.Components.Account;
 using Facilitate.Admin.Components.Account.Pages;
 using Facilitate.Libraries.Models;
 using Json.Net;
@@ -519,13 +520,51 @@ namespace Facilitate.Admin.Data
             return sortedQuotes;
         }
 
+        public List<ListItem> GetTradesList(bool filterActiveTrade, string activeQuoteTrade)
+        {
+            List<ListItem> masterList = new List<ListItem>();
+
+            try
+            {
+                var filter = new BsonDocument();
+
+                var tradeFilter = Builders<Quote>.Filter.Where(p => p._t == "Quote");
+
+                if (filterActiveTrade)
+                {
+                    var dataSourceFilter = Builders<Quote>.Filter.Not(Builders<Quote>.Filter.Eq(p => p.applicationType, activeQuoteTrade));
+
+                    tradeFilter = Builders<Quote>.Filter.And(filter, dataSourceFilter);
+                }
+
+                var tradesList = _mongoDBCollection.Distinct(s => s.applicationType, tradeFilter).ToList();
+
+                foreach (var trade in tradesList)
+                {
+                    ListItem tradeItem = new ListItem();
+                    tradeItem.Text = trade;
+                    tradeItem.Value = trade;
+
+                    masterList.Add(tradeItem);
+                }
+
+                return masterList;
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+
+            return null;
+        }
+
         public List<string> GetTradesList(string status)
         {
             try
             {
                 var filter = new BsonDocument();
 
-                if(status == "All")
+                if (status == "All")
                 {
                     var statusFilter = Builders<Quote>.Filter.Where(p => p._t == "Quote");
 
