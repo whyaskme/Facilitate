@@ -757,6 +757,7 @@ else
                    @bind-Values="@TradeValues"
                    CssClass="popup-grid"
                    SelectionMode="ListBoxSelectionMode.Multiple"
+                   SelectedItemsChanged="@((IEnumerable<ListItem> values) => SelectedTradesChanged(values))"
                    ShowCheckboxes="true">
             <Columns>
                 <DxListEditorColumn FieldName="Value" Caption="Select Trade(s) to add" />
@@ -921,6 +922,11 @@ else
 
 @code {
 
+    [Parameter]
+    public EventCallback<IEnumerable<ListItem>> SelectedItemsChanged { get; set; }
+
+    IEnumerable<ListItem> selectedTradesToAdd = new List<ListItem>();
+
     List<ListItem> TradesList = new List<ListItem>();
 
     public void RedirectToQuoteDetails(string quoteId)
@@ -974,6 +980,11 @@ else
         var MyMessage = "Upload of the " + e.FileInfo.Name + " file was started.";
 
         InvokeAsync(StateHasChanged);
+    }
+
+    protected void SelectedTradesChanged(IEnumerable<ListItem> trades)
+    {
+        selectedTradesToAdd = trades;
     }
 
     protected void SelectedFilesChanged(IEnumerable<UploadFileInfo> files)
@@ -1313,9 +1324,22 @@ else
 
     #region Methods
 
-    void SelectedProjectManagerChanged(IEnumerable<ApplicationUser> selectedProjectManager)
+    void SelectedTradesChanged(IEnumerable<ApplicationUser> selectedProjectManager)
     {
         if(selectedProjectManager.Count() > 0)
+        {
+            SelectedProjectManager = selectedProjectManager;
+
+            if (SelectedProjectManager.Count() > 0)
+                IsAssignButtonEnabled = true;
+            else
+                IsAssignButtonEnabled = false;
+        }
+    }
+
+    void SelectedProjectManagerChanged(IEnumerable<ApplicationUser> selectedProjectManager)
+    {
+        if (selectedProjectManager.Count() > 0)
         {
             SelectedProjectManager = selectedProjectManager;
 
@@ -1333,6 +1357,13 @@ else
 
     void OnRowClick(GridRowClickEventArgs args)
     {
+
+    }
+
+    void OnTradeRowClick(SelectListItem args)
+    {
+        var tmpVal = "Here...";
+
     }
 
     public async Task<string> GetIpAddress()
@@ -1524,6 +1555,8 @@ else
 
     public void AddTrade()
     {
+        //var keys = ListBoxExtension.GetSelectedValues<int>("Test");  
+
         var tmpVal = "";
     }
 
