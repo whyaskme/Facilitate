@@ -925,7 +925,7 @@ else
     [Parameter]
     public EventCallback<IEnumerable<ListItem>> SelectedItemsChanged { get; set; }
 
-    IEnumerable<ListItem> selectedTradesToAdd = new List<ListItem>();
+    IEnumerable<ListItem> SelectedTradesToAdd = new List<ListItem>();
 
     List<ListItem> TradesList = new List<ListItem>();
 
@@ -984,7 +984,7 @@ else
 
     protected void SelectedTradesChanged(IEnumerable<ListItem> trades)
     {
-        selectedTradesToAdd = trades;
+        SelectedTradesToAdd = trades;
     }
 
     protected void SelectedFilesChanged(IEnumerable<UploadFileInfo> files)
@@ -1555,9 +1555,59 @@ else
 
     public void AddTrade()
     {
-        //var keys = ListBoxExtension.GetSelectedValues<int>("Test");  
+        foreach(var selectedTrade in SelectedTradesToAdd)
+        {
+            // Create child quotes and relationships
+            Quote childQuote = new Quote();
+            childQuote.applicationType = selectedTrade.Value;
 
-        var tmpVal = "";
+            childQuote.address = selectedQuote.address;
+            childQuote.structures = selectedQuote.structures;
+            childQuote.notes = selectedQuote.notes;
+            childQuote.email = selectedQuote.email;
+            childQuote.street = selectedQuote.street;
+            childQuote.city = selectedQuote.city;
+            childQuote.externalUrl = selectedQuote.externalUrl;
+            childQuote.Groups = selectedQuote.Groups;
+            childQuote.firstName = selectedQuote.firstName;
+            childQuote.fullAddress = selectedQuote.fullAddress;
+            childQuote.ipAddress = selectedQuote.ipAddress;
+            childQuote.lastName = selectedQuote.lastName;
+            childQuote.leadId = selectedQuote.leadId;
+            childQuote.mainRoofTotalSquareFeet = selectedQuote.mainRoofTotalSquareFeet;
+            childQuote.market = selectedQuote.market;
+            childQuote.numberOfIncludedStructures = selectedQuote.numberOfIncludedStructures;
+            childQuote.numberOfStructures = selectedQuote.numberOfStructures;
+            childQuote.phone = selectedQuote.phone;
+            childQuote.products = selectedQuote.products;
+            childQuote.projectManager = selectedQuote.projectManager;
+            childQuote.repEmail = selectedQuote.repEmail;
+            childQuote.repName = selectedQuote.repName;
+            childQuote.sessionId = selectedQuote.sessionId;
+            childQuote.state = selectedQuote.state;
+            childQuote.totalSquareFeet = selectedQuote.totalSquareFeet;
+            childQuote.warranties = selectedQuote.warranties;
+            childQuote.zip = selectedQuote.zip;
+
+            Relationship parentRelationship = new Relationship();
+            parentRelationship.RelatedToId = selectedQuote._id;
+            parentRelationship.Type = "Quote";
+            parentRelationship.Name = "Child Project";
+
+            childQuote.relationships.Add(parentRelationship);
+
+            // Create master (Summary/Aggregate) quote and relationships
+            Relationship childRelationship = new Relationship();
+            childRelationship.RelatedToId = selectedQuote._id;
+            childRelationship.Type = "Quote";
+            childRelationship.Name = "Parent Project";
+
+            selectedQuote.relationships.Add(childRelationship);
+        }
+
+        WebServices.UpdateQuote(selectedQuote);
+
+        IsPopupVisibleAddTrade = false;
     }
 
     public void DeleteTrade()
