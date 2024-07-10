@@ -221,7 +221,22 @@ else
                             <h6>Project Trades</h6>
                             foreach(var trade in @selectedQuote.relationships)
                             {
-                                    
+                                if(trade.Type == "Quote")
+                                {
+                                    var relationshipId = trade.RelatedToId;
+                                    var tradeType = trade.Name;
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <button class="action-button action-button-small" @onclick='() => RedirectToQuoteDetails(relationshipId)'>View</button>
+                                            <button class="action-button action-button-small" @onclick="@(() => IsPopupVisibleDeleteTrade = true)">Remove</button>
+                                        </div>
+                                        <div class="col">
+                                            <label>Type</label>
+                                            <span class="detail-item">tradeType</span>
+                                        </div>
+                                    </div>
+                                }
                             }
 
                              <hr />
