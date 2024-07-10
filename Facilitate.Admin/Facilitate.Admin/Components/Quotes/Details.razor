@@ -213,7 +213,7 @@ else
                                 </div>
                                 <div class="col">&nbsp;</div>
                                 <div class="col">&nbsp;</div>
-                                    <div class="col">&nbsp;</div>
+                                <div class="col">&nbsp;</div>
                             </div>
 
                             <hr />
@@ -221,10 +221,14 @@ else
                             <h6>Project Trades</h6>
                             foreach(var trade in @selectedQuote.relationships)
                             {
-                                if(trade.Type == "Quote")
+                                if(@trade.Type == "Quote")
                                 {
-                                    var relationshipId = trade.RelatedToId;
-                                    var tradeType = trade.Name;
+                                    var relationshipName = trade.Name;
+                                    var relationshipId = trade.ParentId;
+                                    var relationshipType = trade.Type;
+                                    var relationshipIsEnabled = trade.IsEnabled;
+                                    var relationshipCreatedById = trade.CreatedById;
+                                    var relationshipCreatedDate = trade.CreatedDate;
 
                                     <div class="row">
                                         <div class="col">
@@ -233,8 +237,18 @@ else
                                         </div>
                                         <div class="col">
                                             <label>Type</label>
-                                            <span class="detail-item">tradeType</span>
+                                            <span class="detail-item">@relationshipName.Replace("Child ","")</span>
                                         </div>
+                                        <div class="col">&nbsp;</div>
+                                        <div class="col">&nbsp;</div>
+                                        <div class="col">&nbsp;</div>
+                                        <div class="col">&nbsp;</div>
+                                        <div class="col">&nbsp;</div>
+                                        <div class="col">&nbsp;</div>
+                                        <div class="col">&nbsp;</div>
+                                        <div class="col">&nbsp;</div>
+                                        <div class="col">&nbsp;</div>
+                                            <div class="col">&nbsp;</div>
                                     </div>
                                 }
                             }
@@ -1575,6 +1589,7 @@ else
             // Create child quotes and relationships
             Quote childQuote = new Quote();
             childQuote.applicationType = selectedTrade.Value;
+            childQuote.status = selectedQuote.status;
 
             childQuote.address = selectedQuote.address;
             childQuote.structures = selectedQuote.structures;
@@ -1605,24 +1620,82 @@ else
             childQuote.zip = selectedQuote.zip;
 
             Relationship parentRelationship = new Relationship();
-            parentRelationship.RelatedToId = selectedQuote._id;
+            parentRelationship.ParentId = selectedQuote._id;
             parentRelationship.Type = "Quote";
             parentRelationship.Name = "Parent (" + childQuote.applicationType + ") Project";
 
             childQuote.relationships.Add(parentRelationship);
 
+            WebServices.CreateQuote(childQuote);
+
             // Create master (Summary/Aggregate) quote and relationships
             Relationship childRelationship = new Relationship();
-            childRelationship.RelatedToId = selectedQuote._id;
+            childRelationship.ParentId = selectedQuote._id;
             childRelationship.Type = "Quote";
             childRelationship.Name = "Child (" + childQuote.applicationType + ") Project";
 
             selectedQuote.relationships.Add(childRelationship);
+
+            Event _event = new Event();
+            _event.Details = "Trade added to Quote";
+            _event.Name = "Trade Added";
+
+            selectedQuote.events.Add(_event);
+
         }
+
+        // Add Master Summary Quote and redirect to Master details page
+        Quote masterQuote = new Quote();
+        var masterQuoteId = masterQuote._id;
+
+        masterQuote.applicationType = selectedQuote.applicationType;
+        masterQuote.status = selectedQuote.status;
+
+        masterQuote.address = selectedQuote.address;
+        masterQuote.structures = selectedQuote.structures;
+        masterQuote.notes = selectedQuote.notes;
+        masterQuote.email = selectedQuote.email;
+        masterQuote.street = selectedQuote.street;
+        masterQuote.city = selectedQuote.city;
+        masterQuote.externalUrl = selectedQuote.externalUrl;
+        masterQuote.Groups = selectedQuote.Groups;
+        masterQuote.firstName = selectedQuote.firstName;
+        masterQuote.fullAddress = selectedQuote.fullAddress;
+        masterQuote.ipAddress = selectedQuote.ipAddress;
+        masterQuote.lastName = selectedQuote.lastName;
+        masterQuote.leadId = selectedQuote.leadId;
+        masterQuote.mainRoofTotalSquareFeet = selectedQuote.mainRoofTotalSquareFeet;
+        masterQuote.market = selectedQuote.market;
+        masterQuote.numberOfIncludedStructures = selectedQuote.numberOfIncludedStructures;
+        masterQuote.numberOfStructures = selectedQuote.numberOfStructures;
+        masterQuote.phone = selectedQuote.phone;
+        masterQuote.products = selectedQuote.products;
+        masterQuote.projectManager = selectedQuote.projectManager;
+        masterQuote.repEmail = selectedQuote.repEmail;
+        masterQuote.repName = selectedQuote.repName;
+        masterQuote.sessionId = selectedQuote.sessionId;
+        masterQuote.state = selectedQuote.state;
+        masterQuote.totalSquareFeet = selectedQuote.totalSquareFeet;
+        masterQuote.warranties = selectedQuote.warranties;
+        masterQuote.zip = selectedQuote.zip;
+
+        masterQuote.relationships = selectedQuote.relationships;
+
+        WebServices.CreateQuote(masterQuote);
+
+        Relationship relationship = new Relationship();
+        relationship.ParentId = selectedQuote._id;
+        relationship.Type = "Quote";
+        relationship.Name = "Parent () Project";
+        selectedQuote.relationships.Add(relationship);
 
         WebServices.UpdateQuote(selectedQuote);
 
         IsPopupVisibleAddTrade = false;
+
+        var referrerUrl = "/archives/";
+        referrerUrl = "";
+        NavigationManager.NavigateTo("/quotes/details/" + masterQuoteId + referrerUrl);
     }
 
     public void DeleteTrade()

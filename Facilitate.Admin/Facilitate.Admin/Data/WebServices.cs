@@ -690,6 +690,22 @@ namespace Facilitate.Admin.Data
             return resultMsg;
         }
 
+        IMongoCollection<Quote> _quoteCollection;
+
+        public void CreateQuote(Quote newQuote)
+        {
+            try
+            {
+                _quoteCollection = _mongoDBClient.GetDatabase(_mongoDBName).GetCollection<Quote>(_mongoDBCollectionName);
+
+                _quoteCollection.InsertOne(newQuote);
+            }
+            catch(Exception ex)
+            {
+                var errMsg = ex.Message;
+            }
+        }
+
         [HttpPut("{quote}")]
         public Quote UpdateQuote(Quote quote)
         {
@@ -711,9 +727,6 @@ namespace Facilitate.Admin.Data
             {
 
             }
-
-            //quote = SortItemsByDateDesc(quote);
-
             return quote;
         }
 
