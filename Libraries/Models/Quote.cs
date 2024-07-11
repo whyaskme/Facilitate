@@ -61,8 +61,6 @@ namespace Facilitate.Libraries.Models
             ipAddress = OriginalQuote.ipAddress;
             status = OriginalQuote.status;
 
-            Groups = OriginalQuote.Groups;
-
             address = OriginalQuote.address;
             fullAddress = OriginalQuote.fullAddress;
             street = OriginalQuote.street;
@@ -80,23 +78,24 @@ namespace Facilitate.Libraries.Models
             lastUpdated = OriginalQuote.lastUpdated;
             totalQuote = OriginalQuote.totalQuote;
 
+            Groups = Groups = new List<ObjectId>(); ;
             numberOfStructures = OriginalQuote.numberOfStructures;
             numberOfIncludedStructures = OriginalQuote.numberOfIncludedStructures;
             totalSquareFeet = OriginalQuote.totalSquareFeet;
             mainRoofTotalSquareFeet = OriginalQuote.mainRoofTotalSquareFeet;
             totalInitialSquareFeet = OriginalQuote.totalInitialSquareFeet;
             sessionId = OriginalQuote.sessionId;
-            structures = OriginalQuote.structures;
+            structures = new List<Structure>();
             repName = OriginalQuote.repName;
             repEmail = OriginalQuote.repEmail;
             leadId = OriginalQuote.leadId;
             relationships = OriginalQuote.relationships;
-            products = OriginalQuote.products;
-            attachments = OriginalQuote.attachments;
-            notes = OriginalQuote.notes;
+            products = new List<Product>();
+            attachments = new List<Attachment>();
+            notes = new List<Note>();
             projectManager = OriginalQuote.projectManager;
             events = OriginalQuote.events;
-            warranties = OriginalQuote.warranties;
+            warranties = new List<Warranty>();
         }
 
         public string _id { get; set; }

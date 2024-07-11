@@ -1706,13 +1706,15 @@ else
         }
 
         // Create relationships
-        CreateRelationships(newQuoteList);
+        CreateRelatedQuotes(newQuoteList);
+
+        SaveRelatedQuotes(newQuoteList);
 
         // Redirect to Master details page
-        //RedirectToQuoteDetails(masterQuote._id);
+        RedirectToQuoteDetails(masterQuote._id);
     }
 
-    public void CreateRelationships(List<Quote> newQuoteList)
+    public void CreateRelatedQuotes(List<Quote> newQuoteList)
     {
         var linkedQuoteList = new List<Quote>();
 
@@ -1737,6 +1739,11 @@ else
                 }
             }
         }
+    }
+
+    public void SaveRelatedQuotes(List<Quote> relatedQuotes)
+    {
+        var tmpVal = "";
     }
 
     public void DeleteTrade()
