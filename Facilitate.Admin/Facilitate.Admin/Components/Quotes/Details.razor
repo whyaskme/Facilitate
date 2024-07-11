@@ -260,7 +260,7 @@ else
                                         <div class="col">&nbsp;</div>
                                         <div class="col">&nbsp;</div>
                                         <div class="col">&nbsp;</div>
-                                            <div class="col">&nbsp;</div>
+                                        <div class="col">&nbsp;</div>
                                     </div>
                                 }
                             }
@@ -1601,6 +1601,10 @@ else
 
     public void AddTrade()
     {
+        List<Quote> newQuoteList = new List<Quote>();
+
+        var index = 0;
+
         // Create Master Summary quote
         Quote masterQuote = new Quote();
         masterQuote.applicationType = "Aggregate";
@@ -1622,30 +1626,25 @@ else
         masterQuote.numberOfIncludedStructures = selectedQuote.numberOfIncludedStructures;
         masterQuote.mainRoofTotalSquareFeet = selectedQuote.mainRoofTotalSquareFeet;
         masterQuote.totalSquareFeet = selectedQuote.totalSquareFeet;
-        
-        masterQuote.notes = selectedQuote.notes;
 
         masterQuote.ipAddress = selectedQuote.ipAddress;
         masterQuote.email = selectedQuote.email;
         masterQuote.phone = selectedQuote.phone;
-        
+
         masterQuote.externalUrl = selectedQuote.externalUrl;
         masterQuote.Groups = selectedQuote.Groups;
-        
+
         masterQuote.leadId = selectedQuote.leadId;
-        
         masterQuote.market = selectedQuote.market;
 
-        
+        masterQuote.notes = selectedQuote.notes;
         masterQuote.products = selectedQuote.products;
         masterQuote.projectManager = selectedQuote.projectManager;
         masterQuote.repEmail = selectedQuote.repEmail;
         masterQuote.repName = selectedQuote.repName;
         masterQuote.sessionId = selectedQuote.sessionId;
-        
-        
+
         masterQuote.warranties = selectedQuote.warranties;
-        
 
         Relationship parentRelationship = new Relationship();
         parentRelationship.ParentId = selectedQuote._id;
@@ -1659,6 +1658,13 @@ else
 
         foreach(var selectedTrade in SelectedTradesToAdd)
         {
+            index++;
+            if(index == 1)
+            {
+                // Initialize the new quote list with the master (Summary)
+                newQuoteList.Add(masterQuote);
+            }
+
             var selectedApplicationType = selectedTrade.Value;
 
             // Create child quotes and relationships
@@ -1694,18 +1700,18 @@ else
             childQuote.warranties = selectedQuote.warranties;
             childQuote.zip = selectedQuote.zip;
 
-            //childQuoteList.Add(childQuote);
-
             Relationship childRelationship = new Relationship();
             childRelationship.ParentId = selectedQuote._id;
             childRelationship.Type = "Quote";
             childRelationship.Name = "Child (" + selectedApplicationType + ") project";
 
-            childQuote.relationships.Add(parentRelationship);
+            //childQuote.relationships.Add(parentRelationship);
 
-            masterQuote.relationships.Add(childRelationship);
+            //masterQuote.relationships.Add(childRelationship);
 
-            WebServices.CreateQuote(childQuote);
+            //WebServices.CreateQuote(childQuote);
+
+            newQuoteList.Add(childQuote);
 
             Event _event = new Event();
             _event.Details = "Trade (" + childQuote.applicationType + ") added to Quote";
@@ -1715,23 +1721,23 @@ else
         }
 
         //masterQuote.relationships = selectedQuote.relationships;
-        masterQuote.relationships.Add(parentRelationship);
+        //masterQuote.relationships.Add(parentRelationship);
 
         masterQuote.events = selectedQuote.events;
 
         // Create new Master (Summary) aggregate
-        WebServices.CreateQuote(masterQuote);
+        //WebServices.CreateQuote(masterQuote);
 
         // Update original quote with new Master relationship
-        Relationship relationship = new Relationship();
-        relationship.ParentId = masterQuote._id;
-        relationship.Type = "Quote";
-        relationship.Name = "Master (" + selectedQuote.applicationType + ") project";
-        selectedQuote.relationships.Add(relationship);
+        // Relationship relationship = new Relationship();
+        // relationship.ParentId = masterQuote._id;
+        // relationship.Type = "Quote";
+        // relationship.Name = "Master (" + selectedQuote.applicationType + ") project";
+        // selectedQuote.relationships.Add(relationship);
 
-        WebServices.UpdateQuote(selectedQuote);
+        //WebServices.UpdateQuote(selectedQuote);
 
-        IsPopupVisibleAddTrade = false;
+        //IsPopupVisibleAddTrade = false;
 
         // Redirect to Master details page
         RedirectToQuoteDetails(masterQuote._id);

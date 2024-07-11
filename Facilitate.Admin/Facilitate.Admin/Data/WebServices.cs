@@ -530,12 +530,12 @@ namespace Facilitate.Admin.Data
 
                 var tradeFilter = Builders<Quote>.Filter.Where(p => p._t == "Quote");
 
-                if (filterActiveTrade)
-                {
-                    var dataSourceFilter = Builders<Quote>.Filter.Not(Builders<Quote>.Filter.Eq(p => p.applicationType, activeQuoteTrade));
+                //if (filterActiveTrade)
+                //{
+                //    var dataSourceFilter = Builders<Quote>.Filter.Not(Builders<Quote>.Filter.Eq(p => p.applicationType, activeQuoteTrade));
 
-                    tradeFilter = Builders<Quote>.Filter.And(filter, dataSourceFilter);
-                }
+                //    tradeFilter = Builders<Quote>.Filter.And(filter, dataSourceFilter);
+                //}
 
                 var tradesList = _mongoDBCollection.Distinct(s => s.applicationType, tradeFilter).ToList();
 
