@@ -1651,23 +1651,21 @@ else
         parentRelationship.Type = "Quote";
         parentRelationship.Name = "Parent (" + selectedQuote.applicationType + ") project";
 
-        Relationship siblingRelationship = new Relationship();
-        siblingRelationship.ParentId = selectedQuote._id;
-        siblingRelationship.Type = "Quote";
-        siblingRelationship.Name = "Sibling (" + selectedQuote.applicationType + ") project";
-
         foreach(var selectedTrade in SelectedTradesToAdd)
         {
             index++;
             if(index == 1)
             {
-                // Initialize the new quote list with the master (Summary)
+                // Initialize the new quote list with the master (Summary) quote
                 newQuoteList.Add(masterQuote);
+
+                // Add original quote
+                newQuoteList.Add(selectedQuote);
             }
 
             var selectedApplicationType = selectedTrade.Value;
 
-            // Create child quotes and relationships
+            // Create child quotes
             Quote childQuote = new Quote();
             childQuote.applicationType = selectedApplicationType;
             childQuote.status = selectedQuote.status;
@@ -1704,43 +1702,41 @@ else
             childRelationship.ParentId = selectedQuote._id;
             childRelationship.Type = "Quote";
             childRelationship.Name = "Child (" + selectedApplicationType + ") project";
-
-            //childQuote.relationships.Add(parentRelationship);
-
-            //masterQuote.relationships.Add(childRelationship);
-
-            //WebServices.CreateQuote(childQuote);
-
             newQuoteList.Add(childQuote);
-
-            Event _event = new Event();
-            _event.Details = "Trade (" + childQuote.applicationType + ") added to Quote";
-            _event.Name = "Trade Added";
-
-            selectedQuote.events.Add(_event);
         }
 
-        //masterQuote.relationships = selectedQuote.relationships;
-        //masterQuote.relationships.Add(parentRelationship);
-
-        masterQuote.events = selectedQuote.events;
-
-        // Create new Master (Summary) aggregate
-        //WebServices.CreateQuote(masterQuote);
-
-        // Update original quote with new Master relationship
-        // Relationship relationship = new Relationship();
-        // relationship.ParentId = masterQuote._id;
-        // relationship.Type = "Quote";
-        // relationship.Name = "Master (" + selectedQuote.applicationType + ") project";
-        // selectedQuote.relationships.Add(relationship);
-
-        //WebServices.UpdateQuote(selectedQuote);
-
-        //IsPopupVisibleAddTrade = false;
+        // Create relationships
+        CreateRelationships(newQuoteList);
 
         // Redirect to Master details page
-        RedirectToQuoteDetails(masterQuote._id);
+        //RedirectToQuoteDetails(masterQuote._id);
+    }
+
+    public void CreateRelationships(List<Quote> newQuoteList)
+    {
+        var linkedQuoteList = new List<Quote>();
+
+        var referenceQuoteList = new List<Quote>(newQuoteList);
+
+        foreach(Quote currentQuote in newQuoteList)
+        {
+            // Loop through reference list nad parse out each child Id and references for relationships
+            foreach(Quote referenceQuote in referenceQuoteList)
+            {
+                if(currentQuote.applicationType != referenceQuote.applicationType)
+                {
+                    Relationship siblingRelationship = new Relationship();
+                    siblingRelationship.ParentId = referenceQuote._id;
+                    siblingRelationship.Type = "Quote";
+                    siblingRelationship.Name = "Child (" + currentQuote.applicationType + ") project";
+
+                    var newQuoteQueued = new Quote(referenceQuote);
+                    newQuoteQueued.relationships.Add(siblingRelationship);
+
+                    linkedQuoteList.Add(newQuoteQueued);
+                }
+            }
+        }
     }
 
     public void DeleteTrade()

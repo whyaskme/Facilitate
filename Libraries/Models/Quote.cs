@@ -51,6 +51,54 @@ namespace Facilitate.Libraries.Models
             warranties = new List<Warranty>();
     }
 
+        public Quote(Quote OriginalQuote)
+        {
+            _id = OriginalQuote._id;
+            _t = OriginalQuote._t;
+
+            applicationType = OriginalQuote.applicationType;
+
+            ipAddress = OriginalQuote.ipAddress;
+            status = OriginalQuote.status;
+
+            Groups = OriginalQuote.Groups;
+
+            address = OriginalQuote.address;
+            fullAddress = OriginalQuote.fullAddress;
+            street = OriginalQuote.street;
+            city = OriginalQuote.city;
+            state = OriginalQuote.state;
+            zip = OriginalQuote.zip;
+            firstName = OriginalQuote.firstName;
+            lastName = OriginalQuote.lastName;
+            email = OriginalQuote.email;
+            phone = OriginalQuote.phone;
+            market = OriginalQuote.market;
+            externalUrl = OriginalQuote.externalUrl;
+            timestamp = OriginalQuote.timestamp;
+
+            lastUpdated = OriginalQuote.lastUpdated;
+            totalQuote = OriginalQuote.totalQuote;
+
+            numberOfStructures = OriginalQuote.numberOfStructures;
+            numberOfIncludedStructures = OriginalQuote.numberOfIncludedStructures;
+            totalSquareFeet = OriginalQuote.totalSquareFeet;
+            mainRoofTotalSquareFeet = OriginalQuote.mainRoofTotalSquareFeet;
+            totalInitialSquareFeet = OriginalQuote.totalInitialSquareFeet;
+            sessionId = OriginalQuote.sessionId;
+            structures = OriginalQuote.structures;
+            repName = OriginalQuote.repName;
+            repEmail = OriginalQuote.repEmail;
+            leadId = OriginalQuote.leadId;
+            relationships = OriginalQuote.relationships;
+            products = OriginalQuote.products;
+            attachments = OriginalQuote.attachments;
+            notes = OriginalQuote.notes;
+            projectManager = OriginalQuote.projectManager;
+            events = OriginalQuote.events;
+            warranties = OriginalQuote.warranties;
+        }
+
         public string _id { get; set; }
         public string _t { get; set; }
         public string applicationType { get; set; }
