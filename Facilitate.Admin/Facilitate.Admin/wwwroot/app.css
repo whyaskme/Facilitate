@@ -6,12 +6,22 @@ html, body {
     overflow: auto !important;
 }
 
-.summary-header {
+.summary-header-parent {
     border-bottom: solid 1px #c0c0c0 !important;
     font-size: 1.5em;
     margin-bottom: 25px !important;
     padding-bottom: 25px !important;
-    text-align: center !important;  
+    text-align: center !important;
+    font-weight: bold !important;
+    color: #ba0404 !important;
+}
+
+.summary-header-child {
+    border-bottom: solid 1px #c0c0c0 !important;
+    font-size: 1.5em;
+    margin-bottom: 25px !important;
+    padding-bottom: 25px !important;
+    text-align: center !important;
     font-weight: bold !important;
     color: #808080 !important;
 }

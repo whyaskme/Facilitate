@@ -114,6 +114,12 @@ else
             @{
                 selectedQuote = (Quote)context.DataItem;
 
+                var isAggregateQuote = false;
+                if(selectedQuote.applicationType == "Aggregate")
+                {
+                    isAggregateQuote = true;
+                }
+
                 var _emailTabLabel = "Email " + @selectedQuote.firstName + " Documents";
 
                 tradesCount = selectedQuote.structures.Count;
@@ -134,13 +140,13 @@ else
 
                 if (selectedQuote.relationships.Count > 0)
                 {
-                    if(selectedQuote.applicationType == "Aggregate")
+                    if (isAggregateQuote)
                     {
-                        <div class="summary-header">Aggregate (Summary) Quote</div>
+                        <div class="summary-header-parent">Aggregate (Summary) Quote</div>
                     }
                     else
                     {
-                        <div class="summary-header">Trade (Child) Quote</div>
+                        <div class="summary-header-child">Trade (Child) Quote</div>
                     }
                 }
 
@@ -248,12 +254,21 @@ else
                                             <button class="action-button action-button-small" @onclick="@(() => IsPopupVisibleDeleteTrade = true)">Remove</button>
                                         </div>
                                         <div class="col">
+                                            <label>Id</label>
+                                            <span class="detail-item">@relationshipId</span>
+                                        </div>
+                                        <div class="col">
                                             <label>Type</label>
                                             <span class="detail-item">@relationshipName.Replace("Child ","")</span>
                                         </div>
-                                        <div class="col">&nbsp;</div>
-                                        <div class="col">&nbsp;</div>
-                                        <div class="col">&nbsp;</div>
+                                        <div class="col">
+                                            <label>Amount</label>
+                                            <span class="detail-item">$0.00</span>
+                                        </div>
+                                        <div class="col">
+                                            <label>Project Manager</label>
+                                            <span class="detail-item">???</span>
+                                        </div>
                                         <div class="col">&nbsp;</div>
                                         <div class="col">&nbsp;</div>
                                         <div class="col">&nbsp;</div>
@@ -265,7 +280,7 @@ else
                                 }
                             }
 
-                             <hr />
+                            <hr />
 
                             <div class="quote-detail-controls-container">
                                 <button class="action-button" @onclick="@(() => IsPopupVisibleAddTrade = true)">Add Trade</button>
@@ -283,140 +298,146 @@ else
                         }
                     }
 
-                    <DxTabPage Id="Panel-Project-Summary" CssClass="tab-container" Text="@tradesCountLabel">
+                    @{
+                        if (!isAggregateQuote)
+                        {
+                            <DxTabPage Id="Panel-Project-Summary" CssClass="tab-container" Text="@tradesCountLabel">
 
-                        <div class="container">
+                                <div class="container">
 
-                            <div class="row item-details-container">
-                                <div class="col">
-                                    <label>Total Quote</label>
-                                    <span><b>@selectedQuote.totalQuote.ToString("C0")</b></span>
-                                </div>
-                                <div class="col">
-                                    <label>Total Sqft</label>
-                                    <span><b>@selectedQuote.totalSquareFeet.ToString("N0")</b></span>
-                                </div>
-                                <div class="col">
-                                    <label>Included Targets</label>
-                                    <span><b>@selectedQuote.numberOfIncludedStructures.ToString("N0")</b></span>
-                                </div>
-                                <div class="col">
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                @{
-                                    currentItemIndex = 0;
-
-                                    for (var i = 0; i < @selectedQuote.structures.Count; i++)
-                                    {
-                                        currentItemIndex = i + 1;
-
-                                        <b>Roof #@currentItemIndex</b>
-                                        <div class="row item-details-container">
-                                            <div class="col">
-                                                <label>Included</label>
-                                                @{
-                                                    if(@selectedQuote.structures[i].isIncluded)
-                                                    {
-                                                        <span>Yes</span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="system-warning">No</span>
-                                                    }
-                                                }
-                                            </div>
-                                            <div class="col">
-                                                <label>Name</label>
-                                                <span>@selectedQuote.structures[i].name</span>
-                                            </div>
-                                            <div class="col">
-                                                <label>SqFt</label>
-                                                <span>@selectedQuote.structures[i].squareFeet.ToString("N0")</span>
-                                            </div>
-                                            <div class="col">
-                                                <label>Complexity</label>
-                                                <span>@selectedQuote.structures[i].roofComplexity</span>
-                                            </div>
-                                            <div class="col">
-                                                <label>Slope</label>
-                                                <span>@selectedQuote.structures[i].slope</span>
-                                            </div>
+                                    <div class="row item-details-container">
+                                        <div class="col">
+                                            <label>Total Quote</label>
+                                            <span><b>@selectedQuote.totalQuote.ToString("C0")</b></span>
                                         </div>
-                                    }
-                                }
-                            </div>
-                        </div>
-                    </DxTabPage>
-
-                    <DxTabPage Id="Panel-Products" Text="@productsCountLabel">
-
-                        <div class="container">
-                            @{
-                                for (var i = 0; i < @selectedQuote.products.Count; i++)
-                                {
-                                    currentItemIndex = i + 1;
-
-                                    var priceLabel = @selectedQuote.products[i].priceInfo.priceType;
-                                    if (priceLabel == "BasicFinancing")
-                                        priceLabel = "Basic";
-                                    else
-                                        priceLabel = @selectedQuote.products[i].priceInfo.priceType;
-
-                                    <b>Product #@currentItemIndex</b>
-
-                                    <div class="item-details-container">
-
-                                        <div class="row">
-                                            <div class="col">
-                                                <label>Name</label>
-                                                <span>@selectedQuote.products[i].name</span>
-                                            </div>
-                                            <div class="col">
-                                                <label>Waste Factor</label>
-                                                <span>@selectedQuote.products[i].wasteFactorMainRoof</span>
-                                            </div>
-                                            <div class="col">
-                                                <label>Price Type</label>
-                                                <span>@priceLabel</span>
-                                            </div>
+                                        <div class="col">
+                                            <label>Total Sqft</label>
+                                            <span><b>@selectedQuote.totalSquareFeet.ToString("N0")</b></span>
                                         </div>
-
-                                        <div class="row">
-                                            <div class="col">
-                                                <label>Total Quote</label>
-                                                <span>@selectedQuote.products[i].priceInfo.total.ToString("C0")</span>
-                                            </div>
-                                            <div class="col">
-                                                <label>Per Square</label>
-                                                <span>@selectedQuote.products[i].priceInfo.pricePerSquare.ToString("C0")</span>
-                                            </div>
-                                            <div class="col">
-                                                <label>Monthly</label>
-                                                <span>@selectedQuote.products[i].priceInfo.monthly.ToString("C0")</span>
-                                            </div>
+                                        <div class="col">
+                                            <label>Included Targets</label>
+                                            <span><b>@selectedQuote.numberOfIncludedStructures.ToString("N0")</b></span>
                                         </div>
-
-                                        <div class="row">
-                                            <div class="col">
-                                                <label>APR</label>
-                                                <span>@selectedQuote.products[i].priceInfo.apr%</span>
-                                            </div>
-                                            <div class="col">
-                                                <label>Months</label>
-                                                <span>@selectedQuote.products[i].priceInfo.months</span>
-                                            </div>
-                                            <div class="col">
-                                            </div>
+                                        <div class="col">
                                         </div>
-
                                     </div>
-                                }
-                            }
-                        </div>
 
-                    </DxTabPage>
+                                    <div class="row">
+                                        @{
+                                            currentItemIndex = 0;
+
+                                            for (var i = 0; i < @selectedQuote.structures.Count; i++)
+                                            {
+                                                currentItemIndex = i + 1;
+
+                                                <b>Roof #@currentItemIndex</b>
+                                                <div class="row item-details-container">
+                                                    <div class="col">
+                                                        <label>Included</label>
+                                                        @{
+                                                            if(@selectedQuote.structures[i].isIncluded)
+                                                            {
+                                                                <span>Yes</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="system-warning">No</span>
+                                                            }
+                                                        }
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>Name</label>
+                                                        <span>@selectedQuote.structures[i].name</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>SqFt</label>
+                                                        <span>@selectedQuote.structures[i].squareFeet.ToString("N0")</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>Complexity</label>
+                                                        <span>@selectedQuote.structures[i].roofComplexity</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>Slope</label>
+                                                        <span>@selectedQuote.structures[i].slope</span>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+
+                                </div>
+                            </DxTabPage>
+
+                            <DxTabPage Id="Panel-Products" Text="@productsCountLabel">
+
+                                <div class="container">
+                                    @{
+                                        for (var i = 0; i < @selectedQuote.products.Count; i++)
+                                        {
+                                            currentItemIndex = i + 1;
+
+                                            var priceLabel = @selectedQuote.products[i].priceInfo.priceType;
+                                            if (priceLabel == "BasicFinancing")
+                                                priceLabel = "Basic";
+                                            else
+                                                priceLabel = @selectedQuote.products[i].priceInfo.priceType;
+
+                                            <b>Product #@currentItemIndex</b>
+
+                                            <div class="item-details-container">
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label>Name</label>
+                                                        <span>@selectedQuote.products[i].name</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>Waste Factor</label>
+                                                        <span>@selectedQuote.products[i].wasteFactorMainRoof</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>Price Type</label>
+                                                        <span>@priceLabel</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label>Total Quote</label>
+                                                        <span>@selectedQuote.products[i].priceInfo.total.ToString("C0")</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>Per Square</label>
+                                                        <span>@selectedQuote.products[i].priceInfo.pricePerSquare.ToString("C0")</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>Monthly</label>
+                                                        <span>@selectedQuote.products[i].priceInfo.monthly.ToString("C0")</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label>APR</label>
+                                                        <span>@selectedQuote.products[i].priceInfo.apr%</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>Months</label>
+                                                        <span>@selectedQuote.products[i].priceInfo.months</span>
+                                                    </div>
+                                                    <div class="col">
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        }
+                                    }
+                                </div>
+
+                            </DxTabPage>
+                        }
+                    }
 
                     @{
                         if (@selectedQuote.status != "New")
@@ -1609,7 +1630,9 @@ else
         Quote masterQuote = new Quote();
         masterQuote.applicationType = "Aggregate";
         masterQuote.status = selectedQuote.status;
-        masterQuote.totalQuote = selectedQuote.totalQuote;
+
+        // Do NOT do this. The master total should be calculated at runtime from the related children
+        //masterQuote.totalQuote = selectedQuote.totalQuote;
 
         masterQuote.firstName = selectedQuote.firstName;
         masterQuote.lastName = selectedQuote.lastName;
@@ -1710,6 +1733,8 @@ else
 
         SaveRelatedQuotes(newQuoteList);
 
+        IsPopupVisibleAddTrade = false;
+
         // Redirect to Master details page
         RedirectToQuoteDetails(masterQuote._id);
     }
@@ -1743,7 +1768,10 @@ else
 
     public void SaveRelatedQuotes(List<Quote> relatedQuotes)
     {
-        var tmpVal = "";
+        foreach(Quote relatedQuote in relatedQuotes)
+        {
+            var isCreated = WebServices.CreateQuote(relatedQuote);
+        }
     }
 
     public void DeleteTrade()

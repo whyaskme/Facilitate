@@ -695,18 +695,23 @@ namespace Facilitate.Admin.Data
 
         IMongoCollection<Quote> _quoteCollection;
 
-        public void CreateQuote(Quote newQuote)
+        public bool CreateQuote(Quote newQuote)
         {
             try
             {
                 _quoteCollection = _mongoDBClient.GetDatabase(_mongoDBName).GetCollection<Quote>(_mongoDBCollectionName);
 
                 _quoteCollection.InsertOne(newQuote);
+
+                return true;
             }
             catch(Exception ex)
             {
                 var errMsg = ex.Message;
+                return false;
             }
+
+            return false;
         }
 
         [HttpPut("{quote}")]
