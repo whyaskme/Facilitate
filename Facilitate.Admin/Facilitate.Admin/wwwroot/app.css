@@ -26,6 +26,20 @@ html, body {
     color: #808080 !important;
 }
 
+.detail-item-parent {
+    border-right: solid 0px #eee !important;
+    margin-right: 15px !important;
+    font-weight: normal !important;
+    font-style: italic !important;
+    color: #ba0404 !important;
+}
+
+.detail-item {
+    border-right: solid 0px #eee !important;
+    margin-right: 15px !important;
+    font-weight: normal !important;
+}
+
 .quote-title,
 .quote-total {
     color: #808080 !important;
@@ -859,12 +873,6 @@ label {
 
 .quote-detail-container {
     border: solid 0px #eee !important;
-}
-
-.detail-item {
-    border-right: solid 0px #eee !important;
-    margin-right: 15px !important;
-    font-weight: normal !important;
 }
 
 .container-action-buttons-show {

@@ -114,6 +114,10 @@ else
             @{
                 selectedQuote = (Quote)context.DataItem;
 
+                var currentIndex = 0;
+
+                var relationshipsCount = selectedQuote.relationships.Count;
+
                 var isAggregateQuote = false;
                 if(selectedQuote.applicationType == "Aggregate")
                 {
@@ -138,7 +142,7 @@ else
                 notesCount = selectedQuote.notes.Count;
                 eventsCount = selectedQuote.events.Count;
 
-                if (selectedQuote.relationships.Count > 0)
+                if (relationshipsCount > 0)
                 {
                     if (isAggregateQuote)
                     {
@@ -236,11 +240,13 @@ else
 
                             <hr />
 
-                            <h6>Project Trades</h6>
+                            <h6>@relationshipsCount Project Trades</h6>
                             foreach(var trade in @selectedQuote.relationships)
                             {
                                 if(@trade.Type == "Quote")
                                 {
+                                    currentIndex++;
+
                                     var relationshipName = trade.Name;
                                     var relationshipId = trade.ParentId;
                                     var relationshipType = trade.Type;
@@ -259,7 +265,16 @@ else
                                         </div>
                                         <div class="col">
                                             <label>Type</label>
-                                            <span class="detail-item">@relationshipName.Replace("Child ","")</span>
+                                            @{
+                                                if (relationshipName.Contains("Aggregate"))
+                                                {
+                                                        <span class="detail-item-parent">Parent (Summary) Project</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="detail-item">@relationshipName</span>
+                                                }
+                                            }
                                         </div>
                                         <div class="col">
                                             <label>Amount</label>
