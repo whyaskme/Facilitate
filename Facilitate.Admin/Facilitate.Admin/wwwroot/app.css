@@ -34,6 +34,14 @@ html, body {
     color: #ba0404 !important;
 }
 
+.detail-item-child {
+    border-right: solid 0px #eee !important;
+    margin-right: 15px !important;
+    font-weight: normal !important;
+    font-style: italic !important;
+    color: #ba0404 !important;
+}
+
 .detail-item {
     border-right: solid 0px #eee !important;
     margin-right: 15px !important;

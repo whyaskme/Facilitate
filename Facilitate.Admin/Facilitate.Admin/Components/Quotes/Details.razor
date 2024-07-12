@@ -150,7 +150,7 @@ else
                     }
                     else
                     {
-                        <div class="summary-header-child">Trade (Child) Quote</div>
+                        <div class="summary-header-child">@selectedQuote.applicationType (Child) Quote</div>
                     }
                 }
 
@@ -256,26 +256,24 @@ else
                                     var relationshipCreatedDate = trade.CreatedDate;
 
                                     <div class="row">
+
                                         <div class="col">
                                             <button class="action-button action-button-small" @onclick='() => RedirectToQuoteDetails(relationshipId)'>View</button>
-                                            <button class="action-button action-button-small" @onclick="@(() => IsPopupVisibleDeleteTrade = true)">Remove</button>
-                                        </div>
-                                        <div class="col">
-                                            <label>Id</label>
-                                                <span class="detail-item">@currentQuoteId</span>
-                                        </div>
-                                        <div class="col">
-                                            <label>Type</label>
                                             @{
-                                                if (relationshipName.Contains("Aggregate"))
+                                                if (relationshipIsEnabled)
                                                 {
-                                                        <span class="detail-item-parent">Parent (Summary) Project</span>
+                                                    <button class="action-button action-button-small" @onclick="@(() => IsPopupVisibleDeleteTrade = true)">Remove</button>
                                                 }
                                                 else
                                                 {
-                                                    <span class="detail-item">@relationshipName.Replace("Child","")</span>
+                                                    <span class="detail-item">Removed</span>
                                                 }
                                             }
+                                        </div>
+                                            
+                                        <div class="col">
+                                            <label>Type</label>
+                                            <span class="detail-item">@relationshipName.Replace("Child", "").Replace("Aggregate", "Parent")</span>
                                         </div>
                                         <div class="col">
                                             <label>Amount</label>
@@ -285,6 +283,7 @@ else
                                             <label>Project Manager</label>
                                             <span class="detail-item">???</span>
                                         </div>
+                                            <div class="col">&nbsp;</div>
                                         <div class="col">&nbsp;</div>
                                         <div class="col">&nbsp;</div>
                                         <div class="col">&nbsp;</div>
