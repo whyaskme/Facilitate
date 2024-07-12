@@ -241,22 +241,20 @@ else
                             <hr />
 
                             <h6>@relationshipsCount Project Trades</h6>
-                            foreach(var trade in @selectedQuote.relationships)
+                            foreach (var relatedTrade in selectedQuote.relationships)
                             {
-                                if(@trade.Type == "Parent" || @trade.Type == "Child")
+                                relatedQuoteId = relatedTrade._id;
+
+                                if (@relatedTrade.Type == "Parent" || @relatedTrade.Type == "Child")
                                 {
                                     currentIndex++;
 
-                                    currentQuoteId = trade._id;
-
-                                    relationshipName = trade.Name;
-                                    relationshipId = trade.ParentId;
-                                    relationshipType = trade.Type;
-                                    relationshipIsEnabled = trade.IsEnabled;
-                                    relationshipCreatedById = trade.CreatedById;
-                                    relationshipCreatedDate = trade.CreatedDate;
-
-                                    // quoteIdToRemove = currentQuoteId;
+                                    relationshipName = relatedTrade.Name;
+                                    relationshipId = relatedTrade.ParentId;
+                                    relationshipType = relatedTrade.Type;
+                                    relationshipIsEnabled = relatedTrade.IsEnabled;
+                                    relationshipCreatedById = relatedTrade.CreatedById;
+                                    relationshipCreatedDate = relatedTrade.CreatedDate;
 
                                     <div class="row">
 
@@ -265,9 +263,9 @@ else
                                             @{
                                                 if (@relationshipIsEnabled)
                                                 {
-                                                    if(@relationshipType != "Parent")
+                                                    if (@relationshipType != "Parent")
                                                     {
-                                                        <button class="action-button action-button-small" @onclick='() => RemoveQuoteProject(currentQuoteId)'>Remove</button>
+                                                        <button class="action-button action-button-small" @onclick='() => RemoveQuoteProject(relatedQuoteId)'>Remove</button>
                                                         // <button class="action-button action-button-small" @onclick="@(() => IsPopupVisibleDeleteTrade = true)">Remove</button>
                                                     }
                                                     else
@@ -281,11 +279,11 @@ else
                                                 }
                                             }
                                         </div>
-                                            
+
                                         <div class="col">
                                             <label>Type</label>
                                             @{
-                                                if(@relationshipType == "Parent")
+                                                if (@relationshipType == "Parent")
                                                 {
                                                     <span class="detail-item">@relationshipName</span>
                                                 }
@@ -298,7 +296,7 @@ else
 
                                         <div class="col">
                                             <label>Id</label>
-                                                <span class="detail-item">@currentQuoteId</span>
+                                            <span class="detail-item">@relatedQuoteId</span>
                                         </div>
 
                                         <div class="col">
@@ -325,6 +323,89 @@ else
                                     </div>
                                 }
                             }
+
+                            // for (var index = 0; index <= @relationshipsCount; index++)
+                            // {
+                            //     relatedQuoteId = @selectedQuote.relationships[index]._id;
+
+                            //     relationshipName = @selectedQuote.relationships[index].Name;
+                            //     relationshipId = @selectedQuote.relationships[index].ParentId;
+                            //     relationshipType = @selectedQuote.relationships[index].Type;
+                            //     relationshipIsEnabled = @selectedQuote.relationships[index].IsEnabled;
+                            //     relationshipCreatedById = @selectedQuote.relationships[index].CreatedById;
+                            //     relationshipCreatedDate = @selectedQuote.relationships[index].CreatedDate;
+
+                            //     if (@relationshipType == "Parent" || @relationshipType == "Child")
+                            //     {
+                            //         currentIndex++;
+
+                            //         <div class="row">
+
+                            //             <div class="col">
+                            //                 <button class="action-button action-button-small" @onclick='() => RedirectToQuoteDetails(relationshipId)'>View</button>
+                            //                 @{
+                            //                     if (@relationshipIsEnabled)
+                            //                     {
+                            //                         if (@relationshipType != "Parent")
+                            //                         {
+                            //                             <button class="action-button action-button-small" @onclick='() => RemoveQuoteProject(relatedQuoteId)'>Remove</button>
+                            //                             // <button class="action-button action-button-small" @onclick="@(() => IsPopupVisibleDeleteTrade = true)">Remove</button>
+                            //                         }
+                            //                         else
+                            //                         {
+                            //                             <span class="action-button-disabled">Disabled</span>
+                            //                         }
+                            //                     }
+                            //                     else
+                            //                     {
+                            //                         <span class="action-button-disabled">Removed</span>
+                            //                     }
+                            //                 }
+                            //             </div>
+
+                            //             <div class="col">
+                            //                 <label>Type</label>
+                            //                 @{
+                            //                     if (@relationshipType == "Parent")
+                            //                     {
+                            //                         <span class="detail-item">@relationshipName</span>
+                            //                     }
+                            //                     else
+                            //                     {
+                            //                         <span class="detail-item system-warning">@relationshipName</span>
+                            //                     }
+                            //                 }
+                            //             </div>
+
+                            //             <div class="col">
+                            //                 <label>Id</label>
+                            //                 <span class="detail-item">@relatedQuoteId</span>
+                            //             </div>
+
+                            //             <div class="col">
+                            //                 <label>Enabled</label>
+                            //                 <span class="detail-item">@relationshipIsEnabled</span>
+                            //             </div>
+
+                            //             <div class="col">
+                            //                 <label>Amount</label>
+                            //                 <span class="detail-item">$0.00</span>
+                            //             </div>
+
+                            //             <div class="col">
+                            //                 <label>Project Manager</label>
+                            //                 <span class="detail-item">???</span>
+                            //             </div>
+
+                            //             <div class="col">&nbsp;</div>
+                            //             <div class="col">&nbsp;</div>
+                            //             <div class="col">&nbsp;</div>
+                            //             <div class="col">&nbsp;</div>
+                            //             <div class="col">&nbsp;</div>
+                            //             <div class="col">&nbsp;</div>
+                            //         </div>
+                            //     }
+                            // }
 
                             <hr />
 
@@ -1032,7 +1113,7 @@ else
 {
     public string quoteIdToRemove = "";
 
-    public string currentQuoteId = "";
+    public string relatedQuoteId = "";
     public string relationshipName = "";
     public string relationshipId = "";
     public string relationshipType = "";
