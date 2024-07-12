@@ -247,6 +247,7 @@ else
                                 {
                                     currentIndex++;
 
+                                    var currentQuoteId = trade._id;
                                     var relationshipName = trade.Name;
                                     var relationshipId = trade.ParentId;
                                     var relationshipType = trade.Type;
@@ -261,7 +262,7 @@ else
                                         </div>
                                         <div class="col">
                                             <label>Id</label>
-                                            <span class="detail-item">@relationshipId</span>
+                                                <span class="detail-item">@currentQuoteId</span>
                                         </div>
                                         <div class="col">
                                             <label>Type</label>
@@ -272,7 +273,7 @@ else
                                                 }
                                                 else
                                                 {
-                                                    <span class="detail-item">@relationshipName</span>
+                                                    <span class="detail-item">@relationshipName.Replace("Child","")</span>
                                                 }
                                             }
                                         </div>
@@ -1737,6 +1738,7 @@ else
             childQuote.zip = selectedQuote.zip;
 
             Relationship childRelationship = new Relationship();
+            childRelationship._id = childQuote._id;
             childRelationship.ParentId = selectedQuote._id;
             childRelationship.Type = "Quote";
             childRelationship.Name = "Child (" + selectedApplicationType + ") project";
@@ -1768,9 +1770,12 @@ else
                 if(currentQuote.applicationType != referenceQuote.applicationType)
                 {
                     Relationship siblingRelationship = new Relationship();
-                    siblingRelationship.ParentId = referenceQuote._id;
+                    siblingRelationship.ParentId = currentQuote._id;
                     siblingRelationship.Type = "Quote";
                     siblingRelationship.Name = "Child (" + currentQuote.applicationType + ") project";
+
+                    // Add the relationship to existing quote
+                    selectedQuote.relationships.Add(siblingRelationship);
 
                     var newQuoteQueued = new Quote(referenceQuote);
                     newQuoteQueued.relationships.Add(siblingRelationship);
@@ -1787,6 +1792,9 @@ else
         {
             var isCreated = WebServices.CreateQuote(relatedQuote);
         }
+
+        // Update the current, original quote
+        WebServices.UpdateQuote(selectedQuote);
     }
 
     public void DeleteTrade()

@@ -6,6 +6,9 @@ namespace Facilitate.Libraries.Models
     {
         public Relationship()
         {
+            _id = ObjectId.GenerateNewId().ToString();
+            _t = "Relationship";
+
             ParentId = "";
             Type = "";
             Name = "";
@@ -14,6 +17,8 @@ namespace Facilitate.Libraries.Models
             CreatedDate = DateTime.UtcNow;
         }
 
+        public string _id { get; set; }
+        public string _t { get; set; }
         public string ParentId { get; set; }
         public string Type { get; set; }
         public string Name { get; set; }
