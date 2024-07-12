@@ -243,20 +243,20 @@ else
                             <h6>@relationshipsCount Project Trades</h6>
                             foreach(var trade in @selectedQuote.relationships)
                             {
-                                var currentQuoteId = trade._id;
-
-                                quoteIdToRemove = currentQuoteId;
-
-                                var relationshipName = trade.Name;
-                                var relationshipId = trade.ParentId;
-                                var relationshipType = trade.Type;
-                                var relationshipIsEnabled = trade.IsEnabled;
-                                var relationshipCreatedById = trade.CreatedById;
-                                var relationshipCreatedDate = trade.CreatedDate;
-
-                                if(@relationshipType == "Parent" || @relationshipType == "Child")
+                                if(@trade.Type == "Parent" || @trade.Type == "Child")
                                 {
                                     currentIndex++;
+
+                                    currentQuoteId = trade._id;
+
+                                    relationshipName = trade.Name;
+                                    relationshipId = trade.ParentId;
+                                    relationshipType = trade.Type;
+                                    relationshipIsEnabled = trade.IsEnabled;
+                                    relationshipCreatedById = trade.CreatedById;
+                                    relationshipCreatedDate = trade.CreatedDate;
+
+                                    // quoteIdToRemove = currentQuoteId;
 
                                     <div class="row">
 
@@ -267,7 +267,8 @@ else
                                                 {
                                                     if(@relationshipType != "Parent")
                                                     {
-                                                        <button class="action-button action-button-small" @onclick='() => RemoveQuoteProject(relationshipId)'>Remove</button>
+                                                        <button class="action-button action-button-small" @onclick='() => RemoveQuoteProject(currentQuoteId)'>Remove</button>
+                                                        // <button class="action-button action-button-small" @onclick="@(() => IsPopupVisibleDeleteTrade = true)">Remove</button>
                                                     }
                                                     else
                                                     {
@@ -1031,6 +1032,14 @@ else
 {
     public string quoteIdToRemove = "";
 
+    public string currentQuoteId = "";
+    public string relationshipName = "";
+    public string relationshipId = "";
+    public string relationshipType = "";
+    public bool relationshipIsEnabled = true;
+    public string relationshipCreatedById = "";
+    public DateTime relationshipCreatedDate = DateTime.MinValue;
+
     [Parameter]
     public EventCallback<IEnumerable<ListItem>> SelectedItemsChanged { get; set; }
 
@@ -1052,9 +1061,9 @@ else
 
     public void RemoveQuoteProject(string quoteId)
     {
-        var tmpVal = SelectedQuoteStatus;
+        quoteIdToRemove = quoteId;
 
-        IsPopupVisibleDeleteTrade = true;
+        //IsPopupVisibleDeleteTrade = true;
 
         // Parse and remove all relationships including siblings
     }
