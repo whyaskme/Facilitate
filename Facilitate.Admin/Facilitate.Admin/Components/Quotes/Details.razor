@@ -243,37 +243,50 @@ else
                             <h6>@relationshipsCount Project Trades</h6>
                             foreach(var trade in @selectedQuote.relationships)
                             {
-                                if(@trade.Type == "Quote")
+                                var currentQuoteId = trade._id;
+                                var relationshipName = trade.Name;
+                                var relationshipId = trade.ParentId;
+                                var relationshipType = trade.Type;
+                                var relationshipIsEnabled = trade.IsEnabled;
+                                var relationshipCreatedById = trade.CreatedById;
+                                var relationshipCreatedDate = trade.CreatedDate;
+
+                                if(@relationshipType == "Parent" || @relationshipType == "Child")
                                 {
                                     currentIndex++;
-
-                                    var currentQuoteId = trade._id;
-                                    var relationshipName = trade.Name;
-                                    var relationshipId = trade.ParentId;
-                                    var relationshipType = trade.Type;
-                                    var relationshipIsEnabled = trade.IsEnabled;
-                                    var relationshipCreatedById = trade.CreatedById;
-                                    var relationshipCreatedDate = trade.CreatedDate;
 
                                     <div class="row">
 
                                         <div class="col">
                                             <button class="action-button action-button-small" @onclick='() => RedirectToQuoteDetails(relationshipId)'>View</button>
                                             @{
-                                                if (relationshipIsEnabled)
+                                                if (@relationshipIsEnabled)
                                                 {
                                                     <button class="action-button action-button-small" @onclick="@(() => IsPopupVisibleDeleteTrade = true)">Remove</button>
                                                 }
                                                 else
                                                 {
-                                                    <span class="detail-item">Removed</span>
+                                                    <span class="action-button-disabled">Removed</span>
                                                 }
                                             }
                                         </div>
                                             
                                         <div class="col">
                                             <label>Type</label>
-                                            <span class="detail-item">@relationshipName</span>
+                                            @{
+                                                if(@relationshipType == "Parent")
+                                                {
+                                                    <span class="detail-item">@relationshipName</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="detail-item system-warning">@relationshipName</span>
+                                                }
+                                            }
+                                        </div>
+                                        <div class="col">
+                                            <label>Enabled</label>
+                                            <span class="detail-item">@relationshipIsEnabled</span>
                                         </div>
                                         <div class="col">
                                             <label>Amount</label>
@@ -283,7 +296,7 @@ else
                                             <label>Project Manager</label>
                                             <span class="detail-item">???</span>
                                         </div>
-                                            <div class="col">&nbsp;</div>
+
                                         <div class="col">&nbsp;</div>
                                         <div class="col">&nbsp;</div>
                                         <div class="col">&nbsp;</div>

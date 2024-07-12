@@ -141,10 +141,22 @@ button.btn-primary {
     }
 
 .action-button-small,
-..action-button-small:hover{
+.action-button-small:hover{
     border: solid 0px #ff0000 !important;
-    width: 75px !important;
+    width: 100px !important;
     font-size: 1.0em !important;
+}
+
+.action-button-disabled,
+.action-button-disabled:hover {
+    border: solid 0px #ff0000 !important;
+    width: 100px !important;
+    font-size: 1.0em !important;
+    color: #ba0404 !important;
+    cursor: not-allowed !important;
+    padding-left: 23px !important;
+    margin-right: 20px !important;
+    font-style: italic !important;
 }
 
 .dxbl-btn-link {
@@ -450,7 +462,7 @@ h1.text-danger {
 .system-warning {
     border: solid 0px #ff0000 !important;
     width: 100% !important;
-    color: #ff0000 !important;
+    color: #ba0404 !important;
     text-align: left !important;
     margin: 0px;
 }
