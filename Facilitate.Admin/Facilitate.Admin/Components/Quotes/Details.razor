@@ -244,6 +244,9 @@ else
                             foreach(var trade in @selectedQuote.relationships)
                             {
                                 var currentQuoteId = trade._id;
+
+                                quoteIdToRemove = currentQuoteId;
+
                                 var relationshipName = trade.Name;
                                 var relationshipId = trade.ParentId;
                                 var relationshipType = trade.Type;
@@ -264,7 +267,7 @@ else
                                                 {
                                                     if(@relationshipType != "Parent")
                                                     {
-                                                        <button class="action-button action-button-small" @onclick="@(() => IsPopupVisibleDeleteTrade = true)">Remove</button>
+                                                        <button class="action-button action-button-small" @onclick='() => RemoveQuoteProject(relationshipId)'>Remove</button>
                                                     }
                                                     else
                                                     {
@@ -291,20 +294,27 @@ else
                                                 }
                                             }
                                         </div>
+
+                                        <div class="col">
+                                            <label>Id</label>
+                                                <span class="detail-item">@currentQuoteId</span>
+                                        </div>
+
                                         <div class="col">
                                             <label>Enabled</label>
                                             <span class="detail-item">@relationshipIsEnabled</span>
                                         </div>
+
                                         <div class="col">
                                             <label>Amount</label>
                                             <span class="detail-item">$0.00</span>
                                         </div>
+
                                         <div class="col">
                                             <label>Project Manager</label>
                                             <span class="detail-item">???</span>
                                         </div>
 
-                                        <div class="col">&nbsp;</div>
                                         <div class="col">&nbsp;</div>
                                         <div class="col">&nbsp;</div>
                                         <div class="col">&nbsp;</div>
@@ -867,9 +877,9 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup @bind-Visible="@IsPopupVisibleDeleteTrade" ShowFooter="true" HeaderText="Are you sure you want to Delete this Trade Project?">
+<DxPopup @bind-Visible="@IsPopupVisibleDeleteTrade" ShowFooter="true" HeaderText="Are you sure you want to (Remove) this Trade Project?">
     <BodyContentTemplate>
-        Yes/No checkbox here...
+        QuoteId to Remove: @quoteIdToRemove
     </BodyContentTemplate>
     <FooterContentTemplate>
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="DeleteTrade" />
@@ -1017,7 +1027,9 @@ else
                 CssClass="w-100">
 </DxLoadingPanel>
 
-@code {
+@code 
+{
+    public string quoteIdToRemove = "";
 
     [Parameter]
     public EventCallback<IEnumerable<ListItem>> SelectedItemsChanged { get; set; }
@@ -1036,6 +1048,15 @@ else
         var tmpUrl = "/quotes/details/" + quoteId + "/opportunities/";
 
         NavigationManager.NavigateTo(tmpUrl);
+    }
+
+    public void RemoveQuoteProject(string quoteId)
+    {
+        var tmpVal = SelectedQuoteStatus;
+
+        IsPopupVisibleDeleteTrade = true;
+
+        // Parse and remove all relationships including siblings
     }
 
     public string uploadUrl = "/api/Upload/UploadFile";
@@ -1838,7 +1859,10 @@ else
 
     public void DeleteTrade()
     {
-        var tmpVal = "";
+        // Get this quote, set it archive and update it
+        var quoteToRemove = webServices.GetQuote(quoteIdToRemove);
+
+        var tmpVal = quoteIdToRemove;
     }
 
     public void MakeWarrantyClaim()
