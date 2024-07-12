@@ -273,7 +273,7 @@ else
                                             
                                         <div class="col">
                                             <label>Type</label>
-                                            <span class="detail-item">@relationshipName.Replace("Child", "").Replace("Aggregate", "Parent")</span>
+                                            <span class="detail-item">@relationshipName</span>
                                         </div>
                                         <div class="col">
                                             <label>Amount</label>
@@ -1639,126 +1639,138 @@ else
     {
         List<Quote> newQuoteList = new List<Quote>();
 
+        selectedQuote.relationships = new List<Relationship>();
+
         var index = 0;
 
-        // Create Master Summary quote
-        Quote masterQuote = new Quote();
-        masterQuote.applicationType = "Aggregate";
-        masterQuote.status = selectedQuote.status;
-
-        // Do NOT do this. The master total should be calculated at runtime from the related children
-        //masterQuote.totalQuote = selectedQuote.totalQuote;
-
-        masterQuote.firstName = selectedQuote.firstName;
-        masterQuote.lastName = selectedQuote.lastName;
-
-        masterQuote.fullAddress = selectedQuote.fullAddress;
-        masterQuote.address = selectedQuote.address;
-        masterQuote.street = selectedQuote.street;
-        masterQuote.city = selectedQuote.city;
-        masterQuote.state = selectedQuote.state;
-        masterQuote.zip = selectedQuote.zip;
-
-        masterQuote.structures = selectedQuote.structures;
-        masterQuote.numberOfStructures = selectedQuote.numberOfStructures;
-        masterQuote.numberOfIncludedStructures = selectedQuote.numberOfIncludedStructures;
-        masterQuote.mainRoofTotalSquareFeet = selectedQuote.mainRoofTotalSquareFeet;
-        masterQuote.totalSquareFeet = selectedQuote.totalSquareFeet;
-
-        masterQuote.ipAddress = selectedQuote.ipAddress;
-        masterQuote.email = selectedQuote.email;
-        masterQuote.phone = selectedQuote.phone;
-
-        masterQuote.externalUrl = selectedQuote.externalUrl;
-        masterQuote.Groups = selectedQuote.Groups;
-
-        masterQuote.leadId = selectedQuote.leadId;
-        masterQuote.market = selectedQuote.market;
-
-        masterQuote.notes = selectedQuote.notes;
-        masterQuote.products = selectedQuote.products;
-        masterQuote.projectManager = selectedQuote.projectManager;
-        masterQuote.repEmail = selectedQuote.repEmail;
-        masterQuote.repName = selectedQuote.repName;
-        masterQuote.sessionId = selectedQuote.sessionId;
-
-        masterQuote.warranties = selectedQuote.warranties;
-
-        Relationship parentRelationship = new Relationship();
-        parentRelationship.ParentId = selectedQuote._id;
-        parentRelationship.Type = "Quote";
-        parentRelationship.Name = "Parent (" + selectedQuote.applicationType + ") project";
-
-        foreach(var selectedTrade in SelectedTradesToAdd)
+        try
         {
-            index++;
-            if(index == 1)
-            {
-                // Initialize the new quote list with the master (Summary) quote
-                newQuoteList.Add(masterQuote);
+            // Create Master Summary quote
+            Quote masterQuote = new Quote();
+            masterQuote.applicationType = "Aggregate";
+            masterQuote.status = selectedQuote.status;
 
-                // Add original quote
-                newQuoteList.Add(selectedQuote);
+            // Do NOT do this. The master total should be calculated at runtime from the related children
+            //masterQuote.totalQuote = selectedQuote.totalQuote;
+
+            masterQuote.firstName = selectedQuote.firstName;
+            masterQuote.lastName = selectedQuote.lastName;
+
+            masterQuote.fullAddress = selectedQuote.fullAddress;
+            masterQuote.address = selectedQuote.address;
+            masterQuote.street = selectedQuote.street;
+            masterQuote.city = selectedQuote.city;
+            masterQuote.state = selectedQuote.state;
+            masterQuote.zip = selectedQuote.zip;
+
+            masterQuote.structures = selectedQuote.structures;
+            masterQuote.numberOfStructures = selectedQuote.numberOfStructures;
+            masterQuote.numberOfIncludedStructures = selectedQuote.numberOfIncludedStructures;
+            masterQuote.mainRoofTotalSquareFeet = selectedQuote.mainRoofTotalSquareFeet;
+            masterQuote.totalSquareFeet = selectedQuote.totalSquareFeet;
+
+            masterQuote.ipAddress = selectedQuote.ipAddress;
+            masterQuote.email = selectedQuote.email;
+            masterQuote.phone = selectedQuote.phone;
+
+            masterQuote.externalUrl = selectedQuote.externalUrl;
+            masterQuote.Groups = selectedQuote.Groups;
+
+            masterQuote.leadId = selectedQuote.leadId;
+            masterQuote.market = selectedQuote.market;
+
+            masterQuote.notes = selectedQuote.notes;
+            masterQuote.products = selectedQuote.products;
+            masterQuote.projectManager = selectedQuote.projectManager;
+            masterQuote.repEmail = selectedQuote.repEmail;
+            masterQuote.repName = selectedQuote.repName;
+            masterQuote.sessionId = selectedQuote.sessionId;
+
+            masterQuote.warranties = selectedQuote.warranties;
+
+            Relationship parentRelationship = new Relationship();
+            parentRelationship.ParentId = selectedQuote._id;
+            parentRelationship.Type = "Parent";
+            parentRelationship.Name = selectedQuote.applicationType;
+
+            foreach (var selectedTrade in SelectedTradesToAdd)
+            {
+                index++;
+                if (index == 1)
+                {
+                    // Initialize the new quote list with the master (Summary) quote
+                    newQuoteList.Add(masterQuote);
+
+                    // Add original quote
+                    newQuoteList.Add(selectedQuote);
+                }
+
+                var selectedApplicationType = selectedTrade.Value;
+
+                // Create child quotes
+                Quote childQuote = new Quote();
+                childQuote.applicationType = selectedApplicationType;
+                childQuote.status = selectedQuote.status;
+
+                childQuote.address = selectedQuote.address;
+                childQuote.structures = selectedQuote.structures;
+                childQuote.notes = selectedQuote.notes;
+                childQuote.email = selectedQuote.email;
+                childQuote.street = selectedQuote.street;
+                childQuote.city = selectedQuote.city;
+                childQuote.externalUrl = selectedQuote.externalUrl;
+                childQuote.Groups = selectedQuote.Groups;
+                childQuote.firstName = selectedQuote.firstName;
+                childQuote.fullAddress = selectedQuote.fullAddress;
+                childQuote.ipAddress = selectedQuote.ipAddress;
+                childQuote.lastName = selectedQuote.lastName;
+                childQuote.leadId = selectedQuote.leadId;
+                childQuote.mainRoofTotalSquareFeet = selectedQuote.mainRoofTotalSquareFeet;
+                childQuote.market = selectedQuote.market;
+                childQuote.numberOfIncludedStructures = selectedQuote.numberOfIncludedStructures;
+                childQuote.numberOfStructures = selectedQuote.numberOfStructures;
+                childQuote.phone = selectedQuote.phone;
+                childQuote.products = selectedQuote.products;
+                childQuote.projectManager = selectedQuote.projectManager;
+                childQuote.repEmail = selectedQuote.repEmail;
+                childQuote.repName = selectedQuote.repName;
+                childQuote.sessionId = selectedQuote.sessionId;
+                childQuote.state = selectedQuote.state;
+                childQuote.totalSquareFeet = selectedQuote.totalSquareFeet;
+                childQuote.warranties = selectedQuote.warranties;
+                childQuote.zip = selectedQuote.zip;
+
+                Relationship childRelationship = new Relationship();
+                childRelationship._id = childQuote._id;
+                childRelationship.ParentId = selectedQuote._id;
+                childRelationship.Type = "Child";
+                childRelationship.Name = selectedApplicationType;
+                newQuoteList.Add(childQuote);
+
+                // selectedQuote.relationships.Add(childRelationship);
+
+                // // Update the current, original quote
+                // WebServices.UpdateQuote(selectedQuote);
             }
 
-            var selectedApplicationType = selectedTrade.Value;
+            // Create relationships
+            CreateRelatedQuotes(newQuoteList);
 
-            // Create child quotes
-            Quote childQuote = new Quote();
-            childQuote.applicationType = selectedApplicationType;
-            childQuote.status = selectedQuote.status;
+            SaveRelatedQuotes(newQuoteList);
 
-            childQuote.address = selectedQuote.address;
-            childQuote.structures = selectedQuote.structures;
-            childQuote.notes = selectedQuote.notes;
-            childQuote.email = selectedQuote.email;
-            childQuote.street = selectedQuote.street;
-            childQuote.city = selectedQuote.city;
-            childQuote.externalUrl = selectedQuote.externalUrl;
-            childQuote.Groups = selectedQuote.Groups;
-            childQuote.firstName = selectedQuote.firstName;
-            childQuote.fullAddress = selectedQuote.fullAddress;
-            childQuote.ipAddress = selectedQuote.ipAddress;
-            childQuote.lastName = selectedQuote.lastName;
-            childQuote.leadId = selectedQuote.leadId;
-            childQuote.mainRoofTotalSquareFeet = selectedQuote.mainRoofTotalSquareFeet;
-            childQuote.market = selectedQuote.market;
-            childQuote.numberOfIncludedStructures = selectedQuote.numberOfIncludedStructures;
-            childQuote.numberOfStructures = selectedQuote.numberOfStructures;
-            childQuote.phone = selectedQuote.phone;
-            childQuote.products = selectedQuote.products;
-            childQuote.projectManager = selectedQuote.projectManager;
-            childQuote.repEmail = selectedQuote.repEmail;
-            childQuote.repName = selectedQuote.repName;
-            childQuote.sessionId = selectedQuote.sessionId;
-            childQuote.state = selectedQuote.state;
-            childQuote.totalSquareFeet = selectedQuote.totalSquareFeet;
-            childQuote.warranties = selectedQuote.warranties;
-            childQuote.zip = selectedQuote.zip;
+            IsPopupVisibleAddTrade = false;
 
-            Relationship childRelationship = new Relationship();
-            childRelationship._id = childQuote._id;
-            childRelationship.ParentId = selectedQuote._id;
-            childRelationship.Type = "Quote";
-            childRelationship.Name = "Child (" + selectedApplicationType + ") project";
-            newQuoteList.Add(childQuote);
+            // Redirect to Master details page
+            RedirectToQuoteDetails(masterQuote._id);
         }
-
-        // Create relationships
-        CreateRelatedQuotes(newQuoteList);
-
-        SaveRelatedQuotes(newQuoteList);
-
-        IsPopupVisibleAddTrade = false;
-
-        // Redirect to Master details page
-        RedirectToQuoteDetails(masterQuote._id);
+        catch(Exception ex)
+        {
+            var errMsg = ex.Message;
+        }
     }
 
     public void CreateRelatedQuotes(List<Quote> newQuoteList)
     {
-        var linkedQuoteList = new List<Quote>();
-
         var referenceQuoteList = new List<Quote>(newQuoteList);
 
         foreach(Quote currentQuote in newQuoteList)
@@ -1770,16 +1782,11 @@ else
                 {
                     Relationship siblingRelationship = new Relationship();
                     siblingRelationship.ParentId = currentQuote._id;
-                    siblingRelationship.Type = "Quote";
-                    siblingRelationship.Name = "Child (" + currentQuote.applicationType + ") project";
-
-                    // Add the relationship to existing quote
-                    selectedQuote.relationships.Add(siblingRelationship);
+                    siblingRelationship.Type = "Child";
+                    siblingRelationship.Name = currentQuote.applicationType;
 
                     var newQuoteQueued = new Quote(referenceQuote);
                     newQuoteQueued.relationships.Add(siblingRelationship);
-
-                    linkedQuoteList.Add(newQuoteQueued);
                 }
             }
         }
@@ -1787,9 +1794,22 @@ else
 
     public void SaveRelatedQuotes(List<Quote> relatedQuotes)
     {
+        List<Relationship> relationships = new List<Relationship>();
+
         foreach(Quote relatedQuote in relatedQuotes)
         {
             var isCreated = WebServices.CreateQuote(relatedQuote);
+
+            if(isCreated)
+            {
+                // Add relationships to original parent quote
+                Relationship quoteRelationship = new Relationship();
+                quoteRelationship.ParentId = relatedQuote._id;
+                quoteRelationship.Type = "Child";
+                quoteRelationship.Name = relatedQuote.applicationType;
+
+                relationships.Add(quoteRelationship);
+            }
         }
 
         // Update the current, original quote
