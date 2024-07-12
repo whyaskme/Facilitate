@@ -262,7 +262,14 @@ else
                                             @{
                                                 if (@relationshipIsEnabled)
                                                 {
-                                                    <button class="action-button action-button-small" @onclick="@(() => IsPopupVisibleDeleteTrade = true)">Remove</button>
+                                                    if(@relationshipType != "Parent")
+                                                    {
+                                                        <button class="action-button action-button-small" @onclick="@(() => IsPopupVisibleDeleteTrade = true)">Remove</button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="action-button-disabled">Disabled</span>
+                                                    }
                                                 }
                                                 else
                                                 {
