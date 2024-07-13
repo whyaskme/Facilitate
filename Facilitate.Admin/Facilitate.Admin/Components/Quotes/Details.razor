@@ -265,6 +265,7 @@ else
 
                                         <div class="col">
                                             <button class="action-button action-button-small" @onclick='() => RedirectToQuoteDetails(relatedQuoteId)'>View</button>
+
                                             @{
                                                 if (@relationshipIsEnabled)
                                                 {
@@ -1733,6 +1734,19 @@ else
             originalQuote.notes.Add(note);
             newQuoteListQueue.Add(originalQuote);
 
+            // Create Parent quote from a copy of original quote
+            parentQuote = new Quote(originalQuote);
+            parentQuote._id = ObjectId.GenerateNewId().ToString();
+            parentQuote.applicationType = "Aggregate";
+            newQuoteListQueue.Add(parentQuote);
+
+            // Create Parent relationship
+            parentRelationship = new Relationship();
+            parentRelationship._id = parentQuote._id;
+            parentRelationship.ParentId = parentQuote._id;
+            parentRelationship.Type = "Parent";
+            parentRelationship.Name = parentQuote.applicationType;
+
             // Archive original quote
             CurrentlySelectedQuote.status = "(Aggregate Source)";
             WebServices.UpdateQuote(CurrentlySelectedQuote);
@@ -1743,10 +1757,18 @@ else
                 Quote childQuote = new Quote(originalQuote);
                 childQuote.applicationType = selectedTrade.Value;
 
-                newQuoteListQueue.Add(childQuote);
+                // Add Parent relationship to Child
+                if (childQuote.applicationType != "Aggregate")
+                {
+                    // Create Parent relationship
+                    childQuote.relationships.Add(parentRelationship);
+                    newQuoteListQueue.Add(childQuote);
+                }
             }
 
             // Add child relationships to parent
+            parentQuote.relationships.Clear();
+
             foreach (Quote currentQuote in newQuoteListQueue)
             {
                 // Ensure unique ids
@@ -1754,20 +1776,6 @@ else
 
                 if (currentQuote.applicationType != "Aggregate")
                 {
-                    // Create Parent quote from a copy of original quote
-                    parentQuote = new Quote(CurrentlySelectedQuote);
-                    parentQuote._id = ObjectId.GenerateNewId().ToString();
-                    parentQuote.applicationType = "Aggregate";
-                    newQuoteListQueue.Add(parentQuote);
-
-                    // Create Parent relationship
-                    parentRelationship = new Relationship();
-                    parentRelationship._id = parentQuote._id;
-                    parentRelationship.ParentId = parentQuote._id;
-                    parentRelationship.Type = "Parent";
-                    parentRelationship.Name = parentQuote.applicationType;
-                    currentQuote.relationships.Add(parentRelationship);
-
                     // Create Child relationship
                     childRelationship = new Relationship();
                     childRelationship._id = currentQuote._id;
@@ -1784,7 +1792,7 @@ else
             SaveRelatedQuotes(newQuoteListQueue);
 
             // Create relationships
-            //CreateQuoteRelationships(newQuoteListQueue);
+            //CreateSiblingRelationships(newQuoteListQueue);
 
             IsPopupVisibleAddTrade = false;
 
@@ -1807,9 +1815,6 @@ else
             {
                 tmpQuote = new Quote(currentQuote);
 
-                // tmpQuote.relationships.Clear();
-                // tmpQuote.relationships.Add(parentRelationship);
-
                 WebServices.CreateQuote(tmpQuote);
             }
         }
@@ -1819,7 +1824,7 @@ else
         }
     }
 
-    public List<Quote> CreateQuoteRelationships(List<Quote> newQuoteListQueue)
+    public List<Quote> CreateSiblingRelationships(List<Quote> newQuoteListQueue)
     {
         List<Quote> referenceQuoteList = new List<Quote>(newQuoteListQueue);
         List<Quote> relatedQuoteList = new List<Quote>();
