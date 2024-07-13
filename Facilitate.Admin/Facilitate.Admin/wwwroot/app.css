@@ -9,6 +9,12 @@ html, body {
 .relationship-status {
     border: solid 0px #ff0000 !important;
     padding-left: 25px !important;
+    margin-right: 24px !important;
+}
+
+.id-column {
+    border: solid 1px #ff0000 !important;
+    display: none !important;
 }
 
 .summary-header-parent {
