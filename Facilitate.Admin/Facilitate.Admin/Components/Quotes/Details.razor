@@ -259,11 +259,11 @@ else
                                     <div class="row">
 
                                         <div class="col">
-                                            <button class="action-button action-button-small" @onclick='() => RedirectToQuoteDetails(relationshipId)'>View</button>
+                                                <button class="action-button action-button-small" @onclick='() => RedirectToQuoteDetails(relatedQuoteId)'>View</button>
                                             @{
                                                 if (@relationshipIsEnabled)
                                                 {
-                                                    if (@relationshipType != "Parent")
+                                                    if (@relationshipType == "Child")
                                                     {
                                                         <button class="action-button action-button-small" @onclick='() => RemoveQuoteProject(relatedQuoteId)'>Remove</button>
                                                         // <button class="action-button action-button-small" @onclick="@(() => IsPopupVisibleDeleteTrade = true)">Remove</button>
@@ -1873,15 +1873,22 @@ else
 
                 Relationship childRelationship = new Relationship();
                 childRelationship._id = childQuote._id;
-                childRelationship.ParentId = selectedQuote._id;
-                childRelationship.Type = "Child";
+
+                // childRelationship.ParentId = selectedQuote._id;
+                childRelationship.ParentId = masterQuote._id;
+
+                if(masterQuote.applicationType == "Aggregate")
+                {
+                    childRelationship.Type = "Parent";
+                }
+                else
+                {
+                    childRelationship.Type = "Child";
+                }
+                
                 childRelationship.Name = selectedApplicationType;
+
                 newQuoteList.Add(childQuote);
-
-                // selectedQuote.relationships.Add(childRelationship);
-
-                // // Update the current, original quote
-                // WebServices.UpdateQuote(selectedQuote);
             }
 
             // Create relationships
@@ -1913,7 +1920,7 @@ else
                 {
                     Relationship siblingRelationship = new Relationship();
                     siblingRelationship.ParentId = currentQuote._id;
-                    siblingRelationship.Type = "Child";
+                    siblingRelationship.Type = "Sibling";
                     siblingRelationship.Name = currentQuote.applicationType;
 
                     var newQuoteQueued = new Quote(referenceQuote);
