@@ -1712,7 +1712,7 @@ else
 
     public Quote originalQuote = null;
     public Quote parentQuote = null;
-    public Relationship parentRelationship = null;
+    // public Relationship parentRelationship = null;
     public Relationship childRelationship = null;
 
     public void AddTrade()
@@ -1741,7 +1741,7 @@ else
             newQuoteListQueue.Add(parentQuote);
 
             // Create Parent relationship
-            parentRelationship = new Relationship();
+            var parentRelationship = new Relationship();
             parentRelationship._id = parentQuote._id;
             parentRelationship.ParentId = parentQuote._id;
             parentRelationship.Type = "Parent";
@@ -1814,6 +1814,16 @@ else
             foreach (Quote currentQuote in relatedQuotes)
             {
                 tmpQuote = new Quote(currentQuote);
+                tmpQuote.relationships.Clear();
+
+                // Create Parent relationship
+                var parentRelationship = new Relationship();
+                parentRelationship._id = parentQuote._id;
+                parentRelationship.ParentId = parentQuote._id;
+                parentRelationship.Type = "Parent";
+                parentRelationship.Name = parentQuote.applicationType;
+
+                tmpQuote.relationships.Add(parentRelationship);
 
                 WebServices.CreateQuote(tmpQuote);
             }
