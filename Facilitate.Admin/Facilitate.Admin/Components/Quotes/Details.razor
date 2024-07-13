@@ -119,6 +119,8 @@ else
                 var relationshipsCount = CurrentlySelectedQuote.relationships.Count;
 
                 var isAggregateQuote = false;
+                var isChildQuote = false;
+
                 if(CurrentlySelectedQuote.applicationType == "Aggregate")
                 {
                     isAggregateQuote = true;
@@ -151,6 +153,7 @@ else
                     else
                     {
                         <div class="summary-header-child">@CurrentlySelectedQuote.applicationType (Child) Quote</div>
+                        isChildQuote = true;
                     }
                 }
 
@@ -285,8 +288,7 @@ else
                                                 }
                                                 else
                                                 {
-                                                    // <label class="relationship-status">Status</label>
-                                                        <span class="relationship-status">Archived</span>
+                                                    <span class="relationship-status">Archived</span>
                                                 }
                                             }
                                         </div>
@@ -307,7 +309,7 @@ else
 
                                         <div class="col id-column">
                                             <label>Id</label>
-                                                <span class="detail-item">@relatedQuoteId</span>
+                                            <span class="detail-item">@relatedQuoteId</span>
                                         </div>
 
                                         <div class="col">
@@ -337,9 +339,16 @@ else
 
                             <hr />
 
-                            <div class="quote-detail-controls-container">
-                                <button class="action-button" @onclick="@(() => IsPopupVisibleAddTrade = true)">Add Trade</button>
-                            </div>
+                            if (!isChildQuote)
+                            {
+                                <div class="quote-detail-controls-container">
+                                    <button class="action-button" @onclick="@(() => IsPopupVisibleAddTrade = true)">Add Trade</button>
+                                </div>
+                            }
+
+                            // <div class="quote-detail-controls-container">
+                            //     <button class="action-button" @onclick="@(() => IsPopupVisibleAddTrade = true)">Add Trade</button>
+                            // </div>
                         }
                     }
                     </DxTabPage>
@@ -1700,6 +1709,11 @@ else
         notesCount--;
     }
 
+    public Quote originalQuote = null;
+    public Quote parentQuote = null;
+    public Relationship parentRelationship = null;
+    public Relationship childRelationship = null;
+
     public void AddTrade()
     {
         List<Quote> newQuoteListQueue = new List<Quote>();
@@ -1708,21 +1722,8 @@ else
 
         try
         {
-            // Create Master Summary quote
-            Quote masterQuote = new Quote(CurrentlySelectedQuote);
-            masterQuote._id = ObjectId.GenerateNewId().ToString();
-            masterQuote.applicationType = "Aggregate";
-            WebServices.CreateQuote(masterQuote);
-            newQuoteListQueue.Add(masterQuote);
-
-            Relationship parentRelationship = new Relationship();
-            parentRelationship._id = masterQuote._id;
-            parentRelationship.ParentId = masterQuote._id;
-            parentRelationship.Type = "Parent";
-            parentRelationship.Name = masterQuote.applicationType;
-
             // Make a copy of original quote
-            Quote originalQuote = new Quote(CurrentlySelectedQuote);
+            originalQuote = new Quote(CurrentlySelectedQuote);
             originalQuote._id = ObjectId.GenerateNewId().ToString();
 
             Note note = new Note();
@@ -1730,87 +1731,89 @@ else
             note.Details = note.Summary;
 
             originalQuote.notes.Add(note);
-            WebServices.CreateQuote(originalQuote);
             newQuoteListQueue.Add(originalQuote);
 
+            // Archive original quote
             CurrentlySelectedQuote.status = "(Aggregate Source)";
             WebServices.UpdateQuote(CurrentlySelectedQuote);
 
+            // Create child quotes
             foreach (var selectedTrade in SelectedTradesToAdd)
             {
-                var selectedApplicationType = selectedTrade.Value;
+                Quote childQuote = new Quote(originalQuote);
+                childQuote.applicationType = selectedTrade.Value;
 
-                // Create child quotes
-                Quote childQuote = new Quote();
-                childQuote.applicationType = selectedApplicationType;
-                childQuote.status = masterQuote.status;
-
-                childQuote.address = masterQuote.address;
-                childQuote.structures = masterQuote.structures;
-                childQuote.notes = masterQuote.notes;
-                childQuote.email = masterQuote.email;
-                childQuote.street = masterQuote.street;
-                childQuote.city = masterQuote.city;
-                childQuote.externalUrl = masterQuote.externalUrl;
-                childQuote.Groups = masterQuote.Groups;
-                childQuote.firstName = masterQuote.firstName;
-                childQuote.fullAddress = masterQuote.fullAddress;
-                childQuote.ipAddress = masterQuote.ipAddress;
-                childQuote.lastName = masterQuote.lastName;
-                childQuote.leadId = masterQuote.leadId;
-                childQuote.mainRoofTotalSquareFeet = masterQuote.mainRoofTotalSquareFeet;
-                childQuote.market = masterQuote.market;
-                childQuote.numberOfIncludedStructures = masterQuote.numberOfIncludedStructures;
-                childQuote.numberOfStructures = masterQuote.numberOfStructures;
-                childQuote.phone = masterQuote.phone;
-                childQuote.products = masterQuote.products;
-                childQuote.projectManager = masterQuote.projectManager;
-                childQuote.repEmail = masterQuote.repEmail;
-                childQuote.repName = masterQuote.repName;
-                childQuote.sessionId = masterQuote.sessionId;
-                childQuote.state = masterQuote.state;
-                childQuote.totalSquareFeet = masterQuote.totalSquareFeet;
-                childQuote.warranties = masterQuote.warranties;
-                childQuote.zip = masterQuote.zip;
-
-                childQuote.relationships.Add(parentRelationship);
-
-                WebServices.CreateQuote(childQuote);
                 newQuoteListQueue.Add(childQuote);
             }
 
-            foreach (Quote newQuote in newQuoteListQueue)
+            // Add child relationships to parent
+            foreach (Quote currentQuote in newQuoteListQueue)
             {
-                if (newQuote.applicationType != "Aggregate")
-                {
-                    var quoteToUpdate = WebServices.GetQuote(newQuote._id)[0];
-                    quoteToUpdate.relationships.Add(parentRelationship);
-                    WebServices.UpdateQuote(quoteToUpdate);
+                // Ensure unique ids
+                currentQuote._id = ObjectId.GenerateNewId().ToString();
 
-                    Relationship relationship = new Relationship();
-                    relationship._id = newQuote._id;
-                    relationship.ParentId = masterQuote._id;
-                    relationship.Type = "Child";
-                    relationship.Name = newQuote.applicationType;
-                    masterQuote.relationships.Add(relationship);
+                if (currentQuote.applicationType != "Aggregate")
+                {
+                    // Create Parent quote from a copy of original quote
+                    parentQuote = new Quote(CurrentlySelectedQuote);
+                    parentQuote._id = ObjectId.GenerateNewId().ToString();
+                    parentQuote.applicationType = "Aggregate";
+                    newQuoteListQueue.Add(parentQuote);
+
+                    // Create Parent relationship
+                    parentRelationship = new Relationship();
+                    parentRelationship._id = parentQuote._id;
+                    parentRelationship.ParentId = parentQuote._id;
+                    parentRelationship.Type = "Parent";
+                    parentRelationship.Name = parentQuote.applicationType;
+                    currentQuote.relationships.Add(parentRelationship);
+
+                    // Create Child relationship
+                    childRelationship = new Relationship();
+                    childRelationship._id = currentQuote._id;
+                    childRelationship.ParentId = parentQuote._id;
+                    childRelationship.Type = "Child";
+                    childRelationship.Name = currentQuote.applicationType;
+
+                    parentQuote.relationships.Add(childRelationship);
                 }
             }
 
-            WebServices.UpdateQuote(masterQuote);
+            WebServices.UpdateQuote(parentQuote);
+
+            SaveRelatedQuotes(newQuoteListQueue);
 
             // Create relationships
             //CreateQuoteRelationships(newQuoteListQueue);
 
-            //newQuoteListQueue = newQuoteListQueue.OrderBy(x => x.applicationType).ToList();
-
-            //SaveRelatedQuotes(newQuoteListQueue);
-
             IsPopupVisibleAddTrade = false;
 
             // Redirect to Master details page
-            RedirectToQuoteDetails(masterQuote._id);
+            RedirectToQuoteDetails(parentQuote._id);
         }
         catch(Exception ex)
+        {
+            var errMsg = ex.Message;
+        }
+    }
+
+    public void SaveRelatedQuotes(List<Quote> relatedQuotes)
+    {
+        Quote tmpQuote = null;
+
+        try
+        {
+            foreach (Quote currentQuote in relatedQuotes)
+            {
+                tmpQuote = new Quote(currentQuote);
+
+                // tmpQuote.relationships.Clear();
+                // tmpQuote.relationships.Add(parentRelationship);
+
+                WebServices.CreateQuote(tmpQuote);
+            }
+        }
+        catch (Exception ex)
         {
             var errMsg = ex.Message;
         }
@@ -1823,7 +1826,7 @@ else
 
         foreach(Quote currentQuote in newQuoteListQueue)
         {
-            // Loop through reference list aad parse out each child Id and references for relationships
+            // Loop through reference list and parse out each child Id and references for relationships
             foreach(Quote referenceQuote in referenceQuoteList)
             {
                if(currentQuote.applicationType == referenceQuote.applicationType)
@@ -1840,6 +1843,14 @@ else
                         Quote newQuoteQueued = newQuoteQueued = new Quote(referenceQuote);
                         newQuoteQueued.relationships.Add(childRelationship);
 
+                        Relationship parentRelationship = new Relationship();
+                        parentRelationship._id = parentQuote._id;
+                        parentRelationship.ParentId = parentQuote._id;
+                        parentRelationship.Type = "Parent";
+                        parentRelationship.Name = parentQuote.applicationType;
+
+                        newQuoteQueued.relationships.Add(parentRelationship);
+
                         relatedQuoteList.Add(currentQuote);
                         break;
                     }
@@ -1848,27 +1859,6 @@ else
         }
 
         return relatedQuoteList;
-    }
-
-    public void SaveRelatedQuotes(List<Quote> relatedQuotes)
-    {
-        //var sortedList = relatedQuotes.OrderBy(x => x.applicationType).ToList();
-
-        try{
-            foreach (Quote currentQuote in relatedQuotes)
-            { 
-                Quote tmpQuote = new Quote(currentQuote);
-
-                WebServices.CreateQuote(tmpQuote);
-            }
-
-            // Delete the current, original quote
-            //WebServices.UpdateQuote(CurrentlySelectedQuote);
-        }
-        catch(Exception ex)
-        {
-            var errMsg = ex.Message;
-        }
     }
 
     public void DeleteTrade()

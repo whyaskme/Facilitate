@@ -13,8 +13,8 @@ html, body {
 }
 
 .id-column {
-    border: solid 1px #ff0000 !important;
-    display: none !important;
+    border: solid 0px #ff0000 !important;
+/*    display: none !important;*/
 }
 
 .summary-header-parent {
