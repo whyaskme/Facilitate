@@ -254,7 +254,7 @@ else
                                     var relationshipType = relatedTrade.Type;
                                     var relationshipIsEnabled = relatedTrade.IsEnabled;
                                     var relationshipCreatedById = relatedTrade.CreatedById;
-                                        var relationshipCreatedDate = relatedTrade.CreatedDate.ToLocalTime();
+                                    var relationshipCreatedDate = relatedTrade.CreatedDate.ToLocalTime();
                                     var relationshipModifiedById = relatedTrade.ModifiedById;
                                     var relationshipModifiedDate = relatedTrade.ModifiedDate.ToLocalTime();
 
@@ -273,17 +273,20 @@ else
                                                         }
                                                         else
                                                         {
-                                                            <span class="action-button-disabled">Sibling</span>
+                                                            <label class="relationship-status">Relationship</label>
+                                                            <span>Sibling</span>
                                                         }
                                                     }
                                                     else
                                                     {
-                                                        <span class="action-button-disabled">Parent</span>
+                                                        <label class="relationship-status">Relationship</label>
+                                                            <span class="detail-item system-warning">Parent</span>
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    <span class="action-button-disabled">Archived</span>
+                                                    <label class="relationship-status">Status</label>
+                                                    <span>Archived</span>
                                                 }
                                             }
                                         </div>
@@ -293,18 +296,18 @@ else
                                             @{
                                                 if (@relationshipType == "Parent")
                                                 {
-                                                    <span class="detail-item">@relationshipName</span>
+                                                    <span class="detail-item system-warning">@relationshipName</span>
                                                 }
                                                 else
                                                 {
-                                                    <span class="detail-item system-warning">@relationshipName</span>
+                                                    <span class="detail-item">@relationshipName</span>
                                                 }
                                             }
                                         </div>
 
                                         <div class="col">
                                             <label>Date</label>
-                                                <span class="detail-item">@relationshipModifiedDate</span>
+                                            <span class="detail-item">@relationshipModifiedDate</span>
                                         </div>
 
                                         <div class="col">
