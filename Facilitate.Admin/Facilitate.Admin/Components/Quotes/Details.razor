@@ -1785,9 +1785,6 @@ else
                 index++;
                 if (index == 1)
                 {
-                    // Initialize the new quote list with the master (Summary) quote
-                    newQuoteListQueue.Add(masterQuote);
-
                     // Add original quote
                     newQuoteListQueue.Add(CurrentlySelectedQuote);
                 }
@@ -1848,6 +1845,21 @@ else
                 newQuoteListQueue.Add(childQuote);
             }
 
+            foreach (Quote newQuote in newQuoteListQueue)
+            {
+                Relationship childRelationship = new Relationship();
+                childRelationship._id = newQuote._id;
+                childRelationship.ParentId = masterQuote._id;
+                childRelationship.Type = "Child";
+                childRelationship.Name = newQuote.applicationType;
+
+                masterQuote.relationships.Add(childRelationship);
+            }
+
+            masterQuote._id = ObjectId.GenerateNewId().ToString();
+
+            WebServices.CreateQuote(masterQuote);
+
             // Create relationships
             CreateQuoteRelationships(newQuoteListQueue);
 
@@ -1876,8 +1888,8 @@ else
             {
                 if(currentQuote.applicationType != referenceQuote.applicationType)
                 {
-                    if (currentQuote.applicationType != "Aggregate")
-                    {
+                    // if (currentQuote.applicationType != "Aggregate")
+                    // {
                         Relationship childRelationship = new Relationship();
                         childRelationship.ParentId = currentQuote._id;
                         childRelationship.Type = "Child";
@@ -1888,7 +1900,7 @@ else
 
                         relatedQuoteList.Add(currentQuote);
                         break;
-                    }
+                    // }
                 }
             }
         }
@@ -1898,26 +1910,21 @@ else
 
     public void SaveRelatedQuotes(List<Quote> relatedQuotes)
     {
-        List<Relationship> relationships = new List<Relationship>();
+        try{
+            foreach(Quote currentQuote in relatedQuotes)
+            { 
+                Quote tmpQuote = new Quote(currentQuote);
 
-        foreach(Quote relatedQuote in relatedQuotes)
-        {
-            var isCreated = WebServices.CreateQuote(relatedQuote);
-
-            if(isCreated)
-            {
-                // Add relationships to original parent quote
-                Relationship quoteRelationship = new Relationship();
-                quoteRelationship.ParentId = relatedQuote._id;
-                quoteRelationship.Type = "Child";
-                quoteRelationship.Name = relatedQuote.applicationType;
-
-                relationships.Add(quoteRelationship);
+                WebServices.CreateQuote(tmpQuote);
             }
-        }
 
-        // Update the current, original quote
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+            // Delete the current, original quote
+            //WebServices.UpdateQuote(CurrentlySelectedQuote);
+        }
+        catch(Exception ex)
+        {
+            var errMsg = ex.Message;
+        }
     }
 
     public void DeleteTrade()
