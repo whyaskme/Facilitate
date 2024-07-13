@@ -243,39 +243,47 @@ else
                             <h6>@relationshipsCount Project Trades</h6>
                             foreach (var relatedTrade in CurrentlySelectedQuote.relationships)
                             {
-                                relatedQuoteId = relatedTrade._id;
+                                var relatedQuoteId = relatedTrade._id;
 
                                 if (@relatedTrade.Type == "Parent" || @relatedTrade.Type == "Child")
                                 {
                                     currentIndex++;
 
-                                    relationshipName = relatedTrade.Name;
-                                    relationshipId = relatedTrade.ParentId;
-                                    relationshipType = relatedTrade.Type;
-                                    relationshipIsEnabled = relatedTrade.IsEnabled;
-                                    relationshipCreatedById = relatedTrade.CreatedById;
-                                    relationshipCreatedDate = relatedTrade.CreatedDate;
+                                    var relationshipName = relatedTrade.Name;
+                                    var relationshipId = relatedTrade.ParentId;
+                                    var relationshipType = relatedTrade.Type;
+                                    var relationshipIsEnabled = relatedTrade.IsEnabled;
+                                    var relationshipCreatedById = relatedTrade.CreatedById;
+                                        var relationshipCreatedDate = relatedTrade.CreatedDate.ToLocalTime();
+                                    var relationshipModifiedById = relatedTrade.ModifiedById;
+                                    var relationshipModifiedDate = relatedTrade.ModifiedDate.ToLocalTime();
 
                                     <div class="row">
 
                                         <div class="col">
-                                                <button class="action-button action-button-small" @onclick='() => RedirectToQuoteDetails(relatedQuoteId)'>View</button>
+                                            <button class="action-button action-button-small" @onclick='() => RedirectToQuoteDetails(relatedQuoteId)'>View</button>
                                             @{
                                                 if (@relationshipIsEnabled)
                                                 {
                                                     if (@relationshipType == "Child")
                                                     {
-                                                        <button class="action-button action-button-small" @onclick='() => RemoveQuoteProject(relatedQuoteId)'>Remove</button>
-                                                        // <button class="action-button action-button-small" @onclick="@(() => IsPopupVisibleDeleteTrade = true)">Remove</button>
+                                                        if(isAggregateQuote)
+                                                        {
+                                                            <button class="action-button action-button-small" @onclick='() => RemoveQuoteProject(relatedQuoteId)'>Remove</button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="action-button-disabled">Sibling</span>
+                                                        }
                                                     }
                                                     else
                                                     {
-                                                        <span class="action-button-disabled">Disabled</span>
+                                                        <span class="action-button-disabled">Parent</span>
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    <span class="action-button-disabled">Removed</span>
+                                                    <span class="action-button-disabled">Archived</span>
                                                 }
                                             }
                                         </div>
@@ -295,13 +303,8 @@ else
                                         </div>
 
                                         <div class="col">
-                                            <label>Id</label>
-                                            <span class="detail-item">@relatedQuoteId</span>
-                                        </div>
-
-                                        <div class="col">
-                                            <label>Enabled</label>
-                                            <span class="detail-item">@relationshipIsEnabled</span>
+                                            <label>Date</label>
+                                                <span class="detail-item">@relationshipModifiedDate</span>
                                         </div>
 
                                         <div class="col">
@@ -320,92 +323,10 @@ else
                                         <div class="col">&nbsp;</div>
                                         <div class="col">&nbsp;</div>
                                         <div class="col">&nbsp;</div>
+                                        <div class="col">&nbsp;</div>
                                     </div>
                                 }
                             }
-
-                            // for (var index = 0; index <= @relationshipsCount; index++)
-                            // {
-                            //     relatedQuoteId = @CurrentlySelectedQuote.relationships[index]._id;
-
-                            //     relationshipName = @CurrentlySelectedQuote.relationships[index].Name;
-                            //     relationshipId = @CurrentlySelectedQuote.relationships[index].ParentId;
-                            //     relationshipType = @CurrentlySelectedQuote.relationships[index].Type;
-                            //     relationshipIsEnabled = @CurrentlySelectedQuote.relationships[index].IsEnabled;
-                            //     relationshipCreatedById = @CurrentlySelectedQuote.relationships[index].CreatedById;
-                            //     relationshipCreatedDate = @CurrentlySelectedQuote.relationships[index].CreatedDate;
-
-                            //     if (@relationshipType == "Parent" || @relationshipType == "Child")
-                            //     {
-                            //         currentIndex++;
-
-                            //         <div class="row">
-
-                            //             <div class="col">
-                            //                 <button class="action-button action-button-small" @onclick='() => RedirectToQuoteDetails(relationshipId)'>View</button>
-                            //                 @{
-                            //                     if (@relationshipIsEnabled)
-                            //                     {
-                            //                         if (@relationshipType != "Parent")
-                            //                         {
-                            //                             <button class="action-button action-button-small" @onclick='() => RemoveQuoteProject(relatedQuoteId)'>Remove</button>
-                            //                             // <button class="action-button action-button-small" @onclick="@(() => IsPopupVisibleDeleteTrade = true)">Remove</button>
-                            //                         }
-                            //                         else
-                            //                         {
-                            //                             <span class="action-button-disabled">Disabled</span>
-                            //                         }
-                            //                     }
-                            //                     else
-                            //                     {
-                            //                         <span class="action-button-disabled">Removed</span>
-                            //                     }
-                            //                 }
-                            //             </div>
-
-                            //             <div class="col">
-                            //                 <label>Type</label>
-                            //                 @{
-                            //                     if (@relationshipType == "Parent")
-                            //                     {
-                            //                         <span class="detail-item">@relationshipName</span>
-                            //                     }
-                            //                     else
-                            //                     {
-                            //                         <span class="detail-item system-warning">@relationshipName</span>
-                            //                     }
-                            //                 }
-                            //             </div>
-
-                            //             <div class="col">
-                            //                 <label>Id</label>
-                            //                 <span class="detail-item">@relatedQuoteId</span>
-                            //             </div>
-
-                            //             <div class="col">
-                            //                 <label>Enabled</label>
-                            //                 <span class="detail-item">@relationshipIsEnabled</span>
-                            //             </div>
-
-                            //             <div class="col">
-                            //                 <label>Amount</label>
-                            //                 <span class="detail-item">$0.00</span>
-                            //             </div>
-
-                            //             <div class="col">
-                            //                 <label>Project Manager</label>
-                            //                 <span class="detail-item">???</span>
-                            //             </div>
-
-                            //             <div class="col">&nbsp;</div>
-                            //             <div class="col">&nbsp;</div>
-                            //             <div class="col">&nbsp;</div>
-                            //             <div class="col">&nbsp;</div>
-                            //             <div class="col">&nbsp;</div>
-                            //             <div class="col">&nbsp;</div>
-                            //         </div>
-                            //     }
-                            // }
 
                             <hr />
 
@@ -1113,14 +1034,6 @@ else
 {
     public string quoteIdToRemove = "";
 
-    public string relatedQuoteId = "";
-    public string relationshipName = "";
-    public string relationshipId = "";
-    public string relationshipType = "";
-    public bool relationshipIsEnabled = true;
-    public string relationshipCreatedById = "";
-    public DateTime relationshipCreatedDate = DateTime.MinValue;
-
     [Parameter]
     public EventCallback<IEnumerable<ListItem>> SelectedItemsChanged { get; set; }
 
@@ -1144,9 +1057,23 @@ else
     {
         quoteIdToRemove = quoteId;
 
-        //IsPopupVisibleDeleteTrade = true;
+        var quoteToRemove = WebServices.GetQuote(quoteId)[0];
+        quoteToRemove.status = "Archive";
+        quoteToRemove.lastUpdated = DateTime.UtcNow;
+
+        WebServices.UpdateQuote(quoteToRemove);
 
         // Parse and remove all relationships including siblings
+        var tmpQuote = CurrentlySelectedQuote;
+
+        foreach(Relationship relationship in CurrentlySelectedQuote.relationships)
+        {
+            // Disable removed quoteId from all siblings
+            if (relationship._id == quoteId)
+                relationship.IsEnabled = false;
+        }
+
+        WebServices.UpdateQuote(CurrentlySelectedQuote);
     }
 
     public string uploadUrl = "/api/Upload/UploadFile";
@@ -1792,8 +1719,14 @@ else
                 index++;
                 if (index == 1)
                 {
-                    // Add original quote
-                    newQuoteListQueue.Add(CurrentlySelectedQuote);
+                    // Copy original quote
+                    Quote originalQuote = new Quote(CurrentlySelectedQuote);
+                    originalQuote._id = ObjectId.GenerateNewId().ToString();
+
+                    newQuoteListQueue.Add(originalQuote);
+
+                    CurrentlySelectedQuote.status = "(Aggregate Source)";
+                    WebServices.UpdateQuote(CurrentlySelectedQuote);
                 }
 
                 var selectedApplicationType = selectedTrade.Value;
@@ -1861,6 +1794,8 @@ else
             // Create relationships
             CreateQuoteRelationships(newQuoteListQueue);
 
+            newQuoteListQueue = newQuoteListQueue.OrderBy(x => x.applicationType).ToList();
+
             SaveRelatedQuotes(newQuoteListQueue);
 
             IsPopupVisibleAddTrade = false;
@@ -1908,8 +1843,10 @@ else
 
     public void SaveRelatedQuotes(List<Quote> relatedQuotes)
     {
+        //var sortedList = relatedQuotes.OrderBy(x => x.applicationType).ToList();
+
         try{
-            foreach(Quote currentQuote in relatedQuotes)
+            foreach (Quote currentQuote in relatedQuotes)
             { 
                 Quote tmpQuote = new Quote(currentQuote);
 

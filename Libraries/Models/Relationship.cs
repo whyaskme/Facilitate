@@ -15,6 +15,8 @@ namespace Facilitate.Libraries.Models
             IsEnabled = true;
             CreatedById = "";
             CreatedDate = DateTime.UtcNow;
+            ModifiedById = "";
+            ModifiedDate = DateTime.UtcNow;
         }
 
         public string _id { get; set; }
@@ -25,5 +27,7 @@ namespace Facilitate.Libraries.Models
         public bool IsEnabled { get; set; }
         public string CreatedById { get; set; }
         public DateTime CreatedDate { get; set; }
+        public string ModifiedById { get; set; }
+        public DateTime ModifiedDate { get; set; }
     }
 }
