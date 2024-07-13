@@ -1778,7 +1778,14 @@ else
         {
             // Create Master Summary quote
             Quote masterQuote = new Quote(CurrentlySelectedQuote);
+            masterQuote._id = ObjectId.GenerateNewId().ToString();
             masterQuote.applicationType = "Aggregate";
+
+            Relationship parentRelationship = new Relationship();
+            parentRelationship._id = masterQuote._id;
+            parentRelationship.ParentId = masterQuote._id;
+            parentRelationship.Type = "Parent";
+            parentRelationship.Name = masterQuote.applicationType;
 
             foreach (var selectedTrade in SelectedTradesToAdd)
             {
@@ -1825,22 +1832,15 @@ else
                 childQuote.zip = masterQuote.zip;
 
                 Relationship childRelationship = new Relationship();
+                childRelationship.Type = "Child";
 
                 childRelationship._id = childQuote._id;
                 childRelationship.ParentId = masterQuote._id;
 
-                if(masterQuote.applicationType == "Aggregate")
-                {
-                    childRelationship.Type = "Parent";
-                }
-                else
-                {
-                    childRelationship.Type = "Child";
-                }
-
                 childRelationship.Name = selectedApplicationType;
 
                 childQuote.relationships.Add(childRelationship);
+                childQuote.relationships.Add(parentRelationship);
 
                 newQuoteListQueue.Add(childQuote);
             }
@@ -1855,8 +1855,6 @@ else
 
                 masterQuote.relationships.Add(childRelationship);
             }
-
-            masterQuote._id = ObjectId.GenerateNewId().ToString();
 
             WebServices.CreateQuote(masterQuote);
 
