@@ -291,7 +291,7 @@ else
                                                 else
                                                 {
                                                     // <span class="relationship-status">Archived</span>
-                                                        <button class="action-button action-button-small" @onclick='() => RestoreQuoteProject(relatedQuoteId)'>Archived</button>
+                                                        <button class="action-button-disabled" @onclick='() => RestoreQuoteProject(relatedQuoteId)'>Archived</button>
                                                 }
                                             }
                                         </div>
@@ -1108,11 +1108,11 @@ else
     {
         quoteIdToRestore = quoteId;
 
-        IsPopupVisibleDeleteTrade = true;
+        IsPopupVisibleRestoreTrade = true;
 
-        var quoteToRemove = WebServices.GetQuote(quoteId)[0];
+        var quoteToRestore = WebServices.GetQuote(quoteIdToRestore)[0];
 
-        ConfirmRestoreMessage = "Are you sure you want to RESTORE this (" + quoteToRemove.applicationType + ") project?";
+        ConfirmRestoreMessage = "Are you sure you want to RESTORE this (" + quoteToRestore.applicationType + ") project?";
     }
 
     public string uploadUrl = "/api/Upload/UploadFile";
@@ -1750,12 +1750,16 @@ else
 
     public Quote originalQuote = null;
     public Quote parentQuote = null;
-    // public Relationship parentRelationship = null;
+
     public Relationship childRelationship = null;
 
     public void AddTrade()
     {
         List<Quote> newQuoteListQueue = new List<Quote>();
+
+        Event _event = new Event();
+        _event.Details = "";
+        _event.Author = currentUser;
 
         CurrentlySelectedQuote.relationships = new List<Relationship>();
 
@@ -1777,6 +1781,15 @@ else
             parentQuote._id = ObjectId.GenerateNewId().ToString();
             parentQuote.applicationType = "Aggregate";
             parentQuote.totalQuote = 0;
+
+            // Add events to new Master
+            _event = new Event();
+            _event.Author = currentUser;
+            _event.Name = "Aggregate project created";
+            _event.Details = "Aggregate quote created from original " + CurrentlySelectedQuote.applicationType + " quote (" + CurrentlySelectedQuote._id + ")";
+
+            parentQuote.events.Add(_event);
+
             newQuoteListQueue.Add(parentQuote);
 
             // Create Parent relationship
@@ -1788,6 +1801,13 @@ else
 
             // Archive original quote
             CurrentlySelectedQuote.status = "(Aggregate Source)";
+
+            _event = new Event();
+            _event.Author = currentUser;
+            _event.Name = "Quote converted to Aggregate";
+            _event.Details = "Original quote converted to Aggregate Id (" + parentQuote._id + ")";
+
+            CurrentlySelectedQuote.events.Add(_event);
             WebServices.UpdateQuote(CurrentlySelectedQuote);
 
             // Create child quotes
@@ -1801,8 +1821,9 @@ else
 
                 // If this started as a roofing quote, ensure this new child instance inherits the product properties.
                 // Otherwise, set these to empty for the new children/siblings
-                if (CurrentlySelectedQuote.applicationType != selectedTrade.Value)
-                {
+                // if (CurrentlySelectedQuote.applicationType != selectedTrade.Value)
+                // {
+                    // Reset all products and warranties in child
                     childQuote.totalQuote = 0;
                     childQuote.notes = new List<Note>();
                     childQuote.attachments = new List<Attachment>();
@@ -1810,7 +1831,18 @@ else
                     childQuote.Groups = new List<ObjectId>();
                     childQuote.products = new List<Product>();
                     childQuote.warranties = new List<Warranty>();
-                }
+                // }
+
+                // Add events to new Master
+                _event = new Event();
+                _event.Author = currentUser;
+                _event.Name = "Child project created";
+                _event.Details = "Child (" + childQuote.applicationType + ") quote created from original " + CurrentlySelectedQuote.applicationType + " quote (" + CurrentlySelectedQuote._id + ")";
+
+                childQuote.events.Add(_event);
+
+                // Add this event to master
+                parentQuote.events.Add(_event);
 
                 // Add Parent relationship to Child
                 if (childQuote.applicationType != "Aggregate")

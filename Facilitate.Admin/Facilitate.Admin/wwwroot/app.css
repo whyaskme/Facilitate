@@ -1,5 +1,5 @@
 @import url('open.iconic/font/css/open-iconic-bootstrap.min.css');
-
+#014b01
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     height: 100%;
@@ -168,17 +168,31 @@ button.btn-primary {
     font-size: 1.0em !important;
 }
 
-.action-button-disabled,
-.action-button-disabled:hover {
+.action-button-disabled {
     border: solid 0px #ff0000 !important;
     width: 100px !important;
     font-size: 1.0em !important;
-    color: #ba0404 !important;
+/*    color: #ffffff !important;*/
     cursor: not-allowed !important;
-    padding-left: 23px !important;
+    padding-left: 0px !important;
     margin-right: 20px !important;
-    font-style: italic !important;
+    font-style: normal !important;
+    background-color: #eee !important;
+    cursor: pointer !important;
 }
+
+    .action-button-disabled:hover {
+        border: solid 0px #ff0000 !important;
+        width: 100px !important;
+        font-size: 1.0em !important;
+        color: #ffffff !important;
+        cursor: not-allowed !important;
+        padding-left: 0px !important;
+        margin-right: 20px !important;
+        font-style: normal !important;
+        background-color: #014b01 !important;
+        cursor: pointer !important;
+    }
 
 .dxbl-btn-link {
     border: solid 1px #eee !important;
