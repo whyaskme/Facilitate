@@ -105,6 +105,8 @@ else
 
     <div class="div-filters">
 
+        <button class="action-button header-recordID-button" @onclick="ShowRecordIDs">@RedcordIdButtonLabel</button>
+
         @{
             if (isSystemAdmin)
             {
@@ -213,7 +215,7 @@ else
             PageSizeSelectorAllRowsItemVisible="false"
             KeyboardNavigationEnabled="true">
         <Columns>
-            <DxGridDataColumn Visible="false" Width="200" Caption="Id" FieldName="_id" />
+            <DxGridDataColumn Visible="@recordIDVisible" Width="200" Caption="Record Id" FieldName="_id" />
             <DxGridDataColumn Width="115" Caption="Trade" FieldName="applicationType" />
             <DxGridDataColumn Width="150" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Width="150" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
@@ -238,6 +240,8 @@ else
 </DxLoadingPanel>
 
 @code {
+
+    public bool recordIDVisible = false;
 
     public string LeadTypeFilterLabel { get; set; } = "Types (Complete Info)";
 
@@ -267,6 +271,21 @@ else
         }
     }
 
+    public string RedcordIdButtonLabel = "Show Record Id";
+    public void ShowRecordIDs()
+    {
+        if (recordIDVisible)
+        {
+            recordIDVisible = false;
+            RedcordIdButtonLabel = "Show Record Id";
+        }
+        else
+        {
+            recordIDVisible = true;
+            RedcordIdButtonLabel = "Hide Record Id";
+        }
+    }
+
     async void OnLocationChanged(object sender, LocationChangedEventArgs args)
     {
         TimerDispose();
@@ -277,24 +296,17 @@ else
     public bool isSystemAdmin = false;
     public bool isUserAdmin = false;
 
+    public Utils _utils = new Utils();
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            Utils _utils = new Utils();
-
             try
             {
                 LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
                 LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
                 LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
-
-                TradesList.Add(new ListItem() { Text = "All", Value = "All" });
-                var tradeList = WebServices.GetTradesList();
-                foreach (var trade in tradeList)
-                {
-                    TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
-                }
 
                 var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
                 var loggedInUser = authstate.User;
@@ -499,16 +511,19 @@ else
         {
             index++;
 
-            SelectedTradeType = item.Value;
-            if (SelectedTradeType == "Roofing")
+            if (item != null)
             {
-                LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
-                LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
-                LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
-            }
-            else
-            {
-                LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
+                SelectedTradeType = item.Value;
+                if (SelectedTradeType == "Roofing")
+                {
+                    LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
+                    LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
+                    LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
+                }
+                else
+                {
+                    LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
+                }
             }
         }
 
@@ -560,9 +575,6 @@ else
 
     public virtual void PauseRefresh(bool isPaused)
     {
-        RefreshDisabled = isPaused;
-        // ArchiveLeadsDisabled = isPaused;
-
         if (isPaused)
         {
             RefreshButtonText = "Resume Refresh";
@@ -616,7 +628,7 @@ else
                 if (SelectedTradeType.Contains("All"))
                 {
                     quotes = webServices.GetSummaries("Customer", ShowTestData);
-                    leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
+                    leaderboardStats = WebServices.GetLeaderBoardStats("Customer", ShowTestData);
                 }
                 else
                 {
@@ -632,6 +644,13 @@ else
 
             updateStatus = quotes.Count().ToString("N0");
             StatusContainerClass = "container-action-buttons-show";
+
+            TradesList.Clear();
+            TradesList.Add(new ListItem() { Text = "All", Value = "All" });
+            foreach (var trade in leaderboardStats.Trades)
+            {
+                TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
+            }
 
             InvokeAsync(() =>
             {

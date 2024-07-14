@@ -42,7 +42,7 @@ namespace Facilitate.Libraries.Models
             repName = string.Empty;
             repEmail = string.Empty;
             leadId = 0;
-            relationships = new List<ListItem>();
+            relationships = new List<Relationship>();
             products = new List<Product>();
             attachments = new List<Attachment>();
             notes = new List<Note>();
@@ -50,6 +50,53 @@ namespace Facilitate.Libraries.Models
             events = new List<Event>();
             warranties = new List<Warranty>();
     }
+
+        public Quote(Quote OriginalQuote)
+        {
+            _id = OriginalQuote._id;
+            _t = OriginalQuote._t;
+
+            applicationType = OriginalQuote.applicationType;
+
+            ipAddress = OriginalQuote.ipAddress;
+            status = OriginalQuote.status;
+
+            address = OriginalQuote.address;
+            fullAddress = OriginalQuote.fullAddress;
+            street = OriginalQuote.street;
+            city = OriginalQuote.city;
+            state = OriginalQuote.state;
+            zip = OriginalQuote.zip;
+            firstName = OriginalQuote.firstName;
+            lastName = OriginalQuote.lastName;
+            email = OriginalQuote.email;
+            phone = OriginalQuote.phone;
+            market = OriginalQuote.market;
+            externalUrl = OriginalQuote.externalUrl;
+            timestamp = OriginalQuote.timestamp;
+
+            lastUpdated = OriginalQuote.lastUpdated;
+            totalQuote = OriginalQuote.totalQuote;
+
+            Groups = Groups = new List<ObjectId>(); ;
+            numberOfStructures = OriginalQuote.numberOfStructures;
+            numberOfIncludedStructures = OriginalQuote.numberOfIncludedStructures;
+            totalSquareFeet = OriginalQuote.totalSquareFeet;
+            mainRoofTotalSquareFeet = OriginalQuote.mainRoofTotalSquareFeet;
+            totalInitialSquareFeet = OriginalQuote.totalInitialSquareFeet;
+            sessionId = OriginalQuote.sessionId;
+            structures = new List<Structure>();
+            repName = OriginalQuote.repName;
+            repEmail = OriginalQuote.repEmail;
+            leadId = OriginalQuote.leadId;
+            relationships = OriginalQuote.relationships;
+            products = new List<Product>();
+            attachments = new List<Attachment>();
+            notes = new List<Note>();
+            projectManager = OriginalQuote.projectManager;
+            events = OriginalQuote.events;
+            warranties = new List<Warranty>();
+        }
 
         public string _id { get; set; }
         public string _t { get; set; }
@@ -92,7 +139,7 @@ namespace Facilitate.Libraries.Models
         //public virtual User? projectManager { get; set; }
         public virtual ApplicationUser? projectManager { get; set; }
 
-        public List<ListItem>? relationships { get; set; }
+        public List<Relationship>? relationships { get; set; }
         public List<Product>? products { get; set; }
         public List<Attachment>? attachments { get; set; }
         public List<Note>? notes { get; set; }

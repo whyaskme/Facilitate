@@ -2,6 +2,7 @@ using Facilitate.Admin.Components;
 using Facilitate.Admin.Components.Account;
 using Facilitate.Admin.Data;
 using Facilitate.Libraries.Models;
+using Facilitate.Admin.Components.Upload;
 
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -21,16 +22,6 @@ builder.Services.AddCors(x => x.AddPolicy("externalRequests",
                 "https://jsonip.com",
                 "https://www.google.com/maps"
                 )));
-
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy(name: MyAllowSpecificOrigins,
-//                      policy =>
-//                      {
-//                          policy.WithOrigins("https://jsonip.com",
-//                                              "https://www.google.com/maps");
-//                      });
-//});
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -55,6 +46,7 @@ builder.Services.AddScoped<IClaimsProvider>(provider =>
 });
 
 builder.Services.AddSingleton<WebServices>();
+builder.Services.AddSingleton<FileUrlStorageService>();
 
 builder.Services.AddAuthentication(options =>
     {
@@ -64,7 +56,7 @@ builder.Services.AddAuthentication(options =>
     .AddIdentityCookies();
 
 // Decide database location to use
-var useLocalhost = false;
+var useLocalhost = true;
 var connectionString = "";
 
 if (useLocalhost)
@@ -240,5 +232,11 @@ catch(Exception ex)
 {
     Console.WriteLine(ex.Message);
 }
+
+//app.UseRouting();
+
+//app.MapBlazorHub();
+//app.MapFallbackToPage("/_Host");
+//app.MapControllers();
 
 app.Run();
