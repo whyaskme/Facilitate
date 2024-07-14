@@ -262,6 +262,8 @@ else
                                     var relationshipModifiedById = relatedTrade.ModifiedById;
                                     var relationshipModifiedDate = relatedTrade.ModifiedDate.ToLocalTime();
 
+                                    var childQuoteStatus = "???";
+
                                     <div class="row">
 
                                         <div class="col">
@@ -310,6 +312,11 @@ else
                                             }
                                         </div>
 
+                                        <div class="col">
+                                            <label>Status</label>
+                                            <span class="detail-item">@childQuoteStatus</span>
+                                        </div>
+
                                         @{
                                             if (@recordIDVisible)
                                             {
@@ -335,7 +342,6 @@ else
                                             <span class="detail-item">???</span>
                                         </div>
 
-                                        <div class="col">&nbsp;</div>
                                         <div class="col">&nbsp;</div>
                                         <div class="col">&nbsp;</div>
                                         <div class="col">&nbsp;</div>
@@ -1805,7 +1811,7 @@ else
             _event = new Event();
             _event.Author = currentUser;
             _event.Name = "Quote converted to Aggregate";
-            _event.Details = "Original quote converted to Aggregate Id (" + parentQuote._id + ")";
+            _event.Details = "Original (" + CurrentlySelectedQuote.applicationType + ") quote converted to Aggregate Id (" + parentQuote._id + ")";
 
             CurrentlySelectedQuote.events.Add(_event);
             WebServices.UpdateQuote(CurrentlySelectedQuote);
