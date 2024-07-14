@@ -105,6 +105,8 @@ else
 
     <div class="div-filters">
 
+        <button class="action-button header-recordID-button" @onclick="ShowRecordIDs">@RedcordIdButtonLabel</button>
+
         @{
             if (isSystemAdmin)
             {
@@ -213,7 +215,7 @@ else
             PageSizeSelectorAllRowsItemVisible="false"
             KeyboardNavigationEnabled="true">
         <Columns>
-            <DxGridDataColumn Visible="true" Width="200" Caption="Id" FieldName="_id" />
+            <DxGridDataColumn Visible="@recordIDVisible" Width="200" Caption="Record Id" FieldName="_id" />
             <DxGridDataColumn Width="115" Caption="Trade" FieldName="applicationType" />
             <DxGridDataColumn Width="150" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Width="150" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
@@ -238,6 +240,8 @@ else
 </DxLoadingPanel>
 
 @code {
+
+    public bool recordIDVisible = false;
 
     public string LeadTypeFilterLabel { get; set; } = "Types (Complete Info)";
 
@@ -264,6 +268,21 @@ else
         {
             ShowTestData = false;
             ShowTestDataButtonText = "Show Test Data";
+        }
+    }
+
+    public string RedcordIdButtonLabel = "Show Record Id";
+    public void ShowRecordIDs()
+    {
+        if (recordIDVisible)
+        {
+            recordIDVisible = false;
+            RedcordIdButtonLabel = "Show Record Id";
+        }
+        else
+        {
+            recordIDVisible = true;
+            RedcordIdButtonLabel = "Hide Record Id";
         }
     }
 

@@ -12,9 +12,9 @@ html, body {
     margin-right: 24px !important;
 }
 
-.id-column {
-    border: solid 0px #ff0000 !important;
-/*    display: none !important;*/
+.grid-id-column {
+    border: solid 1px #ff0000 !important;
+    /*    display: none !important;*/
 }
 
 .summary-header-parent {
@@ -92,6 +92,16 @@ button.btn-primary {
 .header-return-button {
     border: solid 1px #ffffff !important;
     float: left !important;
+    font-size: 0.8em !important;
+    /*    color: #ffffff !important;
+    background-color: #014b01 !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;*/
+}
+
+.header-recordID-button {
+    border: solid 1px #ff0000 !important;
+    float: right !important;
     font-size: 0.8em !important;
     /*    color: #ffffff !important;
     background-color: #014b01 !important;

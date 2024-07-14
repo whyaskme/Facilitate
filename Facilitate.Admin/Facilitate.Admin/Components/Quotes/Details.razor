@@ -83,6 +83,7 @@ else
     <div class="details-header">
         <button class="action-button header-return-button" @onclick="ReturnPreviousPage">Return</button>
        @CurrentlySelectedQuote.status Details for @CurrentlySelectedQuote.firstName @CurrentlySelectedQuote.lastName
+        <button class="action-button header-recordID-button" @onclick="ShowRecordIDs">@RedcordIdButtonLabel</button>
     </div>
 
     <DxGrid @ref="QuoteGrid"
@@ -98,7 +99,7 @@ else
             @bind-SelectedDataItem="@SelectedQuoteItem"
             TextWrapEnabled="false">
         <Columns>
-            <DxGridDataColumn Width="225" Caption="Id" FieldName="_id" />
+            <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
             <DxGridDataColumn Width="auto" Caption="Trade" FieldName="applicationType" />
             <DxGridDataColumn Width="auto" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Width="auto" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
@@ -289,7 +290,8 @@ else
                                                 }
                                                 else
                                                 {
-                                                    <span class="relationship-status">Archived</span>
+                                                    // <span class="relationship-status">Archived</span>
+                                                        <button class="action-button action-button-small" @onclick='() => RestoreQuoteProject(relatedQuoteId)'>Archived</button>
                                                 }
                                             }
                                         </div>
@@ -308,10 +310,15 @@ else
                                             }
                                         </div>
 
-                                        <div class="col id-column">
-                                            <label>Id</label>
-                                            <span class="detail-item">@relatedQuoteId</span>
-                                        </div>
+                                        @{
+                                            if (@recordIDVisible)
+                                            {
+                                                <div class="col id-column">
+                                                    <label>Id</label>
+                                                    <span class="detail-item">@relatedQuoteId</span>
+                                                </div>
+                                            }
+                                        }
 
                                         <div class="col">
                                             <label>Date</label>
@@ -897,13 +904,23 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup @bind-Visible="@IsPopupVisibleDeleteTrade" ShowFooter="true" HeaderText="Are you sure you want to (Remove) this Trade Project?">
+<DxPopup @bind-Visible="@IsPopupVisibleDeleteTrade" ShowFooter="true" HeaderText="Confirm trade project REMOVAL?">
     <BodyContentTemplate>
-        QuoteId to Remove: @quoteIdToRemove
+        @ConfirmRemoveMessage
     </BodyContentTemplate>
     <FooterContentTemplate>
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="DeleteTrade" />
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleDeleteTrade = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxPopup @bind-Visible="@IsPopupVisibleRestoreTrade" ShowFooter="true" HeaderText="Confirm trade project RESTORATION?">
+    <BodyContentTemplate>
+        @ConfirmRestoreMessage
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="RestoreTrade" />
+        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleRestoreTrade = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -1049,7 +1066,13 @@ else
 
 @code 
 {
+    public bool recordIDVisible = false;
+
     public string quoteIdToRemove = "";
+    public string quoteIdToRestore = "";
+
+    public string ConfirmRemoveMessage { get; set; }
+    public string ConfirmRestoreMessage { get; set; }
 
     [Parameter]
     public EventCallback<IEnumerable<ListItem>> SelectedItemsChanged { get; set; }
@@ -1074,23 +1097,22 @@ else
     {
         quoteIdToRemove = quoteId;
 
+        IsPopupVisibleDeleteTrade = true;
+
         var quoteToRemove = WebServices.GetQuote(quoteId)[0];
-        quoteToRemove.status = "Archive";
-        quoteToRemove.lastUpdated = DateTime.UtcNow;
 
-        WebServices.UpdateQuote(quoteToRemove);
+        ConfirmRemoveMessage = "Are you sure you want to REMOVE this (" + quoteToRemove.applicationType + ") project?";
+    }
 
-        // Parse and remove all relationships including siblings
-        var tmpQuote = CurrentlySelectedQuote;
+    public void RestoreQuoteProject(string quoteId)
+    {
+        quoteIdToRestore = quoteId;
 
-        foreach(Relationship relationship in CurrentlySelectedQuote.relationships)
-        {
-            // Disable removed quoteId from all siblings
-            if (relationship._id == quoteId)
-                relationship.IsEnabled = false;
-        }
+        IsPopupVisibleDeleteTrade = true;
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        var quoteToRemove = WebServices.GetQuote(quoteId)[0];
+
+        ConfirmRestoreMessage = "Are you sure you want to RESTORE this (" + quoteToRemove.applicationType + ") project?";
     }
 
     public string uploadUrl = "/api/Upload/UploadFile";
@@ -1179,6 +1201,21 @@ else
         var previousPageUrl = "/quotes/" + Referrer;
 
         NavigationManager.NavigateTo(previousPageUrl);
+    }
+
+    public string RedcordIdButtonLabel = "Show Record Id";
+    public void ShowRecordIDs()
+    {
+        if(recordIDVisible)
+        {
+            recordIDVisible = false;
+            RedcordIdButtonLabel = "Show Record Id";
+        }
+        else
+        {
+            recordIDVisible = true;
+            RedcordIdButtonLabel = "Hide Record Id";
+        }
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -1408,6 +1445,7 @@ else
 
     bool IsPopupVisibleAddTrade { get; set; }
     bool IsPopupVisibleDeleteTrade { get; set; }
+    bool IsPopupVisibleRestoreTrade { get; set; }
 
     bool IsPopupVisibleHelpSendFiles { get; set; }
     bool IsPopupVisibleHelpFileAttachments { get; set; }
@@ -1738,6 +1776,7 @@ else
             parentQuote = new Quote(originalQuote);
             parentQuote._id = ObjectId.GenerateNewId().ToString();
             parentQuote.applicationType = "Aggregate";
+            parentQuote.totalQuote = 0;
             newQuoteListQueue.Add(parentQuote);
 
             // Create Parent relationship
@@ -1756,6 +1795,22 @@ else
             {
                 Quote childQuote = new Quote(originalQuote);
                 childQuote.applicationType = selectedTrade.Value;
+
+                // Make sure this child is set to the same status as parent
+                childQuote.status = CurrentlySelectedQuote.status;
+
+                // If this started as a roofing quote, ensure this new child instance inherits the product properties.
+                // Otherwise, set these to empty for the new children/siblings
+                if (CurrentlySelectedQuote.applicationType != selectedTrade.Value)
+                {
+                    childQuote.totalQuote = 0;
+                    childQuote.notes = new List<Note>();
+                    childQuote.attachments = new List<Attachment>();
+                    childQuote.events = new List<Event>();
+                    childQuote.Groups = new List<ObjectId>();
+                    childQuote.products = new List<Product>();
+                    childQuote.warranties = new List<Warranty>();
+                }
 
                 // Add Parent relationship to Child
                 if (childQuote.applicationType != "Aggregate")
@@ -1879,9 +1934,56 @@ else
     public void DeleteTrade()
     {
         // Get this quote, set it archive and update it
-        var quoteToRemove = webServices.GetQuote(quoteIdToRemove);
+        var quoteId = quoteIdToRemove;
+        var quoteToRemove = WebServices.GetQuote(quoteId)[0];
 
-        var tmpVal = quoteIdToRemove;
+        quoteToRemove.status = "Archive";
+        quoteToRemove.lastUpdated = DateTime.UtcNow;
+
+        WebServices.UpdateQuote(quoteToRemove);
+
+        // Parse and remove all relationships including siblings
+        var tmpQuote = CurrentlySelectedQuote;
+
+        foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
+        {
+            // Disable removed quoteId from all siblings
+            if (relationship._id == quoteId)
+                relationship.IsEnabled = false;
+        }
+
+        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        
+        IsPopupVisibleDeleteTrade = false;
+
+    }
+
+    public void RestoreTrade()
+    {
+        // Get this quote, set it archive and update it
+        var quoteId = quoteIdToRestore;
+        var quoteToRestore = WebServices.GetQuote(quoteId)[0];
+
+        // What is the current aggregate Status and set this to that
+        quoteToRestore.status = CurrentlySelectedQuote.status;
+        quoteToRestore.lastUpdated = DateTime.UtcNow;
+
+        WebServices.UpdateQuote(quoteToRestore);
+
+        // Parse and remove all relationships including siblings
+        var tmpQuote = CurrentlySelectedQuote;
+
+        foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
+        {
+            // Disable removed quoteId from all siblings
+            if (relationship._id == quoteId)
+                relationship.IsEnabled = true;
+        }
+
+        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        
+        IsPopupVisibleRestoreTrade = false;
+
     }
 
     public void MakeWarrantyClaim()
