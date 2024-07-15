@@ -253,7 +253,7 @@ else
                                     Data="@childQuoteList"
                                     KeyFieldName="_id"
                                     AutoExpandAllGroupRows="true"
-                                    RowClick="OnRowClick"
+                                    RowClick="ViewChildQuoteDetails"
                                     AllowSelectRowByClick="true"
                                     SelectionMode="GridSelectionMode.Single"
                                     @bind-SelectedDataItem="@SelectedChildQuoteItem"
@@ -267,6 +267,7 @@ else
                                         <DxGridDataColumn Width="auto" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                         <DxGridDataColumn Width="auto" Caption="Amount" FieldName="totalQuote" />
                                         <DxGridDataColumn Width="auto" Caption="Manager" FieldName="projectManager" />
+                                        <DxGridCommandColumn Width="100px" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
                                     </Columns>
                                 </DxGrid>
                             }
@@ -1484,7 +1485,17 @@ else
 
     void OnRowClick(GridRowClickEventArgs args)
     {
+        var selectedQuoteId = "";
+    }
 
+    void ViewChildQuoteDetails(GridRowClickEventArgs args)
+    {
+        var selectedRow = (QuoteSummary)ChildQuoteGrid.GetDataItem(args.VisibleIndex);
+        var selectedQuoteId = selectedRow._id;
+
+        var tmpUrl = "/quotes/details/" + selectedQuoteId + "/opportunities/";
+
+        NavigationManager.NavigateTo(tmpUrl);
     }
 
     void OnTradeRowClick(SelectListItem args)
@@ -1732,7 +1743,7 @@ else
             parentRelationship.Name = parentQuote.applicationType;
 
             // Archive original quote
-            CurrentlySelectedQuote.status = "(Aggregate Source)";
+            // CurrentlySelectedQuote.status = "(Aggregate Source)";
 
             _event = new Event();
             _event.Author = currentUser;

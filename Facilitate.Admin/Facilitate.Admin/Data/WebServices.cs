@@ -13,6 +13,7 @@ using ServiceStack;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Mail;
+using System.Security.Cryptography;
 using System.Text;
 using static Facilitate.Libraries.Models.Constants.Messaging;
 
@@ -224,7 +225,7 @@ namespace Facilitate.Admin.Data
             {
                 foreach(var relationship in quote.relationships)
                 {
-                    var childId = relationship.ParentId;
+                    var childId = relationship._id;
                     var filter = Builders<Quote>.Filter.Eq(f => f._id, childId);
 
                     List<Quote> quotes = _mongoDBCollection.Find(filter).ToList();
@@ -233,10 +234,11 @@ namespace Facilitate.Admin.Data
                     {
                         QuoteSummary _summary = new QuoteSummary();
 
-                        if(quote.applicationType == "Aggregate")
+                        _summary.relationship = quote.applicationType;
+                        if (quote.applicationType == "Aggregate")
                             _summary.relationship = "Child";
                         else
-                            _summary.relationship = "Sibling";
+                            _summary.relationship = "Parent";
 
                         _summary._id = quotes[i]._id;
                         _summary.applicationType = quotes[i].applicationType;
