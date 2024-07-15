@@ -266,8 +266,7 @@ else
                                         <DxGridDataColumn Width="auto" Caption="Created" FieldName="timestamp" />
                                         <DxGridDataColumn Width="auto" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                         <DxGridDataColumn Width="auto" Caption="Amount" FieldName="totalQuote" />
-                                        <DxGridDataColumn Width="auto" Caption="Manager" FieldName="" />
-                                        <DxGridDataColumn Width="auto" Caption="Actions" FieldName="" />
+                                        <DxGridDataColumn Width="auto" Caption="Manager" FieldName="projectManager" />
                                     </Columns>
                                 </DxGrid>
                             }
@@ -2083,6 +2082,13 @@ else
             foreach (QuoteSummary childQuote in childQuoteList)
             {
                 totalQuoteValue = totalQuoteValue + childQuote.totalQuote;
+
+                childQuote.projectManager = childQuote.projectManager;
+
+                // var viewLink = "/quotes/details/" + childQuote._id + "/opportunities/";
+                // var removeLink = "";
+
+                // childQuote.actions = "Remove";
             }
 
             CurrentlySelectedQuote.totalQuote = totalQuoteValue;

@@ -18,6 +18,7 @@ namespace Facilitate.Libraries.Models
             applicationType = string.Empty;
             relationship = string.Empty;
             status = string.Empty;
+            actions = string.Empty;
 
             totalQuote = 0;
             timestamp = DateTime.UtcNow;
@@ -34,7 +35,8 @@ namespace Facilitate.Libraries.Models
         public string applicationType { get; set; }
         public string relationship { get; set; }
         public string status { get; set; }
-        
+        public string actions { get; set; }
+
         public double totalQuote { get; set; }
         public DateTime timestamp { get; set; }
         public List<Event> events { get; set; }
@@ -42,5 +44,7 @@ namespace Facilitate.Libraries.Models
         public string lastEventDetails { get; set; }
 
         public virtual ApplicationUser? projectManager { get; set; }
+
+        //public virtual string projectManager { get; set; }
     }
 }
