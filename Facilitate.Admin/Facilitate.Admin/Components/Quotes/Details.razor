@@ -6,6 +6,8 @@
 @using Facilitate.Admin.Data;
 @using Facilitate.Libraries.Models;
 
+@using DevExpress.Blazor.Base;
+
 @using Microsoft.EntityFrameworkCore;
 
 @using Microsoft.AspNetCore.Identity;
@@ -93,14 +95,6 @@ else
     <DxGrid @ref="QuoteGrid"
             Data="@quotes"
             KeyFieldName="_id"
-            PageSize="1"
-            ShowFilterRow="false"
-            CssClass="mw-1100"
-            AutoExpandAllGroupRows="true"
-            RowClick="OnRowClick"
-            AllowSelectRowByClick="true"
-            SelectionMode="GridSelectionMode.Single"
-            @bind-SelectedDataItem="@SelectedQuoteItem"
             TextWrapEnabled="false">
         <Columns>
             <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
@@ -111,8 +105,6 @@ else
             <DxGridDataColumn Width="auto" Caption="City" FieldName="city" />
             <DxGridDataColumn Width="auto" Caption="State" FieldName="state" />
             <DxGridDataColumn Width="auto" Caption="Zip" FieldName="zip" />
-@*             <DxGridDataColumn Width="65" Caption="SqFt" FieldName="totalSquareFeet" />
-            <DxGridDataColumn Width="75" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" /> *@
         </Columns>
 
         <DetailRowTemplate>
@@ -174,10 +166,23 @@ else
                         </a>
                     </div>
                     <div class="col-md-4 quote-total">
-                        <span class="">Total:</span>
-                        <span class="">@CurrentlySelectedQuote.totalSquareFeet.ToString("N0")</span>
-                        <span class="">sqft &raquo;</span>
-                        <span class="">@CurrentlySelectedQuote.totalQuote.ToString("C0")</span>
+
+                        <div class="header-total-element">Total:</div>
+                        <div class="header-total-element">@CurrentlySelectedQuote.totalSquareFeet.ToString("N0")</div>
+                        <div class="header-total-element">sqft &raquo;</div>
+
+                        @{
+                            if(isAggregateQuote)
+                            {
+                                <div class="header-total-element">@CurrentlySelectedQuote.totalQuote.ToString("C0")</div>
+                            }
+                            else
+                            {
+                                <div class="header-total-element">
+                                    <DxTextBox Text="@TotalQuoteValue" TextChanged="@((newValue) => OnTextChanged(newValue))" CssClass="total-quote-value" />
+                                </div>
+                            }
+                        }
                     </div>
                 </div>
                 <div class="row">
@@ -265,10 +270,9 @@ else
                                     <DxGrid @ref="ChildQuoteGrid"
                                     Data="@childQuoteList"
                                     KeyFieldName="_id"
-                                    AutoExpandAllGroupRows="true"
                                     RowClick="ViewChildQuoteDetails"
-                                    CssClass="mw-1100"
                                     AllowSelectRowByClick="true"
+                                            EditModelSaving="OnEditModelSaving"
                                     SelectionMode="GridSelectionMode.Single"
                                     @bind-SelectedDataItem="@SelectedChildQuoteItem"
                                     TextWrapEnabled="false">
@@ -277,7 +281,7 @@ else
                                         <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" />
                                         <DxGridDataColumn Width="100" Caption="Relationship" FieldName="relationship" />
                                         <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
-                                        <DxGridDataColumn Width="100" Caption="Qualified?" FieldName="isQualified" Enabled="false" />
+                                        <DxGridDataColumn Width="100" Caption="Qualified?" FieldName="isQualified" />
                                         <DxGridDataColumn Width="150" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                         <DxGridDataColumn Width="150" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                         <DxGridDataColumn Width="auto" Caption="Last Event" FieldName="lastEventDetails" />
@@ -1006,6 +1010,27 @@ else
 
 @code 
 {
+    string TotalQuoteValue { get; set; }
+
+    bool IsEnabled = false;
+
+    public abstract class DxInputDataEditorBase<T> : DxDataEditor<T>;
+
+    [Parameter]
+    public EventCallback<string> TextChanged { get; set; }
+
+    void OnTextChanged(string newValue)
+    {
+        if (string.IsNullOrEmpty(newValue))
+        {
+            IsEnabled = false;
+        }
+        else 
+        {
+            IsEnabled = true;
+        }
+    }
+
     public void RemoveSelectedChildItem(GridRowClickEventArgs args)
     {
         var selectedRow = (QuoteSummary)ChildQuoteGrid.GetDataItem(args.VisibleIndex);
@@ -1742,6 +1767,28 @@ else
             isAggregate = true;
         }
 
+        // Create Parent quote from a copy of original quote
+        parentQuote = new Quote(CurrentlySelectedQuote);
+        parentQuote._id = ObjectId.GenerateNewId().ToString();
+        parentQuote.applicationType = "Aggregate";
+        parentQuote.totalQuote = 0;
+
+        // Create Parent relationship
+        var parentRelationship = new Relationship();
+        parentRelationship.Author = currentUser.Email;
+        parentRelationship._id = parentQuote._id;
+        parentRelationship.ParentId = parentQuote._id;
+        parentRelationship.Type = "Parent";
+        parentRelationship.Name = parentQuote.applicationType;
+
+        // Create Child relationship
+        var childRelationship = new Relationship();
+        parentRelationship.Author = currentUser.Email;
+        childRelationship._id = CurrentlySelectedQuote._id;
+        childRelationship.ParentId = CurrentlySelectedQuote._id;
+        childRelationship.Type = "Child";
+        childRelationship.Name = CurrentlySelectedQuote.applicationType;
+
         List<Quote> newQuoteListQueue = new List<Quote>();
 
         Event _event = new Event();
@@ -1754,28 +1801,6 @@ else
         {
             if(!isAggregate)
             {
-                // Create Parent quote from a copy of original quote
-                parentQuote = new Quote(CurrentlySelectedQuote);
-                parentQuote._id = ObjectId.GenerateNewId().ToString();
-                parentQuote.applicationType = "Aggregate";
-                parentQuote.totalQuote = 0;
-
-                // Create Parent relationship
-                var parentRelationship = new Relationship();
-                parentRelationship.Author = currentUser.Email;
-                parentRelationship._id = parentQuote._id;
-                parentRelationship.ParentId = parentQuote._id;
-                parentRelationship.Type = "Parent";
-                parentRelationship.Name = parentQuote.applicationType;
-
-                // Create Child relationship
-                var childRelationship = new Relationship();
-                parentRelationship.Author = currentUser.Email;
-                childRelationship._id = CurrentlySelectedQuote._id;
-                childRelationship.ParentId = CurrentlySelectedQuote._id;
-                childRelationship.Type = "Child";
-                childRelationship.Name = CurrentlySelectedQuote.applicationType;
-
                 parentQuote.relationships.Add(childRelationship);
 
                 // Add events to new Master
@@ -1839,9 +1864,6 @@ else
                     }
                 }
 
-                // Add child relationships to parent
-                //parentQuote.relationships.Clear();
-
                 foreach (Quote currentQuote in newQuoteListQueue)
                 {
                     // Ensure unique ids
@@ -1862,7 +1884,61 @@ else
             }
             else
             {
-                // Append to current Aggregate
+                // Append child quotes to current Aggregate
+                foreach (var selectedTrade in SelectedTradesToAdd)
+                {
+                    Quote childQuote = new Quote(CurrentlySelectedQuote);
+                    childQuote.applicationType = selectedTrade.Value;
+
+                    // Reset new child instance product properties.
+                    if (CurrentlySelectedQuote.applicationType != selectedTrade.Value)
+                    {
+                        childQuote.totalQuote = 0;
+                        childQuote.notes = new List<Note>();
+                        childQuote.attachments = new List<Attachment>();
+                        childQuote.events = new List<Event>();
+                        childQuote.Groups = new List<ObjectId>();
+                        childQuote.products = new List<Product>();
+                        childQuote.warranties = new List<Warranty>();
+                    }
+
+                    // Add events to new Master
+                    _event = new Event();
+                    _event.Author = currentUser;
+                    _event.Name = "Child project created";
+                    _event.Details = "Child (" + childQuote.applicationType + ") quote created from original " + CurrentlySelectedQuote.applicationType + " quote (" + CurrentlySelectedQuote._id + ")";
+
+                    childQuote.events.Add(_event);
+
+                    // Add this event to master
+                    parentQuote.events.Add(_event);
+
+                    // Add Parent relationship to Child
+                    if (childQuote.applicationType != "Aggregate")
+                    {
+                        // Create Parent relationship
+                        childQuote.relationships.Add(parentRelationship);
+                        newQuoteListQueue.Add(childQuote);
+                    }
+                }
+
+                foreach (Quote currentQuote in newQuoteListQueue)
+                {
+                    // Ensure unique ids
+                    currentQuote._id = ObjectId.GenerateNewId().ToString();
+
+                    if (currentQuote.applicationType != "Aggregate")
+                    {
+                        // Create Child relationship
+                        childRelationship = new Relationship();
+                        childRelationship._id = currentQuote._id;
+                        childRelationship.ParentId = parentQuote._id;
+                        childRelationship.Type = "Child";
+                        childRelationship.Name = currentQuote.applicationType;
+
+                        parentQuote.relationships.Add(childRelationship);
+                    }
+                }
             }
 
             WebServices.UpdateQuote(parentQuote);
@@ -2149,7 +2225,7 @@ else
                 if (hasChildren)
                     CurrentlySelectedQuote.totalQuote = quoteValue;
 
-                //WebServices.UpdateQuote(CurrentlySelectedQuote);
+                TotalQuoteValue = CurrentlySelectedQuote.totalQuote.ToString("C2");
 
                 InvokeAsync(() =>
                 {

@@ -11,6 +11,33 @@ html, body {
     width: 25px !important;
 }
 
+.header-total-element {
+    border: solid 0px #ff0000 !important;
+    width: auto !important;
+    float: left !important;
+    margin-right: 5px !important;
+}
+
+.total-quote-value {
+    border: solid 1px #c0c0c0 !important;
+    border-radius: 5px !important;
+    width: 100px !important;
+    background: #000000 !important;
+    color: #ffffff !important;
+    font-weight: bolder !important;
+    font-size: 1.0em !important;
+    position: relative !important;
+    top: -3px !important;
+}
+
+    .total-quote-value:focus,
+    .total-quote-value:hover {
+        border: solid 1px #ff0000 !important;
+        width: 100px !important;
+        background: #fff !important;
+        color: #000000 !important;
+    }
+
 .relationship-status {
     border: solid 0px #ff0000 !important;
     padding-left: 25px !important;
