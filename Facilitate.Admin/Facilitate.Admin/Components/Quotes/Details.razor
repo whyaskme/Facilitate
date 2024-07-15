@@ -245,6 +245,9 @@ else
                             <hr />
 
                             <h6>@relationshipsCount Project Trades</h6>
+
+
+
                             foreach (var relatedTrade in CurrentlySelectedQuote.relationships)
                             {
                                 var relatedQuoteId = relatedTrade._id;
@@ -292,8 +295,7 @@ else
                                                 }
                                                 else
                                                 {
-                                                    // <span class="relationship-status">Archived</span>
-                                                        <button class="action-button-disabled" @onclick='() => RestoreQuoteProject(relatedQuoteId)'>Archived</button>
+                                                    <button class="action-button-disabled" @onclick='() => RestoreQuoteProject(relatedQuoteId)'>Archived</button>
                                                 }
                                             }
                                         </div>
@@ -359,10 +361,6 @@ else
                                     <button class="action-button" @onclick="@(() => IsPopupVisibleAddTrade = true)">Add Trade</button>
                                 </div>
                             }
-
-                            // <div class="quote-detail-controls-container">
-                            //     <button class="action-button" @onclick="@(() => IsPopupVisibleAddTrade = true)">Add Trade</button>
-                            // </div>
                         }
                     }
                     </DxTabPage>
