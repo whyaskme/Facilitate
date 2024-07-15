@@ -268,7 +268,12 @@ else
                                         <DxGridDataColumn Width="auto" Caption="Last Event" FieldName="lastEventDetails" />
                                         <DxGridDataColumn Width="75" Caption="Amount" FieldName="totalQuote" DisplayFormat="C0" />
                                         <DxGridDataColumn Width="auto" Caption="Manager" FieldName="projectManager" />
-                                        <DxGridCommandColumn Width="100" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
+
+                                        if (isAggregateQuote)
+                                        {
+                                            <DxGridCommandColumn Width="100" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
+                                        }
+                                        
                                     </Columns>
                                 </DxGrid>
                             }
@@ -993,7 +998,7 @@ else
 
 @code 
 {
-    public bool recordIDVisible = true;
+    public bool recordIDVisible = false;
 
     public string quoteIdToRemove = "";
     public string quoteIdToRestore = "";
@@ -1132,7 +1137,7 @@ else
         NavigationManager.NavigateTo(previousPageUrl);
     }
 
-    public string RedcordIdButtonLabel = "Hide Record Id";
+    public string RedcordIdButtonLabel = "Show Record Id";
     public void ShowRecordIDs()
     {
         if(recordIDVisible)
@@ -2109,20 +2114,23 @@ else
             {
                 CurrentlySelectedQuote = quotes[0];
 
-                if (CurrentlySelectedQuote.applicationType == "Aggregate")
+                bool hasChildren = false;
+
+                double quoteValue = 0;
+
+                // Get child quote summaries
+                childQuoteList = webServices.GetChildQuoteSummaries(CurrentlySelectedQuote);
+                foreach (QuoteSummary childQuote in childQuoteList)
                 {
-                    double quoteValue = 0;
+                    hasChildren = true;
 
-                    // Get child quote summaries
-                    childQuoteList = webServices.GetChildQuoteSummaries(CurrentlySelectedQuote);
-                    foreach (QuoteSummary childQuote in childQuoteList)
-                    {
-                        quoteValue += childQuote.totalQuote;
-                    }
-
-                    CurrentlySelectedQuote.totalQuote = quoteValue;
-                    //WebServices.UpdateQuote(CurrentlySelectedQuote);
+                    quoteValue += childQuote.totalQuote;
                 }
+
+                if (hasChildren)
+                    CurrentlySelectedQuote.totalQuote = quoteValue;
+
+                WebServices.UpdateQuote(CurrentlySelectedQuote);
 
                 InvokeAsync(() =>
                 {
