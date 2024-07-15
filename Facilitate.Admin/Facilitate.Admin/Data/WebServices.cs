@@ -233,7 +233,7 @@ namespace Facilitate.Admin.Data
                     {
                         QuoteSummary _summary = new QuoteSummary();
 
-                        if(_summary.applicationType == "Aggregate")
+                        if(quote.applicationType == "Aggregate")
                             _summary.relationship = "Child";
                         else
                             _summary.relationship = "Sibling";

@@ -247,8 +247,9 @@ else
                             <hr />
 
                             <h6>@relationshipCount Project Trades</h6>
-
-                            <DxGrid @ref="ChildQuoteGrid"
+                                if (@relationshipCount > 0)
+                                {
+                                    <DxGrid @ref="ChildQuoteGrid"
                                     Data="@childQuoteList"
                                     KeyFieldName="_id"
                                     AutoExpandAllGroupRows="true"
@@ -257,16 +258,19 @@ else
                                     SelectionMode="GridSelectionMode.Single"
                                     @bind-SelectedDataItem="@SelectedChildQuoteItem"
                                     TextWrapEnabled="false">
-                                <Columns>
-                                    <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
-                                    <DxGridDataColumn Width="auto" Caption="Trade" FieldName="applicationType" />
-                                    <DxGridDataColumn Width="auto" Caption="Relationship" FieldName="relationship" />
-                                    <DxGridDataColumn Width="auto" Caption="Status" FieldName="status" />
-                                    <DxGridDataColumn Width="auto" Caption="Created" FieldName="timestamp" />
-                                    <DxGridDataColumn Width="auto" Caption="Updated" FieldName="lastEventTimeStamp" />
-                                    <DxGridDataColumn Width="auto" Caption="Amount" FieldName="totalQuote" />
-                                </Columns>
-                            </DxGrid>
+                                    <Columns>
+                                        <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
+                                        <DxGridDataColumn Width="auto" Caption="Trade" FieldName="applicationType" />
+                                        <DxGridDataColumn Width="auto" Caption="Relationship" FieldName="relationship" />
+                                        <DxGridDataColumn Width="auto" Caption="Status" FieldName="status" />
+                                        <DxGridDataColumn Width="auto" Caption="Created" FieldName="timestamp" />
+                                        <DxGridDataColumn Width="auto" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                        <DxGridDataColumn Width="auto" Caption="Amount" FieldName="totalQuote" />
+                                        <DxGridDataColumn Width="auto" Caption="Manager" FieldName="" />
+                                        <DxGridDataColumn Width="auto" Caption="Actions" FieldName="" />
+                                    </Columns>
+                                </DxGrid>
+                            }
 
                             <hr />
 
