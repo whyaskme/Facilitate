@@ -14,7 +14,7 @@ namespace Facilitate.Libraries.Models
             _id = ObjectId.GenerateNewId().ToString();
             _t = "QuoteSummary";
 
-            isQualified = true;
+            isQualified = false;
             applicationType = string.Empty;
             relationship = string.Empty;
             status = string.Empty;

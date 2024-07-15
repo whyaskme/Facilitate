@@ -27,9 +27,10 @@ namespace Facilitate.Libraries.Models
             phone = string.Empty;
             market = string.Empty;
             externalUrl = string.Empty;
-            timestamp = DateTime.UtcNow;
 
+            timestamp = DateTime.UtcNow;
             lastUpdated = DateTime.UtcNow;
+
             totalQuote = 0;
 
             numberOfStructures = 0;
@@ -73,9 +74,10 @@ namespace Facilitate.Libraries.Models
             phone = OriginalQuote.phone;
             market = OriginalQuote.market;
             externalUrl = OriginalQuote.externalUrl;
-            timestamp = OriginalQuote.timestamp;
 
+            timestamp = OriginalQuote.timestamp;
             lastUpdated = OriginalQuote.lastUpdated;
+
             totalQuote = OriginalQuote.totalQuote;
 
             Groups = Groups = new List<ObjectId>(); ;
