@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using AspNetCore.Identity.Mongo.Mongo;
 using System.Collections;
 using static Facilitate.Libraries.Models.Constants.Messaging;
+using Facilitate.Libraries.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -24,16 +25,16 @@ namespace Facilitate.Admin.Data
     public class MemberService : ControllerBase
     {
         string serviceResult = string.Empty;
-        string dbName = "Facilitate";
         string collectionName = "Users";
 
-        //string mongoUri = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
-        string mongoUri = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
+        private readonly IMongoDatabase _mongoDatabase;
+        private readonly IMongoCollection<User> collection;
 
-        IMongoClient client;
-
-        IMongoCollection<User> collection;
-        private CancellationToken _cancellationToken;
+        public MemberService(DBService dbService)
+        {
+            _mongoDatabase = dbService.MongoDatabase;
+            collection = _mongoDatabase.GetCollection<User>(collectionName);
+        }
 
         public List<User> GetMembers(Tuple<ObjectId, string> memberType)
         {
@@ -45,9 +46,6 @@ namespace Facilitate.Admin.Data
 
             try
             {
-                client = new MongoClient(mongoUri);
-                collection = client.GetDatabase(dbName).GetCollection<User>(collectionName);
-
                 var builder = Builders<User>.Filter;
                 var filter = builder.Ne(f => f.UserName, "facilitate-null");
 

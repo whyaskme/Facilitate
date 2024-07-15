@@ -1,9 +1,8 @@
 ﻿using Facilitate.Libraries.Models;
+using Facilitate.Libraries.Services;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
-
-using System.Net.Http;
-using System.Web.Http.Cors;
 
 namespace Facilitate.Api.Controllers
 {
@@ -12,32 +11,25 @@ namespace Facilitate.Api.Controllers
     [ApiController]
     public class TestController : ControllerBase
     {
-        public TestController()
-        {
-            _mongoDBClient = new MongoClient(_mongoDBConnectionString);
-            _mongoDBCollection = _mongoDBClient.GetDatabase(_mongoDBName).GetCollection<Quote>(_mongoDBCollectionName);
-        }
 
-        Utils utils = new Utils();
+        private readonly Utils utils;
 
-        string _mongoDBName = "Facilitate";
         string _mongoDBCollectionName = "Quote";
-
-        //string _mongoDBConnectionString = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
-        string _mongoDBConnectionString = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
-
-        IMongoClient _mongoDBClient;
-
-        IMongoCollection<Quote> _mongoDBCollection;
-        private CancellationToken _cancellationToken;
-
-        IMongoCollection<Quote> _quoteCollection;
-
         string resultMsg = string.Empty;
+
+        private readonly IMongoDatabase _mongoDatabase;
+        private readonly IMongoCollection<Quote> _quoteCollection;
+
+        public TestController(DBService dBService, Utils utils)
+        {
+            _mongoDatabase = dBService.MongoDatabase;
+            _quoteCollection = _mongoDatabase.GetCollection<Quote>(_mongoDBCollectionName);
+            this.utils = utils;
+        }
 
         // GET api/<TestController>/5
         [HttpGet("{numQuotesToCreate}")]
-        public IActionResult Get(string applicationType, int numQuotesToCreate)
+        public async Task<IActionResult> Get(string applicationType, int numQuotesToCreate, CancellationToken ct)
         {
             List<String> nameGenders = new List<string>();
             nameGenders.Add("male");
@@ -45,8 +37,6 @@ namespace Facilitate.Api.Controllers
 
             try
             {
-                _quoteCollection = _mongoDBClient.GetDatabase(_mongoDBName).GetCollection<Quote>(_mongoDBCollectionName);
-
                 for (var i = 0; i < numQuotesToCreate; i++)
                 {
                     try
@@ -58,21 +48,21 @@ namespace Facilitate.Api.Controllers
                         quote.applicationType = utils.TitleCaseString(applicationType);
 
                         var randomStreetNumber = utils.GetRandomStreetNumber();
-                        var randomStreetName = utils.GetRandomStreetName();
+                        var randomStreetName = await utils.GetRandomStreetNameAsync(ct);
 
-                        var randomState = utils.GetRandomState();
+                        var randomState = await utils.GetRandomStateAsync(ct);
                         var stateName = randomState[0];
                         var stateAbbr = randomState[1];
                         var stateId = randomState[2];
 
-                        var randomCity = utils.GetRandomCity(MongoDB.Bson.ObjectId.Parse(stateId));
+                        var randomCity = await utils.GetRandomCityAsync(MongoDB.Bson.ObjectId.Parse(stateId), ct);
 
                         string cityId = randomCity[0];
                         string cityName = randomCity[1];
                         string cityCountyId = randomCity[2];
                         string cityTimeZoneId = randomCity[3];
 
-                        var randomZipCode = utils.GetRandomZipCode(MongoDB.Bson.ObjectId.Parse(cityId)).ToString();
+                        var randomZipCode = utils.GetRandomZipCodeAsync(MongoDB.Bson.ObjectId.Parse(cityId)).ToString();
 
                         quote.address = randomStreetNumber + " " + randomStreetName + ", " + cityName + ", " + stateAbbr + " " + randomZipCode;
                         quote.fullAddress = quote.address;
@@ -84,8 +74,8 @@ namespace Facilitate.Api.Controllers
                         Random rnd = new Random();
                         int randomInt = rnd.Next(0, 1);
 
-                        quote.firstName = utils.GetRandomFirstName(nameGenders[randomInt]);
-                        quote.lastName = utils.GetRandomLastName();
+                        quote.firstName = await utils.GetRandomFirstNameAsync(nameGenders[randomInt], ct);
+                        quote.lastName = await utils.GetRandomLastNameAsync(ct);
 
                         quote.email = quote.firstName.ToLower() + "@" + quote.lastName.ToLower() + ".com";
                         quote.phone = "(" + utils.GetRandomAreaCode() + ") " + utils.GetRandomHomePhoneNumber();
@@ -94,7 +84,7 @@ namespace Facilitate.Api.Controllers
                         quote.sessionId = "nH9YvHwoBldl2ZkpQSWrX";
 
                         randomInt = rnd.Next(0, 1);
-                        var repName = utils.GetRandomFirstName(nameGenders[randomInt]) + " " + utils.GetRandomLastName();
+                        var repName = (await utils.GetRandomFirstNameAsync(nameGenders[randomInt]), ct) + " " + (await utils.GetRandomLastNameAsync(ct));
 
                         quote.repName = repName;
                         quote.repEmail = repName.Replace(" ", ".").ToLower() + "@facilitate.org";
@@ -222,7 +212,7 @@ namespace Facilitate.Api.Controllers
                         if (_event != null)
                             quote.events.Add(_event);
 
-                        _quoteCollection.InsertOne(quote);
+                        await _quoteCollection.InsertOneAsync(quote, null, ct);
                     }
                     catch (Exception ex)
                     {

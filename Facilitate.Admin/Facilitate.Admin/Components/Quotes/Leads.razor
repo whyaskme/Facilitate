@@ -1,43 +1,37 @@
 ﻿@page "/quotes/leads"
 
+@using DevExpress.Data.ODataLinq
+@using DevExpress.Data.PLinq
 @using Facilitate.Admin.Data;
 @using Facilitate.Libraries.Models;
 
-@using Microsoft.AspNetCore.Identity;
-@using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-@using Microsoft.AspNetCore.Mvc;
-@using Microsoft.AspNetCore.Mvc.Rendering;
-@using Microsoft.AspNetCore.Mvc.Routing
-@using Microsoft.AspNetCore.WebUtilities;
+@using Microsoft.EntityFrameworkCore
 
-@using MongoDB.Bson;
+@using Microsoft.AspNetCore.Identity;
+@using Microsoft.AspNetCore.Mvc;
 
 @using System.Text.Json;
 
 @using DevExpress.Blazor;
 @using DevExpress.Data;
 @using DevExpress.Data.Linq;
-@using DevExpress.Web;
+@using MongoDB.Driver.Linq
+@using System.Reactive.Concurrency
 
-@using Microsoft.AspNetCore.Html;
-
-@attribute [StreamRendering(true)]
-@rendermode InteractiveServer
-@inject WebServices WebServices
-
-@inject NavigationManager NavigationManager
-@inject IHttpClientFactory ClientFactory
-@inject HttpClient httpClient
-
-@inject UserManager<ApplicationUser> UserManager
-@inject IUserStore<ApplicationUser> UserStore
-@inject SignInManager<ApplicationUser> SignInManager
-@inject IEmailSender<ApplicationUser> EmailSender
-@inject RoleManager<IdentityRole> roleManager
-
-@inject AuthenticationStateProvider GetAuthenticationStateAsync
 
 @attribute [IgnoreAntiforgeryToken]
+@attribute [StreamRendering(true)]
+@rendermode InteractiveServer
+
+@implements IDisposable
+
+@inject WebServices webServices
+@inject Utils utils
+@inject NavigationManager NavigationManager
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
+@inject IDbContextFactory<FacilitateDbContext> dbFactory
 
 <PageTitle>Leads</PageTitle>
 
@@ -50,21 +44,7 @@
     </NotAuthorized>
 </AuthorizeView>
 
-<script>
-    window.getIpAddress = () => {
-        return fetch('https://jsonip.com/')
-            .then((response) => response.json())
-            .then((data) => {
-                return data.ip
-            })
-    }
-</script>
-
-@if (quotes == null)
-{
-    @*     <p><em>Loading...</em></p> *@
-}
-else
+@if (!LoadingPanelVisible)
 {
     <div class="quotes-leaderboard-page-header">
         <div class="col-md-3 stat-element">
@@ -72,7 +52,7 @@ else
             <span class="stat-divider">|</span>
             <span class="stat-value">@leaderboardStats.TotalQuoteValue.ToString("C0")</span>
             <span class="stat-divider">|</span>
-            <span class="stat-value">@leaderboardStats.TotalQuoteSqFt.ToString("N0")sqft</span>
+            <span class="stat-value">@leaderboardStats.TotalQuoteSqFt.ToString("N0") sqft</span>
             <span class="stat-divider">|</span>
         </div>
         <div class="col-md-1 stat-element">
@@ -125,80 +105,72 @@ else
 
         <button class="action-button header-recordID-button" @onclick="ShowRecordIDs">@RedcordIdButtonLabel</button>
 
-        @{
-            if (isSystemAdmin)
-            {
-                <div class="div-filter">
-                    <DxButton CssClass="action-button" Click="ShowHideTestData">@ShowTestDataButtonText</DxButton>
-                </div>
-            }
+        @if (isSystemAdmin)
+        {
+            <div class="div-filter">
+                <DxButton CssClass="action-button" Click="@ShowHideTestData">@ShowTestDataButtonText</DxButton>
+            </div>
         }
 
         <div class="div-filter">
-            <DxButton CssClass="action-button" Click="ToggleRefresh">@RefreshButtonText</DxButton>
+            <DxButton CssClass="action-button" Click="@ToggleRefresh">@RefreshButtonText</DxButton>
         </div>
 
         <div class="div-filter">
 
             <div id="dropdown-customization-target-container-trades">
-                <DxButton CssClass="action-button" Id="btnTrades" Click="() => IsTradesListOpen = !IsTradesListOpen">@TradesFilterLabel</DxButton>
+                <DxButton CssClass="action-button" Id="btnTrades" Click="@((e) => { isDroppingDown = true; IsTradesListOpen = !IsTradesListOpen; })">@TradesFilterLabel</DxButton>
             </div>
-            <DxDropDown
-                @bind-IsOpen="@IsTradesListOpen"
-                MinWidth="max(20vw, 100px)"
-                PositionMode="DropDownPositionMode.Bottom"
+            <DxDropDown @bind-IsOpen="@IsTradesListOpen"
+                        MinWidth="max(20vw, 100px)"
+                        PositionMode="DropDownPositionMode.Bottom"
                         PositionTarget="#dropdown-customization-target-container-trades"
-                RestrictionTarget="#Navigation-DropDown-Customization"
-                CloseMode="DropDownCloseMode.Close"
-                PreventCloseOnPositionTargetClick="true"
-                HeaderVisible="false"
-                HeaderText="Trades"
-                FooterVisible="false"
-               >
+                        RestrictionTarget="#Navigation-DropDown-Customization"
+                        CloseMode="DropDownCloseMode.Close"
+                        PreventCloseOnPositionTargetClick="true"
+                        HeaderVisible="false"
+                        HeaderText="Trades"
+                        FooterVisible="false">
                 <BodyContentTemplate>
-                        <DxListBox Data="@TradesList"
-                                   id="ddlTradesList"
-                                   @bind-Values="@TradeTypeValues"
-                                   SelectedItemsChanged="@((IEnumerable<ListItem> values) => FilterTradeType(values))"
-                                   SelectionMode="ListBoxSelectionMode.Single">
-                        </DxListBox>
-                    <SampleEditForm/>
+                    <DxListBox Data="@TradesList"
+                               id="ddlTradesList"
+                               @bind-Values="@TradeTypeValues"
+                               SelectedItemsChanged="@(async (IEnumerable<ListItem> values) => await FilterTradeType(values))"
+                               SelectionMode="ListBoxSelectionMode.Single">
+                    </DxListBox>
                 </BodyContentTemplate>
                 <FooterContentTemplate>
-                    <DxButton CssClass="popup-button my-1 ms-2" Text="OK" Click="@context.CloseCallback"/>
-                    <DxButton CssClass="popup-button my-1 ms-2" Text="Cancel" Click="@context.CloseCallback"/>
+                    <DxButton CssClass="popup-button my-1 ms-2" Text="OK" Click="@context.CloseCallback" />
+                    <DxButton CssClass="popup-button my-1 ms-2" Text="Cancel" Click="@context.CloseCallback" />
                 </FooterContentTemplate>
             </DxDropDown>
         </div>
 
         <div class="div-filter">
             <div id="dropdown-customization-target-container">
-                <DxButton CssClass="action-button" Id="btnLeadTypes" Click="() => IsLeadTypeListOpen = !IsLeadTypeListOpen">@LeadTypeFilterLabel</DxButton>
+                <DxButton CssClass="action-button" Id="btnLeadTypes" Click="@((e) => { isDroppingDown = true; IsLeadTypeListOpen = !IsLeadTypeListOpen; })">@LeadTypeFilterLabel</DxButton>
             </div>
-            <DxDropDown
-                @bind-IsOpen="@IsLeadTypeListOpen"
-                MinWidth="max(20vw, 100px)"
-                PositionMode="DropDownPositionMode.Bottom"
-                PositionTarget="#dropdown-customization-target-container"
-                RestrictionTarget="#Navigation-DropDown-Customization"
-                CloseMode="DropDownCloseMode.Close"
-                PreventCloseOnPositionTargetClick="true"
-                HeaderVisible="false"
-                HeaderText="Available Lead Types"
-                FooterVisible="false"
-               >
+            <DxDropDown @bind-IsOpen="@IsLeadTypeListOpen"
+                        MinWidth="max(20vw, 100px)"
+                        PositionMode="DropDownPositionMode.Bottom"
+                        PositionTarget="#dropdown-customization-target-container"
+                        RestrictionTarget="#Navigation-DropDown-Customization"
+                        CloseMode="DropDownCloseMode.Close"
+                        PreventCloseOnPositionTargetClick="true"
+                        HeaderVisible="false"
+                        HeaderText="Available Lead Types"
+                        FooterVisible="false">
                 <BodyContentTemplate>
-                        <DxListBox Data="@LeadTypeList"
-                                   id="ddlLeadTypeList"
-                                   @bind-Values="@LeadTypeValues"
-                                   SelectedItemsChanged="@((IEnumerable<ListItem> values) => FilterLeadTypes(values))"
-                                   SelectionMode="ListBoxSelectionMode.Single">
-                        </DxListBox>
-                    <SampleEditForm/>
+                    <DxListBox Data="@LeadTypeList"
+                               id="ddlLeadTypeList"
+                               @bind-Values="@LeadTypeValues"
+                               SelectedItemsChanged="@(async (IEnumerable<ListItem> values) => await FilterLeadTypes(values))"
+                               SelectionMode="ListBoxSelectionMode.Single">
+                    </DxListBox>
                 </BodyContentTemplate>
                 <FooterContentTemplate>
-                    <DxButton CssClass="popup-button my-1 ms-2" Text="OK" Click="@context.CloseCallback"/>
-                    <DxButton CssClass="popup-button my-1 ms-2" Text="Cancel" Click="@context.CloseCallback"/>
+                    <DxButton CssClass="popup-button my-1 ms-2" Text="OK" Click="@context.CloseCallback" />
+                    <DxButton CssClass="popup-button my-1 ms-2" Text="Cancel" Click="@context.CloseCallback" />
                 </FooterContentTemplate>
             </DxDropDown>
         </div>
@@ -208,19 +180,17 @@ else
     <div class="quote-stats-header">
         <span class="quote-stats-count">@updateStatus Leads</span>
         <span class="quote-stats-value">@leaderboardStats.LeadValue.ToString("C0")</span>
-        <span class="quote-stats-sqft">@leaderboardStats.LeadSqFt.ToString("N0")sqft</span>
+        <span class="quote-stats-sqft">@leaderboardStats.LeadSqFt.ToString("N0") sqft</span>
     </div>
     <div class="quote-stats-hints">
-        Select row to view details. Click column headers to sort. Type and hit enter in any empty cell to search that column. If you have grouped columns below, drag and drop the column back into the grid header to restore.
+        Select row to view details. Click column headers to sort. Type and hit enter in any empty cell to search that column.
     </div>
 
     <DxGrid @ref="QuoteGrid"
-            Data="@quotes"
+            Data="@gridSource"
             KeyFieldName="_id"
             PageSize="10"
             PagerPosition="GridPagerPosition.Bottom"
-            ShowGroupPanel="true"
-            AutoExpandAllGroupRows="true"
             ShowFilterRow="true"
             CssClass="mw-1100"
             RowClick="OnRowClick"
@@ -234,7 +204,7 @@ else
             KeyboardNavigationEnabled="true">
         <Columns>
             <DxGridDataColumn Visible="@recordIDVisible" Width="200" Caption="Record Id" FieldName="_id" />
-@*             <DxGridDataColumn Width="85" Caption="Status" FieldName="status" /> *@
+            @*<DxGridDataColumn Width="85" Caption="Status" FieldName="status" />*@
             <DxGridDataColumn Width="115" Caption="Trade" FieldName="applicationType" />
             <DxGridDataColumn Width="150" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Width="100" Caption="First" FieldName="firstName" />
@@ -259,7 +229,9 @@ else
 
 @code {
 
+    #region Public Properties
     public bool recordIDVisible = false;
+    public string RedcordIdButtonLabel = "Show Record Id";
 
     public string LeadTypeFilterLabel { get; set; } = "Types (Complete Info)";
 
@@ -273,25 +245,118 @@ else
 
     public List<ListItem> TradesList = new List<ListItem>();
 
-    public bool emailSentStatus = false;
-
     public bool ShowTestData = true;
 
-    public virtual void ShowHideTestData()
+    public QuoteLeaderboard leaderboardStats = new QuoteLeaderboard();
+
+    public ApplicationUser currentUser = new ApplicationUser();
+    public bool isSystemAdmin = false;
+    public bool isUserAdmin = false;
+
+    public Timer _timer;
+    public string updateStatus = "Fetching ";
+    #endregion
+
+
+
+
+
+
+    #region Private Properties
+    bool LoadingPanelVisible { get; set; } = true;
+
+    private bool isDroppingDown = false;
+
+    IEnumerable<string>? LeadTypeValues { get; set; }
+    IEnumerable<string>? TradeTypeValues { get; set; }
+
+    private FacilitateDbContext? dbContext;
+    private IQueryable<Lead>? gridQ;
+    private EntityServerModeSource? gridSource { get; set; }
+    private IGrid? QuoteGrid { get; set; }
+
+    private int lastCount = 0;
+
+    private readonly SemaphoreSlim _mutex = new SemaphoreSlim(1, 1);
+    #endregion
+
+
+
+
+
+    #region Parameters
+    [Parameter]
+    public string ShowTestDataButtonText { get; set; } = "Hide Test Data";
+
+    [Parameter]
+    public string RefreshButtonText { get; set; } = "Pause Refresh";
+
+    [Parameter]
+    public object SelectedQuoteItem { get; set; }
+
+    [Parameter]
+    public string SelectedLeadType { get; set; } = "New";
+
+    [Parameter]
+    public string SelectedTradeType { get; set; } = "All";
+    #endregion
+
+
+
+
+
+    #region ComponentModel Overrides
+    protected override void OnInitialized()
     {
-        if (ShowTestDataButtonText == "Show Test Data")
+        NavigationManager.LocationChanged += OnLocationChanged;
+        dbContext = dbFactory.CreateDbContext();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
         {
-            ShowTestData = true;
-            ShowTestDataButtonText = "Hide Test Data";
-        }
-        else
-        {
-            ShowTestData = false;
-            ShowTestDataButtonText = "Show Test Data";
+            try
+            {
+                var tasks = new List<Task>();
+
+                tasks.Add(buildLists());
+
+                await initUser();
+
+                tasks.Add(doUpdateLeaderBoardStats());
+                tasks.Add(initGridSource());
+
+                await Task.WhenAll(tasks);
+
+                // Start the refresh timer
+                enableTimer();
+
+                LoadingPanelVisible = false;
+
+                // Notify the UI to render
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                var errMessage = ex.Message;
+            }
         }
     }
 
-    public string RedcordIdButtonLabel = "Show Record Id";
+    public void Dispose()
+    {
+        disposeTimer();
+        gridSource = null;
+        gridQ = null;
+        dbContext?.Dispose();
+    }
+    #endregion
+
+
+
+
+
     public void ShowRecordIDs()
     {
         if (recordIDVisible)
@@ -306,205 +371,109 @@ else
         }
     }
 
-    public QuoteLeaderboard leaderboardStats = new QuoteLeaderboard();
+    public async Task ShowHideTestData(MouseEventArgs args)
+    {
+        if (ShowTestDataButtonText == "Show Test Data")
+        {
+            ShowTestData = true;
+            ShowTestDataButtonText = "Hide Test Data";
+        }
+        else
+        {
+            ShowTestData = false;
+            ShowTestDataButtonText = "Show Test Data";
+        }
 
-    Utils utils = new Utils();
+        await applyFilters();
+    }
 
     async void OnLocationChanged(object sender, LocationChangedEventArgs args)
     {
-        TimerDispose();
+        disposeTimer();
         NavigationManager.LocationChanged -= OnLocationChanged;
     }
 
-    public ApplicationUser currentUser = new ApplicationUser();
-    public bool isSystemAdmin = false;
-    public bool isUserAdmin = false;
 
-    public Utils _utils = new Utils();
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    private async Task initUser()
     {
-        if (firstRender)
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var loggedInUser = authstate.User;
+        var loggedInName = loggedInUser.Identity.Name;
+
+        if (loggedInName != null && loggedInName != "")
+            currentUser = await UserManager.FindByNameAsync(loggedInName);
+
+        if (currentUser.IsEnabled)
         {
-            try
+            isSystemAdmin = await UserManager.IsInRoleAsync(currentUser, "System Admin");
+
+            var isSiteAdmin = await UserManager.IsInRoleAsync(currentUser, "Site Admin");
+            var isGroupAdmin = await UserManager.IsInRoleAsync(currentUser, "Group Admin");
+
+            if (isSystemAdmin || isSiteAdmin || isGroupAdmin)
             {
-                LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
-                LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
-                LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
-
-                var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-                var loggedInUser = authstate.User;
-                var loggedInName = loggedInUser.Identity.Name;
-
-                if (loggedInName != null && loggedInName != "")
-                    currentUser = await UserManager.FindByNameAsync(loggedInName);
-
-                if(currentUser.IsEnabled)
-                {
-                    isSystemAdmin = await UserManager.IsInRoleAsync(currentUser, "System Admin");
-
-                    var isSiteAdmin = await UserManager.IsInRoleAsync(currentUser, "Site Admin");
-                    var isGroupAdmin = await UserManager.IsInRoleAsync(currentUser, "Group Admin");
-
-                    if (isSystemAdmin || isSiteAdmin || isGroupAdmin)
-                    {
-                        isUserAdmin = true;
-                    }
-
-                    List<ApplicationUser> adminUsers = new List<ApplicationUser>();
-                    List<ApplicationUser> tmpUsers = UserManager.Users.ToList();
-                    foreach (ApplicationUser adminUser in tmpUsers)
-                    {
-                        if (adminUser.IsEnabled)
-                        {
-                            var list = await UserManager.IsInRoleAsync(adminUser, "Project Manager");
-                            adminUsers.Add(adminUser);
-
-                            // var userRoles = await UserManager.GetRolesAsync(adminUser);
-                        }
-                    }
-
-                    ProjectManagers = SortByLastNameUsingLinq(adminUsers);
-                    TimerRefresh();
-
-                    GetIpAddress();
-                }
-                else
-                {
-                    UserSignOut();
-                }
+                isUserAdmin = true;
             }
-            catch (Exception ex)
-            {
-                var errMsg = ex.Message;
-                return;
-            }
+
+            // List<ApplicationUser> adminUsers = new List<ApplicationUser>();
+            // List<ApplicationUser> tmpUsers = UserManager.Users.ToList();
+            // foreach (ApplicationUser adminUser in tmpUsers)
+            // {
+            //     if (adminUser.IsEnabled)
+            //     {
+            //         var list = await UserManager.IsInRoleAsync(adminUser, "Project Manager");
+            //         adminUsers.Add(adminUser);
+            //     }
+            // }
+        }
+        else
+        {
+            UserSignOut();
         }
     }
 
     private void UserSignOut()
     {
-        try{
+        try
+        {
 
             SignInManager.SignOutAsync();
 
             NavigationManager.NavigateTo("/Account/Lockout");
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             var errMsg = ex.Message;
         }
     }
 
-    private readonly IClaimsProvider _claimsProvider;
 
-    protected override void OnInitialized()
+    private async Task buildLists()
     {
-        NavigationManager.LocationChanged += OnLocationChanged;
+        LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
+        LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
+        LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
     }
 
-    public int currentItemIndex = 0;
 
-    IEnumerable<string> Values { get; set; }
-    IEnumerable<string> LeadTypeValues { get; set; }
-    IEnumerable<string> TradeTypeValues { get; set; }
 
-    public QuoteHeader selectedQuote { get; set; }
 
-    bool LoadingPanelVisible { get; set; } = true;
-
-    WebServices webServices = new WebServices();
-
-    public bool IsAssignButtonEnabled = false;
-    IEnumerable<ApplicationUser> SelectedProjectManager { get; set; }
-    public List<ApplicationUser>? ProjectManagers = new List<ApplicationUser>();
-
-    #region Private Properties
-
-    private List<QuoteHeader>? quotes;
-
-    IGrid QuoteGrid { get; set; }
-
-    #endregion
-
-    #region Public Properties
-
-    [Inject] public IJSRuntime jsRuntime { get; set; }
-
-    public Timer _timer;
-    public string updateStatus = "Fetching ";
-
-    public string ClientIP = "";
-    public string selectedQuoteId = "";
-
-    public interface IQueryable : System.Collections.IEnumerable;
-
-    public int currentItem = 0;
-    public int selectedIndex = 0;
-
-    public string SubmissionUserIP { get; set; }
-
-    #endregion
-
-    #region Parameters
-
-    [Parameter]
-    public string DisplayFormat { get; set; }
-
-    [Parameter]
-    public string RefreshStatus { get; set; } = "";
-
-    [Parameter]
-    public string StatusContainerClass { get; set; } = "container-action-buttons-hide";
-
-    [Parameter]
-    public string StatusClass { get; set; } = "message-normal";
-
-    [Parameter]
-    public string ShowTestDataButtonText { get; set; } = "Hide Test Data";
-
-    [Parameter]
-    public string RefreshButtonText { get; set; } = "Pause Refresh";
-
-    [Parameter]
-    public string RefreshButtonClass { get; set; } = "btn-refresh-active";
-
-    [Parameter]
-    public bool RefreshDisabled { get; set; } = false;
-
-    [Parameter]
-    public bool SendDocsDisabled { get; set; } = true;
-
-    [Parameter]
-    public bool ArchiveLeadsDisabled { get; set; } = true;
-
-    [Parameter]
-    public object SelectedQuoteItem { get; set; }
-
-    [Parameter]
-    public object SelectedEventItem { get; set; }
-
-    [Parameter]
-    public int VisibleIndex { get; set; }
-
-    [Parameter]
-    public bool ClearFilterButtonVisible { get; set; }
-
-    [Parameter]
-    public string SelectedLeadType { get; set; } = "New";
-
-    [Parameter]
-    public string SelectedTradeType { get; set; } = "All";
-
-    #endregion
 
     #region Methods
 
-    void FilterLeadTypes(IEnumerable<ListItem> selectedLeadType)
+
+
+    private async Task FilterLeadTypes(IEnumerable<ListItem> selectedLeadType)
     {
+        if (isDroppingDown)
+        {
+            isDroppingDown = false;
+            return;
+        }
+
         SelectedLeadType = "New";
 
-        foreach(var item in selectedLeadType)
+        foreach (var item in selectedLeadType)
         {
             if (item.Value == "Complete Info")
             {
@@ -519,19 +488,23 @@ else
         }
 
         IsLeadTypeListOpen = false;
+
+        await applyFilters();
     }
 
-    void FilterTradeType(IEnumerable<ListItem> selectedTradeType)
+    private async Task FilterTradeType(IEnumerable<ListItem> selectedTradeType)
     {
-        var index = 0;
+        if (isDroppingDown)
+        {
+            isDroppingDown = false;
+            return;
+        }
 
         LeadTypeList.Clear();
 
         foreach (var item in selectedTradeType)
         {
-            index++;
-
-            if(item != null)
+            if (item != null)
             {
                 SelectedTradeType = item.Value;
                 if (SelectedTradeType == "Roofing")
@@ -549,18 +522,15 @@ else
 
         TradesFilterLabel = "Trades (" + SelectedTradeType + ")";
         IsTradesListOpen = false;
-    }
 
-    public List<ApplicationUser> SortByLastNameUsingLinq(List<ApplicationUser> originalList)
-    {
-        return originalList.OrderBy(x => x.LastName).ToList();
+        await applyFilters();
     }
 
     void OnRowClick(GridRowClickEventArgs args)
     {
-        TimerDispose();
+        disposeTimer();
 
-        var selectedRow = (QuoteHeader) QuoteGrid.GetDataItem(args.VisibleIndex);
+        var selectedRow = (Lead)QuoteGrid.GetDataItem(args.VisibleIndex);
         var quoteId = selectedRow._id;
 
         var referrerUrl = "/leads/";
@@ -568,126 +538,193 @@ else
         NavigationManager.NavigateTo("/quotes/details/" + quoteId + referrerUrl);
     }
 
-    public async Task<string> GetIpAddress()
+    public async Task pauseRefresh(bool isPaused)
     {
-        try
-        {
-            SubmissionUserIP = await jsRuntime.InvokeAsync<string>("getIpAddress").ConfigureAwait(true);
-
-            return SubmissionUserIP;
-        }
-        catch (Exception e)
-        {
-            //If your request was blocked by CORS or some extension like uBlock Origin then you will get an exception.
-            return string.Empty;
-        }
-    }
-
-    public virtual void PauseRefresh(bool isPaused)
-    {
-        RefreshDisabled = isPaused;
-
         if (isPaused)
         {
-            RefreshDisabled = false;
-
             RefreshButtonText = "Resume Refresh";
-            RefreshButtonClass = "btn btn-outline-primary btn-refresh-inactive";
-            StatusClass = "message-warning";
-            RefreshStatus = " Auto refresh paused...";
 
-            TimerDispose();
+            disposeTimer();
         }
         else
         {
             RefreshButtonText = "Pause Refresh";
-            RefreshButtonClass = "btn-refresh-active";
-            StatusClass = "message";
-            RefreshStatus = "";
 
-            TimerRefresh();
+            // Yield for the UI
+            await Task.Delay(1);
+
+            // Do a refresh and setup the timer
+            await refresh();
+            enableTimer();
         }
     }
 
-    public virtual void ToggleRefresh()
+    public async Task ToggleRefresh(MouseEventArgs args)
     {
         if (RefreshButtonText == "Pause Refresh")
         {
-            PauseRefresh(true);
+            await pauseRefresh(true);
         }
         else
         {
-            PauseRefresh(false);
+            await pauseRefresh(false);
         }
-
-        RefreshDisabled = false;
     }
 
-    public void TimerDispose()
+    public void disposeTimer()
     {
         _timer?.Dispose();
         _timer = null;
     }
 
-    private async Task TimerRefresh()
+    private void enableTimer()
     {
-        TimerDispose();
+        disposeTimer();
 
-        LoadingPanelVisible = true;
-
-        _timer = new Timer(new TimerCallback(_ =>
+        _timer = new Timer(new TimerCallback(async _ =>
         {
-            // Check to see if user IsEnabled. If not, log them out an redirect to login page
-            // var isUserEnabled = IsUserEnabled();
-
-            if (isSystemAdmin)
+            await InvokeAsync(async () =>
             {
-                if (SelectedTradeType.Contains("All"))
-                {
-                    quotes = webServices.GetSummaries("New", ShowTestData);
-                    leaderboardStats = WebServices.GetLeaderBoardStats("New", ShowTestData);
-                }
-                else
-                {
-                    quotes = webServices.GetSummaries(SelectedTradeType, "New", ShowTestData);
-                    leaderboardStats = WebServices.GetLeaderBoardStats(SelectedTradeType, "New", ShowTestData);
-                }
+                await refresh();
+            });
+            _timer?.Change(10000, Timeout.Infinite);
+        }), null, 10000, Timeout.Infinite);
+    }
+
+
+    private async Task doUpdateLeaderBoardStats()
+    {
+        if (isSystemAdmin)
+        {
+            if (SelectedTradeType.Contains("All"))
+            {
+                leaderboardStats = await webServices.GetLeaderBoardStatsAsync("New", ShowTestData);
             }
             else
             {
-                leaderboardStats = WebServices.GetLeaderBoardStats(currentUser.Email);
-                quotes = webServices.GetSummaries("New", currentUser.Email);
+                leaderboardStats = await webServices.GetLeaderBoardStatsAsync(SelectedTradeType, "New", ShowTestData);
+            }
+        }
+        else
+        {
+            leaderboardStats = await webServices.GetLeaderBoardStatsAsync(currentUser.Email);
+        }
+    }
+
+    private void buildQueryable()
+    {
+        if (isSystemAdmin)
+        {
+            if (SelectedTradeType.Contains("All"))
+            {
+                gridQ = webServices.GetQeuryableSummaries(dbContext.Leads, "New", ShowTestData);
+            }
+            else
+            {
+                gridQ = webServices.GetQeuryableSummaries(dbContext.Leads, SelectedTradeType, "New", ShowTestData);
+            }
+        }
+        else
+        {
+            gridQ = webServices.GetQeuryableSummaries(dbContext.Leads, "New", currentUser.Email);
+        }
+    }
+
+    private async Task initGridSource()
+    {
+        try
+        {
+            gridSource = null;
+            buildQueryable();
+
+            // Get the count
+            var count = await gridQ.CountAsync();
+
+            gridSource = new EntityServerModeSource();
+            gridSource.QueryableSource = gridQ;
+            gridSource.KeyExpression = "_id";
+            gridSource.ExceptionThrown += (sender, args) =>
+            {
+                var ex = args.Exception;
+                throw ex;
+            };
+
+            updateStatus = count.ToString("N0");
+        }
+        catch (Exception ex)
+        {
+            //throw ex;
+        }
+    }
+
+    private async Task doRefresh(bool isRefreshGrid = true)
+    {
+        try
+        {
+            var task = doUpdateLeaderBoardStats();
+
+            if (isRefreshGrid)
+            {
+                var count = await gridQ.CountAsync();
+                updateStatus = count.ToString("N0");
+                //QuoteGrid.Reload();
+                gridSource.Reload();
             }
 
-            updateStatus = quotes.Count().ToString("N0");
-            StatusContainerClass = "container-action-buttons-show";
+            await task;
 
             TradesList.Clear();
             TradesList.Add(new ListItem() { Text = "All", Value = "All" });
             foreach (var trade in leaderboardStats.Trades)
             {
-                TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
+                TradesList.Add(new ListItem() { Text = utils.TitleCaseString(trade), Value = utils.TitleCaseString(trade) });
             }
 
-            InvokeAsync(() =>
-            {
-                StateHasChanged();
-            });
-        }), null, 1000, 1000);
-
-        LoadingPanelVisible = false;
+            // Notify the UI to render
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
     }
 
-    private async Task<bool> IsUserEnabled()
+    private async Task applyFilters()
     {
-        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-        var user = authstate.User;
-        var name = user.Identity.Name;
+        // Yield for the UI
+        await Task.Delay(1);
 
-        if (name != null && name != "")
-            currentUser = await UserManager.FindByNameAsync(name);
+        await _mutex.WaitAsync();
+        try
+        {
+            await initGridSource();
+            await doRefresh(false);
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+        finally
+        {
+            _mutex.Release();
+        }
+    }
 
-        return currentUser.IsEnabled;
+    private async Task refresh()
+    {
+        await _mutex.WaitAsync();
+        try
+        {
+            await doRefresh();
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+        finally
+        {
+            _mutex.Release();
+        }
     }
 
     #endregion

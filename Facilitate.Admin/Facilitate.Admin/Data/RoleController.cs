@@ -6,6 +6,7 @@ namespace Identity.Controllers
     public class RoleController : Controller
     {
         private RoleManager<IdentityRole> roleManager;
+
         public RoleController(RoleManager<IdentityRole> roleMgr)
         {
             roleManager = roleMgr;

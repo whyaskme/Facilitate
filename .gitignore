@@ -374,3 +374,5 @@ FodyWeavers.xsd
 /JSON/Facilitate.ReferenceData.json
 /Synthesia Videos
 /Video Production/7-7-2024
+/Api/appsettings.Development.json
+/Facilitate.Admin/Facilitate.Admin/appsettings.Development.json

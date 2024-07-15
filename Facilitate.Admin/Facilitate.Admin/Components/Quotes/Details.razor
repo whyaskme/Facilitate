@@ -29,7 +29,7 @@
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
-@inject WebServices WebServices
+@inject WebServices webServices
 
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory ClientFactory
@@ -1099,7 +1099,7 @@ else
 
         IsPopupVisibleDeleteTrade = true;
 
-        var quoteToRemove = WebServices.GetQuote(quoteId)[0];
+        var quoteToRemove = webServices.GetQuote(quoteId)[0];
 
         ConfirmRemoveMessage = "Are you sure you want to REMOVE this (" + quoteToRemove.applicationType + ") project?";
     }
@@ -1110,7 +1110,7 @@ else
 
         IsPopupVisibleDeleteTrade = true;
 
-        var quoteToRemove = WebServices.GetQuote(quoteId)[0];
+        var quoteToRemove = webServices.GetQuote(quoteId)[0];
 
         ConfirmRestoreMessage = "Are you sure you want to RESTORE this (" + quoteToRemove.applicationType + ") project?";
     }
@@ -1241,8 +1241,6 @@ else
 
     public bool emailSentStatus = false;
 
-    Utils utils = new Utils();
-
     async void OnLocationChanged(object sender, LocationChangedEventArgs args)
     {
         TimerDispose();
@@ -1263,7 +1261,7 @@ else
         // var body = "This is just a test of the emergenct broadcast system. Had this been an actual emergency, you are toast!";
         // var isBodyHtml = true;
 
-        // var emailSent = WebServices.SendEmail(ownerId, ownerType, fromAddress, toAddress, subject, body, isBodyHtml);
+        // var emailSent = webServices.SendEmail(ownerId, ownerType, fromAddress, toAddress, subject, body, isBodyHtml);
 
         if (firstRender)
         {
@@ -1329,7 +1327,7 @@ else
 
         CurrentlySelectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        webServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsPopupVisibleMakeCustomer = false;
     }
@@ -1373,8 +1371,6 @@ else
     public Note selectedNote { get; set; }
 
     bool LoadingPanelVisible { get; set; } = true;
-
-    WebServices webServices = new WebServices();
 
     public bool IsAssignButtonEnabled = false;
     IEnumerable<ApplicationUser> SelectedProjectManager { get; set; }
@@ -1645,7 +1641,7 @@ else
 
         CurrentlySelectedQuote.events.Add(assignmentEvent);
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        webServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsAssignPopupVisible = false;
         IsAssignButtonEnabled = false;
@@ -1667,7 +1663,7 @@ else
         _event.Author = currentUser;
         CurrentlySelectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        webServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsArchivePopupVisible = false;
         NoteDetails = "";
@@ -1691,7 +1687,7 @@ else
         IsPopupVisibleAddNote = false;
         NoteDetails = "";
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        webServices.UpdateQuote(CurrentlySelectedQuote);
     }
 
     public void CloseDetails()
@@ -1724,7 +1720,7 @@ else
 
         CurrentlySelectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        webServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsPopupVisibleSelectAttachmentToDelete = false;
 
@@ -1741,7 +1737,7 @@ else
 
         CurrentlySelectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        webServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsPopupVisibleSelectNoteToDelete = false;
 
@@ -1788,7 +1784,7 @@ else
 
             // Archive original quote
             CurrentlySelectedQuote.status = "(Aggregate Source)";
-            WebServices.UpdateQuote(CurrentlySelectedQuote);
+            webServices.UpdateQuote(CurrentlySelectedQuote);
 
             // Create child quotes
             foreach (var selectedTrade in SelectedTradesToAdd)
@@ -1842,7 +1838,7 @@ else
                 }
             }
 
-            WebServices.UpdateQuote(parentQuote);
+            webServices.UpdateQuote(parentQuote);
 
             SaveRelatedQuotes(newQuoteListQueue);
 
@@ -1880,7 +1876,7 @@ else
 
                 tmpQuote.relationships.Add(parentRelationship);
 
-                WebServices.CreateQuote(tmpQuote);
+                webServices.CreateQuote(tmpQuote);
             }
         }
         catch (Exception ex)
@@ -1935,12 +1931,12 @@ else
     {
         // Get this quote, set it archive and update it
         var quoteId = quoteIdToRemove;
-        var quoteToRemove = WebServices.GetQuote(quoteId)[0];
+        var quoteToRemove = webServices.GetQuote(quoteId)[0];
 
         quoteToRemove.status = "Archive";
         quoteToRemove.lastUpdated = DateTime.UtcNow;
 
-        WebServices.UpdateQuote(quoteToRemove);
+        webServices.UpdateQuote(quoteToRemove);
 
         // Parse and remove all relationships including siblings
         var tmpQuote = CurrentlySelectedQuote;
@@ -1952,7 +1948,7 @@ else
                 relationship.IsEnabled = false;
         }
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        webServices.UpdateQuote(CurrentlySelectedQuote);
         
         IsPopupVisibleDeleteTrade = false;
 
@@ -1962,13 +1958,13 @@ else
     {
         // Get this quote, set it archive and update it
         var quoteId = quoteIdToRestore;
-        var quoteToRestore = WebServices.GetQuote(quoteId)[0];
+        var quoteToRestore = webServices.GetQuote(quoteId)[0];
 
         // What is the current aggregate Status and set this to that
         quoteToRestore.status = CurrentlySelectedQuote.status;
         quoteToRestore.lastUpdated = DateTime.UtcNow;
 
-        WebServices.UpdateQuote(quoteToRestore);
+        webServices.UpdateQuote(quoteToRestore);
 
         // Parse and remove all relationships including siblings
         var tmpQuote = CurrentlySelectedQuote;
@@ -1980,7 +1976,7 @@ else
                 relationship.IsEnabled = true;
         }
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        webServices.UpdateQuote(CurrentlySelectedQuote);
         
         IsPopupVisibleRestoreTrade = false;
 
@@ -2013,7 +2009,7 @@ else
 
         CurrentlySelectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        webServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsPopupVisibleMakeWarrantyClaim = false;
         NoteDetails = "";
@@ -2064,7 +2060,7 @@ else
 
             CurrentlySelectedQuote.events.Add(_event);
 
-            WebServices.UpdateQuote(CurrentlySelectedQuote);
+            webServices.UpdateQuote(CurrentlySelectedQuote);
 
             IsPopupVisibleCloseWarrantyClaim = false;
             NoteDetails = "";
@@ -2087,7 +2083,7 @@ else
 
         CurrentlySelectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        webServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsPopupVisibleCompleteCustomer = false;
     }
@@ -2115,7 +2111,8 @@ else
             {
                 StateHasChanged();
             });
-        }), null, 1000, 1000);
+            _timer?.Change(1000, Timeout.Infinite);
+        }), null, 0, Timeout.Infinite);
 
         LoadingPanelVisible = false;
     }

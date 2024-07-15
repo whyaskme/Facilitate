@@ -17,7 +17,8 @@
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
-@inject WebServices WebServices
+@inject WebServices webServices
+@inject Utils utils
 
 @inject NavigationManager NavigationManager
 @inject IHttpClientFactory ClientFactory
@@ -296,8 +297,6 @@ else
     public bool isSystemAdmin = false;
     public bool isUserAdmin = false;
 
-    public Utils _utils = new Utils();
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -387,10 +386,6 @@ else
     public QuoteHeader selectedQuote { get; set; }
 
     bool LoadingPanelVisible { get; set; } = true;
-
-    WebServices webServices = new WebServices();
-
-    MemberService memberService = new MemberService();
 
     public bool IsAssignButtonEnabled = false;
     IEnumerable<ApplicationUser> SelectedProjectManager { get; set; }
@@ -504,14 +499,10 @@ else
 
     void FilterTradeType(IEnumerable<ListItem> selectedTradeType)
     {
-        var index = 0;
-
         LeadTypeList.Clear();
 
         foreach (var item in selectedTradeType)
         {
-            index++;
-
             if (item != null)
             {
                 SelectedTradeType = item.Value;
@@ -629,17 +620,17 @@ else
                 if (SelectedTradeType.Contains("All"))
                 {
                     quotes = webServices.GetSummaries("Complete", ShowTestData);
-                    leaderboardStats = WebServices.GetLeaderBoardStats("Complete", ShowTestData);
+                    leaderboardStats = webServices.GetLeaderBoardStats("Complete", ShowTestData);
                 }
                 else
                 {
                     quotes = webServices.GetSummaries(SelectedTradeType, "Complete", ShowTestData);
-                    leaderboardStats = WebServices.GetLeaderBoardStats(SelectedTradeType, "Complete", ShowTestData);
+                    leaderboardStats = webServices.GetLeaderBoardStats(SelectedTradeType, "Complete", ShowTestData);
                 }
             }
             else
             {
-                leaderboardStats = WebServices.GetLeaderBoardStats(currentUser.Email);
+                leaderboardStats = webServices.GetLeaderBoardStats(currentUser.Email);
                 quotes = webServices.GetSummaries("Complete", currentUser.Email);
             }
 
@@ -650,14 +641,15 @@ else
             TradesList.Add(new ListItem() { Text = "All", Value = "All" });
             foreach (var trade in leaderboardStats.Trades)
             {
-                TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
+                TradesList.Add(new ListItem() { Text = utils.TitleCaseString(trade), Value = utils.TitleCaseString(trade) });
             }
 
             InvokeAsync(() =>
             {
                 StateHasChanged();
             });
-        }), null, 1000, 1000);
+            _timer?.Change(1000, Timeout.Infinite);
+        }), null, 0, Timeout.Infinite);
 
         LoadingPanelVisible = false;
     }

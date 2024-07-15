@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 
 using System.Text;
 using System.Text.Json;
@@ -17,7 +18,6 @@ using DevExpress.Data.Linq;
 using DevExpress.Web;
 
 using System.Net.Http;
-using System.Web.Http.Cors;
 
 namespace Facilitate.Api.Controllers
 {

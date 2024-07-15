@@ -1,11 +1,17 @@
-﻿@page "/quotes/customers"
+﻿@page "/quotes/leads_old"
 
+@using DevExpress.Data.PLinq
 @using Facilitate.Admin.Data;
 @using Facilitate.Libraries.Models;
 
-@using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.Identity.EntityFrameworkCore
-@using Microsoft.AspNetCore.WebUtilities
+@using Microsoft.EntityFrameworkCore
+
+@using Microsoft.AspNetCore.Identity;
+@using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.AspNetCore.Mvc.Rendering;
+@using Microsoft.AspNetCore.Mvc.Routing
+@using Microsoft.AspNetCore.WebUtilities;
 
 @using MongoDB.Bson;
 
@@ -14,6 +20,9 @@
 @using DevExpress.Blazor;
 @using DevExpress.Data;
 @using DevExpress.Data.Linq;
+@using DevExpress.Web;
+
+@using Microsoft.AspNetCore.Html;
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
@@ -32,7 +41,9 @@
 
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
 
-<PageTitle>Customers</PageTitle>
+@attribute [IgnoreAntiforgeryToken]
+
+<PageTitle>Leads</PageTitle>
 
 <AuthorizeView>
     <Authorized></Authorized>
@@ -68,17 +79,15 @@ else
             <span class="stat-value">@leaderboardStats.TotalQuoteSqFt.ToString("N0")sqft</span>
             <span class="stat-divider">|</span>
         </div>
-
-        <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
-            <Authorized>
-                <div class="col-md-1 stat-element">
+        <div class="col-md-1 stat-element">
+            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+                <Authorized>
                     <a href="/quotes/leads">Leads</a>
                     <span class="stat-value"><b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
-                </div>
-            </Authorized>
-            <NotAuthorized></NotAuthorized>
-        </AuthorizeView>
-
+                </Authorized>
+                <NotAuthorized></NotAuthorized>
+            </AuthorizeView>
+        </div>
         <div class="col-md-1 stat-element">
             <a href="/quotes/opportunities">Opportunities</a>
             <span class="stat-value"><b>@leaderboardStats.OpportunityCount.ToString("N0")</b></span>
@@ -87,20 +96,32 @@ else
             <a href="/quotes/customers">Customers</a>
             <span class="stat-value"><b>@leaderboardStats.CustomerCount.ToString("N0")</b></span>
         </div>
-
         <div class="col-md-1 stat-element">
-            <a href="/quotes/completed">Completions</a>
-            <span class="stat-value"><b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
+            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+                <Authorized>
+                    <a href="/quotes/completed">Completions</a>
+                    <span class="stat-value"><b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
+                </Authorized>
+                <NotAuthorized></NotAuthorized>
+            </AuthorizeView>
         </div>
-
         <div class="col-md-1 stat-element">
-            <a href="/quotes/archives">Archives</a>
-            <span class="stat-value"><b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
+            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+                <Authorized>
+                    <a href="/quotes/archives">Archives</a>
+                    <span class="stat-value"><b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
+                </Authorized>
+                <NotAuthorized></NotAuthorized>
+            </AuthorizeView>
         </div>
-
         <div class="col-md-1 stat-element">
-            <a href="/quotes/warranties">Warranties</a>
-            <span class="stat-value"><b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
+            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
+                <Authorized>
+                    <a href="/quotes/warranties">Warranties</a>
+                    <span class="stat-value"><b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
+                </Authorized>
+                <NotAuthorized></NotAuthorized>
+            </AuthorizeView>
         </div>
     </div>
 
@@ -189,9 +210,9 @@ else
     </div>
 
     <div class="quote-stats-header">
-        <span class="quote-stats-count">@updateStatus Customers</span>
-        <span class="quote-stats-value">@leaderboardStats.CustomerValue.ToString("C0")</span>
-        <span class="quote-stats-sqft">@leaderboardStats.CustomerSqFt.ToString("N0")sqft</span>
+        <span class="quote-stats-count">@updateStatus Leads</span>
+        <span class="quote-stats-value">@leaderboardStats.LeadValue.ToString("C0")</span>
+        <span class="quote-stats-sqft">@leaderboardStats.LeadSqFt.ToString("N0")sqft</span>
     </div>
     <div class="quote-stats-hints">
         Select row to view details. Click column headers to sort. Type and hit enter in any empty cell to search that column. If you have grouped columns below, drag and drop the column back into the grid header to restore.
@@ -217,9 +238,9 @@ else
             KeyboardNavigationEnabled="true">
         <Columns>
             <DxGridDataColumn Visible="@recordIDVisible" Width="200" Caption="Record Id" FieldName="_id" />
+@*             <DxGridDataColumn Width="85" Caption="Status" FieldName="status" /> *@
             <DxGridDataColumn Width="115" Caption="Trade" FieldName="applicationType" />
             <DxGridDataColumn Width="150" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
-            <DxGridDataColumn Width="150" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
             <DxGridDataColumn Width="100" Caption="First" FieldName="firstName" />
             <DxGridDataColumn Width="125" Caption="Last" FieldName="lastName" />
             <DxGridDataColumn Width="200" Caption="Email" FieldName="email" />
@@ -229,7 +250,7 @@ else
             <DxGridDataColumn Width="65" Caption="Zip" FieldName="zip" />
             <DxGridDataColumn Width="65" Caption="SqFt" FieldName="totalSquareFeet" />
             <DxGridDataColumn Width="75" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
-            <DxGridDataColumn Width="175" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
+            <DxGridCommandColumn Width="100px" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
         </Columns>
     </DxGrid>
 }
@@ -255,6 +276,8 @@ else
     public bool IsTradesListOpen { get; set; } = false;
 
     public List<ListItem> TradesList = new List<ListItem>();
+
+    public bool emailSentStatus = false;
 
     public bool ShowTestData = true;
 
@@ -287,6 +310,8 @@ else
         }
     }
 
+    public QuoteLeaderboard leaderboardStats = new QuoteLeaderboard();
+
     async void OnLocationChanged(object sender, LocationChangedEventArgs args)
     {
         TimerDispose();
@@ -314,9 +339,10 @@ else
                 if (loggedInName != null && loggedInName != "")
                     currentUser = await UserManager.FindByNameAsync(loggedInName);
 
-                if (currentUser.IsEnabled)
+                if(currentUser.IsEnabled)
                 {
                     isSystemAdmin = await UserManager.IsInRoleAsync(currentUser, "System Admin");
+
                     var isSiteAdmin = await UserManager.IsInRoleAsync(currentUser, "Site Admin");
                     var isGroupAdmin = await UserManager.IsInRoleAsync(currentUser, "Group Admin");
 
@@ -333,6 +359,8 @@ else
                         {
                             var list = await UserManager.IsInRoleAsync(adminUser, "Project Manager");
                             adminUsers.Add(adminUser);
+
+                            // var userRoles = await UserManager.GetRolesAsync(adminUser);
                         }
                     }
 
@@ -356,31 +384,33 @@ else
 
     private void UserSignOut()
     {
-        try
-        {
+        try{
 
             SignInManager.SignOutAsync();
 
             NavigationManager.NavigateTo("/Account/Lockout");
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
             var errMsg = ex.Message;
         }
     }
 
-    public QuoteLeaderboard leaderboardStats;
+    private readonly IClaimsProvider _claimsProvider;
 
+    IQueryable<QuoteHeader> queryable;
     protected override void OnInitialized()
     {
         NavigationManager.LocationChanged += OnLocationChanged;
     }
 
+    public int currentItemIndex = 0;
+
     IEnumerable<string> Values { get; set; }
     IEnumerable<string> LeadTypeValues { get; set; }
     IEnumerable<string> TradeTypeValues { get; set; }
 
-    public Quote selectedQuote { get; set; }
+    public QuoteHeader selectedQuote { get; set; }
 
     bool LoadingPanelVisible { get; set; } = true;
 
@@ -391,8 +421,6 @@ else
     #region Private Properties
 
     private List<QuoteHeader>? quotes;
-
-    public int currentItemIndex = 0;
 
     IGrid QuoteGrid { get; set; }
 
@@ -444,6 +472,12 @@ else
     public bool RefreshDisabled { get; set; } = false;
 
     [Parameter]
+    public bool SendDocsDisabled { get; set; } = true;
+
+    [Parameter]
+    public bool ArchiveLeadsDisabled { get; set; } = true;
+
+    [Parameter]
     public object SelectedQuoteItem { get; set; }
 
     [Parameter]
@@ -465,21 +499,11 @@ else
 
     #region Methods
 
-    void SelectedProjectManagerChanged(IEnumerable<ApplicationUser> selectedProjectManager)
-    {
-        SelectedProjectManager = selectedProjectManager;
-
-        if (SelectedProjectManager.Count() > 0)
-            IsAssignButtonEnabled = true;
-        else
-            IsAssignButtonEnabled = false;
-    }
-
     void FilterLeadTypes(IEnumerable<ListItem> selectedLeadType)
     {
         SelectedLeadType = "New";
 
-        foreach (var item in selectedLeadType)
+        foreach(var item in selectedLeadType)
         {
             if (item.Value == "Complete Info")
             {
@@ -522,17 +546,6 @@ else
         IsTradesListOpen = false;
     }
 
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender)
-        {
-            ProjectManagers = SortByLastNameUsingLinq(UserManager.Users.ToList());
-            TimerRefresh();
-        }
-
-        GetIpAddress();
-    }
-
     public List<ApplicationUser> SortByLastNameUsingLinq(List<ApplicationUser> originalList)
     {
         return originalList.OrderBy(x => x.LastName).ToList();
@@ -542,10 +555,11 @@ else
     {
         TimerDispose();
 
-        var selectedRow = (QuoteHeader)QuoteGrid.GetDataItem(args.VisibleIndex);
+        var selectedRow = (QuoteHeader) QuoteGrid.GetDataItem(args.VisibleIndex);
         var quoteId = selectedRow._id;
 
-        var referrerUrl = "/customers/";
+        var referrerUrl = "/leads/";
+
         NavigationManager.NavigateTo("/quotes/details/" + quoteId + referrerUrl);
     }
 
@@ -566,14 +580,18 @@ else
 
     public virtual void PauseRefresh(bool isPaused)
     {
+        RefreshDisabled = isPaused;
+
         if (isPaused)
         {
+            RefreshDisabled = false;
+
             RefreshButtonText = "Resume Refresh";
-            RefreshButtonClass = "btn-refresh-inactive";
+            RefreshButtonClass = "btn btn-outline-primary btn-refresh-inactive";
             StatusClass = "message-warning";
             RefreshStatus = " Auto refresh paused...";
 
-           TimerDispose();
+            TimerDispose();
         }
         else
         {
@@ -614,26 +632,29 @@ else
 
         _timer = new Timer(new TimerCallback(_ =>
         {
-            if(isSystemAdmin)
+            // Check to see if user IsEnabled. If not, log them out an redirect to login page
+            // var isUserEnabled = IsUserEnabled();
+
+            if (isSystemAdmin)
             {
                 if (SelectedTradeType.Contains("All"))
                 {
-                    quotes = webServices.GetSummaries("Customer", ShowTestData);
-                    leaderboardStats = webServices.GetLeaderBoardStats("Customer", ShowTestData);
+                    quotes = webServices.GetSummaries("New", ShowTestData);
+                    leaderboardStats = webServices.GetLeaderBoardStats("New", ShowTestData);
                 }
                 else
                 {
-                    quotes = webServices.GetSummaries(SelectedTradeType, "Customer", ShowTestData);
-                    leaderboardStats = webServices.GetLeaderBoardStats(SelectedTradeType, "Customer", ShowTestData);
+                    quotes = webServices.GetSummaries(SelectedTradeType, "New", ShowTestData);
+                    leaderboardStats = webServices.GetLeaderBoardStats(SelectedTradeType, "New", ShowTestData);
                 }
             }
             else
             {
                 leaderboardStats = webServices.GetLeaderBoardStats(currentUser.Email);
-                quotes = webServices.GetSummaries("Customer", currentUser.Email);
+                quotes = webServices.GetSummaries("New", currentUser.Email);
             }
 
-            updateStatus = quotes.Count().ToString("N0");
+            updateStatus = (quotes != null ? quotes.Count() : 0).ToString("N0");
             StatusContainerClass = "container-action-buttons-show";
 
             TradesList.Clear();
@@ -647,10 +668,22 @@ else
             {
                 StateHasChanged();
             });
-            _timer?.Change(1000, Timeout.Infinite);
+            _timer?.Change(20000, Timeout.Infinite);
         }), null, 0, Timeout.Infinite);
 
         LoadingPanelVisible = false;
+    }
+
+    private async Task<bool> IsUserEnabled()
+    {
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var user = authstate.User;
+        var name = user.Identity.Name;
+
+        if (name != null && name != "")
+            currentUser = await UserManager.FindByNameAsync(name);
+
+        return currentUser.IsEnabled;
     }
 
     #endregion

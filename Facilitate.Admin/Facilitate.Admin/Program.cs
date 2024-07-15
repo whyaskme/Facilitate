@@ -1,17 +1,21 @@
 using Facilitate.Admin.Components;
 using Facilitate.Admin.Components.Account;
+using Facilitate.Admin.Components.Upload;
 using Facilitate.Admin.Data;
 using Facilitate.Libraries.Models;
-using Facilitate.Admin.Components.Upload;
-
+using Facilitate.Libraries.Services;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 using ServiceStack;
 using System;
+using System.Net;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
+IMongoClient? mongoClient = null;
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,28 +51,22 @@ builder.Services.AddScoped<IClaimsProvider>(provider =>
 
 builder.Services.AddSingleton<WebServices>();
 builder.Services.AddSingleton<FileUrlStorageService>();
+builder.Services.AddSingleton<MemberService>();
+builder.Services.AddSingleton<Utils>();
 
 builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultScheme = IdentityConstants.ApplicationScheme;
-        options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-    })
+{
+    options.DefaultScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+})
     .AddIdentityCookies();
-
-// Decide database location to use
-var useLocalhost = true;
-var connectionString = "";
-
-if (useLocalhost)
-    connectionString = builder.Configuration.GetConnectionString("LocalConnection") ?? throw new InvalidOperationException("Connection string 'LocalConnection' not found.");
-else
-    connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlServer(connectionString);
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Facilitate_Admin"));
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
+
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -77,11 +75,11 @@ var requireConfirmedEmail = false;
 var requireConfirmedPhoneNumber = false;
 
 builder.Services.AddIdentityCore<ApplicationUser>(options =>
-        {
-            options.SignIn.RequireConfirmedAccount = requireConfirmedAccount;
-            options.SignIn.RequireConfirmedEmail = requireConfirmedEmail;
-            options.SignIn.RequireConfirmedPhoneNumber = requireConfirmedPhoneNumber;
-        }
+{
+    options.SignIn.RequireConfirmedAccount = requireConfirmedAccount;
+    options.SignIn.RequireConfirmedEmail = requireConfirmedEmail;
+    options.SignIn.RequireConfirmedPhoneNumber = requireConfirmedPhoneNumber;
+}
     )
     .AddRoles<IdentityRole>()
     .AddRoleManager<RoleManager<IdentityRole>>()
@@ -97,7 +95,7 @@ builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSe
 builder.Services.AddScoped(sp =>
     new HttpClient
     {
-        BaseAddress = new Uri(builder.Configuration["FrontendUrl"] ?? "https://localhost:8080")
+        BaseAddress = new Uri(builder.Configuration["ApiUrl"] ?? "https://localhost:8080")
     });
 
 builder.Services.AddHttpClient();
@@ -134,6 +132,26 @@ builder.Services.Configure<IdentityOptions>(options =>
 //    options.SlidingExpiration = true;
 //});
 
+// Get forwarded headers from the load balancer if available
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    // These three subnets encapsulate the applicable Azure subnets. At the moment, it's not possible to narrow it down further.
+    options.KnownNetworks.Add(new Microsoft.AspNetCore.HttpOverrides.IPNetwork(IPAddress.Parse("::ffff:10.0.0.0"), 104));
+    options.KnownNetworks.Add(new Microsoft.AspNetCore.HttpOverrides.IPNetwork(IPAddress.Parse("::ffff:192.168.0.0"), 112));
+    options.KnownNetworks.Add(new Microsoft.AspNetCore.HttpOverrides.IPNetwork(IPAddress.Parse("::ffff:172.16.0.0"), 108));
+});
+
+// Configure the database service
+builder.Services.Configure<DBSettings>(builder.Configuration.GetSection("FacilitateDatabase"));
+builder.Services.AddSingleton<DBService>();
+builder.Services.AddDbContextFactory<FacilitateDbContext>((sp, opt) =>
+{
+    var dbService = sp.GetRequiredService<DBService>();
+    opt.UseMongoDB(dbService.MongoClient, dbService.DatabaseName);
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -150,6 +168,10 @@ else
 
 //app.UseCors(MyAllowSpecificOrigins);
 
+// Use forwarded headers by the load balancer when available
+app.UseForwardedHeaders();
+
+// Redirect to https
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
@@ -209,7 +231,7 @@ try
 
         // Check if this admin already exists
         var existingAdmin = await userManager.FindByEmailAsync(adminUser.Email);
-        if(existingAdmin == null)
+        if (existingAdmin == null)
         {
             var result = await userManager.CreateAsync(adminUser, adminPwd);
             if (!result.Succeeded)
@@ -228,7 +250,7 @@ try
         }
     }
 }
-catch(Exception ex)
+catch (Exception ex)
 {
     Console.WriteLine(ex.Message);
 }

@@ -1,9 +1,8 @@
 ﻿using Facilitate.Libraries.Models;
+using Facilitate.Libraries.Services;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
-
-using System.Net.Http;
-using System.Web.Http.Cors;
 
 namespace Facilitate.Api.Controllers
 {
@@ -12,17 +11,12 @@ namespace Facilitate.Api.Controllers
     [ApiController]
     public class ProductRequestedController : ControllerBase
     {
-        Utils utils = new Utils();
+        private readonly Utils utils;
 
-        string _mongoDBName = "Facilitate";
         string _mongoDBCollectionName = "Quote";
 
-        //string _mongoDBConnectionString = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
-        string _mongoDBConnectionString = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
-
-        IMongoClient _mongoDBClient;
-
-        IMongoCollection<Quote> _quoteCollection;
+        private readonly IMongoDatabase _mongoDatabase;
+        private readonly IMongoCollection<Quote> _quoteCollection;
 
         List<Quote> sortedQuotes = new List<Quote>();
 
@@ -32,16 +26,17 @@ namespace Facilitate.Api.Controllers
 
         string resultMsg = string.Empty;
 
-        public ProductRequestedController()
+        public ProductRequestedController(DBService dBService, Utils utils)
         {
-            _mongoDBClient = new MongoClient(_mongoDBConnectionString);
-            _quoteCollection = _mongoDBClient.GetDatabase(_mongoDBName).GetCollection<Quote>(_mongoDBCollectionName);
+            _mongoDatabase = dBService.MongoDatabase;
+            _quoteCollection = _mongoDatabase.GetCollection<Quote>(_mongoDBCollectionName);
+            this.utils = utils;
         }
 
         [ProducesResponseType<String>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost]
-        public IActionResult Post([FromBody] QuoteProductRequestedRoofleSubmission roofleSubmission)
+        public async Task<IActionResult> Post([FromBody] QuoteProductRequestedRoofleSubmission roofleSubmission, CancellationToken ct)
         {
             string headerForwardedFor = "n/a";
             string headerReferer = "n/a";
@@ -85,7 +80,7 @@ namespace Facilitate.Api.Controllers
             quote.street = roofleSubmission.street;
             quote.city = roofleSubmission.city;
 
-            var stateAbbreviation = utils.GetStateAbbrByName(roofleSubmission.state);
+            var stateAbbreviation = await utils.GetStateAbbrByNameAsync(roofleSubmission.state, ct);
 
             quote.state = stateAbbreviation;
             quote.zip = roofleSubmission.zip;
@@ -125,8 +120,7 @@ namespace Facilitate.Api.Controllers
 
             try
             {
-                _quoteCollection = _mongoDBClient.GetDatabase(_mongoDBName).GetCollection<Quote>(_mongoDBCollectionName);
-                _quoteCollection.InsertOne(quote);
+                await _quoteCollection.InsertOneAsync(quote, null, ct);
 
                 resultMsg = "Added QuoteId: " + quote._id;
             }
