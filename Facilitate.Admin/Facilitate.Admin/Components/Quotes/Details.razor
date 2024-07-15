@@ -625,8 +625,8 @@ else
 
                 if (CurrentlySelectedQuote.status != "New")
                 {
-                    if (!isAggregateQuote)
-                    {
+                    // if (!isAggregateQuote)
+                    // {
                         <div class="section-header">
                             10-Step Project Workflow
                         </div>
@@ -674,7 +674,7 @@ else
                             </DxTabPage>
 
                         </DxTabs>
-                    }
+                    // }
                 }
 
                 if (@CurrentlySelectedQuote.warranties.Count > 0)
@@ -1030,7 +1030,7 @@ else
         CurrentlySelectedQuote.totalQuote = Convert.ToDouble(newTotal);
 
         _event.Name = "Quote Total Modified";
-        _event.Details = currentUser.FirstName + " " + currentUser.LastName + " modified Quote value from (" + oldTotal + ") to ($" + newTotal + ")";
+        _event.Details = "Quote modified from (" + oldTotal + ") to ($" + newTotal + ")";
 
         CurrentlySelectedQuote.events.Add(_event);
 
