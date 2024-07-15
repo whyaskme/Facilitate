@@ -1006,19 +1006,17 @@ else
 
 @code 
 {
-    // public void ShowDetails(GridDataColumnCellDisplayTemplateContext context) 
-    // {
-    //     var CurrentEmployee = ""; // Data.Where(e => e.EmployeeId == (int)context.Value).FirstOrDefault();
-    // }
-
-    [Parameter]
-    public RenderFragment<GridDataColumnCellDisplayTemplateContext> CellDisplayTemplate { get; set; }
-
-    // public void RemoveSelectedChildItem(GridRowClickEventArgs args)
     public void RemoveSelectedChildItem(GridRowClickEventArgs args)
     {
         var selectedRow = (QuoteSummary)ChildQuoteGrid.GetDataItem(args.VisibleIndex);
         var selectedQuoteId = selectedRow._id;
+    }
+
+    async Task OnEditModelSaving(GridEditModelSavingEventArgs e) 
+    {
+        var editModel = (QuoteSummary)e.EditModel;
+
+        var tmpVal = "";
     }
 
     public bool recordIDVisible = false;
