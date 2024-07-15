@@ -179,7 +179,7 @@ else
                             else
                             {
                                 <div class="header-total-element">
-                                    <DxTextBox Text="@TotalQuoteValue" TextChanged="@((newValue) => OnTextChanged(newValue))" CssClass="total-quote-value" />
+                                    <DxTextBox Text="@TotalQuoteValue" TextChanged="@((newValue) => OnTotalQuoteValueChanged(newValue))" CssClass="total-quote-value" />
                                 </div>
                             }
                         }
@@ -543,28 +543,28 @@ else
                                     }
                                 }
                             </DxTabPage>
-
-                            <DxTabPage Id="Panel-History" Text="History">
-                                @foreach (Event _event in CurrentlySelectedQuote.events)
-                                {
-                                    <div class="note-row">
-                                        <div class="">
-                                            <label>@eventsCount) @_event.DateTime</label>
-                                        </div>
-
-                                        <span class="bar-spacer">|</span>
-                                        <span>@_event.Details</span>
-
-                                        <span class="bar-spacer">|</span>
-                                        <label>Source</label>
-                                        <span>@_event.Author.FirstName @_event.Author.LastName</span>
-                                    </div>
-
-                                    eventsCount--;
-                                }
-                            </DxTabPage>
                         }
                     }
+
+                    <DxTabPage Id="Panel-History" Text="History">
+                        @foreach (Event _event in CurrentlySelectedQuote.events)
+                        {
+                            <div class="note-row">
+                                <div class="">
+                                    <label>@eventsCount) @_event.DateTime</label>
+                                </div>
+
+                                <span class="bar-spacer">|</span>
+                                <span>@_event.Details</span>
+
+                                <span class="bar-spacer">|</span>
+                                <label>Source</label>
+                                <span>@_event.Author.FirstName @_event.Author.LastName</span>
+                            </div>
+
+                            eventsCount--;
+                        }
+                    </DxTabPage>
 
                     <DxTabPage Id="Panel-Origination" Text="Origination">
                         <table id="table-origin" class="table-detail">
@@ -1019,16 +1019,22 @@ else
     [Parameter]
     public EventCallback<string> TextChanged { get; set; }
 
-    void OnTextChanged(string newValue)
+    void OnTotalQuoteValueChanged(string newValue)
     {
-        if (string.IsNullOrEmpty(newValue))
-        {
-            IsEnabled = false;
-        }
-        else 
-        {
-            IsEnabled = true;
-        }
+        Event _event = new Event();
+        _event.Author = currentUser;
+
+        var oldTotal = CurrentlySelectedQuote.totalQuote.ToString("C0");
+        var newTotal = newValue.Replace("$", "");
+
+        CurrentlySelectedQuote.totalQuote = Convert.ToDouble(newTotal);
+
+        _event.Name = "Quote Total Modified";
+        _event.Details = currentUser.FirstName + " " + currentUser.LastName + " modified Quote value from (" + oldTotal + ") to ($" + newTotal + ")";
+
+        CurrentlySelectedQuote.events.Add(_event);
+
+        WebServices.UpdateQuote(CurrentlySelectedQuote);
     }
 
     public void RemoveSelectedChildItem(GridRowClickEventArgs args)

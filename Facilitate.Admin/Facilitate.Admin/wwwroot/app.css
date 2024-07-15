@@ -31,6 +31,7 @@ html, body {
 }
 
     .total-quote-value:focus,
+    .total-quote-value:focus-within,
     .total-quote-value:hover {
         border: solid 1px #ff0000 !important;
         width: 100px !important;
