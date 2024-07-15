@@ -246,6 +246,8 @@ namespace Facilitate.Admin.Data
 
                         _summary.events = quotes[i].events;
 
+                        _summary.lastEventDetails = quotes[i].events[0].Details;
+
                         _summary.totalQuote = quotes[i].totalQuote;
                         _summary.projectManager = quotes[i].projectManager;
 

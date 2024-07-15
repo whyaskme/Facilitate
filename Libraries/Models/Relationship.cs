@@ -13,7 +13,7 @@ namespace Facilitate.Libraries.Models
             Type = "";
             Name = "";
             IsEnabled = true;
-            CreatedById = "";
+            Author = "";
             CreatedDate = DateTime.UtcNow;
             ModifiedById = "";
             ModifiedDate = DateTime.UtcNow;
@@ -25,7 +25,8 @@ namespace Facilitate.Libraries.Models
         public string Type { get; set; }
         public string Name { get; set; }
         public bool IsEnabled { get; set; }
-        public string CreatedById { get; set; }
+        //public ApplicationUser Author { get; set; }
+        public string Author { get; set; }
         public DateTime CreatedDate { get; set; }
         public string ModifiedById { get; set; }
         public DateTime ModifiedDate { get; set; }
