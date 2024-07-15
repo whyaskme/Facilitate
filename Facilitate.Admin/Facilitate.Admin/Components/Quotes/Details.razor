@@ -267,6 +267,9 @@ else
                                     KeyFieldName="_id"
                                     AutoExpandAllGroupRows="true"
                                     RowClick="ViewChildQuoteDetails"
+                                    CssClass="mw-1100"
+                                    AllowSelectRowByClick="true"
+                                    SelectionMode="GridSelectionMode.Single"
                                     @bind-SelectedDataItem="@SelectedChildQuoteItem"
                                     TextWrapEnabled="false">
                                     <Columns>
@@ -278,28 +281,13 @@ else
                                         <DxGridDataColumn Width="150" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                         <DxGridDataColumn Width="150" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                         <DxGridDataColumn Width="auto" Caption="Last Event" FieldName="lastEventDetails" />
-                                        <DxGridDataColumn Width="75" Caption="Amount" FieldName="totalQuote" DisplayFormat="C0" />
+                                        <DxGridDataColumn Width="100" Caption="Amount" FieldName="totalQuote" DisplayFormat="C0" />
                                         <DxGridDataColumn Width="175" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
 
                                         @{
                                             if(isAggregateQuote)
                                             {
-                                                <DxGridDataColumn Width="125" Context="childQuoteList" Caption="Actions">
-                                                    <CellDisplayTemplate>
-                                                        <a href="">View</a>
-                                                        <span>|</span>
-                                                        <a href="">Remove</a>
-                                                    </CellDisplayTemplate>
-                                                </DxGridDataColumn>
-                                            }
-                                            else
-                                            {
-                                                <DxGridDataColumn Width="125" Context="childQuoteList" Caption="Actions">
-                                                    <CellDisplayTemplate>
-                                                        <a href="">View</a>
-                                                        <span>|</span>
-                                                    </CellDisplayTemplate>
-                                                </DxGridDataColumn>
+                                                <DxGridCommandColumn Width="100px" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
                                             }
                                         }
 
@@ -1023,8 +1011,15 @@ else
     //     var CurrentEmployee = ""; // Data.Where(e => e.EmployeeId == (int)context.Value).FirstOrDefault();
     // }
 
-    // [Parameter]
-    // public RenderFragment<GridDataColumnCellDisplayTemplateContext> CellDisplayTemplate { get; set; }
+    [Parameter]
+    public RenderFragment<GridDataColumnCellDisplayTemplateContext> CellDisplayTemplate { get; set; }
+
+    // public void RemoveSelectedChildItem(GridRowClickEventArgs args)
+    public void RemoveSelectedChildItem(GridRowClickEventArgs args)
+    {
+        var selectedRow = (QuoteSummary)ChildQuoteGrid.GetDataItem(args.VisibleIndex);
+        var selectedQuoteId = selectedRow._id;
+    }
 
     public bool recordIDVisible = false;
 

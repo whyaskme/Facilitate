@@ -6,6 +6,11 @@ html, body {
     overflow: auto !important;
 }
 
+.icon-actions {
+    border: solid 0px #ff0000 !important;
+    width: 25px !important;
+}
+
 .relationship-status {
     border: solid 0px #ff0000 !important;
     padding-left: 25px !important;
