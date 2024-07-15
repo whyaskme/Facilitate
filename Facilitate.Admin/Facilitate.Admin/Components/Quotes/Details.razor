@@ -6,6 +6,8 @@
 @using Facilitate.Admin.Data;
 @using Facilitate.Libraries.Models;
 
+@using Microsoft.EntityFrameworkCore;
+
 @using Microsoft.AspNetCore.Identity;
 @using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 @using Microsoft.AspNetCore.Mvc;
@@ -25,7 +27,9 @@
 @using DevExpress.Web;
 
 @using Microsoft.AspNetCore.Html;
-@using UsingUploadEditDataGrid.Data
+@using UsingUploadEditDataGrid.Data;
+
+@* @implements IDisposable; *@
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
@@ -247,6 +251,15 @@ else
                             <hr />
 
                             <h6>Project Trades</h6>
+
+                                if (!isChildQuote)
+                                {
+                                    <div>
+                                        <button class="action-button" @onclick="@(() => IsPopupVisibleAddTrade = true)">Add Trade</button>
+                                    </div>
+                                    <div>&nbsp;</div>
+                                }
+
                                 if (@relationshipCount > 0)
                                 {
                                     <DxGrid @ref="ChildQuoteGrid"
@@ -254,38 +267,44 @@ else
                                     KeyFieldName="_id"
                                     AutoExpandAllGroupRows="true"
                                     RowClick="ViewChildQuoteDetails"
-                                    AllowSelectRowByClick="true"
-                                    SelectionMode="GridSelectionMode.Single"
                                     @bind-SelectedDataItem="@SelectedChildQuoteItem"
                                     TextWrapEnabled="false">
                                     <Columns>
                                         <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
-                                        <DxGridDataColumn Width="115" Caption="Trade" FieldName="applicationType" />
-                                        <DxGridDataColumn Width="115" Caption="Relationship" FieldName="relationship" />
-                                        <DxGridDataColumn Width="115" Caption="Status" FieldName="status" />
-                                        <DxGridDataColumn Width="115" Caption="Qualified?" FieldName="isQualified" />
+                                        <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" />
+                                        <DxGridDataColumn Width="100" Caption="Relationship" FieldName="relationship" />
+                                        <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
+                                        <DxGridDataColumn Width="100" Caption="Qualified?" FieldName="isQualified" Enabled="false" />
                                         <DxGridDataColumn Width="150" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                         <DxGridDataColumn Width="150" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                         <DxGridDataColumn Width="auto" Caption="Last Event" FieldName="lastEventDetails" />
                                         <DxGridDataColumn Width="75" Caption="Amount" FieldName="totalQuote" DisplayFormat="C0" />
-                                        <DxGridDataColumn Width="auto" Caption="Manager" FieldName="projectManager" />
+                                        <DxGridDataColumn Width="175" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
 
-                                        if (isAggregateQuote)
-                                        {
-                                            <DxGridCommandColumn Width="100" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
+                                        @{
+                                            if(isAggregateQuote)
+                                            {
+                                                <DxGridDataColumn Width="125" Context="childQuoteList" Caption="Actions">
+                                                    <CellDisplayTemplate>
+                                                        <a href="">View</a>
+                                                        <span>|</span>
+                                                        <a href="">Remove</a>
+                                                    </CellDisplayTemplate>
+                                                </DxGridDataColumn>
+                                            }
+                                            else
+                                            {
+                                                <DxGridDataColumn Width="125" Context="childQuoteList" Caption="Actions">
+                                                    <CellDisplayTemplate>
+                                                        <a href="">View</a>
+                                                        <span>|</span>
+                                                    </CellDisplayTemplate>
+                                                </DxGridDataColumn>
+                                            }
                                         }
-                                        
+
                                     </Columns>
                                 </DxGrid>
-                            }
-
-                            <hr />
-
-                            if (!isChildQuote)
-                            {
-                                <div class="quote-detail-controls-container">
-                                    <button class="action-button" @onclick="@(() => IsPopupVisibleAddTrade = true)">Add Trade</button>
-                                </div>
                             }
                         }
                     }
@@ -999,6 +1018,14 @@ else
 
 @code 
 {
+    // public void ShowDetails(GridDataColumnCellDisplayTemplateContext context) 
+    // {
+    //     var CurrentEmployee = ""; // Data.Where(e => e.EmployeeId == (int)context.Value).FirstOrDefault();
+    // }
+
+    // [Parameter]
+    // public RenderFragment<GridDataColumnCellDisplayTemplateContext> CellDisplayTemplate { get; set; }
+
     public bool recordIDVisible = false;
 
     public string quoteIdToRemove = "";
@@ -1777,8 +1804,6 @@ else
 
                 WebServices.UpdateQuote(CurrentlySelectedQuote);
 
-                //newQuoteListQueue.Add(CurrentlySelectedQuote);
-
                 // parentQuote.relationships.Add(childRelationship);
 
                 // newQuoteListQueue.Add(parentQuote);
@@ -2131,7 +2156,7 @@ else
                 if (hasChildren)
                     CurrentlySelectedQuote.totalQuote = quoteValue;
 
-                WebServices.UpdateQuote(CurrentlySelectedQuote);
+                //WebServices.UpdateQuote(CurrentlySelectedQuote);
 
                 InvokeAsync(() =>
                 {

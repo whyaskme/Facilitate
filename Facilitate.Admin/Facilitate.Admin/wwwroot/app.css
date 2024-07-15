@@ -164,8 +164,8 @@ button.btn-primary {
 .action-button-small,
 .action-button-small:hover{
     border: solid 0px #ff0000 !important;
-    width: 100px !important;
-    font-size: 1.0em !important;
+    width: 55px !important;
+    font-size: 0.85em !important;
 }
 
 .action-button-disabled {
