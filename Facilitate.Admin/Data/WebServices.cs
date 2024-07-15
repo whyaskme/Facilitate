@@ -1,19 +1,31 @@
-﻿using Facilitate.Admin.Components.Account;
+﻿using DevExpress.Office.Utils;
+using AspNetCore.Identity.Mongo.Mongo;
+using DevExpress.Blazor;
+using DevExpress.Data.Linq;
+using DevExpress.XtraPrinting.Shape.Native;
+using Facilitate.Admin.Components;
+using Facilitate.Admin.Components.Account;
 using Facilitate.Admin.Components.Account.Pages;
+using Facilitate.Admin.Components.Account.Pages.Manage;
 using Facilitate.Libraries.Models;
+using Facilitate.Libraries.Services;
 using Json.Net;
+using MaxMind.GeoIP2.Model;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using Newtonsoft.Json;
-using ServiceStack;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Mail;
 using System.Security.Cryptography;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using static Facilitate.Libraries.Models.Constants.Messaging;
 
 namespace Facilitate.Admin.Data
@@ -21,12 +33,15 @@ namespace Facilitate.Admin.Data
     [ApiController]
     public class WebServices : ControllerBase
     {
+        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly DBService _dbService;
+        private readonly IMongoDatabase _mongoDatabase;
+        private readonly IMongoCollection<Quote> _mongoDBCollection;
 
-        Utils utils = new Utils();
+        private readonly Utils utils;
 
-        public HttpClient _apiClient = new HttpClient();
+        //private HttpClient _apiClient;
 
-        string _mongoDBName = "Facilitate";
         string _mongoDBCollectionName = "Quote";
 
         string resultMsg = string.Empty;
@@ -35,21 +50,20 @@ namespace Facilitate.Admin.Data
         List<Note> unSortedNotes = new List<Note>();
         List<Event> unSortedEvents = new List<Event>();
 
-        //string _mongoDBConnectionString = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate";
-        string _mongoDBConnectionString = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
+        public List<Quote> quoteList = new List<Quote>();
 
-        IMongoClient _mongoDBClient;
-
-        IMongoCollection<Quote> _mongoDBCollection;
-        private CancellationToken _cancellationToken;
-
-        public WebServices()
+        public WebServices(IServiceScopeFactory scopeFactory, DBService dbService, Utils utils)
         {
-            _mongoDBClient = new MongoClient(_mongoDBConnectionString);
-            _mongoDBCollection = _mongoDBClient.GetDatabase(_mongoDBName).GetCollection<Quote>(_mongoDBCollectionName);
+            _scopeFactory = scopeFactory;
+            _dbService = dbService;
+            _mongoDatabase = dbService.MongoDatabase;
+            _mongoDBCollection = _mongoDatabase.GetCollection<Quote>(_mongoDBCollectionName);
+            this.utils = utils;
 
-            _apiClient.BaseAddress = new Uri("https://api.facilitate.org/api");
+            //_apiClient = new HttpClient();
+            //_apiClient.BaseAddress = new Uri("https://api.facilitate.org/api");
         }
+
 
         public List<ListItem> GetColumnWidths()
         {
@@ -183,7 +197,105 @@ namespace Facilitate.Admin.Data
             return columnWidths;
     }
 
-        public List<Quote> quoteList = new List<Quote>();
+        public IMongoQueryable<QuoteHeader> GetQeuryableSummaries(FilterDefinition<Quote> filter)
+        {
+            var q = _mongoDBCollection.AsQueryable()
+                .Where(f => filter.Inject())
+                .Select(f => new QuoteHeader()
+                {
+                    _id = f._id,
+                    status = f.status,
+                    Bidder = f.Bidder,
+                    BidderType = f.BidderType,
+                    BiddingExpires = f.BiddingExpires,
+                    Trade = f.Trade,
+                    TradeCategory = f.TradeCategory,
+                    numberOfStructures = f.numberOfStructures,
+                    numberOfIncludedStructures = f.numberOfIncludedStructures,
+                    timestamp = f.timestamp,
+                    firstName = f.firstName,
+                    lastName = f.lastName,
+                    email = f.email,
+                    street = f.street,
+                    city = f.city,
+                    state = f.state,
+                    zip = f.zip,
+                    totalSquareFeet = f.totalSquareFeet,
+                    totalQuote = f.totalQuote,
+                    lastUpdated = f.lastUpdated,
+                });
+
+            return q;
+        }
+
+        public IMongoQueryable<QuoteHeader> GetQeuryableSummaries(string status, bool showHideTestData)
+        {
+            var builder = Builders<Quote>.Filter;
+            var filter = builder.Where(p => p.status.Contains(status));
+
+            if (!showHideTestData)
+            {
+                filter = builder.And(filter, builder.Not(builder.Eq(p => p.externalUrl, "Auto-generated WebApi")));
+            }
+
+            return GetQeuryableSummaries(filter);
+        }
+
+        public IMongoQueryable<QuoteHeader> GetQeuryableSummaries(string tradeType, string status, bool showHideTestData)
+        {
+            var builder = Builders<Quote>.Filter;
+            var filter = builder.And(builder.Eq("status", status), builder.Eq("Trade", utils.TitleCaseString(tradeType)));
+
+            if (!showHideTestData)
+            {
+                filter = builder.And(filter, builder.Not(builder.Eq(p => p.externalUrl, "Auto-generated WebApi")));
+            }
+
+            return GetQeuryableSummaries(filter);
+        }
+
+        public IMongoQueryable<QuoteHeader> GetQeuryableSummaries(string status, string userId)
+        {
+            var builder = Builders<Quote>.Filter;
+            var filter = builder.And(
+                builder.Where(p => p.status.Contains(status)),
+                builder.Where(p => p.Bidder.Email.Contains(userId))
+                );
+
+            return GetQeuryableSummaries(filter);
+        }
+
+        public IQueryable<Lead> GetQeuryableSummaries(IQueryable<Lead> leads, string status, bool showHideTestData)
+        {
+            var q = leads.Where(p => p.status.Contains(status));
+
+            if (!showHideTestData)
+            {
+                q = q.Where(p => p.externalUrl != "Auto-generated WebApi");
+            }
+
+            return q;
+        }
+
+        public IQueryable<Lead> GetQeuryableSummaries(IQueryable<Lead> leads, string tradeType, string status, bool showHideTestData)
+        {
+            tradeType = utils.TitleCaseString(tradeType);
+            var q = leads.Where(p => p.status.Contains(status) && p.Trade == tradeType);
+
+            if (!showHideTestData)
+            {
+                q = q.Where(p => p.externalUrl != "Auto-generated WebApi");
+            }
+
+            return q;
+        }
+
+        public IQueryable<Lead> GetQeuryableSummaries(IQueryable<Lead> leads, string status, string userId)
+        {
+            var q = leads.Where(p => p.status.Contains(status) && p.Bidder.Email.Contains(userId));
+
+            return q;
+        }
 
         public List<QuoteHeader> GetSummaries(string status, bool showHideTestData)
         {
@@ -211,24 +323,19 @@ namespace Facilitate.Admin.Data
                     .Include(p => p.zip);
 
                 var builder = Builders<Quote>.Filter;
-                var filter = Builders<Quote>.Filter.Where(p => p.status.Contains(status));
+                var filter = builder.Where(p => p.status.Contains(status));
 
                 if (!showHideTestData)
                 {
-                    var dataSourceFilter = Builders<Quote>.Filter.Not(Builders<Quote>.Filter.Eq(p => p.externalUrl, "Auto-generated WebApi"));
+                    var dataSourceFilter = builder.Not(builder.Eq(p => p.externalUrl, "Auto-generated WebApi"));
 
-                    filter = Builders<Quote>.Filter.And(filter, dataSourceFilter);
+                    filter = builder.And(filter, dataSourceFilter);
                 }
 
-                List<QuoteHeader> quoteHeaders = _mongoDBCollection.Find(filter).Project<QuoteHeader>(fields).ToList();
-
-                var rowIndex = quoteHeaders.Count;
+                var quoteHeaders = _mongoDBCollection.Find(filter).Project<QuoteHeader>(fields).ToList();
 
                 foreach (var quote in quoteHeaders)
                 {
-                    rowIndex--;
-
-                    //quote.rowIndex = rowIndex;
                     quote.lastUpdated = quote.lastUpdated.ToLocalTime();
                     quote.timestamp = quote.timestamp.ToLocalTime();
                 }
@@ -266,18 +373,19 @@ namespace Facilitate.Admin.Data
                     .Include(p => p.state)
                     .Include(p => p.zip);
 
-                var filterBuilder = Builders<Quote>.Filter;
-                var filter = filterBuilder.Eq("status", status) & filterBuilder.Eq("Trade", utils.TitleCaseString(tradeType));
+                var builder = Builders<Quote>.Filter;
+                var filter = builder.Eq("status", status) & builder.Eq("Trade", utils.TitleCaseString(tradeType));
 
                 if (!showHideTestData)
                 {
-                    var dataSourceFilter = Builders<Quote>.Filter.Not(Builders<Quote>.Filter.Eq(p => p.externalUrl, "Auto-generated WebApi"));
+                    var dataSourceFilter = builder.Not(builder.Eq(p => p.externalUrl, "Auto-generated WebApi"));
 
-                    filter = Builders<Quote>.Filter.And(filter, dataSourceFilter);
+                    filter = builder.And(filter, dataSourceFilter);
                 }
 
-                List<QuoteHeader> quoteHeaders = _mongoDBCollection.Find(filter).Project<QuoteHeader>(fields).ToList();
-                foreach(var quote in quoteHeaders)
+                var quoteHeaders = _mongoDBCollection.Find(filter).Project<QuoteHeader>(fields).ToList();
+
+                foreach (var quote in quoteHeaders)
                 {
                     quote.lastUpdated = quote.lastUpdated.ToLocalTime();
                     quote.timestamp = quote.timestamp.ToLocalTime();
@@ -298,7 +406,8 @@ namespace Facilitate.Admin.Data
             List<QuoteHeader> QuoteHeaders = new List<QuoteHeader>();
             try
             {
-                var condition = Builders<Quote>.Filter.Eq(f => f.status, status);
+                var builder = Builders<Quote>.Filter;
+                var condition = builder.Eq(f => f.status, status);
 
                 var fields = Builders<Quote>.Projection.Include(p => p.firstName)
                     .Include(p => p.lastName)
@@ -317,13 +426,12 @@ namespace Facilitate.Admin.Data
                     .Include(p => p.zip);
 
 
-                var builder = Builders<Quote>.Filter;
-                var filter = Builders<Quote>.Filter.And(
-                    Builders<Quote>.Filter.Where(p => p.status.Contains(status)),
-                    Builders<Quote>.Filter.Where(p => p.Bidder.Email.Contains(userId))
+                var filter = builder.And(
+                    builder.Where(p => p.status.Contains(status)),
+                    builder.Where(p => p.Bidder.Email.Contains(userId))
                     );
 
-                List<Quote> quotes = _mongoDBCollection.Find(filter).Project<Quote>(fields).ToList();
+                var quotes = _mongoDBCollection.Find(filter).Project<Quote>(fields).ToList();
 
                 for (var i = 0; i < quotes.Count; i++)
                 {
@@ -588,6 +696,7 @@ namespace Facilitate.Admin.Data
                 var filter = builder.Eq(f => f.status, status);
 
                 sortedQuotes = _mongoDBCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
+
                 for (var i = 0; i < sortedQuotes.Count; i++)
                 {
                     if (sortedQuotes[i].firstName == "")
@@ -646,7 +755,7 @@ namespace Facilitate.Admin.Data
             {
                 resultMsg = ex.Message;
             }
-            
+
             return sortedQuotes;
         }
 
@@ -662,6 +771,7 @@ namespace Facilitate.Admin.Data
                     );
 
                 sortedQuotes = _mongoDBCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
+
                 for (var i = 0; i < sortedQuotes.Count; i++)
                 {
                     if (sortedQuotes[i].firstName == "")
@@ -722,6 +832,24 @@ namespace Facilitate.Admin.Data
             }
 
             return sortedQuotes;
+        }
+
+        public Task<List<string>> GetTradesListAsync(string status, CancellationToken ct = default)
+        {
+            FilterDefinition<Quote> statusFilter;
+
+            if (status == "All")
+            {
+                statusFilter = Builders<Quote>.Filter.Where(p => p._t == "Quote");
+            }
+            else
+            {
+                statusFilter = Builders<Quote>.Filter.Where(p => p.status.Contains(status));
+            }
+
+            var tradesList = _mongoDBCollection.Distinct(s => s.Trade, statusFilter);
+
+            return tradesList.ToListAsync(ct);
         }
 
         public List<ListItem> GetTradesList(bool filterActiveTrade, string activeQuoteTrade)
@@ -745,7 +873,7 @@ namespace Facilitate.Admin.Data
 
                 foreach (var trade in tradesList)
                 {
-                    if(!trade.Contains("Aggregate"))
+                    if (!trade.Contains("Aggregate"))
                     {
                         ListItem tradeItem = new ListItem();
                         tradeItem.Text = trade;
@@ -769,8 +897,6 @@ namespace Facilitate.Admin.Data
         {
             try
             {
-                var filter = new BsonDocument();
-
                 if (status == "All")
                 {
                     var statusFilter = Builders<Quote>.Filter.Where(p => p._t == "Quote");
@@ -796,7 +922,6 @@ namespace Facilitate.Admin.Data
             return null;
         }
 
-
         public List<Quote> GetQuote(string quoteId)
         {
             try
@@ -819,9 +944,12 @@ namespace Facilitate.Admin.Data
         {
             try
             {
-                var apiUrl = new Uri(_apiClient.BaseAddress + "/api/Test/" + numQuotesToCreate);
-
-                resultMsg = await _apiClient.GetStringAsync(apiUrl);
+                using (var scope = _scopeFactory.CreateScope())
+                {
+                    var _apiClient = scope.ServiceProvider.GetRequiredService<HttpClient>();
+                    var apiUrl = new Uri(_apiClient.BaseAddress + "/api/Test/" + numQuotesToCreate);
+                    resultMsg = await _apiClient.GetStringAsync(apiUrl);
+                }
 
                 resultMsg = "Added Quote!";
             }
@@ -836,19 +964,15 @@ namespace Facilitate.Admin.Data
             return resultMsg;
         }
 
-        IMongoCollection<Quote> _quoteCollection;
-
         public bool CreateQuote(Quote newQuote)
         {
             try
             {
-                _quoteCollection = _mongoDBClient.GetDatabase(_mongoDBName).GetCollection<Quote>(_mongoDBCollectionName);
-
-                _quoteCollection.InsertOne(newQuote);
+                _mongoDBCollection.InsertOne(newQuote);
 
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 var errMsg = ex.Message;
                 return false;
@@ -862,13 +986,16 @@ namespace Facilitate.Admin.Data
         {
             string quoteId = quote._id;
 
+            //var cancellationToken = HttpContext.RequestServices.GetService<CancellationToken>();
+            var cancellationToken = CancellationToken.None;
+
             quote.lastUpdated = DateTime.UtcNow;
 
             try
             {
                 var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
 
-                var result = _mongoDBCollection.ReplaceOne(filter, quote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+                var result = _mongoDBCollection.ReplaceOne(filter, quote, new UpdateOptions() { IsUpsert = true }, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -878,6 +1005,7 @@ namespace Facilitate.Admin.Data
             {
 
             }
+
             return quote;
         }
 
@@ -890,7 +1018,7 @@ namespace Facilitate.Admin.Data
             {
                 var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
 
-                var result = _mongoDBCollection.DeleteOne(filter, _cancellationToken);
+                var result = _mongoDBCollection.DeleteOne(filter);
             }
             catch (Exception ex)
             {
@@ -980,7 +1108,7 @@ namespace Facilitate.Admin.Data
                         quoteLeaderboard.WarrantyValue = item.QuoteValue;
                         quoteLeaderboard.WarrantySqFt = item.QuoteSqFt;
                     }
-                }   
+                }
             }
             catch (Exception ex)
             {
@@ -996,6 +1124,93 @@ namespace Facilitate.Admin.Data
             quoteLeaderboard.TotalQuoteSqFt = quoteLeaderboard.LeadSqFt + quoteLeaderboard.OpportunitySqFt + quoteLeaderboard.CustomerSqFt + quoteLeaderboard.CompletionSqFt + quoteLeaderboard.ArchiveSqFt + quoteLeaderboard.WarrantySqFt;
 
             return quoteLeaderboard;
+        }
+
+        public async Task<QuoteLeaderboard> GetLeaderboardStatsAsync(FilterDefinition<Quote>? filter, string? status = null, CancellationToken ct = default)
+        {
+            try
+            {
+                var quoteLeaderboard = new QuoteLeaderboard();
+
+                quoteLeaderboard.Trades = await GetTradesListAsync(status ?? "All", ct);
+
+                var agg = _mongoDBCollection.Aggregate();
+
+                if (filter != null)
+                {
+                    agg = agg.Match(filter);
+                }
+
+                var quoteStats = await agg
+                    .Group(x => x.status, g => new QuoteStat
+                    {
+                        QuoteType = g.Key,
+                        QuoteCount = g.Count(),
+                        QuoteValue = g.Sum(x => x.totalQuote),
+                        QuoteSqFt = g.Sum(x => x.totalSquareFeet)
+                    })
+                    .ToListAsync(ct);
+
+                foreach (var item in quoteStats)
+                {
+                    switch (item.QuoteType)
+                    {
+                        case "New":
+                            quoteLeaderboard.LeadCount = item.QuoteCount;
+                            quoteLeaderboard.LeadValue = item.QuoteValue;
+                            quoteLeaderboard.LeadSqFt = item.QuoteSqFt;
+                            break;
+                        case "Opportunity":
+                            quoteLeaderboard.OpportunityCount = item.QuoteCount;
+                            quoteLeaderboard.OpportunityValue = item.QuoteValue;
+                            quoteLeaderboard.OpportunitySqFt = item.QuoteSqFt;
+                            break;
+                        case "Customer":
+                            quoteLeaderboard.CustomerCount = item.QuoteCount;
+                            quoteLeaderboard.CustomerValue = item.QuoteValue;
+                            quoteLeaderboard.CustomerSqFt = item.QuoteSqFt;
+                            break;
+                        case "Complete":
+                            quoteLeaderboard.CompletionCount = item.QuoteCount;
+                            quoteLeaderboard.CompletionValue = item.QuoteValue;
+                            quoteLeaderboard.CompletionSqFt = item.QuoteSqFt;
+                            break;
+                        case "Archive":
+                            quoteLeaderboard.ArchiveCount = item.QuoteCount;
+                            quoteLeaderboard.ArchiveValue = item.QuoteValue;
+                            quoteLeaderboard.ArchiveSqFt = item.QuoteSqFt;
+                            break;
+                        case "Warranty":
+                            quoteLeaderboard.WarrantyCount = item.QuoteCount;
+                            quoteLeaderboard.WarrantyValue = item.QuoteValue;
+                            quoteLeaderboard.WarrantySqFt = item.QuoteSqFt;
+                            break;
+                    }
+                }
+
+                quoteLeaderboard.TotalQuoteCount = quoteLeaderboard.LeadCount + quoteLeaderboard.OpportunityCount + quoteLeaderboard.CustomerCount + quoteLeaderboard.CompletionCount + quoteLeaderboard.ArchiveCount + quoteLeaderboard.WarrantyCount;
+                quoteLeaderboard.TotalQuoteValue = quoteLeaderboard.LeadValue + quoteLeaderboard.OpportunityValue + quoteLeaderboard.CustomerValue + quoteLeaderboard.CompletionValue + quoteLeaderboard.ArchiveValue + quoteLeaderboard.WarrantyValue;
+                quoteLeaderboard.TotalQuoteSqFt = quoteLeaderboard.LeadSqFt + quoteLeaderboard.OpportunitySqFt + quoteLeaderboard.CustomerSqFt + quoteLeaderboard.CompletionSqFt + quoteLeaderboard.ArchiveSqFt + quoteLeaderboard.WarrantySqFt;
+
+                return quoteLeaderboard;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public Task<QuoteLeaderboard> GetLeaderboardStatsAsync(string status, bool showHideTestData, CancellationToken ct = default)
+        {
+            FilterDefinition<Quote>? filter = null;
+
+            if (!showHideTestData)
+            {
+                var builder = Builders<Quote>.Filter;
+                filter = builder.Not(builder.Eq(p => p.externalUrl, "Auto-generated WebApi"));
+            }
+
+            return GetLeaderboardStatsAsync(filter, status, ct);
         }
 
         public QuoteLeaderboard GetLeaderboardStats(string status, bool showHideTestData)
@@ -1097,6 +1312,19 @@ namespace Facilitate.Admin.Data
             quoteLeaderboard.TotalQuoteSqFt = quoteLeaderboard.LeadSqFt + quoteLeaderboard.OpportunitySqFt + quoteLeaderboard.CustomerSqFt + quoteLeaderboard.CompletionSqFt + quoteLeaderboard.ArchiveSqFt + quoteLeaderboard.WarrantySqFt;
 
             return quoteLeaderboard;
+        }
+
+        public Task<QuoteLeaderboard> GetLeaderboardStatsAsync(string tradeType, string status, bool showHideTestData, CancellationToken ct = default)
+        {
+            var builder = Builders<Quote>.Filter;
+            var filter = builder.And(builder.Eq("status", status), builder.Eq("Trade", utils.TitleCaseString(tradeType)));
+
+            if (!showHideTestData)
+            {
+                filter = builder.And(filter, builder.Not(builder.Eq(p => p.externalUrl, "Auto-generated WebApi")));
+            }
+
+            return GetLeaderboardStatsAsync(filter, status, ct);
         }
 
         public QuoteLeaderboard GetLeaderboardStats(string tradeType, string status, bool showHideTestData)
@@ -1213,9 +1441,19 @@ namespace Facilitate.Admin.Data
             return quoteLeaderboard;
         }
 
+
+        public Task<QuoteLeaderboard> GetLeaderboardStatsAsync(string userId, CancellationToken ct = default)
+        {
+            var filter = Builders<Quote>.Filter.Eq(x => x.Bidder.Email, userId);
+
+            return GetLeaderboardStatsAsync(filter, null, ct);
+        }
+
         public QuoteLeaderboard GetLeaderboardStats(string userId)
         {
             QuoteLeaderboard quoteLeaderboard = new QuoteLeaderboard();
+
+            quoteLeaderboard.Trades = GetTradesList("All");
 
             try
             {
@@ -1299,7 +1537,7 @@ namespace Facilitate.Admin.Data
 
         public List<Event> SortEventsByDateDesc(List<Event> originalList)
         {
-            if(originalList != null)
+            if (originalList != null)
                 return originalList.OrderByDescending(x => x.DateTime).ToList();
             else return originalList;
         }

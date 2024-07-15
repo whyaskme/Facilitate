@@ -36,7 +36,8 @@
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
-@inject WebServices WebServices
+@inject WebServices webServices
+@inject Utils utils
 
 @inject NavigationManager navMan
 @inject UserManager<ApplicationUser> UserManager
@@ -1114,7 +1115,7 @@ else
             var name = relationship.Name;
             var parentId = relationship.ParentId;
 
-            var relatedQuote = WebServices.GetQuote(parentId)[0];
+            var relatedQuote = webServices.GetQuote(parentId)[0];
             relatedQuote.statusPrevious = "Archive";
 
             if (CurrentlySelectedQuote.status != "Archive")
@@ -1128,11 +1129,11 @@ else
             _event.Details = _event.Name + " to Aggregate Id (" + CurrentlySelectedQuote._id + ") status (" + CurrentlySelectedQuote.statusPrevious + ")";
 
             relatedQuote.events.Add(_event);
-            WebServices.UpdateQuote(relatedQuote);
+            webServices.UpdateQuote(relatedQuote);
             break;
         }
 
-        //WebServices.UpdateQuote(CurrentlySelectedQuote);
+        //webServices.UpdateQuote(CurrentlySelectedQuote);
 
         restoreButtonClass = "restore-button-hidden";
         IsRestoreButtonVisble = false;
@@ -1145,7 +1146,7 @@ else
         Event _event = new Event();
         _event.Author = currentUser;
 
-        Quote quoteToUpdate = WebServices.GetQuote(CurrentlySelectedQuote._id)[0];
+        Quote quoteToUpdate = webServices.GetQuote(CurrentlySelectedQuote._id)[0];
 
         double newTotal = Convert.ToDouble(newValue);
 
@@ -1164,7 +1165,7 @@ else
 
         quoteToUpdate.events.Add(_event);
 
-        WebServices.UpdateQuote(quoteToUpdate);
+        webServices.UpdateQuote(quoteToUpdate);
 
         TimerRefresh();
     }
@@ -1186,7 +1187,7 @@ else
 
         quoteIdToRemove = selectedQuote._id;
 
-        var quoteToRemove = WebServices.GetQuote(quoteIdToRemove)[0];
+        var quoteToRemove = webServices.GetQuote(quoteIdToRemove)[0];
         quoteToRemove.statusPrevious = quoteToRemove.status;
         quoteToRemove.status = "Archive";
 
@@ -1198,13 +1199,13 @@ else
         // Add event to child quote
         quoteToRemove.events.Add(_event);
 
-        WebServices.UpdateQuote(quoteToRemove);
+        webServices.UpdateQuote(quoteToRemove);
 
         // Add event to parent quote
         // Actually, the parent aggregate should only refkect individual child events at runtime.
         CurrentlySelectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        webServices.UpdateQuote(CurrentlySelectedQuote);
     }
 
     List<ListItem> columnWidths = new List<ListItem>();
@@ -1294,7 +1295,7 @@ else
 
     //     IsPopupVisibleDeleteTrade = true;
 
-    //     var quoteToRemove = WebServices.GetQuote(quoteId)[0];
+    //     var quoteToRemove = webServices.GetQuote(quoteId)[0];
 
     //     ConfirmRemoveMessage = "Are you sure you want to REMOVE this (" + quoteToRemove.Trade + ") project?";
     // }
@@ -1305,7 +1306,7 @@ else
 
     //     IsPopupVisibleRestoreTrade = true;
 
-    //     var quoteToRestore = WebServices.GetQuote(quoteIdToRestore)[0];
+    //     var quoteToRestore = webServices.GetQuote(quoteIdToRestore)[0];
 
     //     ConfirmRestoreMessage = "Are you sure you want to RESTORE this (" + quoteToRestore.Trade + ") project?";
     // }
@@ -1456,8 +1457,6 @@ else
 
     public bool emailSentStatus = false;
 
-    Utils utils = new Utils();
-
     async void OnLocationChanged(object sender, LocationChangedEventArgs args)
     {
         TimerDispose();
@@ -1478,7 +1477,7 @@ else
         // var body = "This is just a test of the emergenct broadcast system. Had this been an actual emergency, you are toast!";
         // var isBodyHtml = true;
 
-        // var emailSent = WebServices.SendEmail(ownerId, ownerType, fromAddress, toAddress, subject, body, isBodyHtml);
+        // var emailSent = webServices.SendEmail(ownerId, ownerType, fromAddress, toAddress, subject, body, isBodyHtml);
 
         if (firstRender)
         {
@@ -1544,7 +1543,7 @@ else
 
         CurrentlySelectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        webServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsPopupVisibleMakeCustomer = false;
     }
@@ -1655,7 +1654,7 @@ else
         ShowEventDetailsColumn = true;
         ShowEventAuthorColumn = true;
 
-        columnWidths = WebServices.GetColumnWidths();
+        columnWidths = webServices.GetColumnWidths();
 
         foreach (ListItem listItem in columnWidths)
         {
@@ -1755,8 +1754,6 @@ else
     public Note selectedNote { get; set; }
 
     bool LoadingPanelVisible { get; set; } = true;
-
-    WebServices webServices = new WebServices();
 
     public bool IsAssignButtonEnabled = false;
     IEnumerable<ApplicationUser> SelectedProjectManager { get; set; }
@@ -2094,7 +2091,7 @@ else
 
         CurrentlySelectedQuote.events.Add(assignmentEvent);
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        webServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsBidderPopupVisible = false;
         IsAssignButtonEnabled = false;
@@ -2156,7 +2153,7 @@ else
             CurrentlySelectedQuote.status = "Archive";
 
             var currentQuoteId = CurrentlySelectedQuote._id;
-            var aggregateQuote = WebServices.GetQuote(currentQuoteId)[0];
+            var aggregateQuote = webServices.GetQuote(currentQuoteId)[0];
 
             if (NoteDetails != "" || NoteDetails != null)
             {
@@ -2181,7 +2178,7 @@ else
             {
                 foreach (Relationship relationship in aggregateQuote.relationships)
                 {
-                    var childQuote = WebServices.GetQuote(relationship.ParentId)[0];
+                    var childQuote = webServices.GetQuote(relationship.ParentId)[0];
 
                     childQuote.statusPrevious = childQuote.status;
                     childQuote.status = "Archive";
@@ -2194,11 +2191,11 @@ else
 
                     childQuote.notes.Add(childnote);
 
-                    WebServices.UpdateQuote(childQuote);
+                    webServices.UpdateQuote(childQuote);
                 }
             }
 
-            WebServices.UpdateQuote(aggregateQuote);
+            webServices.UpdateQuote(aggregateQuote);
 
             IsArchivePopupVisible = false;
             NoteDetails = "";
@@ -2217,7 +2214,7 @@ else
         note.Author = currentUser;
         note.Trade = CurrentlySelectedQuote.Trade;
 
-        Quote quoteToUpdate = WebServices.GetQuote(CurrentlySelectedQuote._id)[0];
+        Quote quoteToUpdate = webServices.GetQuote(CurrentlySelectedQuote._id)[0];
 
         quoteToUpdate.notes.Add(note);
 
@@ -2231,7 +2228,7 @@ else
         IsPopupVisibleAddNote = false;
         NoteDetails = "";
 
-        WebServices.UpdateQuote(quoteToUpdate);
+        webServices.UpdateQuote(quoteToUpdate);
     }
 
     public void CloseDetails()
@@ -2264,7 +2261,7 @@ else
 
         CurrentlySelectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        webServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsPopupVisibleSelectAttachmentToDelete = false;
     }
@@ -2279,7 +2276,7 @@ else
 
         CurrentlySelectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        webServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsPopupVisibleSelectNoteToDelete = false;
     }
@@ -2325,7 +2322,7 @@ else
 
         // Delete original quote
         CurrentlySelectedQuote.status = "Aggregate-Source";
-        WebServices.DeleteQuote(CurrentlySelectedQuote);
+        webServices.DeleteQuote(CurrentlySelectedQuote);
 
         // Now add the new copy with originalId
         //originalQuoteCopy._id = originalQuoteId;
@@ -2492,7 +2489,7 @@ else
 
             parentQuote._id = originalQuoteId;
 
-            WebServices.UpdateQuote(parentQuote);
+            webServices.UpdateQuote(parentQuote);
 
             SaveRelatedQuotes(newQuoteListQueue);
 
@@ -2525,7 +2522,7 @@ else
                 {
                     Quote tmpQuote = new Quote(currentQuote);
 
-                    WebServices.CreateQuote(tmpQuote);
+                    webServices.CreateQuote(tmpQuote);
                 }
             }
         }
@@ -2539,11 +2536,11 @@ else
     {
         // Get this quote, set it archive and update it
         // var quoteId = quoteIdToRemove;
-        // var quoteToRemove = WebServices.GetQuote(quoteId)[0];
+        // var quoteToRemove = webServices.GetQuote(quoteId)[0];
 
         // quoteToRemove.status = "Archive";
 
-        // WebServices.UpdateQuote(quoteToRemove);
+        // webServices.UpdateQuote(quoteToRemove);
 
         // // Parse and remove all relationships including siblings
         // var tmpQuote = CurrentlySelectedQuote;
@@ -2555,7 +2552,7 @@ else
         //         relationship.IsEnabled = false;
         // }
 
-        // WebServices.UpdateQuote(CurrentlySelectedQuote);
+        // webServices.UpdateQuote(CurrentlySelectedQuote);
 
         // IsPopupVisibleDeleteTrade = false;
 
@@ -2565,11 +2562,11 @@ else
     {
         // Get this quote, set it archive and update it
         var quoteId = quoteIdToRemove;
-        var quoteToRemove = WebServices.GetQuote(quoteId)[0];
+        var quoteToRemove = webServices.GetQuote(quoteId)[0];
 
         quoteToRemove.status = "Archive";
 
-        WebServices.UpdateQuote(quoteToRemove);
+        webServices.UpdateQuote(quoteToRemove);
 
         // Parse and remove all relationships including siblings
         var tmpQuote = CurrentlySelectedQuote;
@@ -2581,7 +2578,7 @@ else
                 relationship.IsEnabled = false;
         }
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        webServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsPopupVisibleDeleteTrade = false;
 
@@ -2591,12 +2588,12 @@ else
     {
         // Get this quote, set it archive and update it
         var quoteId = quoteIdToRestore;
-        var quoteToRestore = WebServices.GetQuote(quoteId)[0];
+        var quoteToRestore = webServices.GetQuote(quoteId)[0];
 
         // What is the current aggregate Status and set this to that
         quoteToRestore.status = CurrentlySelectedQuote.statusPrevious;
 
-        WebServices.UpdateQuote(quoteToRestore);
+        webServices.UpdateQuote(quoteToRestore);
 
         // Parse and remove all relationships including siblings
         var tmpQuote = CurrentlySelectedQuote;
@@ -2608,7 +2605,7 @@ else
                 relationship.IsEnabled = true;
         }
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        webServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsPopupVisibleRestoreTrade = false;
 
@@ -2641,7 +2638,7 @@ else
 
         CurrentlySelectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        webServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsPopupVisibleMakeWarrantyClaim = false;
         NoteDetails = "";
@@ -2692,7 +2689,7 @@ else
 
             CurrentlySelectedQuote.events.Add(_event);
 
-            WebServices.UpdateQuote(CurrentlySelectedQuote);
+            webServices.UpdateQuote(CurrentlySelectedQuote);
 
             IsPopupVisibleCloseWarrantyClaim = false;
             NoteDetails = "";
@@ -2715,7 +2712,7 @@ else
 
         CurrentlySelectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        webServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsPopupVisibleCompleteCustomer = false;
     }
@@ -2799,7 +2796,7 @@ else
 
                         foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
                         {
-                            var childQuote = WebServices.GetQuote(relationship._id)[0];
+                            var childQuote = webServices.GetQuote(relationship._id)[0];
 
                             foreach (Event _event in childQuote.events)
                             {
@@ -2825,7 +2822,7 @@ else
 
                         foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
                         {
-                            var childQuote = WebServices.GetQuote(relationship._id)[0];
+                            var childQuote = webServices.GetQuote(relationship._id)[0];
 
                             foreach (Note _note in childQuote.notes)
                             {
@@ -2883,7 +2880,7 @@ else
 
                     foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
                     {
-                        var childQuote = WebServices.GetQuote(relationship._id)[0];
+                        var childQuote = webServices.GetQuote(relationship._id)[0];
                         if (childQuote.BidderType == "Default")
                         {
                             // Set default quote value
@@ -2899,12 +2896,12 @@ else
                                 ValueHiliteCss = "quote-color-value-child";
 
                                 // Get the parent quote for it's value
-                                var parentQuote = WebServices.GetQuote(relationship.ParentId)[0];
+                                var parentQuote = webServices.GetQuote(relationship.ParentId)[0];
                                 foreach (Relationship childRelationship in parentQuote.relationships)
                                 {
                                     if(childRelationship.Type == "Child")
                                     {
-                                        var childQuote2 = WebServices.GetQuote(childRelationship._id)[0];
+                                        var childQuote2 = webServices.GetQuote(childRelationship._id)[0];
                                         if (childQuote2.BidderType == "Default")
                                         {
                                             // Set default quote value
@@ -2994,7 +2991,8 @@ else
                         StateHasChanged();
                     });
                 }
-            }), null, 1000, 1000);
+                _timer?.Change(1000, Timeout.Infinite);
+            }), null, 0, Timeout.Infinite);
 
             LoadingPanelVisible = false;
         }
@@ -3008,13 +3006,13 @@ else
     {
         var tmpVal = RelatedQuoteSummaryList;
 
-        Quote parentQuote = WebServices.GetQuote(parentQuoteId)[0];
+        Quote parentQuote = webServices.GetQuote(parentQuoteId)[0];
 
         foreach (Relationship relationship in parentQuote.relationships)
         {
             if(relationship.Type == "Child")
             {
-                var childQuote = WebServices.GetQuote(relationship._id)[0];
+                var childQuote = webServices.GetQuote(relationship._id)[0];
 
                 QuoteSummary childQuoteSummary = new QuoteSummary();
 
@@ -3038,7 +3036,7 @@ else
         foreach(var _summary in RelatedQuoteSummaryList)
         {
             var quoteId = _summary._id;
-            Quote currentQuote = (Quote)WebServices.GetQuote(quoteId)[0];
+            Quote currentQuote = (Quote)webServices.GetQuote(quoteId)[0];
 
             var quoteEvents = currentQuote.events.OrderByDescending(x => x.DateTime).ToList();
 

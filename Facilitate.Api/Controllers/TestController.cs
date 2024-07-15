@@ -1,9 +1,8 @@
-﻿using MongoDB.Driver;
-
+﻿using Facilitate.Libraries.Models;
+using Facilitate.Libraries.Services;
+//using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-//using System.Web.Http.Cors;
-
-using Facilitate.Libraries.Models;
+using MongoDB.Driver;
 
 namespace Facilitate.Api.Controllers
 {
@@ -12,28 +11,11 @@ namespace Facilitate.Api.Controllers
     [ApiController]
     public class TestController : ControllerBase
     {
-        public TestController()
-        {
-            _mongoDBClient = new MongoClient(_mongoDBConnectionString);
-            _mongoDBCollection = _mongoDBClient.GetDatabase(_mongoDBName).GetCollection<Quote>(_mongoDBCollectionName);
-        }
-
-        Utils utils = new Utils();
-
-        string _mongoDBName = "Facilitate";
+        private readonly Utils utils;
         string _mongoDBCollectionName = "Quote";
 
-        //string _mongoDBConnectionString = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
-        string _mongoDBConnectionString = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
-
-        IMongoClient _mongoDBClient;
-
-        IMongoCollection<Quote> _mongoDBCollection;
-        private CancellationToken _cancellationToken;
-
-        IMongoCollection<Quote> _quoteCollection;
-
-        string resultMsg = string.Empty;
+        private readonly IMongoDatabase _mongoDatabase;
+        private readonly IMongoCollection<Quote> _quoteCollection;
 
         public ApplicationUser author = new ApplicationUser();
 
@@ -41,9 +23,19 @@ namespace Facilitate.Api.Controllers
 
         private int numQuotesToCreate = 0;
 
+        string resultMsg = string.Empty;
+
+        public TestController(DBService dBService, Utils utils)
+        {
+            _mongoDatabase = dBService.MongoDatabase;
+            _quoteCollection = _mongoDatabase.GetCollection<Quote>(_mongoDBCollectionName);
+            this.utils = utils;
+        }
+
+
         // GET api/<TestController>/5
         [HttpGet("{numQuotesToCreate}")]
-        public IActionResult Get(string Trade, int numQuotesToCreate, int bidExpiresInDays)
+        public async Task<IActionResult> Get(string Trade, int numQuotesToCreate, int bidExpiresInDays, CancellationToken ct)
         {
             int numberOfChildrenToCreate = 0;
 
@@ -105,25 +97,25 @@ namespace Facilitate.Api.Controllers
                 rnd = new Random();
                 randomInt = rnd.Next(0, 1);
 
-                var firstName = utils.GetRandomFirstName(nameGenders[randomInt]);
-                var lastName = utils.GetRandomLastName();
+                var firstName = await utils.GetRandomFirstNameAsync(nameGenders[randomInt], ct);
+                var lastName = await utils.GetRandomLastNameAsync(ct);
 
                 var randomStreetNumber = utils.GetRandomStreetNumber();
-                var randomStreetName = utils.GetRandomStreetName();
+                var randomStreetName = await utils.GetRandomStreetNameAsync(ct);
 
-                var randomState = utils.GetRandomState();
+                var randomState = await utils.GetRandomStateAsync(ct);
                 var stateName = randomState[0];
                 var stateAbbr = randomState[1];
                 var stateId = randomState[2];
 
-                var randomCity = utils.GetRandomCity(MongoDB.Bson.ObjectId.Parse(stateId));
+                var randomCity = await utils.GetRandomCityAsync(MongoDB.Bson.ObjectId.Parse(stateId), ct);
 
                 string cityId = randomCity[0];
                 string cityName = randomCity[1];
                 string cityCountyId = randomCity[2];
                 string cityTimeZoneId = randomCity[3];
 
-                ZipCode tmpZipCode = utils.GetRandomZipCode(MongoDB.Bson.ObjectId.Parse(cityId));
+                ZipCode tmpZipCode = await utils.GetRandomZipCodeAsync(MongoDB.Bson.ObjectId.Parse(cityId), ct);
                 var randomZipCode = tmpZipCode.Zip.ToString();
 
                 // Add Structure Info
@@ -142,8 +134,6 @@ namespace Facilitate.Api.Controllers
                         if (header.Key == "Referer")
                             headerReferer = header.Value;
                     }
-
-                    _quoteCollection = _mongoDBClient.GetDatabase(_mongoDBName).GetCollection<Quote>(_mongoDBCollectionName);
 
                     // Create the parent Aggregate quote
                     aggregateQuote = new Quote();
@@ -233,7 +223,7 @@ namespace Facilitate.Api.Controllers
                     aggregateQuote.timestamp = DateTime.UtcNow;
 
                     randomInt = rnd.Next(0, 1);
-                    repName = utils.GetRandomFirstName(nameGenders[randomInt]) + " " + utils.GetRandomLastName();
+                    repName = await utils.GetRandomFirstNameAsync(nameGenders[randomInt], ct) + " " + await utils.GetRandomLastNameAsync(ct);
 
                     aggregateQuote.repName = repName;
                     aggregateQuote.repEmail = repName.Replace(" ", ".").ToLower() + "@facilitate.org";
@@ -346,7 +336,7 @@ namespace Facilitate.Api.Controllers
                             aggregateQuote.relationships.Add(childRelationship);
 
                             // Insert Child
-                            _quoteCollection.InsertOne(childQuote);
+                            await _quoteCollection.InsertOneAsync(childQuote, null, ct);
 
                             childQuote = null;
                         }
@@ -365,7 +355,7 @@ namespace Facilitate.Api.Controllers
 
                     // Reset value since the Default quote contains it
                     aggregateQuote.totalQuote = 0;
-                    _quoteCollection.InsertOne(aggregateQuote);
+                    await _quoteCollection.InsertOneAsync(aggregateQuote, null, ct);
                 }
                 catch (Exception ex)
                 {
@@ -381,7 +371,7 @@ namespace Facilitate.Api.Controllers
             return Ok(resultMsg);
         }
 
-        private void CreateChildQuotes(Quote aggregateQuote)
+        private async Task CreateChildQuotesAsync(Quote aggregateQuote, CancellationToken ct = default)
         {
             try
             {
@@ -443,7 +433,7 @@ namespace Facilitate.Api.Controllers
                     childQuote.events.Add(parentRelationshipEvent);
 
                     // Save Child
-                    _quoteCollection.InsertOne(childQuote);
+                    await _quoteCollection.InsertOneAsync(childQuote, null, ct);
 
                     // Add to queue for sibling relationship processing
                     newQuoteListQueue.Add(childQuote);
@@ -459,7 +449,7 @@ namespace Facilitate.Api.Controllers
                     aggregateQuote.relationships.Add(childRelationship);
 
                     var filter = Builders<Quote>.Filter.Eq(x => x._id, aggregateQuote._id);
-                    var result = _quoteCollection.ReplaceOne(filter, aggregateQuote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+                    var result = await _quoteCollection.ReplaceOneAsync(filter, aggregateQuote, new ReplaceOptions() { IsUpsert = true }, ct);
 
                     childQuote = null;
                 }
@@ -510,7 +500,7 @@ namespace Facilitate.Api.Controllers
             childQuote.events.Add(childEvent);
         }
 
-        private void CreateSiblingRelationships(Quote aggregateQuote, List<Quote> newQuoteListQueue)
+        private async Task CreateSiblingRelationshipsAsync(Quote aggregateQuote, List<Quote> newQuoteListQueue, CancellationToken ct = default)
         {
             var author = new ApplicationUser();
             author.Id = Guid.NewGuid().ToString();
@@ -528,13 +518,13 @@ namespace Facilitate.Api.Controllers
                     {
                         relatedQuoteId = _relationship._id;
 
-                        Quote relatedQuoteUpdate = _quoteCollection.Find(x => x._id == relatedQuoteId).FirstOrDefault();
+                        Quote relatedQuoteUpdate = await _quoteCollection.Find(x => x._id == relatedQuoteId).FirstOrDefaultAsync(ct);
 
                         foreach (Quote newQuote in newQuoteListQueue)
                         {
                             if (_relationship.ParentId != newQuote._id)
                             {
-                                Quote quoteToUpdate = _quoteCollection.Find(x => x._id == newQuote._id).FirstOrDefault();
+                                Quote quoteToUpdate = await _quoteCollection.Find(x => x._id == newQuote._id).FirstOrDefaultAsync(ct);
 
                                 // Create Sibling relationship
                                 var siblingRelationship = new Relationship();
@@ -562,7 +552,7 @@ namespace Facilitate.Api.Controllers
 
                                 // Save Child
                                 var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteToUpdate._id);
-                                var result = _quoteCollection.ReplaceOne(filter, quoteToUpdate, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+                                var result = await _quoteCollection.ReplaceOneAsync(filter, quoteToUpdate, new ReplaceOptions() { IsUpsert = true }, ct);
                             }
                         }
                     }

@@ -1,9 +1,8 @@
-﻿using MongoDB.Driver;
-
+﻿using Facilitate.Libraries.Models;
+using Facilitate.Libraries.Services;
 using Microsoft.AspNetCore.Mvc;
-//using System.Web.Http.Cors;
-
-using Facilitate.Libraries.Models;
+using MongoDB.Driver;
+//using Microsoft.AspNetCore.Cors;
 
 namespace Facilitate.Api.Controllers
 {
@@ -12,19 +11,11 @@ namespace Facilitate.Api.Controllers
     [ApiController]
     public class QuoteController : ControllerBase
     {
-        Utils utils = new Utils();
+        private readonly Utils utils;
 
-        string _mongoDBName = "Facilitate";
         string _mongoDBCollectionName = "Quote";
-
-        //string _mongoDBConnectionString = "mongodb+srv://facilitate:!13324BossWood@facilitate.73z1cne.mongodb.net/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
-        string _mongoDBConnectionString = "mongodb://localhost:27017/?retryWrites=true&w=majority&appName=Facilitate;safe=true;maxpoolsize=200";
-
-        IMongoClient _mongoDBClient;
-
-        IMongoCollection<Quote> _quoteCollection;
-
-        CancellationToken _cancellationToken;
+        private readonly IMongoDatabase _mongoDatabase;
+        private readonly IMongoCollection<Quote> _quoteCollection;
 
         List<Quote> sortedQuotes = new List<Quote>();
 
@@ -34,10 +25,11 @@ namespace Facilitate.Api.Controllers
 
         string resultMsg = string.Empty;
 
-        public QuoteController()
+        public QuoteController(DBService dBService, Utils utils)
         {
-            _mongoDBClient = new MongoClient(_mongoDBConnectionString);
-            _quoteCollection = _mongoDBClient.GetDatabase(_mongoDBName).GetCollection<Quote>(_mongoDBCollectionName);
+            _mongoDatabase = dBService.MongoDatabase;
+            _quoteCollection = _mongoDatabase.GetCollection<Quote>(_mongoDBCollectionName);
+            this.utils = utils;
         }
 
         public List<Quote> newQuoteListQueue = new List<Quote>();
@@ -47,7 +39,7 @@ namespace Facilitate.Api.Controllers
         [ProducesResponseType<String>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost]
-        public IActionResult Post([FromBody] QuoteRoofleSubmission roofleSubmission)
+        public async Task<IActionResult> Post([FromBody] QuoteRoofleSubmission roofleSubmission, CancellationToken ct)
         {
             Quote aggregateQuote = new Quote();
 
@@ -122,7 +114,7 @@ namespace Facilitate.Api.Controllers
                 aggregateQuote.street = roofleSubmission.street;
                 aggregateQuote.city = roofleSubmission.city;
 
-                var stateAbbreviation = utils.GetStateAbbrByName(roofleSubmission.state);
+                var stateAbbreviation = await utils.GetStateAbbrByNameAsync(roofleSubmission.state, ct);
 
                 aggregateQuote.state = stateAbbreviation;
                 aggregateQuote.zip = roofleSubmission.zip;
@@ -285,7 +277,7 @@ namespace Facilitate.Api.Controllers
 
                     // Insert Child
                     childQuote.relationships = childQuote.relationships.Distinct().ToList();
-                    _quoteCollection.InsertOne(childQuote);
+                    await _quoteCollection.InsertOneAsync(childQuote, null, ct);
 
                     // Add to queue for sibling relationship processing
                     newQuoteListQueue.Add(childQuote);
@@ -293,7 +285,7 @@ namespace Facilitate.Api.Controllers
 
                 // Insert Aggregate
                 aggregateQuote.relationships = aggregateQuote.relationships.Distinct().ToList();
-                _quoteCollection.InsertOne(aggregateQuote);
+                await _quoteCollection.InsertOneAsync(aggregateQuote, null, ct);
 
                 //CreateSiblingRelationships(aggregateQuote, newQuoteListQueue);
 
@@ -311,7 +303,7 @@ namespace Facilitate.Api.Controllers
             return Ok(aggregateQuote);
         }
 
-        private void CreateSiblingRelationships(Quote aggregateQuote, List<Quote> newQuoteListQueue)
+        private async Task CreateSiblingRelationshipsAsync(Quote aggregateQuote, List<Quote> newQuoteListQueue, CancellationToken ct = default)
         {
             var author = new ApplicationUser();
             author.Id = Guid.NewGuid().ToString();
@@ -353,7 +345,7 @@ namespace Facilitate.Api.Controllers
                         newQuote.events.Add(siblingEvent);
 
                         var filter = Builders<Quote>.Filter.Eq(x => x._id, newQuote._id);
-                        var result = _quoteCollection.ReplaceOne(filter, newQuote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+                        var result = await _quoteCollection.ReplaceOneAsync(filter, newQuote, new ReplaceOptions() { IsUpsert = true }, ct);
                     }
 
                     if (newQuote.Trade != "Aggregate")
@@ -380,7 +372,7 @@ namespace Facilitate.Api.Controllers
                         newQuote.events.Add(siblingEvent);
 
                         var filter = Builders<Quote>.Filter.Eq(x => x._id, newQuote._id);
-                        var result = _quoteCollection.ReplaceOne(filter, newQuote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+                        var result = await _quoteCollection.ReplaceOneAsync(filter, newQuote, new ReplaceOptions() { IsUpsert = true }, ct);
                     }
                 }
 
@@ -388,7 +380,7 @@ namespace Facilitate.Api.Controllers
 
                 //var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
 
-                //var result = _quoteCollection.ReplaceOne(filter, quoteToUpdate, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+                //var result = await _quoteCollection.ReplaceOneAsync(filter, quoteToUpdate, new ReplaceOptions() { IsUpsert = true }, ct);
             }
             catch (Exception ex)
             {
@@ -410,7 +402,7 @@ namespace Facilitate.Api.Controllers
         [ProducesResponseType<IEnumerable<Quote>>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet(Name = "Get")]
-        public IActionResult Get(string status)
+        public async Task<IActionResult> Get(string status, CancellationToken ct)
         {
             status = utils.TitleCaseString(status);
 
@@ -419,7 +411,7 @@ namespace Facilitate.Api.Controllers
                 var builder = Builders<Quote>.Filter;
                 var filter = builder.Eq(f => f.status, status);
 
-                sortedQuotes = _quoteCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
+                sortedQuotes = await _quoteCollection.Find(filter).SortByDescending(e => e.timestamp).ToListAsync(ct);
 
                 //for (var i = 0; i < sortedQuotes.Count; i++)
                 //{
