@@ -12,6 +12,7 @@ namespace Facilitate.Libraries.Models
         {
             _id = string.Empty;
             _t = "QuoteSummary";
+            isQualified = true;
             applicationType = string.Empty;
             relationship = string.Empty;
             status = string.Empty;
@@ -26,6 +27,7 @@ namespace Facilitate.Libraries.Models
 
         public string _id { get; set; }
         public string _t { get; set; }
+        public bool isQualified { get; set; }
         public string applicationType { get; set; }
         public string relationship { get; set; }
         public string status { get; set; }
