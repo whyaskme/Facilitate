@@ -216,6 +216,54 @@ namespace Facilitate.Admin.Data
             return QuoteHeaders;
         }
 
+        public List<QuoteSummary> GetChildQuoteSummaries(Quote quote)
+        {
+            List<QuoteSummary> QuoteHeaders = new List<QuoteSummary>();
+
+            try
+            {
+                foreach(var relationship in quote.relationships)
+                {
+                    var childId = relationship.ParentId;
+                    var filter = Builders<Quote>.Filter.Eq(f => f._id, childId);
+
+                    List<Quote> quotes = _mongoDBCollection.Find(filter).ToList();
+
+                    for (var i = 0; i < quotes.Count; i++)
+                    {
+                        QuoteSummary _summary = new QuoteSummary();
+
+                        if(_summary.applicationType == "Aggregate")
+                            _summary.relationship = "Child";
+                        else
+                            _summary.relationship = "Sibling";
+
+                        _summary._id = quotes[i]._id;
+                        _summary.applicationType = quotes[i].applicationType;
+                        _summary.status = quotes[i].status;
+
+                        _summary.events = quotes[i].events;
+
+                        _summary.totalQuote = quotes[i].totalQuote;
+                        _summary.projectManager = quotes[i].projectManager;
+
+                        _summary.timestamp = quotes[i].timestamp.ToLocalTime();
+                        _summary.lastUpdated = quotes[i].lastUpdated.ToLocalTime();
+
+                        QuoteHeaders.Add(_summary);
+                    }
+                }
+
+                return QuoteHeaders;
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+
+            return QuoteHeaders;
+        }
+
         public List<Quote> GetQuotes(string status, bool showHideTestData)
         {
             List<Quote> sortedQuotes = new List<Quote>();

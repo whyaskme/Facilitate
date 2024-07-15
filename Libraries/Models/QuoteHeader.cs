@@ -25,7 +25,7 @@ namespace Facilitate.Libraries.Models
             numberOfIncludedStructures = 0;
             totalSquareFeet = 0;
             totalQuote = 0;
-            timestamp = DateTime.Now;
+            timestamp = DateTime.UtcNow;
 
             events = new List<Event>();
             projectManager = null;

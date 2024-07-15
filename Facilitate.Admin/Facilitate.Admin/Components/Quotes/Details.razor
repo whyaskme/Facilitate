@@ -1080,6 +1080,8 @@ else
     public string ConfirmRemoveMessage { get; set; }
     public string ConfirmRestoreMessage { get; set; }
 
+    public List<QuoteSummary> childQuoteList = new List<QuoteSummary>();
+
     [Parameter]
     public EventCallback<IEnumerable<ListItem>> SelectedItemsChanged { get; set; }
 
@@ -1644,7 +1646,7 @@ else
         // Assignment event
         Event assignmentEvent = new Event();
         assignmentEvent.Name = "Assignment";
-        assignmentEvent.Details = "Lead assigned to Project Manager (" + projectManager.FirstName + " " + projectManager.LastName + "), moved to Opportunities and emailed to: " + projectManager.Email;
+        assignmentEvent.Details = CurrentlySelectedQuote.applicationType + " assigned to Project Manager (" + projectManager.FirstName + " " + projectManager.LastName + "), moved to Opportunities and emailed to: " + projectManager.Email;
         assignmentEvent.Author = currentUser;
 
         // Email PM and Client here...
@@ -2148,6 +2150,9 @@ else
 
             if(quotes != null)
                 CurrentlySelectedQuote = quotes[0];
+
+            // Get child quote summaries
+            childQuoteList = webServices.GetChildQuoteSummaries(CurrentlySelectedQuote);
 
             InvokeAsync(() =>
             {
