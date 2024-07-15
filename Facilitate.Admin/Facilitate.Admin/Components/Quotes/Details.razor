@@ -263,7 +263,7 @@ else
                                         <DxGridDataColumn Width="auto" Caption="Trade" FieldName="applicationType" />
                                         <DxGridDataColumn Width="auto" Caption="Relationship" FieldName="relationship" />
                                         <DxGridDataColumn Width="auto" Caption="Status" FieldName="status" />
-                                        <DxGridDataColumn Width="auto" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                            <DxGridDataColumn Width="auto" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                         <DxGridDataColumn Width="auto" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                         <DxGridDataColumn Width="auto" Caption="Amount" FieldName="totalQuote" />
                                         <DxGridDataColumn Width="auto" Caption="Manager" FieldName="projectManager" />
@@ -1535,44 +1535,44 @@ else
         {
             CurrentlySelectedQuote.status = "Opportunity";
 
-            if (CurrentlySelectedQuote.attachments.Count == 0)
-            {
-                // Workflow and Subsequent Document Requirements
-                Attachment workflowRequirements = new Attachment();
-                workflowRequirements.MediaDescription = "Workflow and Subsequent Document Requirements";
-                workflowRequirements.MediaUrl = "/docs/templates/misc/Workflow and Subsequent Document Requirements.pdf";
-                workflowRequirements.Author = sysUser;
-                CurrentlySelectedQuote.attachments.Add(workflowRequirements);
+            // if (CurrentlySelectedQuote.attachments.Count == 0)
+            // {
+            //     // Workflow and Subsequent Document Requirements
+            //     Attachment workflowRequirements = new Attachment();
+            //     workflowRequirements.MediaDescription = "Workflow and Subsequent Document Requirements";
+            //     workflowRequirements.MediaUrl = "/docs/templates/misc/Workflow and Subsequent Document Requirements.pdf";
+            //     workflowRequirements.Author = sysUser;
+            //     CurrentlySelectedQuote.attachments.Add(workflowRequirements);
 
-                Event workflowRequirementsEvent = new Event();
-                workflowRequirementsEvent.Details = workflowRequirements.MediaDescription + " sent to " + CurrentlySelectedQuote.email;
-                workflowRequirementsEvent.Author = sysUser;
-                CurrentlySelectedQuote.events.Add(workflowRequirementsEvent);
+            //     Event workflowRequirementsEvent = new Event();
+            //     workflowRequirementsEvent.Details = workflowRequirements.MediaDescription + " sent to " + CurrentlySelectedQuote.email;
+            //     workflowRequirementsEvent.Author = sysUser;
+            //     CurrentlySelectedQuote.events.Add(workflowRequirementsEvent);
 
-                // Facilitate Engagement Agreement
-                Attachment engagementAgreement = new Attachment();
-                engagementAgreement.MediaDescription = "Facilitate Engagement Agreement";
-                engagementAgreement.MediaUrl = "/docs/templates/agreements/Facilitate Engagement Agreement.docx";
-                engagementAgreement.Author = sysUser;
-                CurrentlySelectedQuote.attachments.Add(engagementAgreement);
+            //     // Facilitate Engagement Agreement
+            //     Attachment engagementAgreement = new Attachment();
+            //     engagementAgreement.MediaDescription = "Facilitate Engagement Agreement";
+            //     engagementAgreement.MediaUrl = "/docs/templates/agreements/Facilitate Engagement Agreement.docx";
+            //     engagementAgreement.Author = sysUser;
+            //     CurrentlySelectedQuote.attachments.Add(engagementAgreement);
 
-                Event engagementAgreementEvent = new Event();
-                engagementAgreementEvent.Details = engagementAgreement.MediaDescription + " sent to " + CurrentlySelectedQuote.email;
-                engagementAgreementEvent.Author = sysUser;
-                CurrentlySelectedQuote.events.Add(engagementAgreementEvent);
+            //     Event engagementAgreementEvent = new Event();
+            //     engagementAgreementEvent.Details = engagementAgreement.MediaDescription + " sent to " + CurrentlySelectedQuote.email;
+            //     engagementAgreementEvent.Author = sysUser;
+            //     CurrentlySelectedQuote.events.Add(engagementAgreementEvent);
 
-                // Welcome Letter
-                Attachment welcomeLetter = new Attachment();
-                welcomeLetter.MediaDescription = "Welcome to Facilitate.org";
-                welcomeLetter.MediaUrl = "/docs/templates/boilerplate/Welcome to Facilitate.docx";
-                welcomeLetter.Author = sysUser;
-                CurrentlySelectedQuote.attachments.Add(welcomeLetter);
+            //     // Welcome Letter
+            //     Attachment welcomeLetter = new Attachment();
+            //     welcomeLetter.MediaDescription = "Welcome to Facilitate.org";
+            //     welcomeLetter.MediaUrl = "/docs/templates/boilerplate/Welcome to Facilitate.docx";
+            //     welcomeLetter.Author = sysUser;
+            //     CurrentlySelectedQuote.attachments.Add(welcomeLetter);
 
-                Event welcomeLetterEvent = new Event();
-                welcomeLetterEvent.Details = welcomeLetter.MediaDescription + " sent to " + CurrentlySelectedQuote.email;
-                welcomeLetterEvent.Author = sysUser;
-                CurrentlySelectedQuote.events.Add(welcomeLetterEvent);
-            }
+            //     Event welcomeLetterEvent = new Event();
+            //     welcomeLetterEvent.Details = welcomeLetter.MediaDescription + " sent to " + CurrentlySelectedQuote.email;
+            //     welcomeLetterEvent.Author = sysUser;
+            //     CurrentlySelectedQuote.events.Add(welcomeLetterEvent);
+            // }
 
             Event statusChanged = new Event();
             statusChanged.Details = CurrentlySelectedQuote.firstName + " " + CurrentlySelectedQuote.lastName + " converted to Opportunity";
@@ -1697,13 +1697,19 @@ else
         notesCount--;
     }
 
-    public Quote originalQuote = null;
+    // public Quote originalQuote = null;
     public Quote parentQuote = null;
 
-    public Relationship childRelationship = null;
+    // public Relationship childRelationship = null;
 
     public void AddTrade()
     {
+        bool isAggregate = false;
+        if (CurrentlySelectedQuote.applicationType == "Aggregate")
+        {
+            isAggregate = true;
+        }
+
         List<Quote> newQuoteListQueue = new List<Quote>();
 
         Event _event = new Event();
@@ -1714,113 +1720,104 @@ else
 
         try
         {
-            // Make a copy of original quote
-            originalQuote = new Quote(CurrentlySelectedQuote);
-            originalQuote._id = ObjectId.GenerateNewId().ToString();
-
-            Note note = new Note();
-            note.Summary = "Spawned from original " + CurrentlySelectedQuote.applicationType + " quote (" + CurrentlySelectedQuote._id + ")";
-            note.Details = note.Summary;
-
-            originalQuote.notes.Add(note);
-            newQuoteListQueue.Add(originalQuote);
-
-            // Create Parent quote from a copy of original quote
-            parentQuote = new Quote(originalQuote);
-            parentQuote._id = ObjectId.GenerateNewId().ToString();
-            parentQuote.applicationType = "Aggregate";
-            parentQuote.totalQuote = 0;
-
-            // Add events to new Master
-            _event = new Event();
-            _event.Author = currentUser;
-            _event.Name = "Aggregate project created";
-            _event.Details = "Aggregate quote created from original " + CurrentlySelectedQuote.applicationType + " quote (" + CurrentlySelectedQuote._id + ")";
-
-            parentQuote.events.Add(_event);
-
-            newQuoteListQueue.Add(parentQuote);
-
-            // Create Parent relationship
-            var parentRelationship = new Relationship();
-            parentRelationship._id = parentQuote._id;
-            parentRelationship.ParentId = parentQuote._id;
-            parentRelationship.Type = "Parent";
-            parentRelationship.Name = parentQuote.applicationType;
-
-            // Archive original quote
-            // CurrentlySelectedQuote.status = "(Aggregate Source)";
-
-            _event = new Event();
-            _event.Author = currentUser;
-            _event.Name = "Quote converted to Aggregate";
-            _event.Details = "Original (" + CurrentlySelectedQuote.applicationType + ") quote converted to Aggregate Id (" + parentQuote._id + ")";
-
-            CurrentlySelectedQuote.events.Add(_event);
-            WebServices.UpdateQuote(CurrentlySelectedQuote);
-
-            // Create child quotes
-            foreach (var selectedTrade in SelectedTradesToAdd)
+            if(!isAggregate)
             {
-                Quote childQuote = new Quote(originalQuote);
-                childQuote.applicationType = selectedTrade.Value;
+                // Create Parent quote from a copy of original quote
+                parentQuote = new Quote(CurrentlySelectedQuote);
+                parentQuote._id = ObjectId.GenerateNewId().ToString();
+                parentQuote.applicationType = "Aggregate";
+                parentQuote.totalQuote = 0;
 
-                // Make sure this child is set to the same status as parent
-                childQuote.status = CurrentlySelectedQuote.status;
-
-                // If this started as a roofing quote, ensure this new child instance inherits the product properties.
-                // Otherwise, set these to empty for the new children/siblings
-                // if (CurrentlySelectedQuote.applicationType != selectedTrade.Value)
-                // {
-                    // Reset all products and warranties in child
-                    childQuote.totalQuote = 0;
-                    childQuote.notes = new List<Note>();
-                    childQuote.attachments = new List<Attachment>();
-                    childQuote.events = new List<Event>();
-                    childQuote.Groups = new List<ObjectId>();
-                    childQuote.products = new List<Product>();
-                    childQuote.warranties = new List<Warranty>();
-                // }
+                // Create Parent relationship
+                var parentRelationship = new Relationship();
+                parentRelationship._id = parentQuote._id;
+                parentRelationship.ParentId = parentQuote._id;
+                parentRelationship.Type = "Parent";
+                parentRelationship.Name = parentQuote.applicationType;
 
                 // Add events to new Master
                 _event = new Event();
                 _event.Author = currentUser;
-                _event.Name = "Child project created";
-                _event.Details = "Child (" + childQuote.applicationType + ") quote created from original " + CurrentlySelectedQuote.applicationType + " quote (" + CurrentlySelectedQuote._id + ")";
+                _event.Name = "Aggregate project created";
+                _event.Details = "Aggregate quote created from original " + CurrentlySelectedQuote.applicationType + " quote (" + CurrentlySelectedQuote._id + ")";
 
-                childQuote.events.Add(_event);
-
-                // Add this event to master
                 parentQuote.events.Add(_event);
 
-                // Add Parent relationship to Child
-                if (childQuote.applicationType != "Aggregate")
+                newQuoteListQueue.Add(parentQuote);
+
+                Note note = new Note();
+                note.Summary = "Spawned from original " + CurrentlySelectedQuote.applicationType + " quote (" + CurrentlySelectedQuote._id + ")";
+                note.Details = note.Summary;
+
+                CurrentlySelectedQuote.notes.Add(note);
+                //CurrentlySelectedQuote.relationships.Add(parentRelationship);
+
+                WebServices.UpdateQuote(CurrentlySelectedQuote);
+
+                newQuoteListQueue.Add(CurrentlySelectedQuote);
+
+                // Create child quotes
+                foreach (var selectedTrade in SelectedTradesToAdd)
                 {
-                    // Create Parent relationship
-                    childQuote.relationships.Add(parentRelationship);
-                    newQuoteListQueue.Add(childQuote);
+                    Quote childQuote = new Quote(CurrentlySelectedQuote);
+                    childQuote.applicationType = selectedTrade.Value;
+
+                    // Reset new child instance product properties.
+                    if (CurrentlySelectedQuote.applicationType != selectedTrade.Value)
+                    {
+                        childQuote.totalQuote = 0;
+                        childQuote.notes = new List<Note>();
+                        childQuote.attachments = new List<Attachment>();
+                        childQuote.events = new List<Event>();
+                        childQuote.Groups = new List<ObjectId>();
+                        childQuote.products = new List<Product>();
+                        childQuote.warranties = new List<Warranty>();
+                    }
+
+                    // Add events to new Master
+                    _event = new Event();
+                    _event.Author = currentUser;
+                    _event.Name = "Child project created";
+                    _event.Details = "Child (" + childQuote.applicationType + ") quote created from original " + CurrentlySelectedQuote.applicationType + " quote (" + CurrentlySelectedQuote._id + ")";
+
+                    childQuote.events.Add(_event);
+
+                    // Add this event to master
+                    parentQuote.events.Add(_event);
+
+                    // Add Parent relationship to Child
+                    if (childQuote.applicationType != "Aggregate")
+                    {
+                        // Create Parent relationship
+                        childQuote.relationships.Add(parentRelationship);
+                        newQuoteListQueue.Add(childQuote);
+                    }
+                }
+
+                // Add child relationships to parent
+                parentQuote.relationships.Clear();
+
+                foreach (Quote currentQuote in newQuoteListQueue)
+                {
+                    // Ensure unique ids
+                    currentQuote._id = ObjectId.GenerateNewId().ToString();
+
+                    if (currentQuote.applicationType != "Aggregate")
+                    {
+                        // Create Child relationship
+                        Relationship childRelationship = new Relationship();
+                        childRelationship._id = currentQuote._id;
+                        childRelationship.ParentId = parentQuote._id;
+                        childRelationship.Type = "Child";
+                        childRelationship.Name = currentQuote.applicationType;
+
+                        parentQuote.relationships.Add(childRelationship);
+                    }
                 }
             }
-
-            // Add child relationships to parent
-            parentQuote.relationships.Clear();
-
-            foreach (Quote currentQuote in newQuoteListQueue)
+            else
             {
-                // Ensure unique ids
-                currentQuote._id = ObjectId.GenerateNewId().ToString();
 
-                if (currentQuote.applicationType != "Aggregate")
-                {
-                    // Create Child relationship
-                    childRelationship = new Relationship();
-                    childRelationship._id = currentQuote._id;
-                    childRelationship.ParentId = parentQuote._id;
-                    childRelationship.Type = "Child";
-                    childRelationship.Name = currentQuote.applicationType;
-
-                    parentQuote.relationships.Add(childRelationship);
-                }
             }
 
             WebServices.UpdateQuote(parentQuote);
@@ -1880,7 +1877,7 @@ else
             // Loop through reference list and parse out each child Id and references for relationships
             foreach(Quote referenceQuote in referenceQuoteList)
             {
-               if(currentQuote.applicationType == referenceQuote.applicationType)
+                if(currentQuote.applicationType == referenceQuote.applicationType)
                 {
                     //currentQuote.relationships.Add(parentRelationship);
 
@@ -1934,7 +1931,7 @@ else
         }
 
         WebServices.UpdateQuote(CurrentlySelectedQuote);
-        
+
         IsPopupVisibleDeleteTrade = false;
 
     }
@@ -1962,7 +1959,7 @@ else
         }
 
         WebServices.UpdateQuote(CurrentlySelectedQuote);
-        
+
         IsPopupVisibleRestoreTrade = false;
 
     }
@@ -2081,34 +2078,30 @@ else
 
     private async Task TimerRefresh()
     {
-        double totalQuoteValue = 0;
         TimerDispose();
 
         _timer = new Timer(new TimerCallback(_ =>
         {
-            var ShowTestData = true;
-            totalQuoteValue = 0;
-
             quotes = webServices.GetQuote(QuoteId);
 
-            if(quotes != null)
+            if(quotes != null){
                 CurrentlySelectedQuote = quotes[0];
+            }  
 
-            // Get child quote summaries
-            childQuoteList = webServices.GetChildQuoteSummaries(CurrentlySelectedQuote);
-            foreach (QuoteSummary childQuote in childQuoteList)
+            if(CurrentlySelectedQuote.applicationType == "Aggregate")
             {
-                totalQuoteValue = totalQuoteValue + childQuote.totalQuote;
+                double quoteValue = 0;
 
-                childQuote.projectManager = childQuote.projectManager;
+                // Get child quote summaries
+                childQuoteList = webServices.GetChildQuoteSummaries(CurrentlySelectedQuote);
+                foreach (QuoteSummary childQuote in childQuoteList)
+                {
+                    quoteValue += childQuote.totalQuote;
+                }
 
-                // var viewLink = "/quotes/details/" + childQuote._id + "/opportunities/";
-                // var removeLink = "";
-
-                // childQuote.actions = "Remove";
+                CurrentlySelectedQuote.totalQuote = quoteValue;
+                //WebServices.UpdateQuote(CurrentlySelectedQuote);
             }
-
-            CurrentlySelectedQuote.totalQuote = totalQuoteValue;
 
             InvokeAsync(() =>
             {
