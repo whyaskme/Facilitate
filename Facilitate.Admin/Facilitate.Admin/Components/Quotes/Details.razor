@@ -216,6 +216,8 @@ else
 
                         if (CurrentlySelectedQuote.projectManager != null)
                         {
+                            var relationshipCount = CurrentlySelectedQuote.relationships.Count;
+
                             <div class="row project-manager-summary">
                                 <div class="col">
                                     <label>Name</label>
@@ -244,114 +246,27 @@ else
 
                             <hr />
 
-                            <h6>@relationshipsCount Project Trades</h6>
+                            <h6>@relationshipCount Project Trades</h6>
 
-
-
-                            foreach (var relatedTrade in CurrentlySelectedQuote.relationships)
-                            {
-                                var relatedQuoteId = relatedTrade._id;
-
-                                if (@relatedTrade.Type == "Parent" || @relatedTrade.Type == "Child")
-                                {
-                                    currentIndex++;
-
-                                    var relationshipName = relatedTrade.Name;
-                                    var relationshipId = relatedTrade.ParentId;
-                                    var relationshipType = relatedTrade.Type;
-                                    var relationshipIsEnabled = relatedTrade.IsEnabled;
-                                    var relationshipCreatedById = relatedTrade.CreatedById;
-                                    var relationshipCreatedDate = relatedTrade.CreatedDate.ToLocalTime();
-                                    var relationshipModifiedById = relatedTrade.ModifiedById;
-                                    var relationshipModifiedDate = relatedTrade.ModifiedDate.ToLocalTime();
-
-                                    var childQuoteStatus = "???";
-
-                                    <div class="row">
-
-                                        <div class="col">
-                                            <button class="action-button action-button-small" @onclick='() => RedirectToQuoteDetails(relatedQuoteId)'>View</button>
-
-                                            @{
-                                                if (@relationshipIsEnabled)
-                                                {
-                                                    if (@relationshipType == "Child")
-                                                    {
-                                                        if(isAggregateQuote)
-                                                        {
-                                                            <button class="action-button action-button-small" @onclick='() => RemoveQuoteProject(relatedQuoteId)'>Remove</button>
-                                                        }
-                                                        else
-                                                        {
-                                                            <label class="relationship-status">Relationship</label>
-                                                            <span>Sibling</span>
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        <label class="relationship-status">Relationship</label>
-                                                        <span class="detail-item system-warning">Parent</span>
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    <button class="action-button-disabled" @onclick='() => RestoreQuoteProject(relatedQuoteId)'>Archived</button>
-                                                }
-                                            }
-                                        </div>
-
-                                        <div class="col">
-                                            <label>Type</label>
-                                            @{
-                                                if (@relationshipType == "Parent")
-                                                {
-                                                    <span class="detail-item system-warning">@relationshipName</span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="detail-item">@relationshipName</span>
-                                                }
-                                            }
-                                        </div>
-
-                                            <div class="col">
-                                                <label>Status</label>
-                                                <span class="detail-item">@childQuoteStatus</span>
-                                            </div>
-
-                                        @{
-                                            if (@recordIDVisible)
-                                            {
-                                                <div class="col id-column">
-                                                    <label>Id</label>
-                                                    <span class="detail-item">@relatedQuoteId</span>
-                                                </div>
-                                            }
-                                        }
-
-                                        <div class="col">
-                                            <label>Date</label>
-                                            <span class="detail-item">@relationshipModifiedDate</span>
-                                        </div>
-
-                                        <div class="col">
-                                            <label>Amount</label>
-                                            <span class="detail-item">$0.00</span>
-                                        </div>
-
-                                        <div class="col">
-                                            <label>Project Manager</label>
-                                            <span class="detail-item">???</span>
-                                        </div>
-
-                                        <div class="col">&nbsp;</div>
-                                        <div class="col">&nbsp;</div>
-                                        <div class="col">&nbsp;</div>
-                                        <div class="col">&nbsp;</div>
-                                        <div class="col">&nbsp;</div>
-                                    </div>
-                                }
-                            }
+                            <DxGrid @ref="ChildQuoteGrid"
+                                    Data="@childQuoteList"
+                                    KeyFieldName="_id"
+                                    AutoExpandAllGroupRows="true"
+                                    RowClick="OnRowClick"
+                                    AllowSelectRowByClick="true"
+                                    SelectionMode="GridSelectionMode.Single"
+                                    @bind-SelectedDataItem="@SelectedChildQuoteItem"
+                                    TextWrapEnabled="false">
+                                <Columns>
+                                    <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
+                                    <DxGridDataColumn Width="auto" Caption="Trade" FieldName="applicationType" />
+                                    <DxGridDataColumn Width="auto" Caption="Relationship" FieldName="relationship" />
+                                    <DxGridDataColumn Width="auto" Caption="Status" FieldName="status" />
+                                    <DxGridDataColumn Width="auto" Caption="Created" FieldName="timestamp" />
+                                    <DxGridDataColumn Width="auto" Caption="Updated" FieldName="lastEventTimeStamp" />
+                                    <DxGridDataColumn Width="auto" Caption="Amount" FieldName="totalQuote" />
+                                </Columns>
+                            </DxGrid>
 
                             <hr />
 
@@ -1392,12 +1307,14 @@ else
     #region Private Properties
 
     private List<Quote>? quotes;
+    private List<Quote>? childQuotes;
 
     int SelectedFilesCount { get; set; }
 
     ObjectId SelectedFileId { get; set; }
 
     IGrid QuoteGrid { get; set; }
+    IGrid ChildQuoteGrid { get; set; }
 
     IGrid EventGrid { get; set; }
 
@@ -1508,6 +1425,9 @@ else
 
     [Parameter]
     public object SelectedQuoteItem { get; set; }
+
+    [Parameter]
+    public object SelectedChildQuoteItem { get; set; }
 
     [Parameter]
     public object SelectedEventItem { get; set; }

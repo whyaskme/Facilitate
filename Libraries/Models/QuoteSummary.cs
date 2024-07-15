@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,8 +11,9 @@ namespace Facilitate.Libraries.Models
     {
         public QuoteSummary()
         {
-            _id = string.Empty;
+            _id = ObjectId.GenerateNewId().ToString();
             _t = "QuoteSummary";
+
             isQualified = true;
             applicationType = string.Empty;
             relationship = string.Empty;
@@ -19,7 +21,8 @@ namespace Facilitate.Libraries.Models
 
             totalQuote = 0;
             timestamp = DateTime.UtcNow;
-            lastUpdated = DateTime.UtcNow;
+            lastEventTimeStamp = DateTime.UtcNow;
+            lastEventDetails = string.Empty;
             events = new List<Event>();
 
             projectManager = null;
@@ -34,8 +37,9 @@ namespace Facilitate.Libraries.Models
         
         public double totalQuote { get; set; }
         public DateTime timestamp { get; set; }
-        public DateTime lastUpdated { get; set; }
         public List<Event> events { get; set; }
+        public DateTime lastEventTimeStamp { get; set; }
+        public string lastEventDetails { get; set; }
 
         public virtual ApplicationUser? projectManager { get; set; }
     }

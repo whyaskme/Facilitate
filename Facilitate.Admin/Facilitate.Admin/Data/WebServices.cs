@@ -248,7 +248,7 @@ namespace Facilitate.Admin.Data
                         _summary.projectManager = quotes[i].projectManager;
 
                         _summary.timestamp = quotes[i].timestamp.ToLocalTime();
-                        _summary.lastUpdated = quotes[i].lastUpdated.ToLocalTime();
+                        _summary.lastEventTimeStamp = quotes[i].lastUpdated.ToLocalTime();
 
                         QuoteHeaders.Add(_summary);
                     }
