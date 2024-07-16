@@ -174,7 +174,7 @@ else
                         @{
                             if(isAggregateQuote)
                             {
-                                <div class="header-total-element">@CurrentlySelectedQuote.totalQuote.ToString("C0")</div>
+                                <div class="header-total-element">@TotalQuoteValue</div>
                             }
                             else
                             {
@@ -1049,14 +1049,24 @@ else
 
     async Task OnDataItemDeleting(GridDataItemDeletingEventArgs args)
     {
-        //IsPopupVisibleDeleteTrade = true;
-
         QuoteSummary selectedQuote = (QuoteSummary)args.DataItem;
 
         quoteIdToRemove = selectedQuote._id;
 
         var quoteToRemove = WebServices.GetQuote(quoteIdToRemove)[0];
         quoteToRemove.status = "Archive";
+
+        Event _event = new Event();
+        _event.Author = currentUser;
+        _event.Name = quoteToRemove.applicationType + " quote (" + quoteIdToRemove + ") removed from Aggregrate Parent (" + CurrentlySelectedQuote._id + ")";
+        _event.Details = _event.Name;
+
+        // Add event to child quote
+        quoteToRemove.events.Add(_event);
+
+        // Add event to parent quote
+        // Actually, the parent aggregate should only refkect individual child events at runtime.
+        //CurrentlySelectedQuote.events.Add(_event);
 
         WebServices.UpdateQuote(quoteToRemove);
     }
@@ -2220,20 +2230,23 @@ else
 
     private async Task TimerRefresh()
     {
+        bool isAggregate = false;
+        double aggregateTotal = 0;
+        double standaloneTotal = 0;
+
         TimerDispose();
 
         _timer = new Timer(new TimerCallback(_ =>
         {
+            aggregateTotal = 0;
+            standaloneTotal = 0;
+
             quotes = webServices.GetQuote(QuoteId);
             if(quotes != null)
             {
                 CurrentlySelectedQuote = quotes[0];
 
-                var originalValue = CurrentlySelectedQuote.totalQuote;
-
-                bool isAggregate = false;
-
-                double quoteValue = 0;
+                standaloneTotal = CurrentlySelectedQuote.totalQuote;
 
                 // Get child quote summaries
                 childQuoteList = webServices.GetChildQuoteSummaries(CurrentlySelectedQuote);
@@ -2245,18 +2258,18 @@ else
 
                         if (childQuote.status != "Archive")
                         {
-                            quoteValue += childQuote.totalQuote;
+                            aggregateTotal += childQuote.totalQuote;
                         }
                     }
                 }
 
                 if (isAggregate)
                 {
-                    TotalQuoteValue = quoteValue.ToString("C0");
+                    TotalQuoteValue = aggregateTotal.ToString("C0");
                 }
                 else
                 {
-                    TotalQuoteValue = originalValue.ToString("C0");
+                    TotalQuoteValue = standaloneTotal.ToString("C0");
                 }
 
                 var tmpVal = TotalQuoteValue;
