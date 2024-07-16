@@ -548,23 +548,20 @@ else
                     }
 
                     <DxTabPage Id="Panel-History" Text="History">
-                        @foreach (Event _event in CurrentlySelectedQuote.events)
-                        {
-                            <div class="note-row">
-                                <div class="">
-                                    <label>@eventsCount) @_event.DateTime</label>
-                                </div>
 
-                                <span class="bar-spacer">|</span>
-                                <span>@_event.Details</span>
+                        <DxGrid @ref="EventGrid"
+                            Data="@AggregateEventList"
+                            KeyFieldName="_id"
+                            TextWrapEnabled="false">
+                            <Columns>
+                                <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
+                                <DxGridDataColumn Width="175" Caption="Date" FieldName="DateCreated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                <DxGridDataColumn Width="150" Caption="Trade" FieldName="Trade" />
+                                <DxGridDataColumn Width="auto" Caption="Details" FieldName="Details" />
+                                <DxGridDataColumn Width="175" Caption="Author" FieldName="Author" />
+                            </Columns>
+                        </DxGrid>
 
-                                <span class="bar-spacer">|</span>
-                                <label>Source</label>
-                                <span>@_event.Author.FirstName @_event.Author.LastName</span>
-                            </div>
-
-                            eventsCount--;
-                        }
                     </DxTabPage>
 
                     <DxTabPage Id="Panel-Origination" Text="Origination">
@@ -1013,6 +1010,8 @@ else
 {
     string TotalQuoteValue { get; set; }
 
+    public List<EventSummary> AggregateEventList = new List<EventSummary>();
+
     public abstract class DxInputDataEditorBase<T> : DxDataEditor<T>;
 
     [Parameter]
@@ -1398,7 +1397,6 @@ else
 
     IGrid QuoteGrid { get; set; }
     IGrid ChildQuoteGrid { get; set; }
-
     IGrid EventGrid { get; set; }
 
     EntityInstantFeedbackSource InstantFeedbackSource { get; set; }
@@ -2241,10 +2239,27 @@ else
             aggregateTotal = 0;
             standaloneTotal = 0;
 
+            AggregateEventList.Clear();
+
             quotes = webServices.GetQuote(QuoteId);
             if(quotes != null)
             {
                 CurrentlySelectedQuote = quotes[0];
+
+                foreach (Event _event in CurrentlySelectedQuote.events)
+                {
+                    EventSummary eventSummary = new EventSummary();
+                    eventSummary._id = _event._id;
+                    
+                    eventSummary.Name = _event.Name;
+                    eventSummary.Details = _event.Details;
+                    eventSummary.Author = _event.Author.FirstName + " " + _event.Author.LastName;
+                    eventSummary.DateCreated = _event.DateTime;
+
+                    eventSummary.Trade = CurrentlySelectedQuote.applicationType;
+
+                    AggregateEventList.Add(eventSummary);
+                }
 
                 standaloneTotal = CurrentlySelectedQuote.totalQuote;
 
