@@ -145,7 +145,7 @@ else
                 {
                     if (isAggregateQuote)
                     {
-                        <div class="summary-header-parent">Aggregate (Parent) Quote</div>
+                        <div class="summary-header-parent">Aggregate Quote</div>
                     }
                     else
                     {
@@ -2225,12 +2225,13 @@ else
         _timer = new Timer(new TimerCallback(_ =>
         {
             quotes = webServices.GetQuote(QuoteId);
-
             if(quotes != null)
             {
                 CurrentlySelectedQuote = quotes[0];
 
-                bool hasChildren = false;
+                var originalValue = CurrentlySelectedQuote.totalQuote;
+
+                bool isAggregate = false;
 
                 double quoteValue = 0;
 
@@ -2238,9 +2239,10 @@ else
                 childQuoteList = webServices.GetChildQuoteSummaries(CurrentlySelectedQuote);
                 foreach (QuoteSummary childQuote in childQuoteList)
                 {
-                    hasChildren = true;
                     if(CurrentlySelectedQuote.applicationType == "Aggregate")
                     {
+                        isAggregate = true;
+
                         if (childQuote.status != "Archive")
                         {
                             quoteValue += childQuote.totalQuote;
@@ -2248,12 +2250,16 @@ else
                     }
                 }
 
-                if (hasChildren)
+                if (isAggregate)
                 {
-                    CurrentlySelectedQuote.totalQuote = quoteValue;
+                    TotalQuoteValue = quoteValue.ToString("C0");
+                }
+                else
+                {
+                    TotalQuoteValue = originalValue.ToString("C0");
                 }
 
-                TotalQuoteValue = CurrentlySelectedQuote.totalQuote.ToString("C2");
+                var tmpVal = TotalQuoteValue;
 
                 InvokeAsync(() =>
                 {
