@@ -125,11 +125,11 @@ else
 
                 var _emailTabLabel = "Email " + @CurrentlySelectedQuote.firstName + " Documents";
 
-                tradesCount = CurrentlySelectedQuote.structures.Count;
-                if (tradesCount <= 1)
-                    tradesCountLabel = tradesCount.ToString() + " " + CurrentlySelectedQuote.applicationType + " Selected";
-                else
-                    tradesCountLabel = tradesCount.ToString() + " " + CurrentlySelectedQuote.applicationType + " Selected";
+                // tradesCount = AggregateEventList.Count(); // CurrentlySelectedQuote.structures.Count;
+                // if (tradesCount <= 1)
+                //     tradesCountLabel = tradesCount.ToString() + " " + CurrentlySelectedQuote.applicationType + " Selected";
+                // else
+                //     tradesCountLabel = tradesCount.ToString() + " " + CurrentlySelectedQuote.applicationType + " Selected";
 
                 productsCount = CurrentlySelectedQuote.products.Count;
                 if (productsCount <= 1)
@@ -255,7 +255,7 @@ else
 
                             <hr />
 
-                            <h6>Trades</h6>
+                            <h6>@ChildTradesCount Trades</h6>
 
                                 if (!isChildQuote)
                                 {
@@ -265,7 +265,7 @@ else
                                     <div>&nbsp;</div>
                                 }
 
-                                if (@relationshipCount > 0)
+                                if (@ChildTradesCount > 0)
                                 {
                                     <DxGrid @ref="ChildQuoteGrid"
                                     Data="@childQuoteList"
@@ -518,36 +518,38 @@ else
                                     }
                                 }
                             </DxTabPage>
-
-                            <DxTabPage Id="Panel-Notes" Text="Notes">
-                                <button class="action-button" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
-                                @foreach (Note note in CurrentlySelectedQuote.notes)
-                                {
-                                    if (!note.IsDeleted)
-                                    {
-                                        <div class="note-row">
-                                            <div>
-                                                <label>@notesCount) @note.Date</label>
-                                            </div>
-
-                                            <span class="hyperlink-warning" @onclick="() => SelectNoteToDelete(CurrentlySelectedQuote, note)">Delete</span>
-
-                                            <span class="bar-spacer">|</span>
-                                            <span>@note.Details</span>
-
-                                            <span class="bar-spacer">|</span>
-                                            <label>Source</label>
-                                            <span>@note.Author.FirstName @note.Author.LastName</span>
-                                        </div>
-
-                                        notesCount--;
-                                    }
-                                }
-                            </DxTabPage>
                         }
                     }
 
+                    <DxTabPage Id="Panel-Notes" Text="Notes">
+                        <button class="action-button" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
+                        @foreach (Note note in CurrentlySelectedQuote.notes)
+                        {
+                            if (!note.IsDeleted)
+                            {
+                                <div class="note-row">
+                                    <div>
+                                        <label>@notesCount) @note.Date</label>
+                                    </div>
+
+                                    <span class="hyperlink-warning" @onclick="() => SelectNoteToDelete(CurrentlySelectedQuote, note)">Delete</span>
+
+                                    <span class="bar-spacer">|</span>
+                                    <span>@note.Details</span>
+
+                                    <span class="bar-spacer">|</span>
+                                    <label>Source</label>
+                                    <span>@note.Author.FirstName @note.Author.LastName</span>
+                                </div>
+
+                                notesCount--;
+                            }
+                        }
+                    </DxTabPage>
+
                     <DxTabPage Id="Panel-History" Text="History">
+
+                        <h6>@EventsCount Events</h6>
 
                         <DxGrid @ref="EventGrid"
                             Data="@AggregateEventList"
@@ -1933,6 +1935,7 @@ else
                         childQuote.Groups = new List<ObjectId>();
                         childQuote.products = new List<Product>();
                         childQuote.warranties = new List<Warranty>();
+                        childQuote.relationships = new List<Relationship>();
                     }
 
                     // Add events to new Master
@@ -1951,7 +1954,7 @@ else
                     if (childQuote.applicationType != "Aggregate")
                     {
                         // Create Parent relationship
-                        childQuote.relationships.Add(parentRelationship);
+                        //childQuote.relationships.Add(parentRelationship);
                         newQuoteListQueue.Add(childQuote);
                     }
                 }
@@ -2233,6 +2236,9 @@ else
         _timer = null;
     }
 
+    public int ChildTradesCount = 0;
+    public int EventsCount = 0;
+
     private async Task TimerRefresh()
     {
         bool isAggregate = false;
@@ -2244,6 +2250,9 @@ else
 
         _timer = new Timer(new TimerCallback(_ =>
         {
+            ChildTradesCount = 0;
+            EventsCount = 0;
+
             aggregateTotal = 0;
             standaloneTotal = 0;
 
@@ -2256,6 +2265,8 @@ else
 
                 foreach (Event _event in CurrentlySelectedQuote.events)
                 {
+                    EventsCount++;
+
                     EventSummary eventSummary = new EventSummary();
                     eventSummary._id = _event._id;
                     
@@ -2287,10 +2298,14 @@ else
 
                         if (childQuote.status != "Archive")
                         {
+                            ChildTradesCount++;
+
                             aggregateTotal += childQuote.totalQuote;
 
                             foreach (Event _event in childQuote.events)
                             {
+                                EventsCount++;
+
                                 EventSummary eventSummary = new EventSummary();
                                 eventSummary._id = _event._id;
                     
