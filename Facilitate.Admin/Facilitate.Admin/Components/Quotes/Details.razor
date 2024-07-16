@@ -1945,6 +1945,7 @@ else
                     _event.Name = "Child project created";
                     _event.Details = "Child (" + childQuote.applicationType + ") quote created from original " + originalQuoteCopy.applicationType + " quote (" + originalQuoteCopy._id + ")";
 
+                    // Add this event to child
                     childQuote.events.Add(_event);
 
                     // Add this event to master
@@ -1953,8 +1954,6 @@ else
                     // Add Parent relationship to Child
                     if (childQuote.applicationType != "Aggregate")
                     {
-                        // Create Parent relationship
-                        //childQuote.relationships.Add(parentRelationship);
                         newQuoteListQueue.Add(childQuote);
                     }
                 }
@@ -2292,38 +2291,35 @@ else
                 childQuoteList = webServices.GetChildQuoteSummaries(CurrentlySelectedQuote);
                 foreach (QuoteSummary childQuote in childQuoteList)
                 {
-                    if(CurrentlySelectedQuote.applicationType == "Aggregate")
+                    isAggregate = true;
+
+                    if (childQuote.status != "Archive")
                     {
-                        isAggregate = true;
+                        ChildTradesCount++;
 
-                        if (childQuote.status != "Archive")
+                        aggregateTotal += childQuote.totalQuote;
+
+                        foreach (Event _event in childQuote.events)
                         {
-                            ChildTradesCount++;
+                            EventsCount++;
 
-                            aggregateTotal += childQuote.totalQuote;
-
-                            foreach (Event _event in childQuote.events)
-                            {
-                                EventsCount++;
-
-                                EventSummary eventSummary = new EventSummary();
-                                eventSummary._id = _event._id;
+                            EventSummary eventSummary = new EventSummary();
+                            eventSummary._id = _event._id;
                     
-                                eventSummary.Name = _event.Name;
-                                eventSummary.Details = _event.Details;
+                            eventSummary.Name = _event.Name;
+                            eventSummary.Details = _event.Details;
 
-                                authorName = _event.Author.FirstName + " " + _event.Author.LastName;
-                                if(authorName == " ")
-                                    authorName = "System Process";
+                            authorName = _event.Author.FirstName + " " + _event.Author.LastName;
+                            if(authorName == " ")
+                                authorName = "System Process";
 
-                                eventSummary.Author = authorName;
+                            eventSummary.Author = authorName;
 
-                                eventSummary.DateCreated = _event.DateTime.ToLocalTime();
+                            eventSummary.DateCreated = _event.DateTime.ToLocalTime();
 
-                                eventSummary.Trade = childQuote.applicationType;
+                            eventSummary.Trade = childQuote.applicationType;
 
-                                AggregateEventList.Add(eventSummary);
-                            }
+                            AggregateEventList.Add(eventSummary);
                         }
                     }
                 }
