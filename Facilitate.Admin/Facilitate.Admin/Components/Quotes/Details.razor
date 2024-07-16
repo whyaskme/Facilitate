@@ -272,7 +272,8 @@ else
                                     KeyFieldName="_id"
                                     RowClick="ViewChildQuoteDetails"
                                     AllowSelectRowByClick="true"
-                                            EditModelSaving="OnEditModelSaving"
+                                    EditModelSaving="OnEditModelSaving"
+                                    DataItemDeleting="OnDataItemDeleting"
                                     SelectionMode="GridSelectionMode.Single"
                                     @bind-SelectedDataItem="@SelectedChildQuoteItem"
                                     TextWrapEnabled="false">
@@ -625,8 +626,8 @@ else
 
                 if (CurrentlySelectedQuote.status != "New")
                 {
-                    // if (!isAggregateQuote)
-                    // {
+                    if (!isAggregateQuote)
+                    {
                         <div class="section-header">
                             10-Step Project Workflow
                         </div>
@@ -674,7 +675,7 @@ else
                             </DxTabPage>
 
                         </DxTabs>
-                    // }
+                    }
                 }
 
                 if (@CurrentlySelectedQuote.warranties.Count > 0)
@@ -1041,11 +1042,23 @@ else
         var selectedQuoteId = selectedRow._id;
     }
 
-    async Task OnEditModelSaving(GridEditModelSavingEventArgs e) 
+    async Task OnEditModelSaving(GridEditModelSavingEventArgs args) 
     {
-        var editModel = (QuoteSummary)e.EditModel;
+        var selectedQuote = args.DataItem;
+    }
 
-        var tmpVal = "";
+    async Task OnDataItemDeleting(GridDataItemDeletingEventArgs args)
+    {
+        //IsPopupVisibleDeleteTrade = true;
+
+        QuoteSummary selectedQuote = (QuoteSummary)args.DataItem;
+
+        quoteIdToRemove = selectedQuote._id;
+
+        var quoteToRemove = WebServices.GetQuote(quoteIdToRemove)[0];
+        quoteToRemove.status = "Archive";
+
+        WebServices.UpdateQuote(quoteToRemove);
     }
 
     public bool recordIDVisible = false;
@@ -1758,14 +1771,14 @@ else
         notesCount--;
     }
 
-    public Quote originalQuote = null;
+    public Quote originalQuoteCopy = null;
     public Quote parentQuote = null;
     public List<Quote> newQuoteListQueue = new List<Quote>();
 
-    // public Relationship childRelationship = null;
-
     public void AddTrade()
     {
+        var originalQuoteId = CurrentlySelectedQuote._id;
+
         bool isAggregate = false;
         if (CurrentlySelectedQuote.applicationType == "Aggregate")
         {
@@ -1774,7 +1787,9 @@ else
 
         // Create Parent quote from a copy of original quote
         parentQuote = new Quote(CurrentlySelectedQuote);
-        parentQuote._id = ObjectId.GenerateNewId().ToString();
+
+        // Let the master inherit the id from the original. That way email links wil continue working once converted to an aggregate
+        // parentQuote._id = ObjectId.GenerateNewId().ToString();
         parentQuote.applicationType = "Aggregate";
         parentQuote.totalQuote = 0;
         parentQuote.notes = new List<Note>();
@@ -1793,15 +1808,16 @@ else
         parentRelationship.Name = parentQuote.applicationType;
 
         // Create copy of original quote
-        originalQuote = new Quote(CurrentlySelectedQuote);
+        originalQuoteCopy = new Quote(CurrentlySelectedQuote);
+        originalQuoteCopy._id = ObjectId.GenerateNewId().ToString();
 
         // Delete original quote
         CurrentlySelectedQuote.status = "Aggregate-Source";
+        WebServices.DeleteQuote(CurrentlySelectedQuote);
 
-        //originalQuote._id = ObjectId.GenerateNewId().ToString();
-        //originalQuote.relationships.Add(parentRelationship);
-
-        newQuoteListQueue.Add(originalQuote);
+        // Now add the new copy with originalId
+        originalQuoteCopy._id = originalQuoteId;
+        newQuoteListQueue.Add(originalQuoteCopy);
 
         // Create Child relationship
         var childRelationship = new Relationship();
@@ -1815,8 +1831,6 @@ else
         _event.Details = "";
         _event.Author = currentUser;
 
-        //CurrentlySelectedQuote.relationships = new List<Relationship>();
-
         try
         {
             if(!isAggregate)
@@ -1825,7 +1839,7 @@ else
                 _event = new Event();
                 _event.Author = currentUser;
                 _event.Name = "Aggregate project created";
-                _event.Details = "Aggregate spawned from original " + originalQuote.applicationType + " quote (" + originalQuote._id + ")";
+                _event.Details = "Aggregate spawned from original " + originalQuoteCopy.applicationType + " quote (" + originalQuoteCopy._id + ")";
 
                 parentQuote.events.Add(_event);
 
@@ -1834,11 +1848,11 @@ else
                 // Create child quotes
                 foreach (var selectedTrade in SelectedTradesToAdd)
                 {
-                    Quote childQuote = new Quote(originalQuote);
+                    Quote childQuote = new Quote(originalQuoteCopy);
                     childQuote.applicationType = selectedTrade.Value;
 
                     // Reset new child instance product properties.
-                    if (CurrentlySelectedQuote.applicationType != selectedTrade.Value)
+                    if (originalQuoteCopy.applicationType != selectedTrade.Value)
                     {
                         childQuote.timestamp = DateTime.UtcNow;
                         childQuote.lastUpdated = DateTime.UtcNow;
@@ -1855,7 +1869,7 @@ else
                     _event = new Event();
                     _event.Author = currentUser;
                     _event.Name = "Child project created";
-                    _event.Details = "Child (" + childQuote.applicationType + ") quote created from original " + originalQuote.applicationType + " quote (" + originalQuote._id + ")";
+                    _event.Details = "Child (" + childQuote.applicationType + ") quote created from original " + originalQuoteCopy.applicationType + " quote (" + originalQuoteCopy._id + ")";
 
                     childQuote.events.Add(_event);
 
@@ -1894,11 +1908,11 @@ else
                 // Append child quotes to current Aggregate
                 foreach (var selectedTrade in SelectedTradesToAdd)
                 {
-                    Quote childQuote = new Quote(originalQuote);
+                    Quote childQuote = new Quote(originalQuoteCopy);
                     childQuote.applicationType = selectedTrade.Value;
 
                     // Reset new child instance product properties.
-                    if (CurrentlySelectedQuote.applicationType != selectedTrade.Value)
+                    if (originalQuoteCopy.applicationType != selectedTrade.Value)
                     {
                         childQuote.totalQuote = 0;
                         childQuote.notes = new List<Note>();
@@ -1913,7 +1927,7 @@ else
                     _event = new Event();
                     _event.Author = currentUser;
                     _event.Name = "Child project created";
-                    _event.Details = "Child (" + childQuote.applicationType + ") quote created from original " + originalQuote.applicationType + " quote (" + originalQuote._id + ")";
+                    _event.Details = "Child (" + childQuote.applicationType + ") quote created from original " + originalQuoteCopy.applicationType + " quote (" + originalQuoteCopy._id + ")";
 
                     childQuote.events.Add(_event);
 
@@ -1949,10 +1963,6 @@ else
             }
 
             WebServices.UpdateQuote(parentQuote);
-
-            CurrentlySelectedQuote.relationships.Add(parentRelationship);
-
-            WebServices.UpdateQuote(CurrentlySelectedQuote);
 
             SaveRelatedQuotes(newQuoteListQueue);
 
@@ -2229,12 +2239,19 @@ else
                 foreach (QuoteSummary childQuote in childQuoteList)
                 {
                     hasChildren = true;
-
-                    quoteValue += childQuote.totalQuote;
+                    if(CurrentlySelectedQuote.applicationType == "Aggregate")
+                    {
+                        if (childQuote.status != "Archive")
+                        {
+                            quoteValue += childQuote.totalQuote;
+                        }
+                    }
                 }
 
                 if (hasChildren)
+                {
                     CurrentlySelectedQuote.totalQuote = quoteValue;
+                }
 
                 TotalQuoteValue = CurrentlySelectedQuote.totalQuote.ToString("C2");
 

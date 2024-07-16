@@ -790,6 +790,28 @@ namespace Facilitate.Admin.Data
             return quote;
         }
 
+        [HttpPut("{quote}")]
+        public Quote DeleteQuote(Quote quote)
+        {
+            string quoteId = quote._id;
+
+            try
+            {
+                var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
+
+                var result = _mongoDBCollection.DeleteOne(filter, _cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
+            return quote;
+        }
+
         public int GetQuoteCount(string status)
         {
             try
