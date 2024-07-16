@@ -264,7 +264,7 @@ else
 
     async Task OnDataItemDeleting(GridDataItemDeletingEventArgs args)
     {
-        QuoteSummary selectedQuote = (QuoteSummary)args.DataItem;
+        QuoteHeader selectedQuote = (QuoteHeader)args.DataItem;
 
         quoteIdToRemove = selectedQuote._id;
 

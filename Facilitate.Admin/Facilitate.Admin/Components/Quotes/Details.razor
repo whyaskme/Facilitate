@@ -2254,7 +2254,7 @@ else
                     eventSummary.Name = _event.Name;
                     eventSummary.Details = _event.Details;
                     eventSummary.Author = _event.Author.FirstName + " " + _event.Author.LastName;
-                    eventSummary.DateCreated = _event.DateTime;
+                    eventSummary.DateCreated = _event.DateTime.ToLocalTime();
 
                     eventSummary.Trade = CurrentlySelectedQuote.applicationType;
 
@@ -2283,9 +2283,9 @@ else
                                 eventSummary.Name = _event.Name;
                                 eventSummary.Details = _event.Details;
                                 eventSummary.Author = _event.Author.FirstName + " " + _event.Author.LastName;
-                                eventSummary.DateCreated = _event.DateTime;
+                                eventSummary.DateCreated = _event.DateTime.ToLocalTime();
 
-                                eventSummary.Trade = CurrentlySelectedQuote.applicationType;
+                                eventSummary.Trade = childQuote.applicationType;
 
                                 AggregateEventList.Add(eventSummary);
                             }
