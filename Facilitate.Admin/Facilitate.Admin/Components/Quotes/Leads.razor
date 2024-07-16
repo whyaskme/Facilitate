@@ -227,6 +227,7 @@ else
             AllowSelectRowByClick="true"
             SelectionMode="GridSelectionMode.Single"
             @bind-SelectedDataItem="@SelectedQuoteItem"
+            DataItemDeleting="OnDataItemDeleting"
             TextWrapEnabled="false"
             PagerNavigationMode="PagerNavigationMode.InputBox"
             PageSizeSelectorVisible="true"
@@ -258,6 +259,28 @@ else
 </DxLoadingPanel>
 
 @code {
+
+    public string quoteIdToRemove = "";
+
+    async Task OnDataItemDeleting(GridDataItemDeletingEventArgs args)
+    {
+        QuoteSummary selectedQuote = (QuoteSummary)args.DataItem;
+
+        quoteIdToRemove = selectedQuote._id;
+
+        var quoteToRemove = WebServices.GetQuote(quoteIdToRemove)[0];
+        quoteToRemove.status = "Archive";
+
+        Event _event = new Event();
+        _event.Author = currentUser;
+        _event.Name = quoteToRemove.applicationType + " quote (" + quoteIdToRemove + ") Archived";
+        _event.Details = _event.Name;
+
+        // Add event to child quote
+        quoteToRemove.events.Add(_event);
+
+        WebServices.UpdateQuote(quoteToRemove);
+    }
 
     public bool recordIDVisible = false;
 

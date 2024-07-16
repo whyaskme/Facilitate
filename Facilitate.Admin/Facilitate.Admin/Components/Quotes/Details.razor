@@ -2274,6 +2274,21 @@ else
                         if (childQuote.status != "Archive")
                         {
                             aggregateTotal += childQuote.totalQuote;
+
+                            foreach (Event _event in childQuote.events)
+                            {
+                                EventSummary eventSummary = new EventSummary();
+                                eventSummary._id = _event._id;
+                    
+                                eventSummary.Name = _event.Name;
+                                eventSummary.Details = _event.Details;
+                                eventSummary.Author = _event.Author.FirstName + " " + _event.Author.LastName;
+                                eventSummary.DateCreated = _event.DateTime;
+
+                                eventSummary.Trade = CurrentlySelectedQuote.applicationType;
+
+                                AggregateEventList.Add(eventSummary);
+                            }
                         }
                     }
                 }
