@@ -145,7 +145,7 @@ else
                 {
                     if (isAggregateQuote)
                     {
-                        <div class="summary-header-parent">Aggregate (Summary) Quote</div>
+                        <div class="summary-header-parent">Aggregate (Parent) Quote</div>
                     }
                     else
                     {
@@ -200,14 +200,14 @@ else
                 </div>
 
                 <div class="section-header">
-                    (@CurrentlySelectedQuote.applicationType) Project Dashboard
+                    @CurrentlySelectedQuote.applicationType Dashboard
                 </div>
 
                 <DxTabs CssClass="tabs-container">
 
                     <DxTabPage Id="Panel-Project-Manager" Text="Relationships">
                     @{
-                        <h6>Project Manager</h6>
+                        <h6>Manager</h6>
                         <div class="row">
                             <div class="col">
                                 @{
@@ -255,7 +255,7 @@ else
 
                             <hr />
 
-                            <h6>Project Trades</h6>
+                            <h6>Trades</h6>
 
                                 if (!isChildQuote)
                                 {
