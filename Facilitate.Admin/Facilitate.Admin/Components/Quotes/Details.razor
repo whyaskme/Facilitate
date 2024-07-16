@@ -286,7 +286,12 @@ else
                                         <DxGridDataColumn Width="150" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                         <DxGridDataColumn Width="150" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                         <DxGridDataColumn Width="auto" Caption="Last Event" FieldName="lastEventDetails" />
-                                        <DxGridDataColumn Width="100" Caption="Amount" FieldName="totalQuote" DisplayFormat="C0" />
+                                        
+                                        if(isAggregateQuote)
+                                        {
+                                            <DxGridDataColumn Width="100" Caption="Amount" FieldName="totalQuote" DisplayFormat="C0" />
+                                        }
+                                        
                                         <DxGridDataColumn Width="175" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
 
                                         @{
@@ -1064,12 +1069,12 @@ else
 
         // Add event to child quote
         quoteToRemove.events.Add(_event);
+        WebServices.UpdateQuote(quoteToRemove);
 
         // Add event to parent quote
         // Actually, the parent aggregate should only refkect individual child events at runtime.
-        //CurrentlySelectedQuote.events.Add(_event);
-
-        WebServices.UpdateQuote(quoteToRemove);
+        CurrentlySelectedQuote.events.Add(_event);
+        WebServices.UpdateQuote(CurrentlySelectedQuote);
     }
 
     public bool recordIDVisible = false;
@@ -2292,6 +2297,10 @@ else
                 foreach (QuoteSummary childQuote in childQuoteList)
                 {
                     isAggregate = true;
+
+                    var lastEvent = childQuote.events.LastOrDefault();
+                    childQuote.lastEventTimeStamp = lastEvent.DateTime.ToLocalTime();
+                    childQuote.lastEventDetails = lastEvent.Details;
 
                     if (childQuote.status != "Archive")
                     {
