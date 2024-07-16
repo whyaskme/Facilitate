@@ -1012,8 +1012,6 @@ else
 {
     string TotalQuoteValue { get; set; }
 
-    bool IsEnabled = false;
-
     public abstract class DxInputDataEditorBase<T> : DxDataEditor<T>;
 
     [Parameter]
@@ -1760,8 +1758,9 @@ else
         notesCount--;
     }
 
-    // public Quote originalQuote = null;
+    public Quote originalQuote = null;
     public Quote parentQuote = null;
+    public List<Quote> newQuoteListQueue = new List<Quote>();
 
     // public Relationship childRelationship = null;
 
@@ -1778,6 +1777,12 @@ else
         parentQuote._id = ObjectId.GenerateNewId().ToString();
         parentQuote.applicationType = "Aggregate";
         parentQuote.totalQuote = 0;
+        parentQuote.notes = new List<Note>();
+        parentQuote.attachments = new List<Attachment>();
+        parentQuote.events = new List<Event>();
+        parentQuote.Groups = new List<ObjectId>();
+        parentQuote.products = new List<Product>();
+        parentQuote.warranties = new List<Warranty>();
 
         // Create Parent relationship
         var parentRelationship = new Relationship();
@@ -1787,60 +1792,56 @@ else
         parentRelationship.Type = "Parent";
         parentRelationship.Name = parentQuote.applicationType;
 
+        // Create copy of original quote
+        originalQuote = new Quote(CurrentlySelectedQuote);
+
+        // Delete original quote
+        CurrentlySelectedQuote.status = "Aggregate-Source";
+
+        //originalQuote._id = ObjectId.GenerateNewId().ToString();
+        //originalQuote.relationships.Add(parentRelationship);
+
+        newQuoteListQueue.Add(originalQuote);
+
         // Create Child relationship
         var childRelationship = new Relationship();
         parentRelationship.Author = currentUser.Email;
-        childRelationship._id = CurrentlySelectedQuote._id;
-        childRelationship.ParentId = CurrentlySelectedQuote._id;
+        childRelationship._id = parentQuote._id;
+        childRelationship.ParentId = parentQuote._id;
         childRelationship.Type = "Child";
-        childRelationship.Name = CurrentlySelectedQuote.applicationType;
-
-        List<Quote> newQuoteListQueue = new List<Quote>();
+        childRelationship.Name = parentQuote.applicationType;
 
         Event _event = new Event();
         _event.Details = "";
         _event.Author = currentUser;
 
-        CurrentlySelectedQuote.relationships = new List<Relationship>();
+        //CurrentlySelectedQuote.relationships = new List<Relationship>();
 
         try
         {
             if(!isAggregate)
             {
-                parentQuote.relationships.Add(childRelationship);
-
                 // Add events to new Master
                 _event = new Event();
                 _event.Author = currentUser;
                 _event.Name = "Aggregate project created";
-                _event.Details = "Aggregate spawned from original " + CurrentlySelectedQuote.applicationType + " quote (" + CurrentlySelectedQuote._id + ")";
+                _event.Details = "Aggregate spawned from original " + originalQuote.applicationType + " quote (" + originalQuote._id + ")";
 
                 parentQuote.events.Add(_event);
 
                 newQuoteListQueue.Add(parentQuote);
 
-                Note note = new Note();
-                note.Summary = _event.Name;
-                note.Details = _event.Details;
-
-                CurrentlySelectedQuote.notes.Add(note);
-                CurrentlySelectedQuote.relationships.Add(parentRelationship);
-
-                WebServices.UpdateQuote(CurrentlySelectedQuote);
-
-                // parentQuote.relationships.Add(childRelationship);
-
-                // newQuoteListQueue.Add(parentQuote);
-
                 // Create child quotes
                 foreach (var selectedTrade in SelectedTradesToAdd)
                 {
-                    Quote childQuote = new Quote(CurrentlySelectedQuote);
+                    Quote childQuote = new Quote(originalQuote);
                     childQuote.applicationType = selectedTrade.Value;
 
                     // Reset new child instance product properties.
                     if (CurrentlySelectedQuote.applicationType != selectedTrade.Value)
                     {
+                        childQuote.timestamp = DateTime.UtcNow;
+                        childQuote.lastUpdated = DateTime.UtcNow;
                         childQuote.totalQuote = 0;
                         childQuote.notes = new List<Note>();
                         childQuote.attachments = new List<Attachment>();
@@ -1854,7 +1855,7 @@ else
                     _event = new Event();
                     _event.Author = currentUser;
                     _event.Name = "Child project created";
-                    _event.Details = "Child (" + childQuote.applicationType + ") quote created from original " + CurrentlySelectedQuote.applicationType + " quote (" + CurrentlySelectedQuote._id + ")";
+                    _event.Details = "Child (" + childQuote.applicationType + ") quote created from original " + originalQuote.applicationType + " quote (" + originalQuote._id + ")";
 
                     childQuote.events.Add(_event);
 
@@ -1893,7 +1894,7 @@ else
                 // Append child quotes to current Aggregate
                 foreach (var selectedTrade in SelectedTradesToAdd)
                 {
-                    Quote childQuote = new Quote(CurrentlySelectedQuote);
+                    Quote childQuote = new Quote(originalQuote);
                     childQuote.applicationType = selectedTrade.Value;
 
                     // Reset new child instance product properties.
@@ -1912,7 +1913,7 @@ else
                     _event = new Event();
                     _event.Author = currentUser;
                     _event.Name = "Child project created";
-                    _event.Details = "Child (" + childQuote.applicationType + ") quote created from original " + CurrentlySelectedQuote.applicationType + " quote (" + CurrentlySelectedQuote._id + ")";
+                    _event.Details = "Child (" + childQuote.applicationType + ") quote created from original " + originalQuote.applicationType + " quote (" + originalQuote._id + ")";
 
                     childQuote.events.Add(_event);
 
@@ -1948,6 +1949,10 @@ else
             }
 
             WebServices.UpdateQuote(parentQuote);
+
+            CurrentlySelectedQuote.relationships.Add(parentRelationship);
+
+            WebServices.UpdateQuote(CurrentlySelectedQuote);
 
             SaveRelatedQuotes(newQuoteListQueue);
 
