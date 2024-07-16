@@ -153,6 +153,10 @@ else
                         isChildQuote = true;
                     }
                 }
+                else
+                {
+                    <div class="summary-header-child">@CurrentlySelectedQuote.applicationType Quote</div>
+                }
 
                 <div class="row">
                     <div class="col-md-4">
@@ -282,21 +286,16 @@ else
                                         <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" />
                                         <DxGridDataColumn Width="100" Caption="Relationship" FieldName="relationship" />
                                         <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
-                                        <DxGridDataColumn Width="100" Caption="Qualified?" FieldName="isQualified" />
                                         <DxGridDataColumn Width="150" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                         <DxGridDataColumn Width="150" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                         <DxGridDataColumn Width="auto" Caption="Last Event" FieldName="lastEventDetails" />
-                                        
-                                        if(isAggregateQuote)
-                                        {
-                                            <DxGridDataColumn Width="100" Caption="Amount" FieldName="totalQuote" DisplayFormat="C0" />
-                                        }
-                                        
-                                        <DxGridDataColumn Width="175" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
+                                        <DxGridDataColumn Width="150" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
 
                                         @{
                                             if(isAggregateQuote)
                                             {
+                                                <DxGridDataColumn Width="100" Caption="Amount" FieldName="totalQuote" DisplayFormat="C0" />
+                                                <DxGridDataColumn Width="100" Caption="Qualified?" FieldName="isQualified" />
                                                 <DxGridCommandColumn Width="100px" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
                                             }
                                         }
@@ -1924,6 +1923,8 @@ else
             }
             else
             {
+                newQuoteListQueue.Clear();
+
                 // Append child quotes to current Aggregate
                 foreach (var selectedTrade in SelectedTradesToAdd)
                 {
@@ -1959,6 +1960,8 @@ else
                     // Add Parent relationship to Child
                     if (childQuote.applicationType != "Aggregate")
                     {
+                        parentQuote.relationships.Add(childRelationship);
+
                         newQuoteListQueue.Add(childQuote);
                     }
                 }
@@ -1993,8 +1996,11 @@ else
 
             IsPopupVisibleAddTrade = false;
 
-            // Redirect to Master details page
-            RedirectToQuoteDetails(parentQuote._id);
+            if(!isAggregate)
+            {
+                // Redirect to Master details page
+                RedirectToQuoteDetails(parentQuote._id);
+            }
         }
         catch(Exception ex)
         {
