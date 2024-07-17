@@ -1052,7 +1052,11 @@ else
 
             var parentQuote = WebServices.GetQuote(parentId)[0];
 
-            CurrentlySelectedQuote.status = parentQuote.status;
+            var currentStatus = CurrentlySelectedQuote.status;
+
+            CurrentlySelectedQuote.status = CurrentlySelectedQuote.statusPrevious; //parentQuote.status;
+
+            CurrentlySelectedQuote.statusPrevious = currentStatus;
             break;
         }
 
@@ -1656,6 +1660,7 @@ else
         // Only change status when assigning the first time.
         if (CurrentlySelectedQuote.status == "New")
         {
+            CurrentlySelectedQuote.statusPrevious = CurrentlySelectedQuote.status;
             CurrentlySelectedQuote.status = "Opportunity";
 
             SendWelcomePackage();
@@ -1734,27 +1739,55 @@ else
         }
     }
 
+    public void ArchiveQuoteOld()
+    {
+        CurrentlySelectedQuote.status = "Archive";
+
+        Note note = new Note();
+        note.Summary = CurrentlySelectedQuote.firstName + " " + CurrentlySelectedQuote.lastName + " moved to Archives";
+        note.Details = @NoteDetails;
+        note.Author = currentUser;
+
+        CurrentlySelectedQuote.notes.Add(note);
+
+        Event _event = new Event();
+        _event.Details = CurrentlySelectedQuote.firstName + " " + CurrentlySelectedQuote.lastName + " moved to Archives";
+        _event.Author = currentUser;
+        CurrentlySelectedQuote.events.Add(_event);
+
+        WebServices.UpdateQuote(CurrentlySelectedQuote);
+
+        IsArchivePopupVisible = false;
+        NoteDetails = "";
+    }
+
     public void ArchiveQuote()
     {
         try
         {
-            Note note = new Note();
-            note.Summary = CurrentlySelectedQuote.applicationType + " (" + CurrentlySelectedQuote._id + ") moved to Archives";
-            note.Details = @NoteDetails;
-            note.Author = currentUser;
+            var currentQuoteId = CurrentlySelectedQuote._id;
+            var currentQuote = WebServices.GetQuote(currentQuoteId)[0];
 
-            CurrentlySelectedQuote.notes.Add(note);
+            if (NoteDetails != "" || NoteDetails != null)
+            {
+                Note note = new Note();
+                note.Summary = currentQuote.applicationType + " (" + currentQuote._id + ") moved to Archives";
+                note.Details = NoteDetails;
+                note.Author = currentUser;
+
+                currentQuote.notes.Add(note);
+            }
 
             Event _event = new Event();
-            _event.Details = CurrentlySelectedQuote.applicationType + " (" + CurrentlySelectedQuote._id + ") moved to Archives";
+            _event.Details = currentQuote.applicationType + " (" + currentQuote._id + ") moved to Archives";
             _event.Author = currentUser;
-            CurrentlySelectedQuote.events.Add(_event);
+            currentQuote.events.Add(_event);
 
             Quote relatedQuote = null;
 
-            if (CurrentlySelectedQuote.applicationType == "Aggregate")
+            if (currentQuote.applicationType == "Aggregate")
             {
-                foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
+                foreach (Relationship relationship in currentQuote.relationships)
                 {
                     var relatedQuoteId = relationship.ParentId;
 
@@ -1762,9 +1795,10 @@ else
                     {
                         var tmpVal = relatedQuoteId;
 
-                        relatedQuote = WebServices.GetQuote(relatedQuoteId)[0];
+                        var tmpQuote = WebServices.GetQuote(relatedQuoteId)[0];
 
-                        // relatedQuote.status = "Archive";
+                        tmpQuote.statusPrevious = tmpQuote.status;
+                        tmpQuote.status = "Archive";
 
                         // _event.DateTime = DateTime.UtcNow;
                         // _event.Name = "Aggregate Project Archived";
@@ -1772,13 +1806,17 @@ else
                         // _event.Author = currentUser;
                         // relatedQuote.events.Add(_event);
 
-                        // WebServices.UpdateQuote(relatedQuote);
+                        WebServices.UpdateQuote(tmpQuote);
                     }
                 }
             }
 
-            CurrentlySelectedQuote.status = "Archive";
-            WebServices.UpdateQuote(CurrentlySelectedQuote);
+            currentQuote.statusPrevious = currentQuote.status;
+            currentQuote.status = "Archive";
+
+            WebServices.UpdateQuote(currentQuote);
+
+            // WebServices.UpdateQuote(currentQuote);
 
             IsArchivePopupVisible = false;
             NoteDetails = "";
@@ -2201,7 +2239,7 @@ else
         var quoteToRestore = WebServices.GetQuote(quoteId)[0];
 
         // What is the current aggregate Status and set this to that
-        quoteToRestore.status = CurrentlySelectedQuote.status;
+        quoteToRestore.status = CurrentlySelectedQuote.statusPrevious;
         quoteToRestore.lastUpdated = DateTime.UtcNow;
 
         WebServices.UpdateQuote(quoteToRestore);
