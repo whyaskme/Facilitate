@@ -8,8 +8,10 @@ namespace Facilitate.Libraries.Models
         {
             _id = ObjectId.GenerateNewId();
             _t = "Attachment";
+            Trade = string.Empty;
             IsDeleted = false;
-            Date = DateTime.UtcNow;
+            DateTime = DateTime.UtcNow;
+            MediaDescription = string.Empty;
             MediaDescription = string.Empty;
             MediaUrl = string.Empty;
             Author = new ApplicationUser();
@@ -20,7 +22,9 @@ namespace Facilitate.Libraries.Models
         public ObjectId _id { get; set; }
         public string _t { get; set; }
         public bool IsDeleted { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime DateTime { get; set; }
+        public string Trade { get; set; }
+        public string MediaName { get; set; }
         public string MediaDescription { get; set; }
         public string MediaUrl { get; set; }
         public ApplicationUser Author { get; set; }

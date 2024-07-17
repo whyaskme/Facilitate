@@ -116,12 +116,6 @@ else
 
                 var _emailTabLabel = "Email " + @CurrentlySelectedQuote.firstName + " Documents";
 
-                // tradesCount = AggregateEventList.Count(); // CurrentlySelectedQuote.structures.Count;
-                // if (tradesCount <= 1)
-                //     tradesCountLabel = tradesCount.ToString() + " " + CurrentlySelectedQuote.applicationType + " Selected";
-                // else
-                //     tradesCountLabel = tradesCount.ToString() + " " + CurrentlySelectedQuote.applicationType + " Selected";
-
                 productsCount = CurrentlySelectedQuote.products.Count;
                 if (productsCount <= 1)
                     productsCountLabel = productsCount.ToString() + " Product Quoted";
@@ -271,7 +265,7 @@ else
                                 if (@ChildTradesCount > 0)
                                 {
                                     <DxGrid @ref="ChildQuoteGrid"
-                                    Data="@childQuoteList"
+                                    Data="@RelatedQuoteList"
                                     KeyFieldName="_id"
                                     RowClick="ViewChildQuoteDetails"
                                     AllowSelectRowByClick="true"
@@ -509,7 +503,7 @@ else
                                     {
                                         <div class="note-row">
                                             <div>
-                                                <label>@attachmentsCount) @attachment.Date</label>
+                                                <label>@attachmentsCount) @attachment.DateTime</label>
                                             </div>
 
                                             <span class="hyperlink-warning" @onclick="() => SelectAttachmentToDelete(CurrentlySelectedQuote, attachment)">Delete</span>
@@ -534,34 +528,37 @@ else
                     }
 
                     <DxTabPage Id="Panel-Notes" Text="Notes">
+
+                        <h6>@AggregateNoteList.Count() Notes</h6>
+
                         <button class="action-button" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
-                        @foreach (Note note in CurrentlySelectedQuote.notes)
-                        {
-                            if (!note.IsDeleted)
-                            {
-                                <div class="note-row">
-                                    <div>
-                                        <label>@notesCount) @note.Date</label>
-                                    </div>
-
-                                    <span class="hyperlink-warning" @onclick="() => SelectNoteToDelete(CurrentlySelectedQuote, note)">Delete</span>
-
-                                    <span class="bar-spacer">|</span>
-                                    <span>@note.Details</span>
-
-                                    <span class="bar-spacer">|</span>
-                                    <label>Source</label>
-                                    <span>@note.Author.FirstName @note.Author.LastName</span>
-                                </div>
-
-                                notesCount--;
-                            }
-                        }
+                        <br /><br />
+                        <DxGrid @ref="NoteGrid"
+                                Data="@AggregateNoteList"
+                                KeyFieldName="_id"
+                                PageSize="10"
+                                PagerPosition="GridPagerPosition.Bottom"
+                                ShowGroupPanel="true"
+                                AutoExpandAllGroupRows="true"
+                                ShowFilterRow="true"
+                                PagerNavigationMode="PagerNavigationMode.InputBox"
+                                PageSizeSelectorVisible="true"
+                                PageSizeSelectorAllRowsItemVisible="false"
+                                KeyboardNavigationEnabled="true"
+                                TextWrapEnabled="false">
+                            <Columns>
+                                <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
+                                <DxGridDataColumn Width="175" Caption="DateTime" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                <DxGridDataColumn Width="150" Caption="Trade" FieldName="Trade" />
+                                <DxGridDataColumn Width="auto" Caption="Details" FieldName="Details" />
+                                <DxGridDataColumn Width="200" Caption="Author" FieldName="Author" />
+                            </Columns>
+                        </DxGrid>
                     </DxTabPage>
 
                     <DxTabPage Id="Panel-History" Text="History">
 
-                        <h6>@EventsCount Events</h6>
+                        <h6>@AggregateEventList.Count() Events</h6>
 
                         <DxGrid @ref="EventGrid"
                             Data="@AggregateEventList"
@@ -578,10 +575,10 @@ else
                             TextWrapEnabled="false">
                             <Columns>
                                 <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
-                                <DxGridDataColumn Width="175" Caption="Date" FieldName="DateCreated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                <DxGridDataColumn Width="175" Caption="DateTime" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                 <DxGridDataColumn Width="150" Caption="Trade" FieldName="Trade" />
                                 <DxGridDataColumn Width="auto" Caption="Details" FieldName="Details" />
-                                <DxGridDataColumn Width="175" Caption="Author" FieldName="Author" />
+                                <DxGridDataColumn Width="200" Caption="Author" FieldName="Author" />
                             </Columns>
                         </DxGrid>
 
@@ -1031,8 +1028,6 @@ else
 
 @code 
 {
-    public List<EventSummary> AggregateEventList = new List<EventSummary>();
-
     public abstract class DxInputDataEditorBase<T> : DxDataEditor<T>;
 
     [Parameter]
@@ -1122,7 +1117,7 @@ else
     public string ConfirmRemoveMessage { get; set; }
     public string ConfirmRestoreMessage { get; set; }
 
-    public List<QuoteSummary> childQuoteList = new List<QuoteSummary>();
+    public List<QuoteSummary> RelatedQuoteList = new List<QuoteSummary>();
 
     [Parameter]
     public EventCallback<IEnumerable<ListItem>> SelectedItemsChanged { get; set; }
@@ -1441,7 +1436,9 @@ else
 
     IGrid QuoteGrid { get; set; }
     IGrid ChildQuoteGrid { get; set; }
+    IGrid AttachmentGrid { get; set; }
     IGrid EventGrid { get; set; }
+    IGrid NoteGrid { get; set; }
 
     EntityInstantFeedbackSource InstantFeedbackSource { get; set; }
 
@@ -2301,6 +2298,10 @@ else
     public int ChildTradesCount = 0;
     public int EventsCount = 0;
 
+    public List<Attachment> AggregateAttachmentList = new List<Attachment>();
+    public List<Event> AggregateEventList = new List<Event>();
+    public List<Note> AggregateNoteList = new List<Note>();
+
     private async Task TimerRefresh()
     {
         bool isAggregate = false;
@@ -2318,76 +2319,70 @@ else
             aggregateTotal = 0;
             standaloneTotal = 0;
 
+            AggregateAttachmentList.Clear();
             AggregateEventList.Clear();
+            AggregateNoteList.Clear();
 
             quotes = webServices.GetQuote(QuoteId);
             if(quotes != null)
             {
                 CurrentlySelectedQuote = quotes[0];
 
-                foreach (Event _event in CurrentlySelectedQuote.events)
+                // Process attachments
+                foreach(Attachment attachment in CurrentlySelectedQuote.attachments)
                 {
-                    EventsCount++;
-
-                    EventSummary eventSummary = new EventSummary();
-                    eventSummary._id = _event._id;
-                    
-                    eventSummary.Name = _event.Name;
-                    eventSummary.Details = _event.Details;
-
-                    authorName = _event.Author.FirstName + " " + _event.Author.LastName;
-                    if(authorName == " ")
-                        authorName = "System Process";
-
-                    eventSummary.Author = authorName;
-
-                    eventSummary.DateCreated = _event.DateTime.ToLocalTime();
-
-                    eventSummary.Trade = CurrentlySelectedQuote.applicationType;
-
-                    AggregateEventList.Add(eventSummary);
+                    attachment.Trade = CurrentlySelectedQuote.applicationType;
                 }
+                AggregateAttachmentList.AddRange(CurrentlySelectedQuote.attachments);
+
+                // Process events
+                foreach(Event _event in CurrentlySelectedQuote.events)
+                {
+                    _event.Trade = CurrentlySelectedQuote.applicationType;
+                }
+                AggregateEventList.AddRange(CurrentlySelectedQuote.events);
+
+                // Process notes
+                foreach (Note note in CurrentlySelectedQuote.notes)
+                {
+                    note.Trade = CurrentlySelectedQuote.applicationType;
+                }
+                AggregateNoteList.AddRange(CurrentlySelectedQuote.notes);
 
                 standaloneTotal = CurrentlySelectedQuote.totalQuote;
 
                 // Get child quote summaries
-                childQuoteList = webServices.GetChildQuoteSummaries(CurrentlySelectedQuote);
-                foreach (QuoteSummary childQuote in childQuoteList)
+                RelatedQuoteList = webServices.GetChildQuoteSummaries(CurrentlySelectedQuote);
+                foreach (QuoteSummary RelatedQuote in RelatedQuoteList)
                 {
                     isAggregate = true;
 
-                    var lastEvent = childQuote.events.LastOrDefault();
-                    childQuote.lastEventTimeStamp = lastEvent.DateTime.ToLocalTime();
-                    childQuote.lastEventDetails = lastEvent.Details;
+                    var lastEvent = RelatedQuote.events.LastOrDefault();
+                    RelatedQuote.lastEventTimeStamp = lastEvent.DateTime.ToLocalTime();
+                    RelatedQuote.lastEventDetails = lastEvent.Details;
 
-                    if (childQuote.status != "Archive")
+                    if (RelatedQuote.status != "Archive")
                     {
-                        ChildTradesCount++;
-
-                        aggregateTotal += childQuote.totalQuote;
-
-                        foreach (Event _event in childQuote.events)
+                        // Process attachments
+                        foreach (Attachment attachment in CurrentlySelectedQuote.attachments)
                         {
-                            EventsCount++;
-
-                            EventSummary eventSummary = new EventSummary();
-                            eventSummary._id = _event._id;
-                    
-                            eventSummary.Name = _event.Name;
-                            eventSummary.Details = _event.Details;
-
-                            authorName = _event.Author.FirstName + " " + _event.Author.LastName;
-                            if(authorName == " ")
-                                authorName = "System Process";
-
-                            eventSummary.Author = authorName;
-
-                            eventSummary.DateCreated = _event.DateTime.ToLocalTime();
-
-                            eventSummary.Trade = childQuote.applicationType;
-
-                            AggregateEventList.Add(eventSummary);
+                            attachment.Trade = CurrentlySelectedQuote.applicationType;
                         }
+                        AggregateAttachmentList.AddRange(CurrentlySelectedQuote.attachments);
+
+                        // Process events
+                        foreach (Event _event in CurrentlySelectedQuote.events)
+                        {
+                            _event.Trade = CurrentlySelectedQuote.applicationType;
+                        }
+                        AggregateEventList.AddRange(CurrentlySelectedQuote.events);
+
+                        // Process notes
+                        foreach (Note note in CurrentlySelectedQuote.notes)
+                        {
+                            note.Trade = CurrentlySelectedQuote.applicationType;
+                        }
+                        AggregateNoteList.AddRange(CurrentlySelectedQuote.notes);
                     }
                 }
 
@@ -2400,8 +2395,10 @@ else
                     CurrentlySelectedQuote.totalQuote = standaloneTotal;
                 }
 
-                // Sort event collection
-                AggregateEventList = AggregateEventList.OrderByDescending(x => x.DateCreated).ToList();
+                // Sort collections
+                AggregateAttachmentList = AggregateAttachmentList.OrderByDescending(x => x.DateTime).ToList();
+                AggregateEventList = AggregateEventList.OrderByDescending(x => x.DateTime).ToList();
+                AggregateNoteList = AggregateNoteList.OrderByDescending(x => x.DateTime).ToList();
 
                 InvokeAsync(() =>
                 {

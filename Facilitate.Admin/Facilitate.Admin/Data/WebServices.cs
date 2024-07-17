@@ -308,9 +308,9 @@ namespace Facilitate.Admin.Data
                     {
                         Libraries.Models.Attachment currentAttachment = sortedQuotes[i].attachments[j];
 
-                        var currentDateTime = currentAttachment.Date;
+                        var currentDateTime = currentAttachment.DateTime;
 
-                        currentAttachment.Date = currentAttachment.Date.ToLocalTime();
+                        currentAttachment.DateTime = currentAttachment.DateTime.ToLocalTime();
 
                         unSortedFiles.Add(currentAttachment);
                     }
@@ -318,7 +318,7 @@ namespace Facilitate.Admin.Data
                     for (var j = 0; j < sortedQuotes[i].notes.Count; j++)
                     {
                         Note currentNote = sortedQuotes[i].notes[j];
-                        currentNote.Date = currentNote.Date.ToLocalTime();
+                        currentNote.DateTime = currentNote.DateTime.ToLocalTime();
 
                         unSortedNotes.Add(currentNote);
                     }
@@ -389,9 +389,9 @@ namespace Facilitate.Admin.Data
                     {
                         Libraries.Models.Attachment currentAttachment = sortedQuotes[i].attachments[j];
 
-                        var currentDateTime = currentAttachment.Date;
+                        var currentDateTime = currentAttachment.DateTime;
 
-                        currentAttachment.Date = currentAttachment.Date.ToLocalTime();
+                        currentAttachment.DateTime = currentAttachment.DateTime.ToLocalTime();
 
                         unSortedFiles.Add(currentAttachment);
                     }
@@ -399,7 +399,7 @@ namespace Facilitate.Admin.Data
                     for (var j = 0; j < sortedQuotes[i].notes.Count; j++)
                     {
                         Note currentNote = sortedQuotes[i].notes[j];
-                        currentNote.Date = currentNote.Date.ToLocalTime();
+                        currentNote.DateTime = currentNote.DateTime.ToLocalTime();
 
                         unSortedNotes.Add(currentNote);
                     }
@@ -460,9 +460,9 @@ namespace Facilitate.Admin.Data
                     {
                         Libraries.Models.Attachment currentAttachment = sortedQuotes[i].attachments[j];
 
-                        var currentDateTime = currentAttachment.Date;
+                        var currentDateTime = currentAttachment.DateTime;
 
-                        currentAttachment.Date = currentAttachment.Date.ToLocalTime();
+                        currentAttachment.DateTime = currentAttachment.DateTime.ToLocalTime();
 
                         unSortedFiles.Add(currentAttachment);
                     }
@@ -470,7 +470,7 @@ namespace Facilitate.Admin.Data
                     for (var j = 0; j < sortedQuotes[i].notes.Count; j++)
                     {
                         Note currentNote = sortedQuotes[i].notes[j];
-                        currentNote.Date = currentNote.Date.ToLocalTime();
+                        currentNote.DateTime = currentNote.DateTime.ToLocalTime();
 
                         unSortedNotes.Add(currentNote);
                     }
@@ -534,9 +534,9 @@ namespace Facilitate.Admin.Data
                     {
                         Libraries.Models.Attachment currentAttachment = sortedQuotes[i].attachments[j];
 
-                        var currentDateTime = currentAttachment.Date;
+                        var currentDateTime = currentAttachment.DateTime;
 
-                        currentAttachment.Date = currentAttachment.Date.ToLocalTime();
+                        currentAttachment.DateTime = currentAttachment.DateTime.ToLocalTime();
 
                         unSortedFiles.Add(currentAttachment);
                     }
@@ -544,7 +544,7 @@ namespace Facilitate.Admin.Data
                     for (var j = 0; j < sortedQuotes[i].notes.Count; j++)
                     {
                         Note currentNote = sortedQuotes[i].notes[j];
-                        currentNote.Date = currentNote.Date.ToLocalTime();
+                        currentNote.DateTime = currentNote.DateTime.ToLocalTime();
 
                         unSortedNotes.Add(currentNote);
                     }
@@ -678,9 +678,9 @@ namespace Facilitate.Admin.Data
                         {
                             Libraries.Models.Attachment currentAttachment = sortedQuotes[i].attachments[j];
 
-                            var currentDateTime = currentAttachment.Date;
+                            var currentDateTime = currentAttachment.DateTime;
 
-                            currentAttachment.Date = currentAttachment.Date.ToLocalTime();
+                            currentAttachment.DateTime = currentAttachment.DateTime.ToLocalTime();
 
                             unSortedFiles.Add(currentAttachment);
                         }
@@ -688,7 +688,7 @@ namespace Facilitate.Admin.Data
                         for (var j = 0; j < sortedQuotes[i].notes.Count; j++)
                         {
                             Note currentNote = sortedQuotes[i].notes[j];
-                            currentNote.Date = currentNote.Date.ToLocalTime();
+                            currentNote.DateTime = currentNote.DateTime.ToLocalTime();
 
                             unSortedNotes.Add(currentNote);
                         }
@@ -1216,14 +1216,14 @@ namespace Facilitate.Admin.Data
         public List<Libraries.Models.Attachment> SortFilesByDateDesc(List<Libraries.Models.Attachment> originalList)
         {
             if (originalList != null)
-                return originalList.OrderByDescending(x => x.Date).ToList();
+                return originalList.OrderByDescending(x => x.DateTime).ToList();
             else return originalList;
         }
 
         public List<Note> SortNotesByDateDesc(List<Note> originalList)
         {
             if (originalList != null)
-                return originalList.OrderByDescending(x => x.Date).ToList();
+                return originalList.OrderByDescending(x => x.DateTime).ToList();
             else return originalList;
         }
 
