@@ -254,13 +254,10 @@ else
 
                             <h6>@RelatedQuoteList.Count() Trades</h6>
 
-                                if (CurrentlySelectedQuote.applicationType != "Aggregate")
-                                {
-                                    <div>
-                                        <button class="action-button" @onclick="@(() => IsPopupVisibleAddTrade = true)">Add Trade</button>
-                                    </div>
-                                    <div>&nbsp;</div>
-                                }
+                                <div>
+                                    <button class="action-button" @onclick="@(() => IsPopupVisibleAddTrade = true)">Add Trade</button>
+                                </div>
+                                <div>&nbsp;</div>
 
                                 <DxGrid @ref="RelatedQuoteGrid"
                                 Data="@RelatedQuoteList"
@@ -303,7 +300,6 @@ else
                                 </Columns>
                             </DxGrid>
                             }
-                        }
                     }
                     </DxTabPage>
 
@@ -518,11 +514,11 @@ else
                                     <Columns>
                                         <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
                                         <DxGridDataColumn Width="175" Caption="DateTime" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-                                        <DxGridDataColumn Width="150" Caption="Trade" FieldName="Trade" />
-                                        <DxGridDataColumn Width="auto" Caption="Name" FieldName="MediaName" />
+                                        <DxGridDataColumn Width="100" Caption="Trade" FieldName="Trade" />
+                                        <DxGridDataColumn Width="150" Caption="Name" FieldName="MediaName" />
                                         <DxGridDataColumn Width="auto" Caption="Description" FieldName="MediaDescription" />
-                                        <DxGridDataColumn Width="auto" Caption="Url" FieldName="MediaName" />
-                                        <DxGridDataColumn Width="200" Caption="Author" FieldName="Author" />
+                                        <DxGridDataColumn Width="auto" Caption="Url" FieldName="MediaUrl" />
+                                        <DxGridDataColumn Width="175" Caption="Author" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Author.FirstName + ' ' + Author.LastName" />
                                     </Columns>
                                 </DxGrid>
 
@@ -554,7 +550,7 @@ else
                                 <DxGridDataColumn Width="175" Caption="DateTime" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                 <DxGridDataColumn Width="150" Caption="Trade" FieldName="Trade" />
                                 <DxGridDataColumn Width="auto" Caption="Details" FieldName="Details" />
-                                <DxGridDataColumn Width="200" Caption="Author" FieldName="Author" />
+                                <DxGridDataColumn Width="175" Caption="Author" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Author.FirstName + ' ' + Author.LastName" />
                             </Columns>
                         </DxGrid>
                     </DxTabPage>
@@ -581,7 +577,7 @@ else
                                 <DxGridDataColumn Width="175" Caption="DateTime" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                 <DxGridDataColumn Width="150" Caption="Trade" FieldName="Trade" />
                                 <DxGridDataColumn Width="auto" Caption="Details" FieldName="Details" />
-                                <DxGridDataColumn Width="200" Caption="Author" FieldName="Author" />
+                                <DxGridDataColumn Width="175" Caption="Author" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Author.FirstName + ' ' + Author.LastName" />
                             </Columns>
                         </DxGrid>
 
@@ -1688,38 +1684,41 @@ else
         {
             // Workflow and Subsequent Document Requirements
             Attachment workflowRequirements = new Attachment();
+            workflowRequirements.MediaName = "Client Intro Package";
             workflowRequirements.MediaDescription = "Workflow and Subsequent Document Requirements";
             workflowRequirements.MediaUrl = "/docs/templates/misc/Workflow and Subsequent Document Requirements.pdf";
-            workflowRequirements.Author = sysUser;
+            workflowRequirements.Author = currentUser;
             CurrentlySelectedQuote.attachments.Add(workflowRequirements);
 
             Event workflowRequirementsEvent = new Event();
             workflowRequirementsEvent.Details = workflowRequirements.MediaDescription + " sent to " + CurrentlySelectedQuote.email;
-            workflowRequirementsEvent.Author = sysUser;
+            workflowRequirementsEvent.Author = currentUser;
             CurrentlySelectedQuote.events.Add(workflowRequirementsEvent);
 
             // Facilitate Engagement Agreement
             Attachment engagementAgreement = new Attachment();
+            engagementAgreement.MediaName = "Client Intro Package";
             engagementAgreement.MediaDescription = "Facilitate Engagement Agreement";
             engagementAgreement.MediaUrl = "/docs/templates/agreements/Facilitate Engagement Agreement.docx";
-            engagementAgreement.Author = sysUser;
+            engagementAgreement.Author = currentUser;
             CurrentlySelectedQuote.attachments.Add(engagementAgreement);
 
             Event engagementAgreementEvent = new Event();
             engagementAgreementEvent.Details = engagementAgreement.MediaDescription + " sent to " + CurrentlySelectedQuote.email;
-            engagementAgreementEvent.Author = sysUser;
+            engagementAgreementEvent.Author = currentUser;
             CurrentlySelectedQuote.events.Add(engagementAgreementEvent);
 
             // Welcome Letter
             Attachment welcomeLetter = new Attachment();
+            welcomeLetter.MediaName = "Client Intro Package";
             welcomeLetter.MediaDescription = "Welcome to Facilitate.org";
             welcomeLetter.MediaUrl = "/docs/templates/boilerplate/Welcome to Facilitate.docx";
-            welcomeLetter.Author = sysUser;
+            welcomeLetter.Author = currentUser;
             CurrentlySelectedQuote.attachments.Add(welcomeLetter);
 
             Event welcomeLetterEvent = new Event();
             welcomeLetterEvent.Details = welcomeLetter.MediaDescription + " sent to " + CurrentlySelectedQuote.email;
-            welcomeLetterEvent.Author = sysUser;
+            welcomeLetterEvent.Author = currentUser;
             CurrentlySelectedQuote.events.Add(welcomeLetterEvent);
         }
     }
@@ -1925,9 +1924,6 @@ else
 
                     childQuote.events.Add(_event);
 
-                    // Add this event to master
-                    //parentQuote.events.Add(_event);
-
                     // Add Parent relationship to Child
                     if (childQuote.applicationType != "Aggregate")
                     {
@@ -2023,8 +2019,6 @@ else
                         childRelationship.Type = "Child";
                         childRelationship.Name = currentQuote.applicationType;
 
-                        // parentQuote.relationships.Add(childRelationship);
-                        // if (parentQuote.applicationType != "Aggregate")
                         parentQuote.relationships.Add(childRelationship);
                     }
                 }
@@ -2359,6 +2353,8 @@ else
                 foreach (QuoteSummary RelatedQuote in RelatedQuoteList)
                 {
                     isAggregate = true;
+
+                    aggregateTotal += RelatedQuote.totalQuote;
 
                     var childQuote = webServices.GetQuote(RelatedQuote._id)[0];
                     if (childQuote.status != "Archive")

@@ -10,7 +10,14 @@ html, body {
 #fileUpload2 {
     /*    border: solid 1px #ff0000 !important;*/
     position: relative !important;
-    top: -35px !important;
+    top: -52px !important;
+}
+
+.dxuc-button-container {
+    border: solid 0px #ff0000 !important;
+    position: relative !important;
+    top: -12px !important;
+    left: -15px !important;
 }
 
 .icon-actions {
@@ -714,13 +721,6 @@ table {
     overflow: auto !important;
     padding: 25px !important;
     padding-top: 35px !important;
-}
-
-.dxuc-button-container {
-    border: solid 0px #ff0000 !important;
-    position: relative !important;
-    top: 5px !important;
-    left: -15px !important;
 }
 
 .dxbl-grid-table tr:hover {
