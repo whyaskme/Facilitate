@@ -644,6 +644,7 @@ namespace Facilitate.Admin.Data
             return null;
         }
 
+
         public List<Quote> GetQuote(string quoteId)
         {
             try
@@ -651,75 +652,13 @@ namespace Facilitate.Admin.Data
                 var builder = Builders<Quote>.Filter;
                 var filter = builder.Eq(f => f._id, quoteId);
 
-                var sortedQuotes = _mongoDBCollection.Find(filter).ToList();
-                if (sortedQuotes.Count > 0)
-                {
-                    for (var i = 0; i < sortedQuotes.Count; i++)
-                    {
-                        if (sortedQuotes[i].firstName == "")
-                        {
-                            sortedQuotes[i].firstName = "Address";
-                        }
+                var quoteList = _mongoDBCollection.Find(filter).ToList();
 
-                        if (sortedQuotes[i].lastName == "")
-                        {
-                            sortedQuotes[i].lastName = "Only";
-                        }
-
-                        unSortedFiles.Clear();
-                        unSortedNotes.Clear();
-                        unSortedEvents.Clear();
-
-                        // Convert to local time
-                        sortedQuotes[i].timestamp = sortedQuotes[i].timestamp.ToLocalTime();
-                        sortedQuotes[i].lastUpdated = sortedQuotes[i].lastUpdated.ToLocalTime();
-
-                        for (var j = 0; j < sortedQuotes[i].attachments.Count; j++)
-                        {
-                            Libraries.Models.Attachment currentAttachment = sortedQuotes[i].attachments[j];
-
-                            var currentDateTime = currentAttachment.DateTime;
-
-                            currentAttachment.DateTime = currentAttachment.DateTime.ToLocalTime();
-
-                            unSortedFiles.Add(currentAttachment);
-                        }
-
-                        for (var j = 0; j < sortedQuotes[i].notes.Count; j++)
-                        {
-                            Note currentNote = sortedQuotes[i].notes[j];
-                            currentNote.DateTime = currentNote.DateTime.ToLocalTime();
-
-                            unSortedNotes.Add(currentNote);
-                        }
-
-                        for (var j = 0; j < sortedQuotes[i].events.Count; j++)
-                        {
-                            Event currentEvent = sortedQuotes[i].events[j];
-                            currentEvent.DateTime = currentEvent.DateTime.ToLocalTime();
-
-                            unSortedEvents.Add(currentEvent);
-                        }
-
-                        sortedQuotes[i].attachments = SortFilesByDateDesc(unSortedFiles);
-                        sortedQuotes[i].notes = SortNotesByDateDesc(unSortedNotes);
-                        sortedQuotes[i].events = SortEventsByDateDesc(unSortedEvents);
-                    }
-
-                    return sortedQuotes;
-                }
-                else
-                {
-                    return null;
-                }
+                return quoteList;
             }
             catch (Exception ex)
             {
-                resultMsg = ex.Message;
-            }
-            finally
-            {
-
+                return null;
             }
             return null;
         }

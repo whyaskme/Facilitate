@@ -297,7 +297,7 @@ else
                                 <DxGridDataColumn Width="100" Caption="Relationship" FieldName="relationship" />
                                 <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
                                 <DxGridDataColumn Width="165" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-                                    <DxGridDataColumn Width="165" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                <DxGridDataColumn Width="165" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                 <DxGridDataColumn Width="auto" Caption="Last Event" FieldName="lastEventDetails" />
                                 <DxGridDataColumn Width="150" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
 
@@ -1762,7 +1762,7 @@ else
                     {
                         var tmpVal = relatedQuoteId;
 
-                        // relatedQuote = WebServices.GetQuote(relatedQuoteId)[0];
+                        relatedQuote = WebServices.GetQuote(relatedQuoteId)[0];
 
                         // relatedQuote.status = "Archive";
 
@@ -2349,6 +2349,9 @@ else
         double standaloneTotal = 0;
         string authorName = "";
 
+        DateTime lastQuoteEventTimestamp = DateTime.MinValue;
+        string lastQuoteEventDetails = "";
+
         TimerDispose();
 
         _timer = new Timer(new TimerCallback(_ =>
@@ -2384,6 +2387,12 @@ else
                 foreach(Event _event in CurrentlySelectedQuote.events)
                 {
                     _event.Trade = CurrentlySelectedQuote.applicationType;
+
+                    if(_event.DateTime > lastQuoteEventTimestamp)
+                    {
+                        lastQuoteEventTimestamp = _event.DateTime;
+                        lastQuoteEventDetails = _event.Details;
+                    }
                 }
                 EventList.AddRange(CurrentlySelectedQuote.events);
 
@@ -2406,30 +2415,44 @@ else
                     }
 
                     var childQuote = webServices.GetQuote(RelatedQuote._id)[0];
-                    if (childQuote.status != "Archive")
+                    if(childQuote != null)
                     {
-                        // Process attachments
-                        foreach (Attachment attachment in childQuote.attachments)
+                        if (childQuote.status != "Archive")
                         {
-                            attachment.Trade = childQuote.applicationType;
-                            if (attachment.MediaName == "")
-                                attachment.MediaName = "Filename?";
-                        }
-                        AttachmentList.AddRange(childQuote.attachments);
+                            // Process attachments
+                            foreach (Attachment attachment in childQuote.attachments)
+                            {
+                                attachment.Trade = childQuote.applicationType;
+                                if (attachment.MediaName == "")
+                                    attachment.MediaName = "Filename?";
+                            }
+                            AttachmentList.AddRange(childQuote.attachments);
 
-                        // Process events
-                        foreach (Event _event in childQuote.events)
-                        {
-                            _event.Trade = childQuote.applicationType;
-                        }
-                        EventList.AddRange(childQuote.events);
+                            // Process events
+                            foreach (Event _event in childQuote.events)
+                            {
+                                _event.Trade = childQuote.applicationType;
 
-                        // Process notes
-                        foreach (Note note in childQuote.notes)
-                        {
-                            note.Trade = childQuote.applicationType;
+                                if(_event.DateTime > lastQuoteEventTimestamp)
+                                {
+                                    lastQuoteEventTimestamp = _event.DateTime;
+                                    lastQuoteEventDetails = _event.Details;
+                                }
+                            }
+                            EventList.AddRange(childQuote.events);
+
+                            // Process notes
+                            foreach (Note note in childQuote.notes)
+                            {
+                                note.Trade = childQuote.applicationType;
+                            }
+                            NoteList.AddRange(childQuote.notes);
                         }
-                        NoteList.AddRange(childQuote.notes);
+
+                        //RelatedQuote.lastEventDetails = "Huh?";
+                        // RelatedQuote.lastEventDetails = lastQuoteEventDetails;
+                        // RelatedQuote.lastEventTimeStamp = lastQuoteEventTimestamp;
+
                     }
                 }
 
@@ -2443,7 +2466,7 @@ else
                 }
 
                 // Sort collections
-                RelatedQuoteList = RelatedQuoteList.OrderBy(x => x.applicationType).ToList();
+                RelatedQuoteList = RelatedQuoteList.OrderByDescending(x => x.lastEventTimeStamp).ToList();
                 AttachmentList = AttachmentList.OrderByDescending(x => x.DateTime).ToList();
                 EventList = EventList.OrderByDescending(x => x.DateTime).ToList();
                 NoteList = NoteList.OrderByDescending(x => x.DateTime).ToList();
