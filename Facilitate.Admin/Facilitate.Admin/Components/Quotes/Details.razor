@@ -218,51 +218,49 @@ else
                                     }
                                 }
                             </div>
+                            @{
+                                if (CurrentlySelectedQuote.projectManager != null)
+                                {
+                                    <div class="col-md-1">
+                                        <h6>Manager</h6>
+                                    </div>
 
-                            <div class="col-md-1">
-                                <h6>Manager</h6>
-                            </div>
-
-                            <div class="col-md-10">
-                                <span class="">
-                                    <label>Name</label>
-                                    <span class="detail-item">@CurrentlySelectedQuote.projectManager.FirstName</span><span class="detail-item">@CurrentlySelectedQuote.projectManager.LastName</span>
-                                </span>
-                                <span class="">
-                                    <label>Ph</label>
-                                    <span class="detail-item">@CurrentlySelectedQuote.projectManager.Phone</span>
-                                </span>
-                                <span class="">
-                                    <label>Email</label>
-                                    <a href="mailto:@CurrentlySelectedQuote.projectManager.Email" target="_blank">
-                                        <span class="detail-item">@CurrentlySelectedQuote.projectManager.Email</span>
-                                    </a>
-                                </span>
-                                <span class="">
-                                    <label>Market</label>
-                                    <a href="https://www.google.com/maps/search/@CurrentlySelectedQuote.projectManager.City, @CurrentlySelectedQuote.projectManager.State @CurrentlySelectedQuote.projectManager.Zip" target="_blank">
-                                        @CurrentlySelectedQuote.projectManager.City, @CurrentlySelectedQuote.projectManager.State
-                                    </a>
-                                </span>
-                            </div>
+                                    <div class="col-md-10">
+                                        <span class="">
+                                            <label>Name</label>
+                                            <span class="detail-item">@CurrentlySelectedQuote.projectManager.FirstName</span><span class="detail-item">@CurrentlySelectedQuote.projectManager.LastName</span>
+                                        </span>
+                                        <span class="">
+                                            <label>Ph</label>
+                                            <span class="detail-item">@CurrentlySelectedQuote.projectManager.Phone</span>
+                                        </span>
+                                        <span class="">
+                                            <label>Email</label>
+                                            <a href="mailto:@CurrentlySelectedQuote.projectManager.Email" target="_blank">
+                                                <span class="detail-item">@CurrentlySelectedQuote.projectManager.Email</span>
+                                            </a>
+                                        </span>
+                                        <span class="">
+                                            <label>Market</label>
+                                            <a href="https://www.google.com/maps/search/@CurrentlySelectedQuote.projectManager.City, @CurrentlySelectedQuote.projectManager.State @CurrentlySelectedQuote.projectManager.Zip" target="_blank">
+                                                @CurrentlySelectedQuote.projectManager.City, @CurrentlySelectedQuote.projectManager.State
+                                            </a>
+                                        </span>
+                                    </div>
+                                }
+                            }
                         </div>
 
-                        if (CurrentlySelectedQuote.projectManager != null)
-                        {
-                            var relationshipCount = CurrentlySelectedQuote.relationships.Count;
+                        <hr />
 
+                        <h6>@RelatedQuoteList.Count() Trades</h6>
 
+                        <div>
+                            <button class="action-button" @onclick="@(() => IsPopupVisibleAddTrade = true)">Add Trade</button>
+                        </div>
+                        <div>&nbsp;</div>
 
-                            <hr />
-
-                            <h6>@RelatedQuoteList.Count() Trades</h6>
-
-                                <div>
-                                    <button class="action-button" @onclick="@(() => IsPopupVisibleAddTrade = true)">Add Trade</button>
-                                </div>
-                                <div>&nbsp;</div>
-
-                                <DxGrid @ref="RelatedQuoteGrid"
+                        <DxGrid @ref="RelatedQuoteGrid"
                                 Data="@RelatedQuoteList"
                                 KeyFieldName="_id"
                                 RowClick="ViewChildQuoteDetails"
@@ -281,28 +279,27 @@ else
                                 PageSizeSelectorAllRowsItemVisible="false"
                                 KeyboardNavigationEnabled="true"
                                 TextWrapEnabled="false">
-                                <Columns>
-                                    <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
-                                    <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" />
-                                    <DxGridDataColumn Width="100" Caption="Relationship" FieldName="relationship" />
-                                    <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
-                                    <DxGridDataColumn Width="150" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-                                    <DxGridDataColumn Width="150" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-                                    <DxGridDataColumn Width="auto" Caption="Last Event" FieldName="lastEventDetails" />
-                                    <DxGridDataColumn Width="150" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
+                            <Columns>
+                                <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
+                                <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" />
+                                <DxGridDataColumn Width="100" Caption="Relationship" FieldName="relationship" />
+                                <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
+                                <DxGridDataColumn Width="150" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                <DxGridDataColumn Width="150" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                <DxGridDataColumn Width="auto" Caption="Last Event" FieldName="lastEventDetails" />
+                                <DxGridDataColumn Width="150" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
 
-                                    @{
-                                        if(CurrentlySelectedQuote.applicationType == "Aggregate")
-                                        {
-                                            <DxGridDataColumn Width="100" Caption="Amount" FieldName="totalQuote" DisplayFormat="C0" />
-                                            <DxGridDataColumn Width="100" Caption="Qualified?" FieldName="isQualified" />
-                                            <DxGridCommandColumn Width="100px" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
-                                        }
+                                @{
+                                    if (CurrentlySelectedQuote.applicationType == "Aggregate")
+                                    {
+                                        <DxGridDataColumn Width="100" Caption="Amount" FieldName="totalQuote" DisplayFormat="C0" />
+                                        <DxGridDataColumn Width="100" Caption="Qualified?" FieldName="isQualified" />
+                                        <DxGridCommandColumn Width="100px" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
                                     }
+                                }
 
-                                </Columns>
-                            </DxGrid>
-                            }
+                            </Columns>
+                        </DxGrid>
                     }
                     </DxTabPage>
 
