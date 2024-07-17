@@ -10,14 +10,13 @@
 
 @using Microsoft.EntityFrameworkCore;
 
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Http.Extensions;
 @using Microsoft.AspNetCore.Identity;
 @using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 @using Microsoft.AspNetCore.Mvc;
 @using Microsoft.AspNetCore.Mvc.Rendering;
 @using Microsoft.AspNetCore.WebUtilities;
-
-@* @using Microsoft.AspNetCore.Http.Extensions; *@
-@using Microsoft.AspNetCore.Http;
 
 @using MongoDB.Bson;
 
@@ -176,14 +175,16 @@ else
                         <div class="header-total-element">sqft &raquo;</div>
 
                         @{
+                            var quoteTotal = CurrentlySelectedQuote.totalQuote.ToString("C0");
+
                             if(isAggregateQuote)
                             {
-                                <div class="header-total-element">@TotalQuoteValue</div>
+                                <div class="header-total-element">@quoteTotal</div>
                             }
                             else
                             {
                                 <div class="header-total-element">
-                                    <DxTextBox Text="@TotalQuoteValue" TextChanged="@((newValue) => OnTotalQuoteValueChanged(newValue))" CssClass="total-quote-value" />
+                                    <DxTextBox Text="@quoteTotal" TextChanged="@((newValue) => OnTotalQuoteValueChanged(newValue))" CssClass="total-quote-value" />
                                 </div>
                             }
                         }
@@ -280,6 +281,15 @@ else
                                     DataItemDeleting="OnDataItemDeleting"
                                     SelectionMode="GridSelectionMode.Single"
                                     @bind-SelectedDataItem="@SelectedChildQuoteItem"
+                                    PageSize="10"
+                                    PagerPosition="GridPagerPosition.Bottom"
+                                    ShowGroupPanel="true"
+                                    AutoExpandAllGroupRows="true"
+                                    ShowFilterRow="true"
+                                    PagerNavigationMode="PagerNavigationMode.InputBox"
+                                    PageSizeSelectorVisible="true"
+                                    PageSizeSelectorAllRowsItemVisible="false"
+                                    KeyboardNavigationEnabled="true"
                                     TextWrapEnabled="false">
                                     <Columns>
                                         <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
@@ -558,6 +568,15 @@ else
                         <DxGrid @ref="EventGrid"
                             Data="@AggregateEventList"
                             KeyFieldName="_id"
+                            PageSize="10"
+                            PagerPosition="GridPagerPosition.Bottom"
+                            ShowGroupPanel="true"
+                            AutoExpandAllGroupRows="true"
+                            ShowFilterRow="true"
+                            PagerNavigationMode="PagerNavigationMode.InputBox"
+                            PageSizeSelectorVisible="true"
+                            PageSizeSelectorAllRowsItemVisible="false"
+                            KeyboardNavigationEnabled="true"
                             TextWrapEnabled="false">
                             <Columns>
                                 <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
@@ -1014,8 +1033,6 @@ else
 
 @code 
 {
-    string TotalQuoteValue { get; set; }
-
     public List<EventSummary> AggregateEventList = new List<EventSummary>();
 
     public abstract class DxInputDataEditorBase<T> : DxDataEditor<T>;
@@ -1989,7 +2006,7 @@ else
 
                         // parentQuote.relationships.Add(childRelationship);
                         // if (parentQuote.applicationType != "Aggregate")
-                            parentQuote.relationships.Add(childRelationship);
+                        parentQuote.relationships.Add(childRelationship);
                     }
                 }
             }
@@ -2353,13 +2370,13 @@ else
                     }
                 }
 
-                if (isAggregate)
+                if (CurrentlySelectedQuote.applicationType == "Aggregate")
                 {
-                    TotalQuoteValue = aggregateTotal.ToString("C0");
+                    CurrentlySelectedQuote.totalQuote = aggregateTotal;
                 }
                 else
                 {
-                    TotalQuoteValue = standaloneTotal.ToString("C0");
+                    CurrentlySelectedQuote.totalQuote = standaloneTotal;
                 }
 
                 // Sort event collection
