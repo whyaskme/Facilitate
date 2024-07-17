@@ -6,6 +6,13 @@ html, body {
     overflow: auto !important;
 }
 
+#AttachmentGrid,
+#fileUpload2 {
+    /*    border: solid 1px #ff0000 !important;*/
+    position: relative !important;
+    top: -35px !important;
+}
+
 .icon-actions {
     border: solid 0px #ff0000 !important;
     width: 25px !important;

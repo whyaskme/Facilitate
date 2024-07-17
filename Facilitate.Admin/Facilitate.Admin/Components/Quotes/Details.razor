@@ -481,8 +481,12 @@ else
                             </DxTabPage>
 
                             <DxTabPage Id="Panel-Attach-Files" Text="Attachments">
+
+                                <h6>@AttachmentList.Count() Attachments</h6>
+
                                 <DxUpload 
                                     Name="fileUpload2"
+                                          id="fileUpload2"
                                     SelectButtonText="Upload"
                                     AllowMultiFileUpload="true"
                                     UploadUrl="@GetUploadUrl(@uploadUrl)"
@@ -495,32 +499,33 @@ else
                                     CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
                                 </DxUpload>
                                 <div class="alert alert-danger @(ErrorVisible? " visible" : " invisible")">@MyError</div>
-                                @foreach (Attachment attachment in CurrentlySelectedQuote.attachments)
-                                {
-                                    if (!attachment.IsDeleted)
-                                    {
-                                        <div class="note-row">
-                                            <div>
-                                                <label>@attachmentsCount) @attachment.DateTime</label>
-                                            </div>
 
-                                            <span class="hyperlink-warning" @onclick="() => SelectAttachmentToDelete(CurrentlySelectedQuote, attachment)">Delete</span>
+                                <DxGrid @ref="AttachmentGrid"
+                                    Data="@AttachmentList"
+                                    id="AttachmentGrid"
+                                    KeyFieldName="_id"
+                                    CssClass="AttachmentGrid"
+                                    PageSize="10"
+                                    PagerPosition="GridPagerPosition.Bottom"
+                                    ShowGroupPanel="true"
+                                    AutoExpandAllGroupRows="true"
+                                    ShowFilterRow="true"
+                                    PagerNavigationMode="PagerNavigationMode.InputBox"
+                                    PageSizeSelectorVisible="true"
+                                    PageSizeSelectorAllRowsItemVisible="false"
+                                    KeyboardNavigationEnabled="true"
+                                    TextWrapEnabled="false">
+                                    <Columns>
+                                        <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
+                                        <DxGridDataColumn Width="175" Caption="DateTime" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                        <DxGridDataColumn Width="150" Caption="Trade" FieldName="Trade" />
+                                        <DxGridDataColumn Width="auto" Caption="Name" FieldName="MediaName" />
+                                        <DxGridDataColumn Width="auto" Caption="Description" FieldName="MediaDescription" />
+                                        <DxGridDataColumn Width="auto" Caption="Url" FieldName="MediaName" />
+                                        <DxGridDataColumn Width="200" Caption="Author" FieldName="Author" />
+                                    </Columns>
+                                </DxGrid>
 
-                                            <span class="bar-spacer">|</span>
-                                            <a href="@attachment.MediaUrl" target="_blank">
-                                                <span>@attachment.MediaDescription</span>
-                                            </a>
-                                            <span class="bar-spacer">|</span>
-                                            <label>File Type</label>
-                                            <span>@FileType</span>
-                                            <span class="bar-spacer">|</span>
-                                            <label>Source</label>
-                                            <span>@attachment.Author.FirstName @attachment.Author.LastName</span>
-                                        </div>
-
-                                        attachmentsCount--;
-                                    }
-                                }
                             </DxTabPage>
                         }
                     }
@@ -1646,7 +1651,7 @@ else
         {
             CurrentlySelectedQuote.status = "Opportunity";
 
-            //SendWelcomePackage();
+            SendWelcomePackage();
 
             Event statusChanged = new Event();
             statusChanged.Details = CurrentlySelectedQuote.firstName + " " + CurrentlySelectedQuote.lastName + " converted to Opportunity";
@@ -2361,21 +2366,21 @@ else
                         // Process attachments
                         foreach (Attachment attachment in childQuote.attachments)
                         {
-                            attachment.Trade = CurrentlySelectedQuote.applicationType;
+                            attachment.Trade = childQuote.applicationType;
                         }
                         AttachmentList.AddRange(childQuote.attachments);
 
                         // Process events
                         foreach (Event _event in childQuote.events)
                         {
-                            _event.Trade = CurrentlySelectedQuote.applicationType;
+                            _event.Trade = childQuote.applicationType;
                         }
                         EventList.AddRange(childQuote.events);
 
                         // Process notes
                         foreach (Note note in childQuote.notes)
                         {
-                            note.Trade = CurrentlySelectedQuote.applicationType;
+                            note.Trade = childQuote.applicationType;
                         }
                         NoteList.AddRange(childQuote.notes);
                     }
