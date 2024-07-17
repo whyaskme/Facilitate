@@ -488,7 +488,7 @@ else
 
                                 <DxUpload 
                                     Name="fileUpload2"
-                                          id="fileUpload2"
+                                    id="fileUpload2"
                                     SelectButtonText="Upload"
                                     AllowMultiFileUpload="true"
                                     UploadUrl="@GetUploadUrl(@uploadUrl)"
@@ -2337,6 +2337,8 @@ else
                 foreach(Attachment attachment in CurrentlySelectedQuote.attachments)
                 {
                     attachment.Trade = CurrentlySelectedQuote.applicationType;
+                    if (attachment.MediaName == "")
+                        attachment.MediaName = "Filename?";
                 }
                 AttachmentList.AddRange(CurrentlySelectedQuote.attachments);
 
@@ -2360,7 +2362,10 @@ else
                 {
                     isAggregate = true;
 
-                    aggregateTotal += RelatedQuote.totalQuote;
+                    if(RelatedQuote.status != "Archive")
+                    {
+                        aggregateTotal += RelatedQuote.totalQuote;
+                    }
 
                     var childQuote = webServices.GetQuote(RelatedQuote._id)[0];
                     if (childQuote.status != "Archive")
@@ -2369,6 +2374,8 @@ else
                         foreach (Attachment attachment in childQuote.attachments)
                         {
                             attachment.Trade = childQuote.applicationType;
+                            if (attachment.MediaName == "")
+                                attachment.MediaName = "Filename?";
                         }
                         AttachmentList.AddRange(childQuote.attachments);
 
