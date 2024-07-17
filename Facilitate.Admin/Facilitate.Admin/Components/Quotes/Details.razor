@@ -252,7 +252,7 @@ else
 
                             <hr />
 
-                            <h6>@ChildTradesCount Trades</h6>
+                            <h6>@RelatedQuoteList.Count() Trades</h6>
 
                                 if (CurrentlySelectedQuote.applicationType != "Aggregate")
                                 {
@@ -262,48 +262,46 @@ else
                                     <div>&nbsp;</div>
                                 }
 
-                                if (@ChildTradesCount > 0)
-                                {
-                                    <DxGrid @ref="ChildQuoteGrid"
-                                    Data="@RelatedQuoteList"
-                                    KeyFieldName="_id"
-                                    RowClick="ViewChildQuoteDetails"
-                                    AllowSelectRowByClick="true"
-                                    EditModelSaving="OnEditModelSaving"
-                                    DataItemDeleting="OnDataItemDeleting"
-                                    SelectionMode="GridSelectionMode.Single"
-                                    @bind-SelectedDataItem="@SelectedChildQuoteItem"
-                                    PageSize="10"
-                                    PagerPosition="GridPagerPosition.Bottom"
-                                    ShowGroupPanel="true"
-                                    AutoExpandAllGroupRows="true"
-                                    ShowFilterRow="true"
-                                    PagerNavigationMode="PagerNavigationMode.InputBox"
-                                    PageSizeSelectorVisible="true"
-                                    PageSizeSelectorAllRowsItemVisible="false"
-                                    KeyboardNavigationEnabled="true"
-                                    TextWrapEnabled="false">
-                                    <Columns>
-                                        <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
-                                        <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" />
-                                        <DxGridDataColumn Width="100" Caption="Relationship" FieldName="relationship" />
-                                        <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
-                                        <DxGridDataColumn Width="150" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-                                        <DxGridDataColumn Width="150" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-                                        <DxGridDataColumn Width="auto" Caption="Last Event" FieldName="lastEventDetails" />
-                                        <DxGridDataColumn Width="150" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
+                                <DxGrid @ref="RelatedQuoteGrid"
+                                Data="@RelatedQuoteList"
+                                KeyFieldName="_id"
+                                RowClick="ViewChildQuoteDetails"
+                                AllowSelectRowByClick="true"
+                                EditModelSaving="OnEditModelSaving"
+                                DataItemDeleting="OnDataItemDeleting"
+                                SelectionMode="GridSelectionMode.Single"
+                                @bind-SelectedDataItem="@SelectedChildQuoteItem"
+                                PageSize="10"
+                                PagerPosition="GridPagerPosition.Bottom"
+                                ShowGroupPanel="true"
+                                AutoExpandAllGroupRows="true"
+                                ShowFilterRow="true"
+                                PagerNavigationMode="PagerNavigationMode.InputBox"
+                                PageSizeSelectorVisible="true"
+                                PageSizeSelectorAllRowsItemVisible="false"
+                                KeyboardNavigationEnabled="true"
+                                TextWrapEnabled="false">
+                                <Columns>
+                                    <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
+                                    <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" />
+                                    <DxGridDataColumn Width="100" Caption="Relationship" FieldName="relationship" />
+                                    <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
+                                    <DxGridDataColumn Width="150" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                    <DxGridDataColumn Width="150" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                    <DxGridDataColumn Width="auto" Caption="Last Event" FieldName="lastEventDetails" />
+                                    <DxGridDataColumn Width="150" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
 
-                                        @{
-                                            if(CurrentlySelectedQuote.applicationType == "Aggregate")
-                                            {
-                                                <DxGridDataColumn Width="100" Caption="Amount" FieldName="totalQuote" DisplayFormat="C0" />
-                                                <DxGridDataColumn Width="100" Caption="Qualified?" FieldName="isQualified" />
-                                                <DxGridCommandColumn Width="100px" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
-                                            }
+                                    @{
+                                        if(CurrentlySelectedQuote.applicationType == "Aggregate")
+                                        {
+                                            <DxGridDataColumn Width="100" Caption="Amount" FieldName="totalQuote" DisplayFormat="C0" />
+                                            <DxGridDataColumn Width="100" Caption="Qualified?" FieldName="isQualified" />
+                                            <DxGridCommandColumn Width="100px" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
                                         }
+                                    }
 
-                                    </Columns>
-                                </DxGrid>
+                                </Columns>
+                            </DxGrid>
                             }
                         }
                     }
@@ -529,12 +527,12 @@ else
 
                     <DxTabPage Id="Panel-Notes" Text="Notes">
 
-                        <h6>@AggregateNoteList.Count() Notes</h6>
+                        <h6>@NoteList.Count() Notes</h6>
 
                         <button class="action-button" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
                         <br /><br />
                         <DxGrid @ref="NoteGrid"
-                                Data="@AggregateNoteList"
+                                Data="@NoteList"
                                 KeyFieldName="_id"
                                 PageSize="10"
                                 PagerPosition="GridPagerPosition.Bottom"
@@ -558,10 +556,10 @@ else
 
                     <DxTabPage Id="Panel-History" Text="History">
 
-                        <h6>@AggregateEventList.Count() Events</h6>
+                        <h6>@EventList.Count() Events</h6>
 
                         <DxGrid @ref="EventGrid"
-                            Data="@AggregateEventList"
+                            Data="@EventList"
                             KeyFieldName="_id"
                             PageSize="10"
                             PagerPosition="GridPagerPosition.Bottom"
@@ -1076,7 +1074,7 @@ else
 
     public void RemoveSelectedChildItem(GridRowClickEventArgs args)
     {
-        var selectedRow = (QuoteSummary)ChildQuoteGrid.GetDataItem(args.VisibleIndex);
+        var selectedRow = (QuoteSummary)RelatedQuoteGrid.GetDataItem(args.VisibleIndex);
         var selectedQuoteId = selectedRow._id;
     }
 
@@ -1116,8 +1114,6 @@ else
 
     public string ConfirmRemoveMessage { get; set; }
     public string ConfirmRestoreMessage { get; set; }
-
-    public List<QuoteSummary> RelatedQuoteList = new List<QuoteSummary>();
 
     [Parameter]
     public EventCallback<IEnumerable<ListItem>> SelectedItemsChanged { get; set; }
@@ -1435,7 +1431,7 @@ else
     ObjectId SelectedFileId { get; set; }
 
     IGrid QuoteGrid { get; set; }
-    IGrid ChildQuoteGrid { get; set; }
+    IGrid RelatedQuoteGrid { get; set; }
     IGrid AttachmentGrid { get; set; }
     IGrid EventGrid { get; set; }
     IGrid NoteGrid { get; set; }
@@ -1608,7 +1604,7 @@ else
 
     void ViewChildQuoteDetails(GridRowClickEventArgs args)
     {
-        var selectedRow = (QuoteSummary)ChildQuoteGrid.GetDataItem(args.VisibleIndex);
+        var selectedRow = (QuoteSummary)RelatedQuoteGrid.GetDataItem(args.VisibleIndex);
         var selectedQuoteId = selectedRow._id;
 
         var tmpUrl = "/quotes/details/" + selectedQuoteId + "/opportunities/";
@@ -1618,7 +1614,7 @@ else
 
     public void DeleteChildQuote(GridRowClickEventArgs args)
     {
-        var selectedRow = (QuoteSummary)ChildQuoteGrid.GetDataItem(args.VisibleIndex);
+        var selectedRow = (QuoteSummary)RelatedQuoteGrid.GetDataItem(args.VisibleIndex);
         var selectedQuoteId = selectedRow._id;
     }
 
@@ -2298,9 +2294,10 @@ else
     public int ChildTradesCount = 0;
     public int EventsCount = 0;
 
-    public List<Attachment> AggregateAttachmentList = new List<Attachment>();
-    public List<Event> AggregateEventList = new List<Event>();
-    public List<Note> AggregateNoteList = new List<Note>();
+    public List<QuoteSummary> RelatedQuoteList = new List<QuoteSummary>();
+    public List<Attachment> AttachmentList = new List<Attachment>();
+    public List<Event> EventList = new List<Event>();
+    public List<Note> NoteList = new List<Note>();
 
     private async Task TimerRefresh()
     {
@@ -2319,37 +2316,38 @@ else
             aggregateTotal = 0;
             standaloneTotal = 0;
 
-            AggregateAttachmentList.Clear();
-            AggregateEventList.Clear();
-            AggregateNoteList.Clear();
+            RelatedQuoteList = new List<QuoteSummary>();
+            AttachmentList = new List<Attachment>();
+            EventList = new List<Event>();
+            NoteList = new List<Note>();
 
             quotes = webServices.GetQuote(QuoteId);
             if(quotes != null)
             {
                 CurrentlySelectedQuote = quotes[0];
 
+                standaloneTotal = CurrentlySelectedQuote.totalQuote;
+
                 // Process attachments
                 foreach(Attachment attachment in CurrentlySelectedQuote.attachments)
                 {
                     attachment.Trade = CurrentlySelectedQuote.applicationType;
                 }
-                AggregateAttachmentList.AddRange(CurrentlySelectedQuote.attachments);
+                AttachmentList.AddRange(CurrentlySelectedQuote.attachments);
 
                 // Process events
                 foreach(Event _event in CurrentlySelectedQuote.events)
                 {
                     _event.Trade = CurrentlySelectedQuote.applicationType;
                 }
-                AggregateEventList.AddRange(CurrentlySelectedQuote.events);
+                EventList.AddRange(CurrentlySelectedQuote.events);
 
                 // Process notes
                 foreach (Note note in CurrentlySelectedQuote.notes)
                 {
                     note.Trade = CurrentlySelectedQuote.applicationType;
                 }
-                AggregateNoteList.AddRange(CurrentlySelectedQuote.notes);
-
-                standaloneTotal = CurrentlySelectedQuote.totalQuote;
+                NoteList.AddRange(CurrentlySelectedQuote.notes);
 
                 // Get child quote summaries
                 RelatedQuoteList = webServices.GetChildQuoteSummaries(CurrentlySelectedQuote);
@@ -2357,32 +2355,29 @@ else
                 {
                     isAggregate = true;
 
-                    var lastEvent = RelatedQuote.events.LastOrDefault();
-                    RelatedQuote.lastEventTimeStamp = lastEvent.DateTime.ToLocalTime();
-                    RelatedQuote.lastEventDetails = lastEvent.Details;
-
-                    if (RelatedQuote.status != "Archive")
+                    var childQuote = webServices.GetQuote(RelatedQuote._id)[0];
+                    if (childQuote.status != "Archive")
                     {
                         // Process attachments
-                        foreach (Attachment attachment in CurrentlySelectedQuote.attachments)
+                        foreach (Attachment attachment in childQuote.attachments)
                         {
                             attachment.Trade = CurrentlySelectedQuote.applicationType;
                         }
-                        AggregateAttachmentList.AddRange(CurrentlySelectedQuote.attachments);
+                        AttachmentList.AddRange(childQuote.attachments);
 
                         // Process events
-                        foreach (Event _event in CurrentlySelectedQuote.events)
+                        foreach (Event _event in childQuote.events)
                         {
                             _event.Trade = CurrentlySelectedQuote.applicationType;
                         }
-                        AggregateEventList.AddRange(CurrentlySelectedQuote.events);
+                        EventList.AddRange(childQuote.events);
 
                         // Process notes
-                        foreach (Note note in CurrentlySelectedQuote.notes)
+                        foreach (Note note in childQuote.notes)
                         {
                             note.Trade = CurrentlySelectedQuote.applicationType;
                         }
-                        AggregateNoteList.AddRange(CurrentlySelectedQuote.notes);
+                        NoteList.AddRange(childQuote.notes);
                     }
                 }
 
@@ -2396,9 +2391,10 @@ else
                 }
 
                 // Sort collections
-                AggregateAttachmentList = AggregateAttachmentList.OrderByDescending(x => x.DateTime).ToList();
-                AggregateEventList = AggregateEventList.OrderByDescending(x => x.DateTime).ToList();
-                AggregateNoteList = AggregateNoteList.OrderByDescending(x => x.DateTime).ToList();
+                RelatedQuoteList = RelatedQuoteList.OrderBy(x => x.applicationType).ToList();
+                AttachmentList = AttachmentList.OrderByDescending(x => x.DateTime).ToList();
+                EventList = EventList.OrderByDescending(x => x.DateTime).ToList();
+                NoteList = NoteList.OrderByDescending(x => x.DateTime).ToList();
 
                 InvokeAsync(() =>
                 {
