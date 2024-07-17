@@ -79,7 +79,7 @@
     }
 </script>
 
-@if (quotes == null)
+@if (QuotesList == null)
 {
     @*     <p><em>Loading...</em></p> *@
 }
@@ -92,7 +92,7 @@ else
     </div>
 
     <DxGrid @ref="QuoteGrid"
-            Data="@quotes"
+            Data="@QuotesList"
             KeyFieldName="_id"
             TextWrapEnabled="false">
         <Columns>
@@ -204,9 +204,9 @@ else
 
                     <DxTabPage Id="Panel-Project-Manager" Text="Relationships">
                     @{
-                        <h6>Manager</h6>
+                        
                         <div class="row">
-                            <div class="col">
+                            <div class="col-md-1">
                                 @{
                                     if (CurrentlySelectedQuote.projectManager != null)
                                     {
@@ -218,37 +218,40 @@ else
                                     }
                                 }
                             </div>
+
+                            <div class="col-md-1">
+                                <h6>Manager</h6>
+                            </div>
+
+                            <div class="col-md-10">
+                                <span class="">
+                                    <label>Name</label>
+                                    <span class="detail-item">@CurrentlySelectedQuote.projectManager.FirstName</span><span class="detail-item">@CurrentlySelectedQuote.projectManager.LastName</span>
+                                </span>
+                                <span class="">
+                                    <label>Ph</label>
+                                    <span class="detail-item">@CurrentlySelectedQuote.projectManager.Phone</span>
+                                </span>
+                                <span class="">
+                                    <label>Email</label>
+                                    <a href="mailto:@CurrentlySelectedQuote.projectManager.Email" target="_blank">
+                                        <span class="detail-item">@CurrentlySelectedQuote.projectManager.Email</span>
+                                    </a>
+                                </span>
+                                <span class="">
+                                    <label>Market</label>
+                                    <a href="https://www.google.com/maps/search/@CurrentlySelectedQuote.projectManager.City, @CurrentlySelectedQuote.projectManager.State @CurrentlySelectedQuote.projectManager.Zip" target="_blank">
+                                        @CurrentlySelectedQuote.projectManager.City, @CurrentlySelectedQuote.projectManager.State
+                                    </a>
+                                </span>
+                            </div>
                         </div>
 
                         if (CurrentlySelectedQuote.projectManager != null)
                         {
                             var relationshipCount = CurrentlySelectedQuote.relationships.Count;
 
-                            <div class="row project-manager-summary">
-                                <div class="col">
-                                    <label>Name</label>
-                                    <span class="detail-item">@CurrentlySelectedQuote.projectManager.FirstName</span><span class="detail-item">@CurrentlySelectedQuote.projectManager.LastName</span>
-                                </div>
-                                <div class="col">
-                                    <label>Ph</label>
-                                    <span class="detail-item">@CurrentlySelectedQuote.projectManager.Phone</span>
-                                </div>
-                                <div class="col">
-                                    <label>Email</label>
-                                    <a href="mailto:@CurrentlySelectedQuote.projectManager.Email" target="_blank">
-                                        <span class="detail-item">@CurrentlySelectedQuote.projectManager.Email</span>
-                                    </a>
-                                </div>
-                                <div class="col">
-                                    <label>Market</label>
-                                    <a href="https://www.google.com/maps/search/@CurrentlySelectedQuote.projectManager.City, @CurrentlySelectedQuote.projectManager.State @CurrentlySelectedQuote.projectManager.Zip" target="_blank">
-                                        @CurrentlySelectedQuote.projectManager.City, @CurrentlySelectedQuote.projectManager.State
-                                    </a>
-                                </div>
-                                <div class="col">&nbsp;</div>
-                                <div class="col">&nbsp;</div>
-                                <div class="col">&nbsp;</div>
-                            </div>
+
 
                             <hr />
 
@@ -332,8 +335,7 @@ else
                                             <label>Included Targets</label>
                                             <span><b>@CurrentlySelectedQuote.numberOfIncludedStructures.ToString("N0")</b></span>
                                         </div>
-                                        <div class="col">
-                                        </div>
+                                        <div class="col"></div>
                                     </div>
 
                                     <div class="row">
@@ -1424,7 +1426,7 @@ else
 
     #region Private Properties
 
-    private List<Quote>? quotes;
+    private List<Quote>? QuotesList;
     private List<Quote>? childQuotes;
 
     int SelectedFilesCount { get; set; }
@@ -2320,10 +2322,10 @@ else
             EventList = new List<Event>();
             NoteList = new List<Note>();
 
-            quotes = webServices.GetQuote(QuoteId);
-            if(quotes != null)
+            QuotesList = webServices.GetQuote(QuoteId);
+            if(QuotesList != null)
             {
-                CurrentlySelectedQuote = quotes[0];
+                CurrentlySelectedQuote = QuotesList[0];
 
                 standaloneTotal = CurrentlySelectedQuote.totalQuote;
 
