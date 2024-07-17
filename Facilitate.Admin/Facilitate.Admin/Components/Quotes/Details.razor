@@ -2448,11 +2448,6 @@ else
                             }
                             NoteList.AddRange(childQuote.notes);
                         }
-
-                        //RelatedQuote.lastEventDetails = "Huh?";
-                        // RelatedQuote.lastEventDetails = lastQuoteEventDetails;
-                        // RelatedQuote.lastEventTimeStamp = lastQuoteEventTimestamp;
-
                     }
                 }
 
@@ -2465,7 +2460,20 @@ else
                     CurrentlySelectedQuote.totalQuote = standaloneTotal;
                 }
 
+                foreach (QuoteSummary RelatedQuote in RelatedQuoteList)
+                {
+                    foreach(Event _event in RelatedQuote.events)
+                    {
+                        if(_event.DateTime > lastQuoteEventTimestamp)
+                        {
+                            lastQuoteEventTimestamp = _event.DateTime;
+                            lastQuoteEventDetails = _event.Details;
+                        }
+                    }
+                }
+
                 // Sort collections
+                // RelatedQuoteList = RelatedQuoteList.OrderBy(x => x.applicationType).ToList();
                 RelatedQuoteList = RelatedQuoteList.OrderByDescending(x => x.lastEventTimeStamp).ToList();
                 AttachmentList = AttachmentList.OrderByDescending(x => x.DateTime).ToList();
                 EventList = EventList.OrderByDescending(x => x.DateTime).ToList();

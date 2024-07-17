@@ -11,7 +11,11 @@ namespace Facilitate.Libraries.Models
             applicationType = "Unspecified";
 
             ipAddress = "127.0.0.1";
+
             status = "New";
+            statusPrevious = string.Empty;
+            statusSubcategory = string.Empty;
+            statusPreviousSubcategory = string.Empty;
 
             Groups = new List<ObjectId>();
 
@@ -60,7 +64,11 @@ namespace Facilitate.Libraries.Models
             applicationType = OriginalQuote.applicationType;
 
             ipAddress = OriginalQuote.ipAddress;
+
             status = OriginalQuote.status;
+            statusPrevious = OriginalQuote.statusPrevious;
+            statusSubcategory = OriginalQuote.statusSubcategory;
+            statusPreviousSubcategory = OriginalQuote.statusPreviousSubcategory;
 
             address = OriginalQuote.address;
             fullAddress = OriginalQuote.fullAddress;
@@ -104,7 +112,12 @@ namespace Facilitate.Libraries.Models
         public string _t { get; set; }
         public string applicationType { get; set; }
         public string ipAddress { get; set; }
+
         public string status { get; set; }
+        public string statusPrevious { get; set; }
+
+        public string statusSubcategory { get; set; }
+        public string statusPreviousSubcategory { get; set; }
 
         public List<ObjectId> Groups { get; set; }
 
