@@ -13,6 +13,11 @@ html, body {
     top: -52px !important;
 }
 
+#RelatedQuoteGrid {
+    position: relative !important;
+    top: 10px !important;
+}
+
 .dxuc-button-container {
     border: solid 0px #ff0000 !important;
     position: relative !important;

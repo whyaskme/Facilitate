@@ -253,14 +253,21 @@ else
 
                         <hr />
 
-                        <h6>@RelatedQuoteList.Count() Trades</h6>
-
-                        <div>
-                            <button class="action-button" @onclick="@(() => IsPopupVisibleAddTrade = true)">Add Trade</button>
+                        <div class="row">
+                            <div class="col-md-1">
+                                <button class="action-button" @onclick="@(() => IsPopupVisibleAddTrade = true)">Add Trade</button>
+                            </div>
+                            <div class="col-md-11">
+                                <h6>@RelatedQuoteList.Count() Trades</h6>
+                            </div>
                         </div>
-                        <div>&nbsp;</div>
+
+                        <div class="row">
+                            <div class="col-md-12"></div>
+                        </div>
 
                         <DxGrid @ref="RelatedQuoteGrid"
+                                id="RelatedQuoteGrid"
                                 Data="@RelatedQuoteList"
                                 KeyFieldName="_id"
                                 RowClick="ViewChildQuoteDetails"
