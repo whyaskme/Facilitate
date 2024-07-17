@@ -114,14 +114,6 @@ else
 
                 var relationshipsCount = CurrentlySelectedQuote.relationships.Count;
 
-                var isAggregateQuote = false;
-                var isChildQuote = false;
-
-                if(CurrentlySelectedQuote.applicationType == "Aggregate")
-                {
-                    isAggregateQuote = true;
-                }
-
                 var _emailTabLabel = "Email " + @CurrentlySelectedQuote.firstName + " Documents";
 
                 // tradesCount = AggregateEventList.Count(); // CurrentlySelectedQuote.structures.Count;
@@ -142,14 +134,20 @@ else
 
                 if (relationshipsCount > 0)
                 {
-                    if (isAggregateQuote)
+                    if (CurrentlySelectedQuote.applicationType == "Aggregate")
                     {
                         <div class="summary-header-parent">Aggregate Quote</div>
                     }
                     else
                     {
-                        <div class="summary-header-child">@CurrentlySelectedQuote.applicationType (Child) Quote</div>
-                        isChildQuote = true;
+                        <div class="summary-header-child">@CurrentlySelectedQuote.applicationType (Child) Quote
+                            @{
+                                if(CurrentlySelectedQuote.status == "Archive")
+                                {
+                                    <button class="action-button-restore" @onclick="RestoreArchiveToActiveAggregate">Restore</button>
+                                }
+                            }
+                        </div>
                     }
                 }
                 else
@@ -177,7 +175,7 @@ else
                         @{
                             var quoteTotal = CurrentlySelectedQuote.totalQuote.ToString("C0");
 
-                            if(isAggregateQuote)
+                            if(CurrentlySelectedQuote.applicationType == "Aggregate")
                             {
                                 <div class="header-total-element">@quoteTotal</div>
                             }
@@ -262,7 +260,7 @@ else
 
                             <h6>@ChildTradesCount Trades</h6>
 
-                                if (!isChildQuote)
+                                if (CurrentlySelectedQuote.applicationType != "Aggregate")
                                 {
                                     <div>
                                         <button class="action-button" @onclick="@(() => IsPopupVisibleAddTrade = true)">Add Trade</button>
@@ -302,7 +300,7 @@ else
                                         <DxGridDataColumn Width="150" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
 
                                         @{
-                                            if(isAggregateQuote)
+                                            if(CurrentlySelectedQuote.applicationType == "Aggregate")
                                             {
                                                 <DxGridDataColumn Width="100" Caption="Amount" FieldName="totalQuote" DisplayFormat="C0" />
                                                 <DxGridDataColumn Width="100" Caption="Qualified?" FieldName="isQualified" />
@@ -327,7 +325,7 @@ else
                     }
 
                     @{
-                        if (!isAggregateQuote)
+                        if (CurrentlySelectedQuote.applicationType != "Aggregate")
                         {
                             <DxTabPage Id="Panel-Project-Summary" CssClass="tab-container" Text="@tradesCountLabel">
 
@@ -648,7 +646,7 @@ else
 
                 if (CurrentlySelectedQuote.status != "New")
                 {
-                    if (!isAggregateQuote)
+                    if (CurrentlySelectedQuote.applicationType != "Aggregate")
                     {
                         <div class="section-header">
                             10-Step Project Workflow
@@ -1039,6 +1037,29 @@ else
 
     [Parameter]
     public EventCallback<string> TextChanged { get; set; }
+
+    public void RestoreArchiveToActiveAggregate()
+    {
+        foreach(Relationship relationship in CurrentlySelectedQuote.relationships)
+        {
+            var name = relationship.Name;
+            var parentId = relationship.ParentId;
+
+            var parentQuote = WebServices.GetQuote(parentId)[0];
+
+            CurrentlySelectedQuote.status = parentQuote.status;
+            break;
+        }
+
+        Event _event = new Event();
+        _event.Author = currentUser;
+        _event.Name = "Quote Restored";
+        _event.Details = "Quote restored to current Aggregate (" + CurrentlySelectedQuote.status + ") status";
+
+        CurrentlySelectedQuote.events.Add(_event);
+
+        WebServices.UpdateQuote(CurrentlySelectedQuote);
+    }
 
     void OnTotalQuoteValueChanged(string newValue)
     {
