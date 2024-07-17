@@ -287,12 +287,17 @@ else
                                 KeyboardNavigationEnabled="true"
                                 TextWrapEnabled="false">
                             <Columns>
+
+                                <dxg:TableView.FormatConditions>
+                                   <dxg:FormatCondition ValueRule="Equal" Value1="Archive" FieldName="status" PredefinedFormatName="LightRedFillWithDarkRedText" />   
+                                </dxg:TableView.FormatConditions>
+
                                 <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
                                 <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" />
                                 <DxGridDataColumn Width="100" Caption="Relationship" FieldName="relationship" />
                                 <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
-                                <DxGridDataColumn Width="150" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-                                <DxGridDataColumn Width="150" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                <DxGridDataColumn Width="165" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                    <DxGridDataColumn Width="165" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                 <DxGridDataColumn Width="auto" Caption="Last Event" FieldName="lastEventDetails" />
                                 <DxGridDataColumn Width="150" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
 
@@ -993,7 +998,7 @@ else
         <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Archive" Click="ArchiveLead" />
+        <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Archive" Click="ArchiveQuote" />
         <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsArchivePopupVisible = false)" />
     </FooterContentTemplate>
 </DxPopup>
@@ -1729,26 +1734,59 @@ else
         }
     }
 
-    public void ArchiveLead()
+    public void ArchiveQuote()
     {
-        CurrentlySelectedQuote.status = "Archive";
+        try
+        {
+            Note note = new Note();
+            note.Summary = CurrentlySelectedQuote.applicationType + " (" + CurrentlySelectedQuote._id + ") moved to Archives";
+            note.Details = @NoteDetails;
+            note.Author = currentUser;
 
-        Note note = new Note();
-        note.Summary = CurrentlySelectedQuote.firstName + " " + CurrentlySelectedQuote.lastName + " moved to Archives";
-        note.Details = @NoteDetails;
-        note.Author = currentUser;
+            CurrentlySelectedQuote.notes.Add(note);
 
-        CurrentlySelectedQuote.notes.Add(note);
+            Event _event = new Event();
+            _event.Details = CurrentlySelectedQuote.applicationType + " (" + CurrentlySelectedQuote._id + ") moved to Archives";
+            _event.Author = currentUser;
+            CurrentlySelectedQuote.events.Add(_event);
 
-        Event _event = new Event();
-        _event.Details = CurrentlySelectedQuote.firstName + " " + CurrentlySelectedQuote.lastName + " moved to Archives";
-        _event.Author = currentUser;
-        CurrentlySelectedQuote.events.Add(_event);
+            Quote relatedQuote = null;
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+            if (CurrentlySelectedQuote.applicationType == "Aggregate")
+            {
+                foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
+                {
+                    var relatedQuoteId = relationship.ParentId;
 
-        IsArchivePopupVisible = false;
-        NoteDetails = "";
+                    if (relatedQuoteId != null && relatedQuoteId != "")
+                    {
+                        var tmpVal = relatedQuoteId;
+
+                        // relatedQuote = WebServices.GetQuote(relatedQuoteId)[0];
+
+                        // relatedQuote.status = "Archive";
+
+                        // _event.DateTime = DateTime.UtcNow;
+                        // _event.Name = "Aggregate Project Archived";
+                        // _event.Details = "Child quote " + " relatedQuote.applicationType + " moved to Archives";
+                        // _event.Author = currentUser;
+                        // relatedQuote.events.Add(_event);
+
+                        // WebServices.UpdateQuote(relatedQuote);
+                    }
+                }
+            }
+
+            CurrentlySelectedQuote.status = "Archive";
+            WebServices.UpdateQuote(CurrentlySelectedQuote);
+
+            IsArchivePopupVisible = false;
+            NoteDetails = "";
+        }
+        catch(Exception ex)
+        {
+            var errMsg = ex.Message;
+        }
     }
 
     public void AddNote()
