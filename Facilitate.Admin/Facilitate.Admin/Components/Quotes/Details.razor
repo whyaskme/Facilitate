@@ -1944,23 +1944,30 @@ else
                         childQuote.relationships = new List<Relationship>();
                     }
 
-                    // Add events to new Master
+                    // Add events to new Child
                     _event = new Event();
                     _event.DateTime = DateTime.UtcNow;
                     _event.Author = currentUser;
-                    _event.Name = "Child project created";
+                    _event.Name = "Child project Created";
                     _event.Details = "Child (" + childQuote.applicationType + ") quote created from original " + originalQuoteCopy.applicationType + " quote (" + originalQuoteCopy._id + ")";
 
                     // Add this event to child
                     childQuote.events.Add(_event);
 
-                    // Add this event to master
+                    // Add events to new Master
+                    _event = new Event();
+                    _event.DateTime = DateTime.UtcNow;
+                    _event.Author = currentUser;
+                    _event.Name = "Child project Attached";
+                    _event.Details = "Child (" + childQuote.applicationType + ") attached to Aggregate " + originalQuoteCopy.applicationType + " quote (" + originalQuoteCopy._id + ")";
+
                     parentQuote.events.Add(_event);
 
                     // Add Parent relationship to Child
                     if (childQuote.applicationType != "Aggregate")
                     {
-                        parentQuote.relationships.Add(childRelationship);
+                        if(parentQuote.applicationType != "Aggregate")
+                            parentQuote.relationships.Add(childRelationship);
 
                         newQuoteListQueue.Add(childQuote);
                     }
@@ -1980,7 +1987,9 @@ else
                         childRelationship.Type = "Child";
                         childRelationship.Name = currentQuote.applicationType;
 
-                        parentQuote.relationships.Add(childRelationship);
+                        // parentQuote.relationships.Add(childRelationship);
+                        // if (parentQuote.applicationType != "Aggregate")
+                            parentQuote.relationships.Add(childRelationship);
                     }
                 }
             }
@@ -2000,6 +2009,11 @@ else
             {
                 // Redirect to Master details page
                 RedirectToQuoteDetails(parentQuote._id);
+            }
+            else
+            {
+                // Refresh current quote
+                TimerRefresh();
             }
         }
         catch(Exception ex)
