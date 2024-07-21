@@ -2378,16 +2378,15 @@ else
 
                     if(CurrentlySelectedQuote._id != RelatedQuoteSummary._id)
                     {
-                        // Add to summary list
                         if (RelatedQuoteSummary.relationship == "Parent")
                         {
-                            // If trade != aggregate, then it is a sibling
                             if(RelatedQuoteSummary.applicationType == "Aggregate")
                             {
                                 RelatedQuoteSummary.relationship = "Parent";
                             }
                             else
                             {
+                                // If trade != aggregate, then it is a sibling
                                 RelatedQuoteSummary.relationship = "Sibling";
                             }
                             currentQuoteContainerType = "Child";
@@ -2405,7 +2404,7 @@ else
                                 currentQuoteContainerType = "Child";
                             }
                         }
-                        
+                        // Add to summary list
                         RelatedQuoteSummaryList.Add(RelatedQuoteSummary);
                     }
 
