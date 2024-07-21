@@ -2113,7 +2113,7 @@ else
             SaveRelatedQuotes(newQuoteListQueue);
 
             // Create relationships
-            CreateSiblingRelationships(newQuoteListQueue);
+            //CreateSiblingRelationships(newQuoteListQueue);
 
             IsPopupVisibleAddTrade = false;
 
@@ -2134,70 +2134,27 @@ else
         }
     }
 
-    public List<Quote> CreateSiblingRelationships(List<Quote> newQuoteListQueue)
+    public void SaveRelatedQuotes(List<Quote> newQuoteListQueue)
     {
-        List<Quote> referenceQuoteList = new List<Quote>(newQuoteListQueue);
-        List<Quote> RelatedQuoteSummaryList = new List<Quote>();
-
-        foreach(Quote currentQuote in newQuoteListQueue)
-        {
-            // Loop through reference list and parse out each child Id and references for relationships
-            foreach(Quote referenceQuote in referenceQuoteList)
-            {
-                if(currentQuote.applicationType == referenceQuote.applicationType)
-                {
-                    //currentQuote.relationships.Add(parentRelationship);
-
-                    if (currentQuote.applicationType != "Aggregate")
-                    {
-                        Quote newQuoteQueued = newQuoteQueued = new Quote(referenceQuote);
-
-                        Relationship parentRelationship = new Relationship();
-                        parentRelationship._id = parentQuote._id;
-                        parentRelationship.ParentId = parentQuote._id;
-                        parentRelationship.Type = "Parent";
-                        parentRelationship.Name = parentQuote.applicationType;
-
-                        //newQuoteQueued.relationships.Add(parentRelationship);
-
-                        Relationship siblingRelationship = new Relationship();
-                        siblingRelationship.ParentId = currentQuote._id;
-                        siblingRelationship.Type = "Sibling";
-                        siblingRelationship.Name = currentQuote.applicationType;
-
-                        newQuoteQueued.relationships.Add(siblingRelationship);
-
-                        RelatedQuoteSummaryList.Add(currentQuote);
-                        break;
-                    }
-                }
-            }
-        }
-
-        return RelatedQuoteSummaryList;
-    }
-
-    public void SaveRelatedQuotes(List<Quote> relatedQuotes)
-    {
-        Quote tmpQuote = null;
-
         try
         {
-            foreach (Quote currentQuote in relatedQuotes)
+            foreach (Quote currentQuote in newQuoteListQueue)
             {
-                tmpQuote = new Quote(currentQuote);
-                tmpQuote.relationships.Clear();
+                if (currentQuote.applicationType != "Aggregate")
+                {
+                    Quote tmpQuote = new Quote(currentQuote);
 
-                // Create Parent relationship
-                var parentRelationship = new Relationship();
-                parentRelationship._id = parentQuote._id;
-                parentRelationship.ParentId = parentQuote._id;
-                parentRelationship.Type = "Parent";
-                parentRelationship.Name = parentQuote.applicationType;
+                    // Create Parent relationship
+                    var parentRelationship = new Relationship();
+                    parentRelationship._id = parentQuote._id;
+                    parentRelationship.ParentId = parentQuote._id;
+                    parentRelationship.Type = "Parent";
+                    parentRelationship.Name = parentQuote.applicationType;
 
-                tmpQuote.relationships.Add(parentRelationship);
+                    tmpQuote.relationships.Add(parentRelationship);
 
-                WebServices.CreateQuote(tmpQuote);
+                    WebServices.CreateQuote(tmpQuote);
+                }
             }
         }
         catch (Exception ex)
@@ -2205,6 +2162,40 @@ else
             var errMsg = ex.Message;
         }
     }
+
+    // public List<Quote> CreateSiblingRelationships(List<Quote> newQuoteListQueue)
+    // {
+    //     List<Quote> referenceQuoteList = new List<Quote>(newQuoteListQueue);
+    //     List<Quote> RelatedQuoteSummaryList = new List<Quote>();
+
+    //     foreach(Quote currentQuote in newQuoteListQueue)
+    //     {
+    //         // Loop through reference list and parse out each child Id and references for relationships
+    //         foreach(Quote referenceQuote in referenceQuoteList)
+    //         {
+    //             if(currentQuote.applicationType == referenceQuote.applicationType)
+    //             {
+    //                 if (currentQuote.applicationType != "Aggregate")
+    //                 {
+    //                     Quote newQuoteQueued = newQuoteQueued = new Quote(referenceQuote);
+
+    //                     Relationship siblingRelationship = new Relationship();
+    //                     siblingRelationship.ParentId = currentQuote._id;
+    //                     siblingRelationship.Type = "Sibling";
+    //                     siblingRelationship.Name = currentQuote.applicationType;
+
+    //                     newQuoteQueued.relationships.Add(siblingRelationship);
+
+    //                     RelatedQuoteSummaryList.Add(currentQuote);
+    //                     //WebServices.UpdateQuote(newQuoteQueued);
+    //                     break;
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     return RelatedQuoteSummaryList;
+    // }
 
     public void DeleteTrade()
     {
