@@ -1952,7 +1952,7 @@ else
 
         // Create Child relationship
         var childRelationship = new Relationship();
-        parentRelationship.Author = currentUser.Email;
+        childRelationship.Author = currentUser.Email;
         childRelationship._id = parentQuote._id;
         childRelationship.ParentId = parentQuote._id;
         childRelationship.Type = "Child";
@@ -2113,7 +2113,7 @@ else
             SaveRelatedQuotes(newQuoteListQueue);
 
             // Create relationships
-            //CreateSiblingRelationships(newQuoteListQueue);
+            CreateSiblingRelationships(newQuoteListQueue);
 
             IsPopupVisibleAddTrade = false;
 
@@ -2132,6 +2132,49 @@ else
         {
             var errMsg = ex.Message;
         }
+    }
+
+    public List<Quote> CreateSiblingRelationships(List<Quote> newQuoteListQueue)
+    {
+        List<Quote> referenceQuoteList = new List<Quote>(newQuoteListQueue);
+        List<Quote> relatedQuoteList = new List<Quote>();
+
+        foreach(Quote currentQuote in newQuoteListQueue)
+        {
+            // Loop through reference list and parse out each child Id and references for relationships
+            foreach(Quote referenceQuote in referenceQuoteList)
+            {
+                if(currentQuote.applicationType == referenceQuote.applicationType)
+                {
+                    //currentQuote.relationships.Add(parentRelationship);
+
+                    if (currentQuote.applicationType != "Aggregate")
+                    {
+                        Quote newQuoteQueued = newQuoteQueued = new Quote(referenceQuote);
+
+                        Relationship parentRelationship = new Relationship();
+                        parentRelationship._id = parentQuote._id;
+                        parentRelationship.ParentId = parentQuote._id;
+                        parentRelationship.Type = "Parent";
+                        parentRelationship.Name = parentQuote.applicationType;
+
+                        //newQuoteQueued.relationships.Add(parentRelationship);
+
+                        Relationship siblingRelationship = new Relationship();
+                        siblingRelationship.ParentId = currentQuote._id;
+                        siblingRelationship.Type = "Sibling";
+                        siblingRelationship.Name = currentQuote.applicationType;
+
+                        newQuoteQueued.relationships.Add(siblingRelationship);
+
+                        relatedQuoteList.Add(currentQuote);
+                        break;
+                    }
+                }
+            }
+        }
+
+        return relatedQuoteList;
     }
 
     public void SaveRelatedQuotes(List<Quote> relatedQuotes)
@@ -2161,48 +2204,6 @@ else
         {
             var errMsg = ex.Message;
         }
-    }
-
-    public List<Quote> CreateSiblingRelationships(List<Quote> newQuoteListQueue)
-    {
-        List<Quote> referenceQuoteList = new List<Quote>(newQuoteListQueue);
-        List<Quote> relatedQuoteList = new List<Quote>();
-
-        foreach(Quote currentQuote in newQuoteListQueue)
-        {
-            // Loop through reference list and parse out each child Id and references for relationships
-            foreach(Quote referenceQuote in referenceQuoteList)
-            {
-                if(currentQuote.applicationType == referenceQuote.applicationType)
-                {
-                    //currentQuote.relationships.Add(parentRelationship);
-
-                    if (currentQuote.applicationType != "Aggregate")
-                    {
-                        Relationship childRelationship = new Relationship();
-                        childRelationship.ParentId = currentQuote._id;
-                        childRelationship.Type = "Child";
-                        childRelationship.Name = currentQuote.applicationType;
-
-                        Quote newQuoteQueued = newQuoteQueued = new Quote(referenceQuote);
-                        newQuoteQueued.relationships.Add(childRelationship);
-
-                        Relationship parentRelationship = new Relationship();
-                        parentRelationship._id = parentQuote._id;
-                        parentRelationship.ParentId = parentQuote._id;
-                        parentRelationship.Type = "Parent";
-                        parentRelationship.Name = parentQuote.applicationType;
-
-                        newQuoteQueued.relationships.Add(parentRelationship);
-
-                        relatedQuoteList.Add(currentQuote);
-                        break;
-                    }
-                }
-            }
-        }
-
-        return relatedQuoteList;
     }
 
     public void DeleteTrade()
