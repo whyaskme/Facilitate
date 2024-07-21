@@ -217,7 +217,7 @@ namespace Facilitate.Admin.Data
             return QuoteHeaders;
         }
 
-        public List<QuoteSummary> GetChildQuoteSummaries(Quote quote)
+        public List<QuoteSummary> GetRelatedQuoteSummaries(Quote quote)
         {
             List<QuoteSummary> QuoteHeaders = new List<QuoteSummary>();
 

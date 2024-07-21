@@ -258,7 +258,7 @@ else
                                 <button class="action-button" @onclick="@(() => IsPopupVisibleAddTrade = true)">Add Trade</button>
                             </div>
                             <div class="col-md-11">
-                                <h6>@RelatedQuoteList.Count() Trades</h6>
+                                <h6>@RelatedQuoteSummaryList.Count() Trades</h6>
                             </div>
                         </div>
 
@@ -268,7 +268,7 @@ else
 
                         <DxGrid @ref="RelatedQuoteGrid"
                                 id="RelatedQuoteGrid"
-                                Data="@RelatedQuoteList"
+                                Data="@RelatedQuoteSummaryList"
                                 KeyFieldName="_id"
                                 RowClick="ViewChildQuoteDetails"
                                 AllowSelectRowByClick="true"
@@ -2137,7 +2137,7 @@ else
     public List<Quote> CreateSiblingRelationships(List<Quote> newQuoteListQueue)
     {
         List<Quote> referenceQuoteList = new List<Quote>(newQuoteListQueue);
-        List<Quote> relatedQuoteList = new List<Quote>();
+        List<Quote> RelatedQuoteSummaryList = new List<Quote>();
 
         foreach(Quote currentQuote in newQuoteListQueue)
         {
@@ -2167,14 +2167,14 @@ else
 
                         newQuoteQueued.relationships.Add(siblingRelationship);
 
-                        relatedQuoteList.Add(currentQuote);
+                        RelatedQuoteSummaryList.Add(currentQuote);
                         break;
                     }
                 }
             }
         }
 
-        return relatedQuoteList;
+        return RelatedQuoteSummaryList;
     }
 
     public void SaveRelatedQuotes(List<Quote> relatedQuotes)
@@ -2376,7 +2376,7 @@ else
     public int ChildTradesCount = 0;
     public int EventsCount = 0;
 
-    public List<QuoteSummary> RelatedQuoteList = new List<QuoteSummary>();
+    public List<QuoteSummary> RelatedQuoteSummaryList = new List<QuoteSummary>();
     public List<Attachment> AttachmentList = new List<Attachment>();
     public List<Event> EventList = new List<Event>();
     public List<Note> NoteList = new List<Note>();
@@ -2401,7 +2401,7 @@ else
             aggregateTotal = 0;
             standaloneTotal = 0;
 
-            RelatedQuoteList = new List<QuoteSummary>();
+            RelatedQuoteSummaryList = new List<QuoteSummary>();
             AttachmentList = new List<Attachment>();
             EventList = new List<Event>();
             NoteList = new List<Note>();
@@ -2443,8 +2443,8 @@ else
                 NoteList.AddRange(CurrentlySelectedQuote.notes);
 
                 // Get child quote summaries
-                RelatedQuoteList = webServices.GetChildQuoteSummaries(CurrentlySelectedQuote);
-                foreach (QuoteSummary RelatedQuote in RelatedQuoteList)
+                RelatedQuoteSummaryList = webServices.GetRelatedQuoteSummaries(CurrentlySelectedQuote);
+                foreach (QuoteSummary RelatedQuote in RelatedQuoteSummaryList)
                 {
                     isAggregate = true;
 
@@ -2499,7 +2499,7 @@ else
                     CurrentlySelectedQuote.totalQuote = standaloneTotal;
                 }
 
-                foreach (QuoteSummary RelatedQuote in RelatedQuoteList)
+                foreach (QuoteSummary RelatedQuote in RelatedQuoteSummaryList)
                 {
                     foreach(Event _event in RelatedQuote.events)
                     {
@@ -2512,8 +2512,8 @@ else
                 }
 
                 // Sort collections
-                // RelatedQuoteList = RelatedQuoteList.OrderBy(x => x.applicationType).ToList();
-                RelatedQuoteList = RelatedQuoteList.OrderByDescending(x => x.lastEventTimeStamp).ToList();
+                // RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderBy(x => x.applicationType).ToList();
+                RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.lastEventTimeStamp).ToList();
                 AttachmentList = AttachmentList.OrderByDescending(x => x.DateTime).ToList();
                 EventList = EventList.OrderByDescending(x => x.DateTime).ToList();
                 NoteList = NoteList.OrderByDescending(x => x.DateTime).ToList();
