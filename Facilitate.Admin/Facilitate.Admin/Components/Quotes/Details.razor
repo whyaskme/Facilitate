@@ -112,8 +112,6 @@ else
 
                 var currentIndex = 0;
 
-                var relationshipsCount = CurrentlySelectedQuote.relationships.Count;
-
                 var _emailTabLabel = "Email " + @CurrentlySelectedQuote.firstName + " Documents";
 
                 productsCount = CurrentlySelectedQuote.products.Count;
@@ -122,32 +120,8 @@ else
                 else
                     productsCountLabel = productsCount.ToString() + " Products Quoted";
 
-                attachmentsCount = CurrentlySelectedQuote.attachments.Count;
-                notesCount = CurrentlySelectedQuote.notes.Count;
-                eventsCount = CurrentlySelectedQuote.events.Count;
 
-                if (relationshipsCount > 0)
-                {
-                    if (CurrentlySelectedQuote.applicationType == "Aggregate")
-                    {
-                        <div class="summary-header-parent">Aggregate Quote</div>
-                    }
-                    else
-                    {
-                        <div class="summary-header-child">@CurrentlySelectedQuote.applicationType (Child) Quote
-                            @{
-                                if(CurrentlySelectedQuote.status == "Archive")
-                                {
-                                    <button class="action-button-restore" @onclick="RestoreArchiveToActiveAggregate">Restore</button>
-                                }
-                            }
-                        </div>
-                    }
-                }
-                else
-                {
-                    <div class="summary-header-child">@CurrentlySelectedQuote.applicationType Quote</div>
-                }
+                <div class="summary-header-child">@currentQuoteContainerType (@CurrentlySelectedQuote.applicationType) Quote</div>
 
                 <div class="row">
                     <div class="col-md-4">
@@ -1038,6 +1012,8 @@ else
 
 @code 
 {
+    public bool hasChildren = false;
+
     public abstract class DxInputDataEditorBase<T> : DxDataEditor<T>;
 
     [Parameter]
@@ -1454,8 +1430,6 @@ else
 
     EntityInstantFeedbackSource InstantFeedbackSource { get; set; }
 
-    bool isBulkInsert = false;
-
     string FileType { get; set; } = ".pdf";
     string Author { get; set; } = "unknown";
 
@@ -1470,7 +1444,6 @@ else
     public Timer _timer;
 
     public string ClientIP = "";
-    public string selectedQuoteId = "";
 
     public interface IQueryable : System.Collections.IEnumerable;
 
@@ -1479,12 +1452,7 @@ else
 
     public string SubmissionUserIP { get; set; }
 
-    public int itemsToCreate = 100;
     public string updateStatus = "Fetching ";
-
-    public int attachmentsCount = 0;
-    public int notesCount = 0;
-    public int eventsCount = 0;
 
     #endregion
 
@@ -1881,8 +1849,6 @@ else
         WebServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsPopupVisibleSelectAttachmentToDelete = false;
-
-        attachmentsCount--;
     }
 
     public void DeleteSelectedNote()
@@ -1898,10 +1864,9 @@ else
         WebServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsPopupVisibleSelectNoteToDelete = false;
-
-        notesCount--;
     }
 
+    public bool isAggregate = false;
     public Quote originalQuoteCopy = null;
     public Quote parentQuote = null;
     public List<Quote> newQuoteListQueue = new List<Quote>();
@@ -1910,7 +1875,6 @@ else
     {
         var originalQuoteId = CurrentlySelectedQuote._id;
 
-        bool isAggregate = false;
         if (CurrentlySelectedQuote.applicationType == "Aggregate")
         {
             isAggregate = true;
@@ -1982,35 +1946,33 @@ else
                     Quote childQuote = new Quote(originalQuoteCopy);
                     childQuote.applicationType = selectedTrade.Value;
 
-                    // Reset new child instance product properties.
-                    if (originalQuoteCopy.applicationType != selectedTrade.Value)
-                    {
-                        //childQuote.applicationType = "";
-                        childQuote.timestamp = DateTime.UtcNow;
-                        childQuote.lastUpdated = DateTime.UtcNow;
-                        childQuote.totalQuote = 0;
-                        childQuote.notes = new List<Note>();
-                        childQuote.attachments = new List<Attachment>();
-                        childQuote.events = new List<Event>();
-                        childQuote.Groups = new List<ObjectId>();
-                        childQuote.products = new List<Product>();
-                        childQuote.warranties = new List<Warranty>();
-                    }
-
-                    // Add events to new Master
-                    _event = new Event();
-                    _event.DateTime = DateTime.UtcNow;
-                    _event.Author = currentUser;
-                    _event.Name = childQuote.applicationType + " Quote Created";
-                    _event.Details = "Child (" + childQuote.applicationType + ") quote created from original " + originalQuoteCopy.applicationType + " quote (" + originalQuoteCopy._id + ")";
-
-                    childQuote.events.Add(_event);
-
                     // Add Parent relationship to Child
                     if (childQuote.applicationType != "Aggregate")
                     {
-                        // Create Parent relationship
-                        childQuote.relationships.Add(parentRelationship);
+                        // Reset new child instance product properties.
+                        if (originalQuoteCopy.applicationType != selectedTrade.Value)
+                        {
+                            //childQuote.applicationType = "";
+                            childQuote.timestamp = DateTime.UtcNow;
+                            childQuote.lastUpdated = DateTime.UtcNow;
+                            childQuote.totalQuote = 0;
+                            childQuote.notes = new List<Note>();
+                            childQuote.attachments = new List<Attachment>();
+                            childQuote.events = new List<Event>();
+                            childQuote.Groups = new List<ObjectId>();
+                            childQuote.products = new List<Product>();
+                            childQuote.warranties = new List<Warranty>();
+                        }
+
+                        // Add events to new Master
+                        _event = new Event();
+                        _event.DateTime = DateTime.UtcNow;
+                        _event.Author = currentUser;
+                        _event.Name = childQuote.applicationType + " Quote Created";
+                        _event.Details = "Child (" + childQuote.applicationType + ") quote created from original " + originalQuoteCopy.applicationType + " quote (" + originalQuoteCopy._id + ")";
+
+                        childQuote.events.Add(_event);
+
                         newQuoteListQueue.Add(childQuote);
                     }
                 }
@@ -2112,9 +2074,6 @@ else
 
             SaveRelatedQuotes(newQuoteListQueue);
 
-            // Create relationships
-            //CreateSiblingRelationships(newQuoteListQueue);
-
             IsPopupVisibleAddTrade = false;
 
             if(!isAggregate)
@@ -2162,40 +2121,6 @@ else
             var errMsg = ex.Message;
         }
     }
-
-    // public List<Quote> CreateSiblingRelationships(List<Quote> newQuoteListQueue)
-    // {
-    //     List<Quote> referenceQuoteList = new List<Quote>(newQuoteListQueue);
-    //     List<Quote> RelatedQuoteSummaryList = new List<Quote>();
-
-    //     foreach(Quote currentQuote in newQuoteListQueue)
-    //     {
-    //         // Loop through reference list and parse out each child Id and references for relationships
-    //         foreach(Quote referenceQuote in referenceQuoteList)
-    //         {
-    //             if(currentQuote.applicationType == referenceQuote.applicationType)
-    //             {
-    //                 if (currentQuote.applicationType != "Aggregate")
-    //                 {
-    //                     Quote newQuoteQueued = newQuoteQueued = new Quote(referenceQuote);
-
-    //                     Relationship siblingRelationship = new Relationship();
-    //                     siblingRelationship.ParentId = currentQuote._id;
-    //                     siblingRelationship.Type = "Sibling";
-    //                     siblingRelationship.Name = currentQuote.applicationType;
-
-    //                     newQuoteQueued.relationships.Add(siblingRelationship);
-
-    //                     RelatedQuoteSummaryList.Add(currentQuote);
-    //                     //WebServices.UpdateQuote(newQuoteQueued);
-    //                     break;
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     return RelatedQuoteSummaryList;
-    // }
 
     public void DeleteTrade()
     {
@@ -2364,13 +2289,13 @@ else
         _timer = null;
     }
 
-    public int ChildTradesCount = 0;
-    public int EventsCount = 0;
-
+    public List<QuoteSummary> tmpRelatedQuoteSummaryList = new List<QuoteSummary>();
     public List<QuoteSummary> RelatedQuoteSummaryList = new List<QuoteSummary>();
     public List<Attachment> AttachmentList = new List<Attachment>();
     public List<Event> EventList = new List<Event>();
     public List<Note> NoteList = new List<Note>();
+
+    public string currentQuoteContainerType = "Standalone";
 
     private async Task TimerRefresh()
     {
@@ -2379,6 +2304,8 @@ else
         double standaloneTotal = 0;
         string authorName = "";
 
+        bool hasParent = false;
+
         DateTime lastQuoteEventTimestamp = DateTime.MinValue;
         string lastQuoteEventDetails = "";
 
@@ -2386,9 +2313,6 @@ else
 
         _timer = new Timer(new TimerCallback(_ =>
         {
-            ChildTradesCount = 0;
-            EventsCount = 0;
-
             aggregateTotal = 0;
             standaloneTotal = 0;
 
@@ -2434,17 +2358,63 @@ else
                 NoteList.AddRange(CurrentlySelectedQuote.notes);
 
                 // Get child quote summaries
-                RelatedQuoteSummaryList = webServices.GetRelatedQuoteSummaries(CurrentlySelectedQuote);
-                foreach (QuoteSummary RelatedQuote in RelatedQuoteSummaryList)
+                tmpRelatedQuoteSummaryList = webServices.GetRelatedQuoteSummaries(CurrentlySelectedQuote);
+                foreach (QuoteSummary RelatedQuoteSummary in tmpRelatedQuoteSummaryList)
                 {
                     isAggregate = true;
 
-                    if(RelatedQuote.status != "Archive")
+                    if (CurrentlySelectedQuote.applicationType == "Aggregate")
                     {
-                        aggregateTotal += RelatedQuote.totalQuote;
+                        if(RelatedQuoteSummary.applicationType == "Aggregate")
+                        {
+                            if (!hasParent)
+                            {
+                                RelatedQuoteSummaryList.Add(RelatedQuoteSummary);
+                                hasParent = true;
+                                break;
+                            }
+                        }
                     }
 
-                    var childQuote = webServices.GetQuote(RelatedQuote._id)[0];
+                    if(CurrentlySelectedQuote._id != RelatedQuoteSummary._id)
+                    {
+                        // Add to summary list
+                        if (RelatedQuoteSummary.relationship == "Parent")
+                        {
+                            // If trade != aggregate, then it is a sibling
+                            if(RelatedQuoteSummary.applicationType == "Aggregate")
+                            {
+                                RelatedQuoteSummary.relationship = "Parent";
+                            }
+                            else
+                            {
+                                RelatedQuoteSummary.relationship = "Sibling";
+                            }
+                            currentQuoteContainerType = "Child";
+                        }
+                        else
+                        {
+                            RelatedQuoteSummary.relationship = "Child";
+
+                            if (CurrentlySelectedQuote.applicationType == "Aggregate")
+                            {
+                                currentQuoteContainerType = "Parent";
+                            }
+                            else
+                            {
+                                currentQuoteContainerType = "Child";
+                            }
+                        }
+                        
+                        RelatedQuoteSummaryList.Add(RelatedQuoteSummary);
+                    }
+
+                    if (RelatedQuoteSummary.status != "Archive")
+                    {
+                        aggregateTotal += RelatedQuoteSummary.totalQuote;
+                    }
+
+                    var childQuote = webServices.GetQuote(RelatedQuoteSummary._id)[0];
                     if(childQuote != null)
                     {
                         if (childQuote.status != "Archive")
@@ -2503,8 +2473,8 @@ else
                 }
 
                 // Sort collections
-                // RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderBy(x => x.applicationType).ToList();
-                RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.lastEventTimeStamp).ToList();
+                RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderBy(x => x.applicationType).ToList();
+                // RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.lastEventTimeStamp).ToList();
                 AttachmentList = AttachmentList.OrderByDescending(x => x.DateTime).ToList();
                 EventList = EventList.OrderByDescending(x => x.DateTime).ToList();
                 NoteList = NoteList.OrderByDescending(x => x.DateTime).ToList();
