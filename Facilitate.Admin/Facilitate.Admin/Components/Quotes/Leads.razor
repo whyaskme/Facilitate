@@ -216,8 +216,8 @@ else
 
     <DxGrid @ref="QuoteGrid"
             Data="@quotes"
-            KeyFieldName="_id"
             PageSize="10"
+            EvenRow.BackColor = "#ff0000"
             PagerPosition="GridPagerPosition.Bottom"
             ShowGroupPanel="true"
             AutoExpandAllGroupRows="true"
@@ -234,6 +234,7 @@ else
             PageSizeSelectorAllRowsItemVisible="false"
             KeyboardNavigationEnabled="true">
         <Columns>
+            <DxGridDataColumn Visible="true" Width="50" Caption="Row" FieldName="" />
             <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
 @*             <DxGridDataColumn Width="85" Caption="Status" FieldName="status" /> *@
             <DxGridDataColumn Width="115" Caption="Trade" FieldName="applicationType" />
