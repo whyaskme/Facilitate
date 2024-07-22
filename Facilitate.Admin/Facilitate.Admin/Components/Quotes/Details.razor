@@ -121,12 +121,12 @@ else
                     productsCountLabel = productsCount.ToString() + " Products Quoted";
 
 
-                <div class="@currentQuoteContainerTypeCssClass">@currentQuoteContainerType (@CurrentlySelectedQuote.applicationType)</div>
+                <div class="@currentQuoteContainerTypeCssClass  @currentQuoteColorCssClass">@currentQuoteContainerType (@CurrentlySelectedQuote.applicationType)</div>
 
                 <div class="row">
                     <div class="col-md-4">
                         <label>Name</label>
-                        <span class="quote-title">@CurrentlySelectedQuote.firstName @CurrentlySelectedQuote.lastName</span>
+                        <span class="@currentQuoteColorCssClass">@CurrentlySelectedQuote.firstName @CurrentlySelectedQuote.lastName</span>
                     </div>
                     <div class="col-md-4">
                         <label>Address</label>
@@ -145,11 +145,11 @@ else
 
                             if(CurrentlySelectedQuote.applicationType == "Aggregate")
                             {
-                                <div class="header-total-element">@quoteTotal</div>
+                                <div class="@currentQuoteColorCssClass header-total-element header-total-element-modifier">@quoteTotal</div>
                             }
                             else
                             {
-                                <div class="header-total-element">
+                                <div class="@currentQuoteColorCssClass header-total-element">
                                     <DxTextBox Text="@quoteTotal" TextChanged="@((newValue) => OnTotalQuoteValueChanged(newValue))" CssClass="total-quote-value" />
                                 </div>
                             }
@@ -2315,6 +2315,7 @@ else
     public QuoteSummary currentParentQuoteSummary = null;
 
     public string currentQuoteContainerType = "Standalone";
+    public string currentQuoteColorCssClass = "quote-color-standalone";
     public string currentQuoteHeaderTypeCssClass = "quote-header-standalone";
     public string currentQuoteContainerTypeCssClass = "quote-title-standalone";
 
@@ -2407,6 +2408,7 @@ else
                                 RelatedQuoteSummary.relationship = "Sibling";
                             }
                             currentQuoteContainerType = "Child";
+                            currentQuoteColorCssClass = "quote-color-child";
                             currentQuoteHeaderTypeCssClass = "quote-header-child";
                             currentQuoteContainerTypeCssClass = "quote-title-child";
                         }
@@ -2417,12 +2419,14 @@ else
                             if (CurrentlySelectedQuote.applicationType == "Aggregate")
                             {
                                 currentQuoteContainerType = "Parent";
+                                currentQuoteColorCssClass = "quote-color-parent";
                                 currentQuoteHeaderTypeCssClass = "quote-header-parent";
                                 currentQuoteContainerTypeCssClass = "quote-title-parent";
                             }
                             else
                             {
                                 currentQuoteContainerType = "Child";
+                                currentQuoteColorCssClass = "quote-color-child";
                                 currentQuoteHeaderTypeCssClass = "quote-header-child";
                                 currentQuoteContainerTypeCssClass = "quote-title-child";
                             }

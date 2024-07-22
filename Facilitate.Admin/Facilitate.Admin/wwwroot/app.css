@@ -6,6 +6,25 @@ html, body {
     overflow: auto !important;
 }
 
+.quote-color-standalone {
+    color: #808080 !important;
+}
+
+.quote-color-parent {
+    color: #025f02 !important;
+    font-size: 1.5em !important;
+    font-weight: bold !important;
+    border: solid 0px #ff0000 !important;
+}
+
+.quote-color-child {
+    color: #8b0309 !important;
+}
+
+.quote-color-sibling {
+    color: #0505cd !important;
+}
+
 .quote-header-standalone {
     background: #000000 !important;
     border: solid 0px #000000 !important;
@@ -23,7 +42,6 @@ html, body {
 
 .quote-title-standalone {
     border: solid 0px #025402 !important;
-    color: #808080 !important;
     text-align: center !important;
     font-size: 2.0em !important;
     font-weight: bold !important;
@@ -47,7 +65,6 @@ html, body {
 
 .quote-title-parent {
     border: solid 0px #025f02 !important;
-    color: #025f02 !important;
     text-align: center !important;
     font-size: 2.0em !important;
     font-weight: bold !important;
@@ -71,7 +88,6 @@ html, body {
 
 .quote-title-child {
     border: solid 0px #025402 !important;
-    color: #8b0309 !important;
     text-align: center !important;
     font-size: 2.0em !important;
     font-weight: bold !important;
@@ -95,7 +111,6 @@ html, body {
 
 .quote-title-sibling {
     border: solid 0px #025402 !important;
-    color: #025f02 !important;
     text-align: center !important;
     font-size: 2.0em !important;
     font-weight: bold !important;
@@ -127,9 +142,17 @@ html, body {
 }
 
 .header-total-element {
+    border: solid 0px #ff0000 !important;
     width: auto !important;
     float: left !important;
     margin-right: 5px !important;
+}
+
+.header-total-element-modifier {
+    border: solid 0px #0000ff !important;
+    position: relative !important;
+    top: -5px !important;
+    left: 0px !important;
 }
 
 .total-quote-value {
