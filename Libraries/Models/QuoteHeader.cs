@@ -12,6 +12,7 @@ namespace Facilitate.Libraries.Models
         {
             _id = string.Empty;
             _t = "QuoteHeader";
+            rowIndex = 0;
             applicationType = string.Empty;
             status = string.Empty;
             street = string.Empty;
@@ -33,6 +34,7 @@ namespace Facilitate.Libraries.Models
 
         public string _id { get; set; }
         public string _t { get; set; }
+        public int rowIndex { get; set; }
         public string applicationType { get; set; }
         public string status { get; set; }
         public string street { get; set; }

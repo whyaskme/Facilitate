@@ -234,7 +234,7 @@ else
             PageSizeSelectorAllRowsItemVisible="false"
             KeyboardNavigationEnabled="true">
         <Columns>
-            <DxGridDataColumn Visible="true" Width="50" Caption="Row" FieldName="" />
+            <DxGridDataColumn Visible="true" Width="50" Caption="Row" FieldName="rowIndex" />
             <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
 @*             <DxGridDataColumn Width="85" Caption="Status" FieldName="status" /> *@
             <DxGridDataColumn Width="115" Caption="Trade" FieldName="applicationType" />
@@ -260,6 +260,8 @@ else
 </DxLoadingPanel>
 
 @code {
+
+    public int currentQuoteIndex = 0;
 
     public string currentActionButtonClass = "action-button-standalone";
 
@@ -693,6 +695,13 @@ else
             foreach (var trade in leaderboardStats.Trades)
             {
                 TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
+            }
+
+            currentQuoteIndex = quotes.Count()+1;
+            foreach (var quote in quotes)
+            {
+                currentQuoteIndex--;
+                quote.rowIndex = currentQuoteIndex;
             }
 
             InvokeAsync(() =>

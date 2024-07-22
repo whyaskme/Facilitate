@@ -14,6 +14,8 @@ namespace Facilitate.Libraries.Models
             _id = ObjectId.GenerateNewId().ToString();
             _t = "QuoteSummary";
 
+            rowIndex = 0;
+
             isQualified = false;
             applicationType = string.Empty;
             relationship = string.Empty;
@@ -31,6 +33,7 @@ namespace Facilitate.Libraries.Models
 
         public string _id { get; set; }
         public string _t { get; set; }
+        public int rowIndex { get; set; }
         public bool isQualified { get; set; }
         public string applicationType { get; set; }
         public string relationship { get; set; }

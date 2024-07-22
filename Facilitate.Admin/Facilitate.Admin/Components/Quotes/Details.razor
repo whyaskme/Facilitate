@@ -103,7 +103,7 @@ else
             KeyFieldName="_id"
             TextWrapEnabled="false">
         <Columns>
-            <DxGridDataColumn Visible="true" Width="50" Caption="Row" FieldName="" />
+            <DxGridDataColumn Visible="true" Width="50" Caption="Row" FieldName="rowIndex" />
             <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
             <DxGridDataColumn Width="auto" Caption="Trade" FieldName="applicationType" />
             <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
@@ -1035,6 +1035,7 @@ else
 
 @code 
 {
+    public int currentQuoteIndex = 0;
 
     public class DataGridViewRowPostPaintEventArgs : EventArgs;
 
@@ -2468,6 +2469,10 @@ else
                 tmpRelatedQuoteSummaryList = webServices.GetRelatedQuoteSummaries(CurrentlySelectedQuote);
                 foreach (QuoteSummary RelatedQuoteSummary in tmpRelatedQuoteSummaryList)
                 {
+                    currentQuoteIndex++;
+
+                    RelatedQuoteSummary.rowIndex = currentQuoteIndex;
+
                     isAggregate = true;
 
                     if(CurrentlySelectedQuote._id != RelatedQuoteSummary._id)
