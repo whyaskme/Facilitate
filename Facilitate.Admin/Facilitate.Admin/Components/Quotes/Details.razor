@@ -1985,6 +1985,9 @@ else
 
                     if (currentQuote.applicationType != "Aggregate")
                     {
+                        // Create Parent relationship
+                        currentQuote.relationships.Add(parentRelationship);
+
                         // Create Child relationship
                         childRelationship = new Relationship();
                         childRelationship._id = currentQuote._id;
@@ -2103,13 +2106,13 @@ else
                     Quote tmpQuote = new Quote(currentQuote);
 
                     // Create Parent relationship
-                    var parentRelationship = new Relationship();
-                    parentRelationship._id = parentQuote._id;
-                    parentRelationship.ParentId = parentQuote._id;
-                    parentRelationship.Type = "Parent";
-                    parentRelationship.Name = parentQuote.applicationType;
+                    // var parentRelationship = new Relationship();
+                    // parentRelationship._id = parentQuote._id;
+                    // parentRelationship.ParentId = parentQuote._id;
+                    // parentRelationship.Type = "Parent";
+                    // parentRelationship.Name = parentQuote.applicationType;
 
-                    tmpQuote.relationships.Add(parentRelationship);
+                    // tmpQuote.relationships.Add(parentRelationship);
 
                     WebServices.CreateQuote(tmpQuote);
                 }
@@ -2298,6 +2301,8 @@ else
 
     public string currentQuoteContainerType = "Standalone";
 
+    public int parentCount = 0;
+
     private async Task TimerRefresh()
     {
         bool isAggregate = false;
@@ -2368,8 +2373,12 @@ else
                     {
                         if (RelatedQuoteSummary.relationship == "Parent")
                         {
-                            currentParentQuoteSummary = RelatedQuoteSummary;
-                            hasParent = true;
+                            if(!hasParent)
+                            {
+                                currentParentQuoteSummary = RelatedQuoteSummary;
+                                hasParent = true;
+                                parentCount = 1;
+                            }
 
                             if(RelatedQuoteSummary.applicationType == "Aggregate")
                             {
@@ -2396,9 +2405,11 @@ else
                             }
                         }
 
-                        // Add to summary list
-                        if(RelatedQuoteSummary.applicationType != "Aggregate")
+                        // Add to summary list   
+                        if(RelatedQuoteSummary.relationship != "Parent")
+                        {
                             RelatedQuoteSummaryList.Add(RelatedQuoteSummary);
+                        }
                     }
 
                     if (RelatedQuoteSummary.status != "Archive")
@@ -2462,6 +2473,12 @@ else
                             lastQuoteEventDetails = _event.Details;
                         }
                     }
+                }
+
+                // Add Parent to summary list   
+                if(currentParentQuoteSummary!= null)
+                {
+                    RelatedQuoteSummaryList.Add(currentParentQuoteSummary);
                 }
 
                 // Sort collections
