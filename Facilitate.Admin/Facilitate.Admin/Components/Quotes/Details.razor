@@ -263,7 +263,7 @@ else
                             <Columns>
 
                                 <dxg:TableView.FormatConditions>
-                                   <dxg:FormatCondition ValueRule="Equal" Value1="Archive" FieldName="status" PredefinedFormatName="LightRedFillWithDarkRedText" />   
+                                   <dxg:FormatCondition ValueRule="Equal" Value1="New" FieldName="status" PredefinedFormatName="LightRedFillWithDarkRedText" />   
                                 </dxg:TableView.FormatConditions>
 
                                 <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
@@ -274,12 +274,11 @@ else
                                 <DxGridDataColumn Width="165" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                 <DxGridDataColumn Width="auto" Caption="Last Event" FieldName="lastEventDetails" />
                                 <DxGridDataColumn Width="150" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
-
+                                <DxGridDataColumn Width="100" Caption="Amount" FieldName="totalQuote" DisplayFormat="C0" />
+                                <DxGridDataColumn Width="100" Caption="Qualified?" FieldName="isQualified" />
                                 @{
                                     if (CurrentlySelectedQuote.applicationType == "Aggregate")
                                     {
-                                        <DxGridDataColumn Width="100" Caption="Amount" FieldName="totalQuote" DisplayFormat="C0" />
-                                        <DxGridDataColumn Width="100" Caption="Qualified?" FieldName="isQualified" />
                                         <DxGridCommandColumn Width="100px" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
                                     }
                                 }
@@ -2295,6 +2294,8 @@ else
     public List<Event> EventList = new List<Event>();
     public List<Note> NoteList = new List<Note>();
 
+    public QuoteSummary currentParentQuoteSummary = null;
+
     public string currentQuoteContainerType = "Standalone";
 
     private async Task TimerRefresh()
@@ -2363,23 +2364,13 @@ else
                 {
                     isAggregate = true;
 
-                    if (CurrentlySelectedQuote.applicationType == "Aggregate")
-                    {
-                        if(RelatedQuoteSummary.applicationType == "Aggregate")
-                        {
-                            if (!hasParent)
-                            {
-                                RelatedQuoteSummaryList.Add(RelatedQuoteSummary);
-                                hasParent = true;
-                                break;
-                            }
-                        }
-                    }
-
                     if(CurrentlySelectedQuote._id != RelatedQuoteSummary._id)
                     {
                         if (RelatedQuoteSummary.relationship == "Parent")
                         {
+                            currentParentQuoteSummary = RelatedQuoteSummary;
+                            hasParent = true;
+
                             if(RelatedQuoteSummary.applicationType == "Aggregate")
                             {
                                 RelatedQuoteSummary.relationship = "Parent";
@@ -2404,8 +2395,10 @@ else
                                 currentQuoteContainerType = "Child";
                             }
                         }
+
                         // Add to summary list
-                        RelatedQuoteSummaryList.Add(RelatedQuoteSummary);
+                        if(RelatedQuoteSummary.applicationType != "Aggregate")
+                            RelatedQuoteSummaryList.Add(RelatedQuoteSummary);
                     }
 
                     if (RelatedQuoteSummary.status != "Archive")
@@ -2474,6 +2467,7 @@ else
                 // Sort collections
                 RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderBy(x => x.applicationType).ToList();
                 // RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.lastEventTimeStamp).ToList();
+
                 AttachmentList = AttachmentList.OrderByDescending(x => x.DateTime).ToList();
                 EventList = EventList.OrderByDescending(x => x.DateTime).ToList();
                 NoteList = NoteList.OrderByDescending(x => x.DateTime).ToList();
