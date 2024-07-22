@@ -6,6 +6,32 @@ html, body {
     overflow: auto !important;
 }
 
+.error-details {
+    border: solid 1px #ff0000 !important;
+    margin-bottom: 75px !important;
+}
+
+.dxbl-active:after {
+    border: solid 1px #000000 !important;
+}
+
+.dxuc-file-view {
+    border: solid 0px #ff0000 !important;
+    min-width: 800px !important;
+    margin-bottom: 0px !important;
+}
+
+.dxbs-progress {
+    border: solid 1px #ff0000 !important;
+    margin-bottom: 75px !important;
+}
+
+.dxuc-button-icon-container {
+    border: solid 0px #ff0000 !important;
+    float: right !important;
+    margin: 0px !important;
+}
+
 .section-title {
     border: solid 0px #ff0000 !important;
     position: relative !important;
@@ -468,7 +494,6 @@ select {
     border-radius: 0px !important;
     background-color: #eee !important;
     padding: 25px !important;
-    padding-bottom: 50px !important;
     margin-bottom: 25px !important;
     text-align: center !important;
 }

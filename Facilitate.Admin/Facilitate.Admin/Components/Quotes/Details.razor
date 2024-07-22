@@ -474,11 +474,12 @@ else
                             </DxTabPage>
 
                             <DxTabPage Id="Panel-Attach-Files" Text="Attachments">
+
                                 <div class="row">
                                     <div class="col-md-1">
                                         <DxUpload 
-                                            Name="fileUpload2"
-                                            id="fileUpload2"
+                                            Name="UploadAttachments"
+                                            id="UploadAttachments"
                                             SelectButtonText="Upload"
                                             AllowMultiFileUpload="true"
                                             UploadUrl="@GetUploadUrl(@uploadUrl)"
@@ -496,7 +497,7 @@ else
                                     </div>
                                 </div>
 
-                                <div class="row alert alert-danger @(ErrorVisible? " visible" : " invisible")">@MyError</div>
+                                <div class="row error-details alert alert-danger @(ErrorVisible? " visible" : " invisible")">@MyError</div>
 
                                 <DxGrid @ref="AttachmentGrid"
                                     Data="@AttachmentList"
@@ -1191,7 +1192,7 @@ else
     public int MaxFileSize = 1000000000; // 1000MB
     public int chunkSize = 20000;
 
-    public List<string> allowedFileExtensions = new List<string> { ".jpeg", ".jpg", ".gif", ".mpg", ".mpeg", ".mp4" };
+    public List<string> allowedFileExtensions = new List<string> { ".jpeg", ".jpg", ".gif", ".mpg", ".mpeg", ".mp4", ".doc", ".docx", ".pdf" };
     public List<string> acceptableFileTypes = new List<string> { "audio/*", "doc/*", "image/*", "video/*" };
 
     bool ErrorVisible { get; set; } = false;
@@ -1297,6 +1298,37 @@ else
             QuoteGrid.SelectAllAsync(true);
 
             TradesList = webServices.GetTradesList(true, CurrentlySelectedQuote.applicationType);
+
+            switch (currentQuoteContainerType.ToLower())
+            {
+                case "standalone":
+                    currentQuoteColorCssClass = "quote-color-standalone";
+                    currentQuoteHeaderTypeCssClass = "quote-header-standalone";
+                    currentQuoteContainerTypeCssClass = "quote-title-standalone";
+                    currentActionButtonClass = "action-button-standalone";
+                    break;
+
+                case "parent":
+                    currentQuoteColorCssClass = "quote-color-parent";
+                    currentQuoteHeaderTypeCssClass = "quote-header-parent";
+                    currentQuoteContainerTypeCssClass = "quote-title-parent";
+                    currentActionButtonClass = "action-button-parent";
+                    break;
+
+                case "child":
+                    currentQuoteColorCssClass = "quote-color-child";
+                    currentQuoteHeaderTypeCssClass = "quote-header-child";
+                    currentQuoteContainerTypeCssClass = "quote-title-child";
+                    currentActionButtonClass = "action-button-child";
+                    break;
+
+                default:
+                    currentQuoteColorCssClass = "quote-color-standalone";
+                    currentQuoteHeaderTypeCssClass = "quote-header-standalone";
+                    currentQuoteContainerTypeCssClass = "quote-title-standalone";
+                    currentActionButtonClass = "action-button-standalone";
+                    break;
+            }
         }
     }
 
@@ -2404,8 +2436,6 @@ else
                 tmpRelatedQuoteSummaryList = webServices.GetRelatedQuoteSummaries(CurrentlySelectedQuote);
                 foreach (QuoteSummary RelatedQuoteSummary in tmpRelatedQuoteSummaryList)
                 {
-                    currentActionButtonClass = "action-button-standalone";
-
                     isAggregate = true;
 
                     if(CurrentlySelectedQuote._id != RelatedQuoteSummary._id)
@@ -2429,11 +2459,6 @@ else
                                 RelatedQuoteSummary.relationship = "Sibling";
                             }
                             currentQuoteContainerType = "Child";
-                            currentQuoteColorCssClass = "quote-color-child";
-                            currentQuoteHeaderTypeCssClass = "quote-header-child";
-                            currentQuoteContainerTypeCssClass = "quote-title-child";
-
-                            currentActionButtonClass = "action-button-child";
                         }
                         else
                         {
@@ -2442,20 +2467,10 @@ else
                             if (CurrentlySelectedQuote.applicationType == "Aggregate")
                             {
                                 currentQuoteContainerType = "Parent";
-                                currentQuoteColorCssClass = "quote-color-parent";
-                                currentQuoteHeaderTypeCssClass = "quote-header-parent";
-                                currentQuoteContainerTypeCssClass = "quote-title-parent";
-
-                                currentActionButtonClass = "action-button-parent";
                             }
                             else
                             {
                                 currentQuoteContainerType = "Child";
-                                currentQuoteColorCssClass = "quote-color-child";
-                                currentQuoteHeaderTypeCssClass = "quote-header-child";
-                                currentQuoteContainerTypeCssClass = "quote-title-child";
-
-                                currentActionButtonClass = "action-button-child";
                             }
                         }
 
