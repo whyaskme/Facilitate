@@ -2451,11 +2451,11 @@ else
                         {
                             RelatedQuoteSummaryList.Add(RelatedQuoteSummary);
                         }
-                    }
 
-                    if (RelatedQuoteSummary.status != "Archive")
-                    {
-                        aggregateTotal += RelatedQuoteSummary.totalQuote;
+                        if (RelatedQuoteSummary.status != "Archive")
+                        {
+                            aggregateTotal += RelatedQuoteSummary.totalQuote;
+                        }
                     }
 
                     var childQuote = webServices.GetQuote(RelatedQuoteSummary._id)[0];
