@@ -1290,6 +1290,28 @@ else
         }
     }
 
+    [Parameter]
+    public string? Param { get; set; }
+
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        string message = "";
+
+        if (parameters.TryGetValue<string>(nameof(Param), out var value))
+        {
+            if (value is null)
+            {
+                message = "The value of 'Param' is null.";
+            }
+            else
+            {
+                message = $"The value of 'Param' is {value}.";
+            }
+        }
+
+        await base.SetParametersAsync(parameters);
+    }
+
     protected override void OnAfterRender(bool firstRender)
     {
         if(QuoteGrid != null)
@@ -1299,36 +1321,7 @@ else
 
             TradesList = webServices.GetTradesList(true, CurrentlySelectedQuote.applicationType);
 
-            switch (currentQuoteContainerType.ToLower())
-            {
-                case "standalone":
-                    currentQuoteColorCssClass = "quote-color-standalone";
-                    currentQuoteHeaderTypeCssClass = "quote-header-standalone";
-                    currentQuoteContainerTypeCssClass = "quote-title-standalone";
-                    currentActionButtonClass = "action-button-standalone";
-                    break;
-
-                case "parent":
-                    currentQuoteColorCssClass = "quote-color-parent";
-                    currentQuoteHeaderTypeCssClass = "quote-header-parent";
-                    currentQuoteContainerTypeCssClass = "quote-title-parent";
-                    currentActionButtonClass = "action-button-parent";
-                    break;
-
-                case "child":
-                    currentQuoteColorCssClass = "quote-color-child";
-                    currentQuoteHeaderTypeCssClass = "quote-header-child";
-                    currentQuoteContainerTypeCssClass = "quote-title-child";
-                    currentActionButtonClass = "action-button-child";
-                    break;
-
-                default:
-                    currentQuoteColorCssClass = "quote-color-standalone";
-                    currentQuoteHeaderTypeCssClass = "quote-header-standalone";
-                    currentQuoteContainerTypeCssClass = "quote-title-standalone";
-                    currentActionButtonClass = "action-button-standalone";
-                    break;
-            }
+            // SetUIStyles(currentQuoteContainerType);
         }
     }
 
@@ -1452,6 +1445,47 @@ else
     }
 
     private readonly IClaimsProvider _claimsProvider;
+
+    public string currentQuoteContainerType = "Standalone";
+    public string currentQuoteColorCssClass = "quote-color-standalone";
+    public string currentQuoteHeaderTypeCssClass = "quote-header-standalone";
+    public string currentQuoteContainerTypeCssClass = "quote-title-standalone";
+
+    public string currentActionButtonClass = "action-button-standalone";
+
+    public void SetUIStyles(string quoteContainerType)
+    {
+        switch (quoteContainerType.ToLower())
+        {
+            case "standalone":
+                currentQuoteColorCssClass = "quote-color-standalone";
+                currentQuoteHeaderTypeCssClass = "quote-header-standalone";
+                currentQuoteContainerTypeCssClass = "quote-title-standalone";
+                currentActionButtonClass = "action-button-standalone";
+                break;
+
+            case "parent":
+                currentQuoteColorCssClass = "quote-color-parent";
+                currentQuoteHeaderTypeCssClass = "quote-header-parent";
+                currentQuoteContainerTypeCssClass = "quote-title-parent";
+                currentActionButtonClass = "action-button-parent";
+                break;
+
+            case "child":
+                currentQuoteColorCssClass = "quote-color-child";
+                currentQuoteHeaderTypeCssClass = "quote-header-child";
+                currentQuoteContainerTypeCssClass = "quote-title-child";
+                currentActionButtonClass = "action-button-child";
+                break;
+
+            default:
+                currentQuoteColorCssClass = "quote-color-standalone";
+                currentQuoteHeaderTypeCssClass = "quote-header-standalone";
+                currentQuoteContainerTypeCssClass = "quote-title-standalone";
+                currentActionButtonClass = "action-button-standalone";
+                break;
+        }
+    }
 
     protected override void OnInitialized()
     {
@@ -2363,13 +2397,6 @@ else
 
     public QuoteSummary currentParentQuoteSummary = null;
 
-    public string currentQuoteContainerType = "Standalone";
-    public string currentQuoteColorCssClass = "quote-color-standalone";
-    public string currentQuoteHeaderTypeCssClass = "quote-header-standalone";
-    public string currentQuoteContainerTypeCssClass = "quote-title-standalone";
-
-    public string currentActionButtonClass = "action-button-standalone";
-
     public int parentCount = 0;
 
     private async Task TimerRefresh()
@@ -2557,6 +2584,8 @@ else
                 AttachmentList = AttachmentList.OrderByDescending(x => x.DateTime).ToList();
                 EventList = EventList.OrderByDescending(x => x.DateTime).ToList();
                 NoteList = NoteList.OrderByDescending(x => x.DateTime).ToList();
+
+                SetUIStyles(currentQuoteContainerType);
 
                 InvokeAsync(() =>
                 {
