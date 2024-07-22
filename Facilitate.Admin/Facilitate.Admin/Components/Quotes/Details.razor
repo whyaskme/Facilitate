@@ -136,9 +136,15 @@ else
                     </div>
                     <div class="col-md-4 quote-total">
 
-                        <div class="header-total-element">Quote:</div>
-                        <div class="header-total-element">@CurrentlySelectedQuote.totalSquareFeet.ToString("N0")</div>
-                        <div class="header-total-element">sqft &raquo;</div>
+                        <div class="@currentQuoteColorCssClass header-total-element">Quote:</div>
+
+                        @{
+                            if(CurrentlySelectedQuote.applicationType == "Roofing")
+                            {
+                                <div class="@currentQuoteColorCssClass header-total-element">@CurrentlySelectedQuote.totalSquareFeet.ToString("N0")</div>
+                                <div class="@currentQuoteColorCssClass header-total-element">sqft &raquo;</div>
+                            }
+                        }
 
                         @{
                             var quoteTotal = CurrentlySelectedQuote.totalQuote.ToString("C0");
@@ -801,26 +807,26 @@ else
                     switch(CurrentlySelectedQuote.status)
                     {
                         case "New":
-                            <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
+                            <button class="@currentActionButtonClass" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
                             break;
                         case "Opportunity":
-                                <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
-                            <button class="action-button" @onclick="@(() => IsPopupVisibleMakeCustomer = true)">Make Customer</button>
+                            <button class="@currentActionButtonClass" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
+                            <button class="@currentActionButtonClass" @onclick="@(() => IsPopupVisibleMakeCustomer = true)">Make Customer</button>
                             break;
                         case "Customer":
-                            <button class="action-button" @onclick="@(() => IsPopupVisibleCompleteCustomer = true)">Complete Customer</button>
+                            <button class="@currentActionButtonClass" @onclick="@(() => IsPopupVisibleCompleteCustomer = true)">Complete Customer</button>
                             break;
                         case "Complete":
-                            <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
+                            <button class="@currentActionButtonClass" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
                             break;
                         case "Archive":
-                            <button class="action-button" @onclick="@(() => IsPopupVisibleMakeWarrantyClaim = true)">Make Warranty Claim</button>
+                                <button class="@currentActionButtonClass" @onclick="@(() => IsPopupVisibleMakeWarrantyClaim = true)">Make Warranty Claim</button>
                             break;
                         case "Warranty":
-                            // <button class="action-button" @onclick="@(() => IsPopupVisibleCloseWarrantyClaim = true)">Close Warranty Claim</button>
+                                // <button class="@currentActionButtonClass" @onclick="@(() => IsPopupVisibleCloseWarrantyClaim = true)">Close Warranty Claim</button>
                             break;
                     }
-                    <button class="action-button" @onclick="ReturnPreviousPage">Return</button>
+                    <button class="@currentActionButtonClass" @onclick="ReturnPreviousPage">Return</button>
                 }
                 </div>
 
@@ -1011,8 +1017,6 @@ else
 
 @code 
 {
-    //public DataGridViewRowPostPaintEventArgs dataGridViewRowPostPaintEventArgs { get; set; }
-
     public class DataGridViewRowPostPaintEventArgs : EventArgs;
 
     private void dgGrid_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
@@ -2319,6 +2323,8 @@ else
     public string currentQuoteHeaderTypeCssClass = "quote-header-standalone";
     public string currentQuoteContainerTypeCssClass = "quote-title-standalone";
 
+    public string currentActionButtonClass = "action-button";
+
     public int parentCount = 0;
 
     private async Task TimerRefresh()
@@ -2411,6 +2417,8 @@ else
                             currentQuoteColorCssClass = "quote-color-child";
                             currentQuoteHeaderTypeCssClass = "quote-header-child";
                             currentQuoteContainerTypeCssClass = "quote-title-child";
+
+                            currentActionButtonClass = "action-button-child";
                         }
                         else
                         {
@@ -2422,6 +2430,8 @@ else
                                 currentQuoteColorCssClass = "quote-color-parent";
                                 currentQuoteHeaderTypeCssClass = "quote-header-parent";
                                 currentQuoteContainerTypeCssClass = "quote-title-parent";
+
+                                currentActionButtonClass = "action-button-parent";
                             }
                             else
                             {
@@ -2429,6 +2439,8 @@ else
                                 currentQuoteColorCssClass = "quote-color-child";
                                 currentQuoteHeaderTypeCssClass = "quote-header-child";
                                 currentQuoteContainerTypeCssClass = "quote-title-child";
+
+                                currentActionButtonClass = "action-button-child";
                             }
                         }
 
