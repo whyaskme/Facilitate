@@ -147,8 +147,8 @@ else
                     <SampleEditForm/>
                 </BodyContentTemplate>
                 <FooterContentTemplate>
-                    <DxButton CssClass="popup-button my-1 ms-2" Text="OK" Click="@context.CloseCallback"/>
-                    <DxButton CssClass="popup-button my-1 ms-2" Text="Cancel" Click="@context.CloseCallback"/>
+                    <DxButton CssClass="@currentActionButtonClass" Text="OK" Click="@context.CloseCallback"/>
+                    <DxButton CssClass="@currentActionButtonClass" Text="Cancel" Click="@context.CloseCallback"/>
                 </FooterContentTemplate>
             </DxDropDown>
         </div>
@@ -179,8 +179,8 @@ else
                     <SampleEditForm/>
                 </BodyContentTemplate>
                 <FooterContentTemplate>
-                    <DxButton CssClass="popup-button my-1 ms-2" Text="OK" Click="@context.CloseCallback"/>
-                    <DxButton CssClass="popup-button my-1 ms-2" Text="Cancel" Click="@context.CloseCallback"/>
+                    <DxButton CssClass="@currentActionButtonClass" Text="OK" Click="@context.CloseCallback"/>
+                    <DxButton CssClass="@currentActionButtonClass" Text="Cancel" Click="@context.CloseCallback"/>
                 </FooterContentTemplate>
             </DxDropDown>
         </div>
@@ -215,10 +215,10 @@ else
             PageSizeSelectorAllRowsItemVisible="false"
             KeyboardNavigationEnabled="true">
         <Columns>
-            <DxGridDataColumn Visible="@recordIDVisible" Width="200" Caption="Record Id" FieldName="_id" />
+            <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
             <DxGridDataColumn Width="115" Caption="Trade" FieldName="applicationType" />
-            <DxGridDataColumn Width="150" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
-            <DxGridDataColumn Width="150" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+            <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+            <DxGridDataColumn Width="175" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
             <DxGridDataColumn Width="100" Caption="First" FieldName="firstName" />
             <DxGridDataColumn Width="125" Caption="Last" FieldName="lastName" />
             <DxGridDataColumn Width="200" Caption="Email" FieldName="email" />
@@ -240,6 +240,8 @@ else
 </DxLoadingPanel>
 
 @code {
+
+    public string currentActionButtonClass = "action-button-standalone";
 
     public bool recordIDVisible = false;
 

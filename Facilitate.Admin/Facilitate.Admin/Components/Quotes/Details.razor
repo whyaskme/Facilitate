@@ -850,8 +850,8 @@ else
         </DxListBox>
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AddTrade" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleAddTrade = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AddTrade" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleAddTrade = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -860,8 +860,8 @@ else
         @ConfirmRemoveMessage
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="DeleteTrade" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleDeleteTrade = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="DeleteTrade" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleDeleteTrade = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -870,8 +870,8 @@ else
         @ConfirmRestoreMessage
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="RestoreTrade" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleRestoreTrade = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="RestoreTrade" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleRestoreTrade = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -881,8 +881,8 @@ else
         <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="MakeWarrantyClaim" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleMakeWarrantyClaim = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="MakeWarrantyClaim" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleMakeWarrantyClaim = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -892,8 +892,8 @@ else
         <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="CloseWarrantyClaim" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleCloseWarrantyClaim = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="CloseWarrantyClaim" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleCloseWarrantyClaim = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -902,8 +902,8 @@ else
         If this is fully qualified to Complete Customer criteria, then click Save.
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="CompleteCustomer" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleCompleteCustomer = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="CompleteCustomer" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleCompleteCustomer = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -912,8 +912,8 @@ else
         If this Opportunity is fully qualified to meet Customer criteria, then click Save.
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="MakeCustomer" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleMakeCustomer = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="MakeCustomer" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleMakeCustomer = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -936,8 +936,8 @@ else
         </DxListBox>
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" Enabled="true" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsAssignPopupVisible = false)" />
+        <DxButton CssClass="@currentActionButtonClass" Enabled="true" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsAssignPopupVisible = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -946,8 +946,8 @@ else
         Are you sure you want to delete "@selectedAttachment.MediaDescription"?
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteSelectedAttachment" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleSelectAttachmentToDelete = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteSelectedAttachment" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleSelectAttachmentToDelete = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -956,8 +956,8 @@ else
         Are you sure you want to delete "@selectedNote.Details"?
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteSelectedNote" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleSelectNoteToDelete = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteSelectedNote" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleSelectNoteToDelete = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -967,8 +967,8 @@ else
         <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AddNote" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleAddNote = false)" />
+        <DxButton SubmitFormOnClick="true" CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AddNote" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleAddNote = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -977,8 +977,8 @@ else
         <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Archive" Click="ArchiveQuote" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsArchivePopupVisible = false)" />
+        <DxButton SubmitFormOnClick="true" CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Archive" Click="ArchiveQuote" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsArchivePopupVisible = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -987,7 +987,7 @@ else
         <p>Send Documents details...</p>
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpSendFiles = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpSendFiles = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -996,7 +996,7 @@ else
         <p>File Attachments details...</p>
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpFileAttachments = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpFileAttachments = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -1005,7 +1005,7 @@ else
         <p>File Notes details...</p>
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpFileNotes = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpFileNotes = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -2523,8 +2523,8 @@ else
                 }
 
                 // Sort collections
-                RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderBy(x => x.applicationType).ToList();
-                // RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.lastEventTimeStamp).ToList();
+                // RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderBy(x => x.applicationType).ToList();
+                RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.lastEventTimeStamp).ToList();
 
                 AttachmentList = AttachmentList.OrderByDescending(x => x.DateTime).ToList();
                 EventList = EventList.OrderByDescending(x => x.DateTime).ToList();

@@ -190,11 +190,13 @@
         Roles list here...
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" Enabled="true" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="SaveUserRoles" />
+        <DxButton CssClass="@currentActionButtonClass" Enabled="true" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="SaveUserRoles" />
     </FooterContentTemplate>
 </DxPopup>
 
 @code {
+
+    public string currentActionButtonClass = "action-button-standalone";
 
     [Parameter]
     public object SelectedUserAccountItem { get; set; }
