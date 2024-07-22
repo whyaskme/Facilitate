@@ -474,24 +474,29 @@ else
                             </DxTabPage>
 
                             <DxTabPage Id="Panel-Attach-Files" Text="Attachments">
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <DxUpload 
+                                            Name="fileUpload2"
+                                            id="fileUpload2"
+                                            SelectButtonText="Upload"
+                                            AllowMultiFileUpload="true"
+                                            UploadUrl="@GetUploadUrl(@uploadUrl)"
+                                            FileUploadError="@OnUploadError"
+                                            FileUploadStarted="@OnFileUploadStarted"
+                                            SelectedFilesChanged="@SelectedFilesChanged"
+                                            MaxFileSize="@MaxFileSize"
+                                            AllowedFileExtensions="@allowedFileExtensions"
+                                            AcceptedFileTypes="@acceptableFileTypes"
+                                            CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
+                                        </DxUpload>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <span class="section-title">@AttachmentList.Count() Attachments</span>
+                                    </div>
+                                </div>
 
-                                <h6>@AttachmentList.Count() Attachments</h6>
-
-                                <DxUpload 
-                                    Name="fileUpload2"
-                                    id="fileUpload2"
-                                    SelectButtonText="Upload"
-                                    AllowMultiFileUpload="true"
-                                    UploadUrl="@GetUploadUrl(@uploadUrl)"
-                                    FileUploadError="@OnUploadError"
-                                    FileUploadStarted="@OnFileUploadStarted"
-                                    SelectedFilesChanged="@SelectedFilesChanged"
-                                    MaxFileSize="@MaxFileSize"
-                                    AllowedFileExtensions="@allowedFileExtensions"
-                                    AcceptedFileTypes="@acceptableFileTypes"
-                                    CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
-                                </DxUpload>
-                                <div class="alert alert-danger @(ErrorVisible? " visible" : " invisible")">@MyError</div>
+                                <div class="row alert alert-danger @(ErrorVisible? " visible" : " invisible")">@MyError</div>
 
                                 <DxGrid @ref="AttachmentGrid"
                                     Data="@AttachmentList"
