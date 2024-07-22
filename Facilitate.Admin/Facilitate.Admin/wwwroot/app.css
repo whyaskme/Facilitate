@@ -6,6 +6,21 @@ html, body {
     overflow: auto !important;
 }
 
+.quote-header-standalone {
+    background: #000000 !important;
+    border: solid 0px #000000 !important;
+    border-radius: 5px !important;
+    position: relative !important;
+    margin: 0px !important;
+    text-align: center !important;
+    color: #ffff !important;
+    font-style: normal !important;
+    font-size: 1.2em !important;
+    width: 100% !important;
+    padding: 10px !important;
+    margin-bottom: 20px !important;
+}
+
 .quote-title-standalone {
     border: solid 0px #025402 !important;
     color: #808080 !important;
@@ -15,13 +30,43 @@ html, body {
     margin-bottom: 50px !important;
 }
 
+.quote-header-parent {
+    background: #025f02 !important;
+    border: solid 0px #000000 !important;
+    border-radius: 5px !important;
+    position: relative !important;
+    margin: 0px !important;
+    text-align: center !important;
+    color: #ffff !important;
+    font-style: normal !important;
+    font-size: 1.2em !important;
+    width: 100% !important;
+    padding: 10px !important;
+    margin-bottom: 20px !important;
+}
+
 .quote-title-parent {
-    border: solid 0px #025402 !important;
+    border: solid 0px #025f02 !important;
     color: #025f02 !important;
     text-align: center !important;
     font-size: 2.0em !important;
     font-weight: bold !important;
     margin-bottom: 50px !important;
+}
+
+.quote-header-child {
+    background: #8b0309 !important;
+    border: solid 0px #000000 !important;
+    border-radius: 5px !important;
+    position: relative !important;
+    margin: 0px !important;
+    text-align: center !important;
+    color: #ffff !important;
+    font-style: normal !important;
+    font-size: 1.2em !important;
+    width: 100% !important;
+    padding: 10px !important;
+    margin-bottom: 20px !important;
 }
 
 .quote-title-child {
@@ -31,6 +76,21 @@ html, body {
     font-size: 2.0em !important;
     font-weight: bold !important;
     margin-bottom: 50px !important;
+}
+
+.quote-header-sibling {
+    background: #000000 !important;
+    border: solid 0px #000000 !important;
+    border-radius: 5px !important;
+    position: relative !important;
+    margin: 0px !important;
+    text-align: center !important;
+    color: #ffff !important;
+    font-style: normal !important;
+    font-size: 1.2em !important;
+    width: 100% !important;
+    padding: 10px !important;
+    margin-bottom: 20px !important;
 }
 
 .quote-title-sibling {
@@ -67,7 +127,6 @@ html, body {
 }
 
 .header-total-element {
-    border: solid 0px #ff0000 !important;
     width: auto !important;
     float: left !important;
     margin-right: 5px !important;
@@ -77,8 +136,8 @@ html, body {
     border: solid 1px #c0c0c0 !important;
     border-radius: 5px !important;
     width: 100px !important;
-    background: #000000 !important;
-    color: #ffffff !important;
+    background: transparent !important;
+    color: #000000 !important;
     font-weight: bolder !important;
     font-size: 1.0em !important;
     position: relative !important;
@@ -1064,6 +1123,10 @@ label {
     color: #fff !important;
     margin-right: 25px !important;
 }
+
+/*.dxbl-text-edit-input {
+    background-color: #ffff00 !important;
+}*/
 
 .dxbl-text-edit-input:focus {
     background-color: #fff !important;

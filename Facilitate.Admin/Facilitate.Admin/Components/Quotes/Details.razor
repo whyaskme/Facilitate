@@ -85,7 +85,7 @@
 }
 else
 {
-    <div class="details-header">
+    <div class="@currentQuoteHeaderTypeCssClass">
         <button class="action-button header-return-button" @onclick="ReturnPreviousPage">Return</button>
        @CurrentlySelectedQuote.status Details for @CurrentlySelectedQuote.firstName @CurrentlySelectedQuote.lastName
         <button class="action-button header-recordID-button" @onclick="ShowRecordIDs">@RedcordIdButtonLabel</button>
@@ -121,7 +121,7 @@ else
                     productsCountLabel = productsCount.ToString() + " Products Quoted";
 
 
-                <div class="@currentQuoteContainerTypeCssClass">@currentQuoteContainerType (@CurrentlySelectedQuote.applicationType) Quote</div>
+                <div class="@currentQuoteContainerTypeCssClass">@currentQuoteContainerType (@CurrentlySelectedQuote.applicationType)</div>
 
                 <div class="row">
                     <div class="col-md-4">
@@ -136,7 +136,7 @@ else
                     </div>
                     <div class="col-md-4 quote-total">
 
-                        <div class="header-total-element">Total:</div>
+                        <div class="header-total-element">Quote:</div>
                         <div class="header-total-element">@CurrentlySelectedQuote.totalSquareFeet.ToString("N0")</div>
                         <div class="header-total-element">sqft &raquo;</div>
 
@@ -1011,6 +1011,28 @@ else
 
 @code 
 {
+    //public DataGridViewRowPostPaintEventArgs dataGridViewRowPostPaintEventArgs { get; set; }
+
+    public class DataGridViewRowPostPaintEventArgs : EventArgs;
+
+    private void dgGrid_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+    {
+        var tmpVal = "";
+
+        //var grid = sender as DataGridView;
+        //var rowIdx = (e.RowIndex + 1).ToString();
+
+        // var centerFormat = new StringFormat() 
+        // { 
+        //     // right alignment might actually make more sense for numbers
+        //     Alignment = StringAlignment.Center, 
+        //     LineAlignment = StringAlignment.Center
+        // };
+
+        // var headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
+        // e.Graphics.DrawString(rowIdx, this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
+    }
+
     public bool hasChildren = false;
 
     public abstract class DxInputDataEditorBase<T> : DxDataEditor<T>;
@@ -2293,6 +2315,7 @@ else
     public QuoteSummary currentParentQuoteSummary = null;
 
     public string currentQuoteContainerType = "Standalone";
+    public string currentQuoteHeaderTypeCssClass = "quote-header-standalone";
     public string currentQuoteContainerTypeCssClass = "quote-title-standalone";
 
     public int parentCount = 0;
@@ -2384,6 +2407,7 @@ else
                                 RelatedQuoteSummary.relationship = "Sibling";
                             }
                             currentQuoteContainerType = "Child";
+                            currentQuoteHeaderTypeCssClass = "quote-header-child";
                             currentQuoteContainerTypeCssClass = "quote-title-child";
                         }
                         else
@@ -2393,11 +2417,13 @@ else
                             if (CurrentlySelectedQuote.applicationType == "Aggregate")
                             {
                                 currentQuoteContainerType = "Parent";
+                                currentQuoteHeaderTypeCssClass = "quote-header-parent";
                                 currentQuoteContainerTypeCssClass = "quote-title-parent";
                             }
                             else
                             {
                                 currentQuoteContainerType = "Child";
+                                currentQuoteHeaderTypeCssClass = "quote-header-child";
                                 currentQuoteContainerTypeCssClass = "quote-title-child";
                             }
                         }
