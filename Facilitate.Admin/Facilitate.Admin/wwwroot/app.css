@@ -6,6 +6,42 @@ html, body {
     overflow: auto !important;
 }
 
+.quote-title-standalone {
+    border: solid 0px #025402 !important;
+    color: #808080 !important;
+    text-align: center !important;
+    font-size: 2.0em !important;
+    font-weight: bold !important;
+    margin-bottom: 50px !important;
+}
+
+.quote-title-parent {
+    border: solid 0px #025402 !important;
+    color: #025f02 !important;
+    text-align: center !important;
+    font-size: 2.0em !important;
+    font-weight: bold !important;
+    margin-bottom: 50px !important;
+}
+
+.quote-title-child {
+    border: solid 0px #025402 !important;
+    color: #8b0309 !important;
+    text-align: center !important;
+    font-size: 2.0em !important;
+    font-weight: bold !important;
+    margin-bottom: 50px !important;
+}
+
+.quote-title-sibling {
+    border: solid 0px #025402 !important;
+    color: #025f02 !important;
+    text-align: center !important;
+    font-size: 2.0em !important;
+    font-weight: bold !important;
+    margin-bottom: 50px !important;
+}
+
 #AttachmentGrid,
 #fileUpload2 {
     /*    border: solid 1px #ff0000 !important;*/

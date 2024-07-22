@@ -121,7 +121,7 @@ else
                     productsCountLabel = productsCount.ToString() + " Products Quoted";
 
 
-                <div class="summary-header-child">@currentQuoteContainerType (@CurrentlySelectedQuote.applicationType) Quote</div>
+                <div class="@currentQuoteContainerTypeCssClass">@currentQuoteContainerType (@CurrentlySelectedQuote.applicationType) Quote</div>
 
                 <div class="row">
                     <div class="col-md-4">
@@ -2078,6 +2078,8 @@ else
 
             IsPopupVisibleAddTrade = false;
 
+            //TimerRefresh();
+
             if(!isAggregate)
             {
                 // Redirect to Master details page
@@ -2104,15 +2106,6 @@ else
                 if (currentQuote.applicationType != "Aggregate")
                 {
                     Quote tmpQuote = new Quote(currentQuote);
-
-                    // Create Parent relationship
-                    // var parentRelationship = new Relationship();
-                    // parentRelationship._id = parentQuote._id;
-                    // parentRelationship.ParentId = parentQuote._id;
-                    // parentRelationship.Type = "Parent";
-                    // parentRelationship.Name = parentQuote.applicationType;
-
-                    // tmpQuote.relationships.Add(parentRelationship);
 
                     WebServices.CreateQuote(tmpQuote);
                 }
@@ -2300,6 +2293,7 @@ else
     public QuoteSummary currentParentQuoteSummary = null;
 
     public string currentQuoteContainerType = "Standalone";
+    public string currentQuoteContainerTypeCssClass = "quote-title-standalone";
 
     public int parentCount = 0;
 
@@ -2390,6 +2384,7 @@ else
                                 RelatedQuoteSummary.relationship = "Sibling";
                             }
                             currentQuoteContainerType = "Child";
+                            currentQuoteContainerTypeCssClass = "quote-title-child";
                         }
                         else
                         {
@@ -2398,10 +2393,12 @@ else
                             if (CurrentlySelectedQuote.applicationType == "Aggregate")
                             {
                                 currentQuoteContainerType = "Parent";
+                                currentQuoteContainerTypeCssClass = "quote-title-parent";
                             }
                             else
                             {
                                 currentQuoteContainerType = "Child";
+                                currentQuoteContainerTypeCssClass = "quote-title-child";
                             }
                         }
 
