@@ -6,6 +6,41 @@ html, body {
     overflow: auto !important;
 }
 
+button {
+    color: #000000 !important;
+    background-color: #eee !important;
+    border: solid 1px #c0c0c0 !important;
+    border-radius: 5px !important;
+    margin-right: 3px !important;
+    padding: 2px !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+    font-size: 0.85em !important;
+}
+
+    button:hover,
+    button:hover:before,
+    button:hover:after {
+        color: #eee !important;
+        background-color: #000000 !important;
+        border: solid 1px #000000 !important;
+        cursor: pointer !important;
+    }
+
+.button-header-left {
+    border: solid 1px #ff0000 !important;
+    background-color: #ffff00 !important;
+    float: left !important;
+}
+
+.button-header-right {
+    border: solid 1px #ff0000 !important;
+    background-color: #ffff00 !important;
+    width: 200px !important;
+    float: right !important;
+    margin-right: 25px !important;
+}
+
 .quote-color-standalone {
     color: #808080 !important;
     font-size: 1.2em !important;
@@ -32,21 +67,31 @@ html, body {
 }
 
 .action-button-standalone {
-    border: solid 1px #ff0000 !important;
+    border: solid 1px #000000 !important;
     color: #ffffff !important;
     background-color: #000000 !important;
+    width: 125px !important;
 }
 
 .action-button-parent {
     border: solid 1px #014b01 !important;
     color: #ffffff !important;
     background-color: #014b01 !important;
+    width: 125px !important;
 }
 
 .action-button-child {
     border: solid 1px #8b0309 !important;
     color: #ffffff !important;
     background-color: #8b0309 !important;
+    width: 125px !important;
+}
+
+.action-button-sibling {
+    border: solid 1px #8b0309 !important;
+    color: #ffffff !important;
+    background-color: #8b0309 !important;
+    width: 125px !important;
 }
 
 .quote-header-standalone {
@@ -153,12 +198,12 @@ html, body {
     top: 10px !important;
 }
 
-.dxuc-button-container {
+/*.dxuc-button-container {
     border: solid 0px #ff0000 !important;
     position: relative !important;
     top: -12px !important;
     left: -15px !important;
-}
+}*/
 
 .icon-actions {
     border: solid 0px #ff0000 !important;
@@ -280,51 +325,6 @@ html, body {
     margin-bottom: 0px !important;*/
 }
 
-button.btn-primary {
-    margin-bottom: 25px !important;
-}
-
-.header-return-button {
-    border: solid 1px #ffffff !important;
-    float: left !important;
-    font-size: 0.8em !important;
-    /*    color: #ffffff !important;
-    background-color: #014b01 !important;
-    padding-left: 15px !important;
-    padding-right: 15px !important;*/
-}
-
-.header-recordID-button {
-    border: solid 1px #ff0000 !important;
-    float: right !important;
-    font-size: 0.8em !important;
-    /*    color: #ffffff !important;
-    background-color: #014b01 !important;
-    padding-left: 15px !important;
-    padding-right: 15px !important;*/
-}
-
-.dxuc-select-button,
-.dxuc-select-button:hover {
-    background-color: #000000 !important;
-    color: #ffffff !important;
-    border: solid 0px #ff0000 !important;
-    padding: 3px !important;
-    padding-left: 15px !important;
-    padding-right: 15px !important;
-    position: relative !important;
-    top: -5px !important;
-    left: 15px !important;
-    width: 100px !important;
-    min-width: 100px !important;
-    max-width: 100px !important;
-    margin-bottom: 5px !important;
-}
-
-    .dxuc-select-button:hover {
-        background-color: #014b01 !important;
-    }
-
 #tabs-Customer-Qualifications {
     padding: 25px !important;
     background-color: #ffffff !important;
@@ -339,72 +339,6 @@ button.btn-primary {
     border-radius: 5px !important;
     background-color: #fff !important;
 }
-
-.action-button {
-    border: solid 1px #000000 !important;
-    color: #ffffff !important;
-    background-color: #000000 !important;
-    padding-left: 15px !important;
-    padding-right: 15px !important;
-}
-
-    .action-button:hover {
-        border: solid 1px #014b01 !important;
-        color: #ffffff !important;
-        background-color: #014b01 !important;
-        padding-left: 15px !important;
-        padding-right: 15px !important;
-    }
-
-.action-button-small,
-.action-button-small:hover{
-    border: solid 0px #ff0000 !important;
-    width: 55px !important;
-    font-size: 0.85em !important;
-}
-
-.action-button-restore {
-    border: solid 1px #000000 !important;
-    color: #ffffff !important;
-    background-color: #000000 !important;
-    margin-left: 10px !important;
-    padding-left: 10px !important;
-    padding-right: 15px !important;
-    width: 75px !important;
-    font-size: 0.75em !important;
-}
-
-    .action-button-restore:hover {
-        border: solid 1px #014b01 !important;
-        color: #ffffff !important;
-        background-color: #014b01 !important;
-    }
-
-.action-button-disabled {
-    border: solid 0px #ff0000 !important;
-    width: 100px !important;
-    font-size: 1.0em !important;
-/*    color: #ffffff !important;*/
-    cursor: not-allowed !important;
-    padding-left: 0px !important;
-    margin-right: 20px !important;
-    font-style: normal !important;
-    background-color: #eee !important;
-    cursor: pointer !important;
-}
-
-    .action-button-disabled:hover {
-        border: solid 0px #ff0000 !important;
-        width: 100px !important;
-        font-size: 1.0em !important;
-        color: #ffffff !important;
-        cursor: not-allowed !important;
-        padding-left: 0px !important;
-        margin-right: 20px !important;
-        font-style: normal !important;
-        background-color: #014b01 !important;
-        cursor: pointer !important;
-    }
 
 .dxbl-btn-link {
     border: solid 1px #eee !important;
@@ -428,26 +362,6 @@ a, .btn-link,
 a:hover, .btn-link:hover {
     color: #000000;
 }
-
-button {
-    color: #000000 !important;
-    background-color: #eee !important;
-    border: solid 1px #c0c0c0 !important;
-    border-radius: 5px !important;
-    margin-right: 3px !important;
-    padding: 2px !important;
-    padding-left: 5px !important;
-    padding-right: 5px !important;
-}
-
-    button:hover,
-    button:hover:before,
-    button:hover:after{
-        color: #eee !important;
-        background-color: #000000 !important;
-        border: solid 1px #000000 !important;
-        cursor: pointer !important;
-    }
 
 .details-header {
     border: solid 0px #000000 !important;
