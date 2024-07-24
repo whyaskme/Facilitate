@@ -34,6 +34,7 @@ namespace Facilitate.Libraries.Models
 
             timestamp = DateTime.UtcNow;
             lastUpdated = DateTime.UtcNow;
+            biddingExpires = DateTime.UtcNow;
 
             totalQuote = 0;
 
@@ -85,6 +86,7 @@ namespace Facilitate.Libraries.Models
 
             timestamp = OriginalQuote.timestamp;
             lastUpdated = OriginalQuote.lastUpdated;
+            biddingExpires = OriginalQuote.biddingExpires;
 
             totalQuote = OriginalQuote.totalQuote;
 
@@ -134,9 +136,11 @@ namespace Facilitate.Libraries.Models
         public string phone { get; set; }
         public string market { get; set; }
         public string externalUrl { get; set; }
-        public DateTime timestamp { get; set; }
 
+        public DateTime timestamp { get; set; }
         public DateTime lastUpdated { get; set; }
+        public DateTime biddingExpires { get; set; }
+
         public double totalQuote { get; set; }
 
         public int numberOfStructures { get; set; }

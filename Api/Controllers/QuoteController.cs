@@ -38,98 +38,170 @@ namespace Facilitate.Api.Controllers
             _quoteCollection = _mongoDBClient.GetDatabase(_mongoDBName).GetCollection<Quote>(_mongoDBCollectionName);
         }
 
+        public List<Quote> newQuoteListQueue = new List<Quote>();
+
         [ProducesResponseType<String>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost]
         public IActionResult Post([FromBody] QuoteRoofleSubmission roofleSubmission)
         {
-            string headerForwardedFor = "n/a";
-            string headerReferer = "n/a";
-
-            var requestHeaders = HttpContext.Request.Headers;
-            foreach(var header in requestHeaders)
-            {
-                if(header.Key == "X-Forwarded-For")
-                {
-                    headerForwardedFor = header.Value;
-                }
-
-                if (header.Key == "Referer")
-                {
-                    headerReferer = header.Value;
-                }
-            }
-
-            Quote quote = new Quote();
-
-            // Will need to figure out how to set dynamically
-            quote.applicationType = utils.TitleCaseString("Roofing");
-
-            quote.ipAddress = headerForwardedFor;
-            quote.externalUrl = headerReferer;
-
-            if (roofleSubmission.products[0].priceInfo.total != null)
-            {
-                quote.totalQuote = roofleSubmission.products[0].priceInfo.total;
-            }
-            else
-            {
-                quote.totalQuote = 0;
-            }
-
-            quote.address = roofleSubmission.address;
-            quote.fullAddress = roofleSubmission.fullAddress;
-            quote.street = roofleSubmission.street;
-            quote.city = roofleSubmission.city;
-
-            var stateAbbreviation = utils.GetStateAbbrByName(roofleSubmission.state);
-    
-            quote.state = stateAbbreviation;
-            quote.zip = roofleSubmission.zip;
-
-            quote.firstName = roofleSubmission.firstName;
-            quote.lastName = roofleSubmission.lastName;
-            quote.email = roofleSubmission.email;
-            quote.phone = roofleSubmission.phone;
-            quote.market = roofleSubmission.market;
-            
-            quote.timestamp = DateTime.UtcNow;
-
-            quote.numberOfStructures = roofleSubmission.numberOfStructures;
-            quote.numberOfIncludedStructures = roofleSubmission.numberOfIncludedStructures;
-            quote.totalSquareFeet = roofleSubmission.totalSquareFeet;
-
-            quote.repName = roofleSubmission.repName;
-            quote.repEmail = roofleSubmission.repEmail;
-            quote.leadId = roofleSubmission.leadId;
-
-            quote.products = roofleSubmission.products;
-            quote.structures = roofleSubmission.structures;
-
-            quote.mainRoofTotalSquareFeet = roofleSubmission.mainRoofTotalSquareFeet;
-            quote.totalInitialSquareFeet = roofleSubmission.totalInitialSquareFeet;
-            quote.sessionId = roofleSubmission.sessionId;
-
-            Event _event = new Event();
-            _event.Name = "New Quote";
-            _event.DateTime = DateTime.UtcNow;
-            _event.Details = "New quote referred by: " + headerReferer;
-
-            var author = new ApplicationUser();
-            author.Id = Guid.NewGuid().ToString();
-            author.FirstName = "Web";
-            author.LastName = "Api";
-
-            _event.Author = author;
-
-            quote.events.Add(_event);
-
             try
             {
-                _quoteCollection = _mongoDBClient.GetDatabase(_mongoDBName).GetCollection<Quote>(_mongoDBCollectionName);
-                _quoteCollection.InsertOne(quote);
+                string headerForwardedFor = "n/a";
+                string headerReferer = "n/a";
 
-                resultMsg = "Added QuoteId: " + quote._id;
+                int childQuotesToCreate = 1;
+                int biddingExpiresInDays = 5;
+
+                var requestHeaders = HttpContext.Request.Headers;
+                foreach (var header in requestHeaders)
+                {
+                    if (header.Key == "X-Forwarded-For")
+                    {
+                        headerForwardedFor = header.Value;
+                    }
+
+                    if (header.Key == "Referer")
+                    {
+                        headerReferer = header.Value;
+                    }
+                }
+
+                Quote aggregateQuote = new Quote();
+                aggregateQuote.applicationType = utils.TitleCaseString("Aggregate");
+
+                // Set expiration
+                aggregateQuote.biddingExpires = DateTime.UtcNow.AddDays(biddingExpiresInDays);
+
+                aggregateQuote.ipAddress = headerForwardedFor;
+                aggregateQuote.externalUrl = headerReferer;
+
+                if (roofleSubmission.products[0].priceInfo.total != null)
+                {
+                    aggregateQuote.totalQuote = roofleSubmission.products[0].priceInfo.total;
+                }
+                else
+                {
+                    aggregateQuote.totalQuote = 0;
+                }
+
+                aggregateQuote.address = roofleSubmission.address;
+                aggregateQuote.fullAddress = roofleSubmission.fullAddress;
+                aggregateQuote.street = roofleSubmission.street;
+                aggregateQuote.city = roofleSubmission.city;
+
+                var stateAbbreviation = utils.GetStateAbbrByName(roofleSubmission.state);
+
+                aggregateQuote.state = stateAbbreviation;
+                aggregateQuote.zip = roofleSubmission.zip;
+
+                aggregateQuote.firstName = roofleSubmission.firstName;
+                aggregateQuote.lastName = roofleSubmission.lastName;
+                aggregateQuote.email = roofleSubmission.email;
+                aggregateQuote.phone = roofleSubmission.phone;
+                aggregateQuote.market = roofleSubmission.market;
+
+                aggregateQuote.timestamp = DateTime.UtcNow;
+
+                aggregateQuote.numberOfStructures = roofleSubmission.numberOfStructures;
+                aggregateQuote.numberOfIncludedStructures = roofleSubmission.numberOfIncludedStructures;
+                aggregateQuote.totalSquareFeet = roofleSubmission.totalSquareFeet;
+
+                aggregateQuote.repName = roofleSubmission.repName;
+                aggregateQuote.repEmail = roofleSubmission.repEmail;
+                aggregateQuote.leadId = roofleSubmission.leadId;
+
+                aggregateQuote.products = roofleSubmission.products;
+                aggregateQuote.structures = roofleSubmission.structures;
+
+                aggregateQuote.mainRoofTotalSquareFeet = roofleSubmission.mainRoofTotalSquareFeet;
+                aggregateQuote.totalInitialSquareFeet = roofleSubmission.totalInitialSquareFeet;
+                aggregateQuote.sessionId = roofleSubmission.sessionId;
+
+                var author = new ApplicationUser();
+                author.Id = Guid.NewGuid().ToString();
+                author.FirstName = "Web";
+                author.LastName = "Api";
+
+                Event _aggregateEvent = new Event();
+                _aggregateEvent.Trade = aggregateQuote.applicationType;
+                _aggregateEvent.DateTime = DateTime.UtcNow;
+                _aggregateEvent.Name = "Aggregate Quote Created";
+                _aggregateEvent.Details = "Aggregate Quote created & referred by: " + headerReferer;
+
+                _aggregateEvent.Author = author;
+
+                aggregateQuote.events.Add(_aggregateEvent);
+
+                // Add Parent to queue
+                newQuoteListQueue.Add(aggregateQuote);
+
+                // Create Parent relationship
+                var parentRelationship = new Relationship();
+                parentRelationship.Author = author.FirstName + " " + author.LastName;
+                parentRelationship._id = aggregateQuote._id;
+                parentRelationship.ParentId = aggregateQuote._id;
+                parentRelationship.Type = "Parent";
+                parentRelationship.Name = aggregateQuote.applicationType;
+
+                for (var i = 0; i < childQuotesToCreate; i++)
+                {
+                    Quote childQuote = new Quote(aggregateQuote);
+                    childQuote._id = Guid.NewGuid().ToString();
+
+                    childQuote.statusSubcategory = "spec-bidder";
+
+                    // Will need to figure out how to set dynamically
+                    childQuote.applicationType = utils.TitleCaseString("Roofing");
+
+                    // Create Child relationship
+                    var childRelationship = new Relationship();
+                    childRelationship.Author = author.FirstName + " " + author.LastName;
+                    childRelationship._id = childQuote._id;
+                    childRelationship.ParentId = aggregateQuote._id;
+                    childRelationship.Type = "Child";
+                    childRelationship.Name = childQuote.applicationType;
+
+                    // Add Child relationship to Parent
+                    if(childRelationship.Type != "Parent")
+                    {
+                        aggregateQuote.relationships.Add(childRelationship);
+                    }
+
+                    // Create event details inside Parent
+                    Event _parentEvent = new Event();
+                    _parentEvent.Trade = childQuote.applicationType;
+                    _parentEvent.DateTime = DateTime.UtcNow;
+                    _parentEvent.Name = (i+1) + " Child (" + childQuote.applicationType + ") quote spawned";
+                    _parentEvent.Details = (i + 1) + " Child (" + childQuote.applicationType + ") quote spawned from Parent Id (" + aggregateQuote._id + ")";
+                    aggregateQuote.events.Add(_parentEvent);
+
+                    // Create event details inside Child
+                    Event _childEvent = new Event();
+
+                    // Set child event trade
+                    _childEvent.Trade = childQuote.applicationType;
+
+                    _childEvent.DateTime = DateTime.UtcNow;
+                    _childEvent.Name = (i + 1) + " New (" + childQuote.applicationType + ") quote Attached";
+                    _childEvent.Details = (i + 1) + " New (" + childQuote.applicationType + ") quote attached to Parent Id (" + aggregateQuote._id + ")";
+                    childQuote.events.Add(_childEvent);
+
+                    // Add Parent relationship to Child
+                    childQuote.relationships.Add(parentRelationship);
+
+                    // Add Child to queue
+                    newQuoteListQueue.Add(childQuote);
+                }
+
+                _quoteCollection = _mongoDBClient.GetDatabase(_mongoDBName).GetCollection<Quote>(_mongoDBCollectionName);
+
+                foreach(Quote quote in newQuoteListQueue)
+                {
+                    _quoteCollection.InsertOne(quote);
+                }
+
+                resultMsg = "Added Aggregate QuoteId: " + aggregateQuote._id;
             }
             catch (Exception ex)
             {
@@ -169,9 +241,9 @@ namespace Facilitate.Api.Controllers
                     {
                         Attachment currentAttachment = sortedQuotes[i].attachments[j];
 
-                        var currentDateTime = currentAttachment.Date;
+                        var currentDateTime = currentAttachment.DateTime;
 
-                        currentAttachment.Date = currentAttachment.Date.ToLocalTime();
+                        currentAttachment.DateTime = currentAttachment.DateTime.ToLocalTime();
 
                         unSortedFiles.Add(currentAttachment);
                     }
@@ -179,7 +251,7 @@ namespace Facilitate.Api.Controllers
                     for (var j = 0; j < sortedQuotes[i].notes.Count; j++)
                     {
                         Note currentNote = sortedQuotes[i].notes[j];
-                        currentNote.Date = currentNote.Date.ToLocalTime();
+                        currentNote.DateTime = currentNote.DateTime.ToLocalTime();
 
                         unSortedNotes.Add(currentNote);
                     }
@@ -217,12 +289,12 @@ namespace Facilitate.Api.Controllers
 
         private List<Attachment> SortFilesByDateDesc(List<Attachment> originalList)
         {
-            return originalList.OrderByDescending(x => x.Date).ToList();
+            return originalList.OrderByDescending(x => x.DateTime).ToList();
         }
 
         private List<Note> SortNotesByDateDesc(List<Note> originalList)
         {
-            return originalList.OrderByDescending(x => x.Date).ToList();
+            return originalList.OrderByDescending(x => x.DateTime).ToList();
         }
     }
 }
