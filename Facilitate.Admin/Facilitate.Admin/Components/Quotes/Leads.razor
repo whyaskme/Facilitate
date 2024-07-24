@@ -208,7 +208,6 @@ else
     <div class="quote-stats-header">
         <span class="quote-stats-count">@updateStatus Leads</span>
         <span class="quote-stats-value">@leaderboardStats.LeadValue.ToString("C0")</span>
-        <span class="quote-stats-sqft">@leaderboardStats.LeadSqFt.ToString("N0")sqft</span>
     </div>
     <div class="quote-stats-hints">
         Select row to view details. Click column headers to sort. Type and hit enter in any empty cell to search that column. If you have grouped columns below, drag and drop the column back into the grid header to restore.
@@ -234,7 +233,7 @@ else
             PageSizeSelectorAllRowsItemVisible="false"
             KeyboardNavigationEnabled="true">
         <Columns>
-            <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="rowIndex" />
+            <DxGridDataColumn Visible="true" Width="50" Caption="Row" FieldName="rowIndex" />
             <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
 @*             <DxGridDataColumn Width="85" Caption="Status" FieldName="status" /> *@
             <DxGridDataColumn Width="115" Caption="Trade" FieldName="applicationType" />
@@ -246,7 +245,7 @@ else
             <DxGridDataColumn Width="125" Caption="City" FieldName="city" />
             <DxGridDataColumn Width="50" Caption="State" FieldName="state" />
             <DxGridDataColumn Width="65" Caption="Zip" FieldName="zip" />
-            <DxGridDataColumn Width="65" Caption="SqFt" FieldName="totalSquareFeet" />
+            <DxGridDataColumn Visible="false" Width="65" Caption="SqFt" FieldName="totalSquareFeet" />
             <DxGridDataColumn Width="75" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
             <DxGridCommandColumn Width="100px" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
         </Columns>

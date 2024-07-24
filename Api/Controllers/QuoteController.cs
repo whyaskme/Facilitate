@@ -59,14 +59,10 @@ namespace Facilitate.Api.Controllers
                 foreach (var header in requestHeaders)
                 {
                     if (header.Key == "X-Forwarded-For")
-                    {
                         headerForwardedFor = header.Value;
-                    }
 
                     if (header.Key == "Referer")
-                    {
                         headerReferer = header.Value;
-                    }
                 }
 
                 Quote aggregateQuote = new Quote();
@@ -80,13 +76,8 @@ namespace Facilitate.Api.Controllers
 
                 if (roofleSubmission.products[0].priceInfo.total != null)
                 {
-                    //aggregateQuote.totalQuote = roofleSubmission.products[0].priceInfo.total;
                     totalQuoteValue = roofleSubmission.products[0].priceInfo.total;
                 }
-                //else
-                //{
-                //    aggregateQuote.totalQuote = 0;
-                //}
 
                 aggregateQuote.totalQuote = 0;
 
@@ -123,90 +114,30 @@ namespace Facilitate.Api.Controllers
                 aggregateQuote.totalInitialSquareFeet = roofleSubmission.totalInitialSquareFeet;
                 aggregateQuote.sessionId = roofleSubmission.sessionId;
 
-                var author = new ApplicationUser();
-                author.Id = Guid.NewGuid().ToString();
-                author.FirstName = "Web";
-                author.LastName = "Api";
-
-                Event _aggregateEvent = new Event();
-                _aggregateEvent.Trade = aggregateQuote.applicationType;
-                _aggregateEvent.DateTime = DateTime.UtcNow;
-                _aggregateEvent.Name = "Aggregate Quote Created";
-                _aggregateEvent.Details = "Aggregate Quote created & referred by: " + headerReferer;
-
-                _aggregateEvent.Author = author;
-
-                aggregateQuote.events.Add(_aggregateEvent);
-
-                // Add Parent to queue
-                newQuoteListQueue.Add(aggregateQuote);
-
-                // Create Parent relationship
-                var parentRelationship = new Relationship();
-                parentRelationship.Author = author.FirstName + " " + author.LastName;
-                parentRelationship._id = aggregateQuote._id;
-                parentRelationship.ParentId = aggregateQuote._id;
-                parentRelationship.Type = "Parent";
-                parentRelationship.Name = aggregateQuote.applicationType;
-
                 for (var i = 0; i < childQuotesToCreate; i++)
                 {
                     Quote childQuote = new Quote(aggregateQuote);
                     childQuote._id = Guid.NewGuid().ToString();
 
-                    childQuote.statusSubcategory = "spec-bidder";
+                    childQuote.statusSubcategory = "bidder";
+                    childQuote.totalQuote = 0;
 
-                    childQuote.totalQuote = totalQuoteValue;
+                    if (i == 0)
+                    {
+                        childQuote.statusSubcategory = "spec-bidder";
+                        childQuote.totalQuote = totalQuoteValue;
+                    }
 
                     // Will need to figure out how to set dynamically
                     childQuote.applicationType = utils.TitleCaseString("Roofing");
-
-                    // Create Child relationship
-                    var childRelationship = new Relationship();
-                    childRelationship.Author = author.FirstName + " " + author.LastName;
-                    childRelationship._id = childQuote._id;
-                    childRelationship.ParentId = aggregateQuote._id;
-                    childRelationship.Type = "Child";
-                    childRelationship.Name = childQuote.applicationType;
-
-                    // Add Child relationship to Parent
-                    if(childRelationship.Type != "Parent")
-                    {
-                        aggregateQuote.relationships.Add(childRelationship);
-                    }
-
-                    // Create event details inside Parent
-                    Event _parentEvent = new Event();
-                    _parentEvent.Trade = childQuote.applicationType;
-                    _parentEvent.DateTime = DateTime.UtcNow;
-                    _parentEvent.Name = (i+1) + " Child (" + childQuote.applicationType + ") quote spawned";
-                    _parentEvent.Details = (i + 1) + " Child (" + childQuote.applicationType + ") quote spawned from Parent Id (" + aggregateQuote._id + ")";
-                    aggregateQuote.events.Add(_parentEvent);
-
-                    // Create event details inside Child
-                    Event _childEvent = new Event();
-
-                    // Set child event trade
-                    _childEvent.Trade = childQuote.applicationType;
-
-                    _childEvent.DateTime = DateTime.UtcNow;
-                    _childEvent.Name = (i + 1) + " New (" + childQuote.applicationType + ") quote Attached";
-                    _childEvent.Details = (i + 1) + " New (" + childQuote.applicationType + ") quote attached to Parent Id (" + aggregateQuote._id + ")";
-                    childQuote.events.Add(_childEvent);
-
-                    // Add Parent relationship to Child
-                    childQuote.relationships.Add(parentRelationship);
 
                     // Add Child to queue
                     newQuoteListQueue.Add(childQuote);
                 }
 
-                _quoteCollection = _mongoDBClient.GetDatabase(_mongoDBName).GetCollection<Quote>(_mongoDBCollectionName);
+                CreateRelationships(aggregateQuote, newQuoteListQueue);
 
-                foreach(Quote quote in newQuoteListQueue)
-                {
-                    _quoteCollection.InsertOne(quote);
-                }
+                SaveQuotes(aggregateQuote, newQuoteListQueue);
 
                 resultMsg = "Added Aggregate QuoteId: " + aggregateQuote._id;
             }
@@ -220,6 +151,75 @@ namespace Facilitate.Api.Controllers
 
             }
             return Ok(resultMsg);
+        }
+
+        private List<Quote> CreateRelationships(Quote aggregateQuote, List<Quote> newQuoteListQueue)
+        {
+            var author = new ApplicationUser();
+            author.Id = Guid.NewGuid().ToString();
+            author.FirstName = "Web";
+            author.LastName = "Api";
+
+            foreach (Quote newQuote in newQuoteListQueue)
+            {
+                if(newQuote.applicationType != "Aggregate")
+                {
+                    // Create Parent relationship
+                    var parentRelationship = new Relationship();
+                    parentRelationship.Author = author.FirstName + " " + author.LastName;
+                    parentRelationship._id = aggregateQuote._id;
+                    parentRelationship.ParentId = aggregateQuote._id;
+                    parentRelationship.Type = "Parent";
+                    parentRelationship.Name = aggregateQuote.applicationType;
+
+                    newQuote.relationships.Add(parentRelationship);
+                }
+                else
+                {
+                    // Create Child relationship
+                    var childRelationship = new Relationship();
+                    childRelationship.Author = author.FirstName + " " + author.LastName;
+                    childRelationship._id = newQuote._id;
+                    childRelationship.ParentId = aggregateQuote._id;
+                    childRelationship.Type = "Child";
+                    childRelationship.Name = newQuote.applicationType;
+
+                    //newQuote.relationships.Add(childRelationship);
+                }
+            }
+
+            // Add the parent Aggregate
+            //aggregateQuote.relationships.Clear();
+            //foreach (Quote newQuote in newQuoteListQueue)
+            //{
+            //    // Create Child relationship
+            //    var childRelationship = new Relationship();
+            //    childRelationship.Author = author.FirstName + " " + author.LastName;
+            //    childRelationship._id = newQuote._id;
+            //    childRelationship.ParentId = aggregateQuote._id;
+            //    childRelationship.Type = "Child";
+            //    childRelationship.Name = newQuote.applicationType;
+
+            //    //aggregateQuote.relationships.Add(childRelationship);
+            //}
+
+            // Add the aggregate to the queue
+            newQuoteListQueue.Add(aggregateQuote);
+
+            newQuoteListQueue = newQuoteListQueue.OrderBy(x => x.applicationType).ToList();
+
+            return newQuoteListQueue;
+        }
+
+        private void SaveQuotes(Quote aggregateQuote, List<Quote> newQuoteListQueue)
+        {
+            //_quoteCollection.InsertOne(aggregateQuote);
+
+            foreach (Quote newQuote in newQuoteListQueue)
+            {
+                // Add children
+                _quoteCollection.InsertOne(newQuote);
+            }
         }
 
         // GET: api/<QuoteController>

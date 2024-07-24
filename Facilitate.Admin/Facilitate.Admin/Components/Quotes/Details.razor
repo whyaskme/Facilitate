@@ -290,7 +290,7 @@ else
                                 <DxGridDataColumn Width="auto" Caption="Last Event" FieldName="lastEventDetails" />
                                 <DxGridDataColumn Width="150" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
                                 <DxGridDataColumn Width="100" Caption="Amount" FieldName="totalQuote" DisplayFormat="C0" />
-                                <DxGridDataColumn Width="100" Caption="Qualified?" FieldName="isQualified" />
+                                <DxGridDataColumn Visible="false" Width="100" Caption="Qualified?" FieldName="isQualified" />
                                 @{
                                     if (CurrentlySelectedQuote.applicationType == "Aggregate")
                                     {
@@ -517,7 +517,7 @@ else
                                     KeyboardNavigationEnabled="true"
                                     TextWrapEnabled="false">
                                     <Columns>
-                                        <DxGridDataColumn Visible="true" Width="50" Caption="Row" FieldName="" />
+                                        <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="" />
                                         <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
                                         <DxGridDataColumn Width="175" Caption="DateTime" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                         <DxGridDataColumn Width="100" Caption="Trade" FieldName="Trade" />
@@ -552,7 +552,7 @@ else
                                 KeyboardNavigationEnabled="true"
                                 TextWrapEnabled="false">
                             <Columns>
-                                <DxGridDataColumn Visible="true" Width="50" Caption="Row" FieldName="" />
+                                <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="" />
                                 <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
                                 <DxGridDataColumn Width="175" Caption="DateTime" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                 <DxGridDataColumn Width="150" Caption="Trade" FieldName="Trade" />
@@ -580,7 +580,7 @@ else
                             KeyboardNavigationEnabled="true"
                             TextWrapEnabled="false">
                             <Columns>
-                                <DxGridDataColumn Visible="true" Width="50" Caption="Row" FieldName="" />
+                                <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="" />
                                 <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
                                 <DxGridDataColumn Width="175" Caption="DateTime" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                 <DxGridDataColumn Width="150" Caption="Trade" FieldName="Trade" />

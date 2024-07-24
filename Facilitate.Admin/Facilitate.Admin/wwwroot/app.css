@@ -633,7 +633,7 @@ h1.text-danger {
 }
 
 .quote-stats-value {
-    border-right: solid 1px #c0c0c0 !important;
+    border-right: solid 0px #c0c0c0 !important;
     padding-right: 10px !important;
     margin-right: 8px !important;
     font-style: italic !important;
