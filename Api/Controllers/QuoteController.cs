@@ -51,7 +51,9 @@ namespace Facilitate.Api.Controllers
                 string headerReferer = "n/a";
 
                 int childQuotesToCreate = 1;
-                int biddingExpiresInDays = 5;
+                int biddingExpiresInDays = 7;
+
+                double totalQuoteValue = 0;
 
                 var requestHeaders = HttpContext.Request.Headers;
                 foreach (var header in requestHeaders)
@@ -78,12 +80,15 @@ namespace Facilitate.Api.Controllers
 
                 if (roofleSubmission.products[0].priceInfo.total != null)
                 {
-                    aggregateQuote.totalQuote = roofleSubmission.products[0].priceInfo.total;
+                    //aggregateQuote.totalQuote = roofleSubmission.products[0].priceInfo.total;
+                    totalQuoteValue = roofleSubmission.products[0].priceInfo.total;
                 }
-                else
-                {
-                    aggregateQuote.totalQuote = 0;
-                }
+                //else
+                //{
+                //    aggregateQuote.totalQuote = 0;
+                //}
+
+                aggregateQuote.totalQuote = 0;
 
                 aggregateQuote.address = roofleSubmission.address;
                 aggregateQuote.fullAddress = roofleSubmission.fullAddress;
@@ -150,6 +155,8 @@ namespace Facilitate.Api.Controllers
                     childQuote._id = Guid.NewGuid().ToString();
 
                     childQuote.statusSubcategory = "spec-bidder";
+
+                    childQuote.totalQuote = totalQuoteValue;
 
                     // Will need to figure out how to set dynamically
                     childQuote.applicationType = utils.TitleCaseString("Roofing");
