@@ -2590,16 +2590,23 @@ else
                     RelatedQuoteSummaryList.Add(currentParentQuoteSummary);
                 }
 
+                // Sort collections
+                LocalizeRelatedQuotes(RelatedQuoteSummaryList);
+                RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderBy(x => x.lastEventTimeStamp).ToList();
+                // RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.applicationType).ToList();
+
+                LocalizeAttachments(AttachmentList);
+                AttachmentList = AttachmentList.OrderByDescending(x => x.DateTime).ToList();
+
+                LocalizeEvents(EventList);
+                EventList = EventList.OrderByDescending(x => x.DateTime).ToList();
+
+                LocalizeNotes(NoteList);
+                NoteList = NoteList.OrderByDescending(x => x.DateTime).ToList();
+
+
                 CurrentlySelectedQuote.timestamp = CurrentlySelectedQuote.timestamp.ToLocalTime();
                 CurrentlySelectedQuote.lastUpdated = CurrentlySelectedQuote.lastUpdated.ToLocalTime();
-
-                // Sort collections
-                RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderBy(x => x.applicationType).ToList();
-                // RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.lastEventTimeStamp.ToLocalTime()).ToList();
-
-                AttachmentList = AttachmentList.OrderByDescending(x => x.DateTime.ToLocalTime()).ToList();
-                EventList = EventList.OrderByDescending(x => x.DateTime.ToLocalTime()).ToList();
-                NoteList = NoteList.OrderByDescending(x => x.DateTime.ToLocalTime()).ToList();
 
                 SetUIStyles(currentQuoteContainerType);
 
@@ -2611,6 +2618,46 @@ else
         }), null, 1000, 1000);
 
         LoadingPanelVisible = false;
+    }
+
+    public void LocalizeRelatedQuotes(List<QuoteSummary> RelatedQuoteSummaryList)
+    {
+        foreach(var _summary in RelatedQuoteSummaryList)
+        {
+            var quoteId = _summary._id;
+            Quote currentQuote = (Quote)WebServices.GetQuote(quoteId)[0];
+
+            var quoteEvents = currentQuote.events.OrderByDescending(x => x.DateTime).ToList();
+
+            var lastEvent = quoteEvents.FirstOrDefault();
+
+            _summary.lastEventTimeStamp = lastEvent.DateTime.ToLocalTime();
+            _summary.lastEventDetails = lastEvent.Details;
+        }
+    }
+
+    public void LocalizeAttachments(List<Attachment> AttachmentList)
+    {
+        foreach(var _attachment in AttachmentList)
+        {
+            _attachment.DateTime = _attachment.DateTime.ToLocalTime();
+        }
+    }
+
+    public void LocalizeEvents(List<Event> EventList)
+    {
+        foreach(var _event in EventList)
+        {
+            _event.DateTime = _event.DateTime.ToLocalTime();
+        }
+    }
+
+    public void LocalizeNotes(List<Note> NoteList)
+    {
+        foreach (var _note in NoteList)
+        {
+            _note.DateTime = _note.DateTime.ToLocalTime();
+        }
     }
 
     private async Task<bool> IsUserEnabled()
