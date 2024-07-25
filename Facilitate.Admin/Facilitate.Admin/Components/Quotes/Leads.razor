@@ -391,6 +391,14 @@ else
                         }
                     }
 
+                    foreach(var trade in TradesList)
+                    {
+                        if(trade.Value == "Roofing")
+                        {
+                            SelectedTradeType = "Roofing";
+                        }
+                    }
+
                     ProjectManagers = SortByLastNameUsingLinq(adminUsers);
                     TimerRefresh();
 
@@ -590,9 +598,9 @@ else
         var selectedRow = (QuoteHeader) QuoteGrid.GetDataItem(args.VisibleIndex);
         var quoteId = selectedRow._id;
 
-        var referrerUrl = "/leads/";
+        var Referrer = "/leads/";
 
-        NavigationManager.NavigateTo("/quotes/details/" + quoteId + referrerUrl);
+        NavigationManager.NavigateTo("/quotes/details/" + quoteId + Referrer);
     }
 
     public async Task<string> GetIpAddress()

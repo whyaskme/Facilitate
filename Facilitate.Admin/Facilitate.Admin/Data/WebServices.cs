@@ -228,31 +228,39 @@ namespace Facilitate.Admin.Data
                     var childId = relationship._id;
                     var filter = Builders<Quote>.Filter.Eq(f => f._id, childId);
 
-                    List<Quote> quotes = _mongoDBCollection.Find(filter).ToList();
+                    Quote _quote = _mongoDBCollection.Find(filter).ToList()[0];
 
-                    for (var i = 0; i < quotes.Count; i++)
+                    var rowIndex = 0;
+
+                    foreach(Relationship _relationship in _quote.relationships)
                     {
                         QuoteSummary _summary = new QuoteSummary();
 
-                        _summary.relationship = quote.applicationType;
-                        if (quote.applicationType == "Aggregate")
-                            _summary.relationship = "Child";
-                        else
-                            _summary.relationship = "Parent";
+                        rowIndex++;
 
-                        _summary._id = quotes[i]._id;
-                        _summary.applicationType = quotes[i].applicationType;
-                        _summary.status = quotes[i].status;
+                        _summary.rowIndex = rowIndex;
 
-                        _summary.events = quotes[i].events;
+                        var quoteId = _relationship._id;
+                        var filter2 = Builders<Quote>.Filter.Eq(f => f._id, quoteId);
+                        var relatedQuote = _mongoDBCollection.Find(filter2).ToList()[0];
 
-                        _summary.lastEventDetails = quotes[i].events[0].Details;
+                        _summary.relationship = _relationship.Type;
+                        _summary._id = relatedQuote._id;
+                        _summary.applicationType = relatedQuote.applicationType;
+                        _summary.status = relatedQuote.status;
 
-                        _summary.totalQuote = quotes[i].totalQuote;
-                        _summary.projectManager = quotes[i].projectManager;
+                        _summary.totalQuote = relatedQuote.totalQuote;
+                        _summary.projectManager = relatedQuote.projectManager;
 
-                        _summary.timestamp = quotes[i].timestamp.ToLocalTime();
-                        _summary.lastEventTimeStamp = quotes[i].lastUpdated.ToLocalTime();
+                        if (relatedQuote.events != null && relatedQuote.events.Count > 0)
+                        {
+                            Event lastEvent = relatedQuote.events.LastOrDefault();
+
+                            _summary.events = relatedQuote.events;
+
+                            _summary.lastEventDetails = lastEvent.Details;
+                            _summary.lastEventTimeStamp = lastEvent.DateTime.ToLocalTime();
+                        }
 
                         QuoteHeaders.Add(_summary);
                     }

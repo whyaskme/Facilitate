@@ -1162,11 +1162,9 @@ else
 
     List<ListItem> TradesList = new List<ListItem>();
 
-    public void RedirectToQuoteDetails(string quoteId)
+    public void RedirectBackToPreviousPageByStatus(string quoteId)
     {
-        var tmpVal = SelectedQuoteStatus;
-
-        var tmpUrl = "/quotes/details/" + quoteId + "/opportunities/";
+        var tmpUrl = "/quotes/details/" + quoteId + Referrer; //"/opportunities/";
 
         NavigationManager.NavigateTo(tmpUrl);
     }
@@ -2194,7 +2192,7 @@ else
             if(!isAggregate)
             {
                 // Redirect to Master details page
-                RedirectToQuoteDetails(parentQuote._id);
+                RedirectBackToPreviousPageByStatus(parentQuote._id);
             }
             else
             {
@@ -2466,102 +2464,102 @@ else
                 NoteList.AddRange(CurrentlySelectedQuote.notes);
 
                 // Get child quote summaries
-                tmpRelatedQuoteSummaryList = webServices.GetRelatedQuoteSummaries(CurrentlySelectedQuote);
+                RelatedQuoteSummaryList = webServices.GetRelatedQuoteSummaries(CurrentlySelectedQuote);
 
                 currentQuoteIndex = 0;//tmpRelatedQuoteSummaryList.Count()+1;
 
-                foreach (QuoteSummary RelatedQuoteSummary in tmpRelatedQuoteSummaryList)
-                {
-                    isAggregate = true;
+                // foreach (QuoteSummary RelatedQuoteSummary in tmpRelatedQuoteSummaryList)
+                // {
+                //     isAggregate = true;
 
-                    if(CurrentlySelectedQuote._id != RelatedQuoteSummary._id)
-                    {
-                        currentQuoteIndex++;
+                //     if(CurrentlySelectedQuote._id != RelatedQuoteSummary._id)
+                //     {
+                //         currentQuoteIndex++;
 
-                        RelatedQuoteSummary.rowIndex = currentQuoteIndex;
+                //         RelatedQuoteSummary.rowIndex = currentQuoteIndex;
 
-                        if (RelatedQuoteSummary.relationship == "Parent")
-                        {
-                            if(!hasParent)
-                            {
-                                currentParentQuoteSummary = RelatedQuoteSummary;
-                                hasParent = true;
-                                parentCount = 1;
-                            }
+                //         if (RelatedQuoteSummary.relationship == "Parent")
+                //         {
+                //             if(!hasParent)
+                //             {
+                //                 currentParentQuoteSummary = RelatedQuoteSummary;
+                //                 hasParent = true;
+                //                 parentCount = 1;
+                //             }
 
-                            if(RelatedQuoteSummary.applicationType == "Aggregate")
-                            {
-                                RelatedQuoteSummary.relationship = "Parent";
-                            }
-                            else
-                            {
-                                // If trade != aggregate, then it is a sibling
-                                RelatedQuoteSummary.relationship = "Sibling";
-                            }
-                            currentQuoteContainerType = "Child";
-                        }
-                        else
-                        {
-                            RelatedQuoteSummary.relationship = "Child";
+                //             if(RelatedQuoteSummary.applicationType == "Aggregate")
+                //             {
+                //                 RelatedQuoteSummary.relationship = "Parent";
+                //             }
+                //             else
+                //             {
+                //                 // If trade != aggregate, then it is a sibling
+                //                 RelatedQuoteSummary.relationship = "Sibling";
+                //             }
+                //             currentQuoteContainerType = "Child";
+                //         }
+                //         else
+                //         {
+                //             RelatedQuoteSummary.relationship = "Child";
 
-                            if (CurrentlySelectedQuote.applicationType == "Aggregate")
-                            {
-                                currentQuoteContainerType = "Parent";
-                            }
-                            else
-                            {
-                                currentQuoteContainerType = "Child";
-                            }
-                        }
+                //             if (CurrentlySelectedQuote.applicationType == "Aggregate")
+                //             {
+                //                 currentQuoteContainerType = "Parent";
+                //             }
+                //             else
+                //             {
+                //                 currentQuoteContainerType = "Child";
+                //             }
+                //         }
 
-                        // Add to summary list   
-                        if(RelatedQuoteSummary.relationship != "Parent")
-                        {
-                            RelatedQuoteSummaryList.Add(RelatedQuoteSummary);
-                        }
+                //         // Add to summary list   
+                //         if(RelatedQuoteSummary.relationship != "Parent")
+                //         {
+                //             RelatedQuoteSummaryList.Add(RelatedQuoteSummary);
+                //         }
 
-                        if (RelatedQuoteSummary.status != "Archive")
-                        {
-                            aggregateTotal += RelatedQuoteSummary.totalQuote;
-                        }
-                    }
+                //         if (RelatedQuoteSummary.status != "Archive")
+                //         {
+                //             aggregateTotal += RelatedQuoteSummary.totalQuote;
+                //         }
+                //     }
 
-                    var childQuote = webServices.GetQuote(RelatedQuoteSummary._id)[0];
-                    if(childQuote != null)
-                    {
-                        if (childQuote.status != "Archive")
-                        {
-                            // Process attachments
-                            foreach (Attachment attachment in childQuote.attachments)
-                            {
-                                attachment.Trade = childQuote.applicationType;
-                                if (attachment.MediaName == "")
-                                    attachment.MediaName = "Filename?";
-                            }
-                            AttachmentList.AddRange(childQuote.attachments);
+                //     var childQuote = webServices.GetQuote(RelatedQuoteSummary._id)[0];
+                //     if(childQuote != null)
+                //     {
+                //         if (childQuote.status != "Archive")
+                //         {
+                //             // Process attachments
+                //             foreach (Attachment attachment in childQuote.attachments)
+                //             {
+                //                 attachment.Trade = childQuote.applicationType;
+                //                 if (attachment.MediaName == "")
+                //                     attachment.MediaName = "Filename?";
+                //             }
+                //             AttachmentList.AddRange(childQuote.attachments);
 
-                            // Process events
-                            foreach (Event _event in childQuote.events)
-                            {
-                                _event.Trade = childQuote.applicationType;
+                //             // Process events
+                //             foreach (Event _event in childQuote.events)
+                //             {
+                //                 _event.Trade = childQuote.applicationType;
 
-                                if(_event.DateTime > lastQuoteEventTimestamp)
-                                {
-                                    lastQuoteEventTimestamp = _event.DateTime.ToLocalTime();
-                                    lastQuoteEventDetails = _event.Details;
-                                }
-                            }
-                            EventList.AddRange(childQuote.events);
+                //                 if(_event.DateTime > lastQuoteEventTimestamp)
+                //                 {
+                //                     lastQuoteEventTimestamp = _event.DateTime.ToLocalTime();
+                //                     lastQuoteEventDetails = _event.Details;
+                //                 }
+                //             }
+                //             EventList.AddRange(childQuote.events);
 
-                            // Process notes
-                            foreach (Note note in childQuote.notes)
-                            {
-                                note.Trade = childQuote.applicationType;
-                            }
-                            NoteList.AddRange(childQuote.notes);
-                        }
-                    }
-                }
+                //             // Process notes
+                //             foreach (Note note in childQuote.notes)
+                //             {
+                //                 note.Trade = childQuote.applicationType;
+                //             }
+                //             NoteList.AddRange(childQuote.notes);
+                //         }
+                //     }
+                // }
 
                 if (CurrentlySelectedQuote.applicationType == "Aggregate")
                 {
@@ -2585,7 +2583,7 @@ else
                 }
 
                 // Add Parent to summary list   
-                if(currentParentQuoteSummary!= null)
+                if(currentParentQuoteSummary != null)
                 {
                     RelatedQuoteSummaryList.Add(currentParentQuoteSummary);
                 }
@@ -2603,7 +2601,6 @@ else
 
                 LocalizeNotes(NoteList);
                 NoteList = NoteList.OrderByDescending(x => x.DateTime).ToList();
-
 
                 CurrentlySelectedQuote.timestamp = CurrentlySelectedQuote.timestamp.ToLocalTime();
                 CurrentlySelectedQuote.lastUpdated = CurrentlySelectedQuote.lastUpdated.ToLocalTime();

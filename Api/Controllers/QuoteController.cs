@@ -43,11 +43,18 @@ namespace Facilitate.Api.Controllers
 
         public List<Quote> newQuoteListQueue = new List<Quote>();
 
+        public ApplicationUser author = new ApplicationUser();
+
         [ProducesResponseType<String>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost]
         public IActionResult Post([FromBody] QuoteRoofleSubmission roofleSubmission)
         {
+            author = new ApplicationUser();
+            author.Id = Guid.NewGuid().ToString();
+            author.FirstName = "Web";
+            author.LastName = "Api";
+
             try
             {
                 string headerForwardedFor = "n/a";
@@ -117,6 +124,8 @@ namespace Facilitate.Api.Controllers
                 aggregateQuote.totalInitialSquareFeet = roofleSubmission.totalInitialSquareFeet;
                 aggregateQuote.sessionId = roofleSubmission.sessionId;
 
+                CreateParentSpawnedEvent(aggregateQuote);
+
                 for (var i = 0; i < childBidderQuotesToCreate; i++)
                 {
                     Quote childQuote = new Quote();
@@ -181,10 +190,10 @@ namespace Facilitate.Api.Controllers
                     childQuote.sessionId = roofleSubmission.sessionId;
                     // End copy data
 
-                    var author = new ApplicationUser();
-                    author.Id = Guid.NewGuid().ToString();
-                    author.FirstName = "Web";
-                    author.LastName = "Api";
+                    //var author = new ApplicationUser();
+                    //author.Id = Guid.NewGuid().ToString();
+                    //author.FirstName = "Web";
+                    //author.LastName = "Api";
 
                     // Create Child relationship to Aggregate
                     var childRelationship = new Relationship();
@@ -205,13 +214,20 @@ namespace Facilitate.Api.Controllers
                     parentRelationship.Name = aggregateQuote.applicationType;
 
                     // Add Parent to Child
+                    CreateChildSpawnedEvent(aggregateQuote, childQuote);
+
                     childQuote.relationships.Add(parentRelationship);
+
+                    CreateChildLinkedToParentEvent(aggregateQuote, childQuote);
 
                     // Add Child to Parent
                     aggregateQuote.relationships.Add(childRelationship);
 
                     // Insert Child
                     childQuote.relationships = childQuote.relationships.Distinct().ToList();
+
+                    //CreateChildSpawnedEvent(aggregateQuote, childQuote);
+
                     _quoteCollection.InsertOne(childQuote);
 
                     // Add to queue for sibling relationship processing
@@ -223,8 +239,6 @@ namespace Facilitate.Api.Controllers
                 _quoteCollection.InsertOne(aggregateQuote);
 
                 CreateSiblingRelationships(aggregateQuote, newQuoteListQueue);
-
-                //SaveQuotes(aggregateQuote, newQuoteListQueue);
 
                 resultMsg = "Added Aggregate QuoteId: " + aggregateQuote._id;
             }
@@ -238,6 +252,55 @@ namespace Facilitate.Api.Controllers
 
             }
             return Ok(resultMsg);
+        }
+
+        private void CreateParentSpawnedEvent(Quote aggregateQuote)
+        {
+            Event _event = new Event();
+            _event.Author = author;
+            _event.Trade = aggregateQuote.applicationType;
+            _event.Name = aggregateQuote.applicationType + " quote Created";
+            _event.Details = _event.Name;
+
+            // Add event to child quote
+            aggregateQuote.events.Add(_event);
+        }
+
+        private void CreateChildSpawnedEvent(Quote aggregateQuote, Quote childQuote)
+        {
+            // Child event
+            Event childEvent = new Event();
+            childEvent.Author = author;
+            childEvent.Trade = childQuote.applicationType;
+            childEvent.Name = "Child (" + childQuote.applicationType + ") quote Spawned";
+            childEvent.Details = childEvent.Name + " for parent Aggregate Id (" + aggregateQuote._id + ")";
+
+            // Add event to child quote
+            childQuote.events.Add(childEvent);
+        }
+
+        private void CreateChildLinkedToParentEvent(Quote aggregateQuote, Quote childQuote)
+        {
+            Event childEvent = new Event();
+            childEvent.Author = author;
+            childEvent.Trade = childQuote.applicationType;
+            childEvent.Name = "Child (" + childQuote.applicationType + ") quote Linked";
+            childEvent.Details = childEvent.Name + " to parent Aggregate Id (" + aggregateQuote._id + ")";
+
+            // Add event to child quote
+            childQuote.events.Add(childEvent);
+        }
+
+        private void CreateSiblingLinkedEvents(Quote aggregateQuote, Quote childQuote)
+        {
+            Event childEvent = new Event();
+            childEvent.Author = author;
+            childEvent.Trade = childQuote.applicationType;
+            childEvent.Name = "Child (" + childQuote.applicationType + ") quote Linked";
+            childEvent.Details = childEvent.Name + " to parent Aggregate Id (" + aggregateQuote._id + ")";
+
+            // Add event to child quote
+            childQuote.events.Add(childEvent);
         }
 
         private void CreateSiblingRelationships(Quote aggregateQuote, List<Quote> newQuoteListQueue)
@@ -268,13 +331,13 @@ namespace Facilitate.Api.Controllers
                         siblingRelationship.Name = newQuote.applicationType;
 
                         quoteToUpdate.relationships.Add(siblingRelationship);
+
+                        CreateSiblingLinkedEvents(aggregateQuote, newQuote);
                     }
 
                     var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
 
                     var result = _quoteCollection.ReplaceOne(filter, quoteToUpdate, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
-
-                    var tmpVal = "";
                 }
                 catch (Exception ex)
                 {
@@ -284,17 +347,6 @@ namespace Facilitate.Api.Controllers
                 {
 
                 }
-            }
-        }
-
-        private void SaveQuotes(Quote aggregateQuote, List<Quote> newQuoteListQueue)
-        {
-            //_quoteCollection.InsertOne(aggregateQuote);
-
-            foreach (Quote newQuote in newQuoteListQueue)
-            {
-                // Add children
-                _quoteCollection.InsertOne(newQuote);
             }
         }
 
