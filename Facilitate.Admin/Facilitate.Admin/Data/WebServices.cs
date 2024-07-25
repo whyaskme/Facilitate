@@ -225,45 +225,36 @@ namespace Facilitate.Admin.Data
             {
                 foreach(var relationship in quote.relationships)
                 {
-                    var childId = relationship._id;
-                    var filter = Builders<Quote>.Filter.Eq(f => f._id, childId);
+                    var filter = Builders<Quote>.Filter.Eq(f => f._id, relationship._id);
 
                     Quote _quote = _mongoDBCollection.Find(filter).ToList()[0];
 
                     var rowIndex = 0;
 
-                    foreach(Relationship _relationship in _quote.relationships)
-                    {
-                        QuoteSummary _summary = new QuoteSummary();
+                    QuoteSummary _summary = new QuoteSummary();
 
-                        rowIndex++;
+                    rowIndex++;
 
-                        _summary.rowIndex = rowIndex;
+                    _summary.rowIndex = rowIndex;
 
-                        var quoteId = _relationship._id;
-                        var filter2 = Builders<Quote>.Filter.Eq(f => f._id, quoteId);
-                        var relatedQuote = _mongoDBCollection.Find(filter2).ToList()[0];
+                    var quoteId = relationship._id;
+                    var filter2 = Builders<Quote>.Filter.Eq(f => f._id, quoteId);
+                    var relatedQuote = _mongoDBCollection.Find(filter2).ToList()[0];
 
-                        _summary.relationship = _relationship.Type;
-                        _summary._id = relatedQuote._id;
-                        _summary.applicationType = relatedQuote.applicationType;
-                        _summary.status = relatedQuote.status;
+                    _summary.relationship = relationship.Type;
+                    _summary._id = relatedQuote._id;
+                    _summary.applicationType = relatedQuote.applicationType;
+                    _summary.status = relatedQuote.status;
 
-                        _summary.totalQuote = relatedQuote.totalQuote;
-                        _summary.projectManager = relatedQuote.projectManager;
+                    _summary.totalQuote = relatedQuote.totalQuote;
+                    _summary.projectManager = relatedQuote.projectManager;
 
-                        if (relatedQuote.events != null && relatedQuote.events.Count > 0)
-                        {
-                            Event lastEvent = relatedQuote.events.LastOrDefault();
+                    Event lastEvent = relatedQuote.events.LastOrDefault();
+                    _summary.events = relatedQuote.events;
+                    _summary.lastEventDetails = lastEvent.Details;
+                    _summary.lastEventTimeStamp = lastEvent.DateTime.ToLocalTime();
 
-                            _summary.events = relatedQuote.events;
-
-                            _summary.lastEventDetails = lastEvent.Details;
-                            _summary.lastEventTimeStamp = lastEvent.DateTime.ToLocalTime();
-                        }
-
-                        QuoteHeaders.Add(_summary);
-                    }
+                    QuoteHeaders.Add(_summary);
                 }
 
                 return QuoteHeaders;
