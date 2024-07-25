@@ -50,7 +50,7 @@ namespace Facilitate.Api.Controllers
                 string headerForwardedFor = "n/a";
                 string headerReferer = "n/a";
 
-                int childQuotesToCreate = 1;
+                int childBidderQuotesToCreate = 3;
                 int biddingExpiresInDays = 7;
 
                 double totalQuoteValue = 0;
@@ -114,10 +114,9 @@ namespace Facilitate.Api.Controllers
                 aggregateQuote.totalInitialSquareFeet = roofleSubmission.totalInitialSquareFeet;
                 aggregateQuote.sessionId = roofleSubmission.sessionId;
 
-                for (var i = 0; i < childQuotesToCreate; i++)
+                for (var i = 0; i < childBidderQuotesToCreate; i++)
                 {
-                    Quote childQuote = new Quote(aggregateQuote);
-                    childQuote._id = Guid.NewGuid().ToString();
+                    Quote childQuote = new Quote();
 
                     childQuote.statusSubcategory = "bidder";
                     childQuote.totalQuote = 0;
@@ -131,13 +130,96 @@ namespace Facilitate.Api.Controllers
                     // Will need to figure out how to set dynamically
                     childQuote.applicationType = utils.TitleCaseString("Roofing");
 
-                    // Add Child to queue
-                    newQuoteListQueue.Add(childQuote);
+                    // Set expiration
+                    childQuote.biddingExpires = DateTime.UtcNow.AddDays(biddingExpiresInDays);
+
+                    // Begin copy data
+                    childQuote.ipAddress = headerForwardedFor;
+                    childQuote.externalUrl = headerReferer;
+
+                    if (roofleSubmission.products[0].priceInfo.total != null)
+                    {
+                        totalQuoteValue = roofleSubmission.products[0].priceInfo.total;
+                    }
+
+                    childQuote.totalQuote = 0;
+
+                    childQuote.address = roofleSubmission.address;
+                    childQuote.fullAddress = roofleSubmission.fullAddress;
+                    childQuote.street = roofleSubmission.street;
+                    childQuote.city = roofleSubmission.city;
+
+                    var stateAbbr = utils.GetStateAbbrByName(roofleSubmission.state);
+
+                    childQuote.state = stateAbbr;
+                    childQuote.zip = roofleSubmission.zip;
+
+                    childQuote.firstName = roofleSubmission.firstName;
+                    childQuote.lastName = roofleSubmission.lastName;
+                    childQuote.email = roofleSubmission.email;
+                    childQuote.phone = roofleSubmission.phone;
+                    childQuote.market = roofleSubmission.market;
+
+                    childQuote.timestamp = DateTime.UtcNow;
+
+                    childQuote.numberOfStructures = roofleSubmission.numberOfStructures;
+                    childQuote.numberOfIncludedStructures = roofleSubmission.numberOfIncludedStructures;
+                    childQuote.totalSquareFeet = roofleSubmission.totalSquareFeet;
+
+                    childQuote.repName = roofleSubmission.repName;
+                    childQuote.repEmail = roofleSubmission.repEmail;
+                    childQuote.leadId = roofleSubmission.leadId;
+
+                    childQuote.products = roofleSubmission.products;
+                    childQuote.structures = roofleSubmission.structures;
+
+                    childQuote.mainRoofTotalSquareFeet = roofleSubmission.mainRoofTotalSquareFeet;
+                    childQuote.totalInitialSquareFeet = roofleSubmission.totalInitialSquareFeet;
+                    childQuote.sessionId = roofleSubmission.sessionId;
+                    // End copy data
+
+                    var author = new ApplicationUser();
+                    author.Id = Guid.NewGuid().ToString();
+                    author.FirstName = "Web";
+                    author.LastName = "Api";
+
+                    // Create Child relationship to Aggregate
+                    var childRelationship = new Relationship();
+                    childRelationship.Author = author.FirstName + " " + author.LastName;
+                    childRelationship._id = childQuote._id;
+                    childRelationship.ParentId = aggregateQuote._id;
+                    childRelationship.Type = "Child";
+                    childRelationship.Name = childQuote.applicationType;
+
+                    aggregateQuote.relationships.Add(childRelationship);
+
+                    // Create Aggregate relationship to Child
+                    var parentRelationship = new Relationship();
+                    parentRelationship.Author = author.FirstName + " " + author.LastName;
+                    parentRelationship._id = aggregateQuote._id;
+                    parentRelationship.ParentId = aggregateQuote._id;
+                    parentRelationship.Type = "Parent";
+                    parentRelationship.Name = aggregateQuote.applicationType;
+
+                    childQuote.relationships.Add(parentRelationship);
+
+                    aggregateQuote.relationships.Add(childRelationship);
+
+                    // Insert Child
+                    childQuote.relationships = childQuote.relationships.Distinct().ToList();
+                    _quoteCollection.InsertOne(childQuote);
                 }
 
-                CreateRelationships(aggregateQuote, newQuoteListQueue);
+                // Insert Aggregate
+                var distinctRelationships = aggregateQuote.relationships.Distinct().ToList();
 
-                SaveQuotes(aggregateQuote, newQuoteListQueue);
+                aggregateQuote.relationships = aggregateQuote.relationships.Distinct().ToList();
+
+                _quoteCollection.InsertOne(aggregateQuote);
+
+                //CreateRelationships(aggregateQuote, newQuoteListQueue);
+
+                //SaveQuotes(aggregateQuote, newQuoteListQueue);
 
                 resultMsg = "Added Aggregate QuoteId: " + aggregateQuote._id;
             }
@@ -162,7 +244,11 @@ namespace Facilitate.Api.Controllers
 
             foreach (Quote newQuote in newQuoteListQueue)
             {
-                if(newQuote.applicationType != "Aggregate")
+                if(newQuote.applicationType == "Aggregate")
+                {
+                    // Create child relationship here in aggregate
+                }
+                else
                 {
                     // Create Parent relationship
                     var parentRelationship = new Relationship();
@@ -174,37 +260,10 @@ namespace Facilitate.Api.Controllers
 
                     newQuote.relationships.Add(parentRelationship);
                 }
-                else
-                {
-                    // Create Child relationship
-                    var childRelationship = new Relationship();
-                    childRelationship.Author = author.FirstName + " " + author.LastName;
-                    childRelationship._id = newQuote._id;
-                    childRelationship.ParentId = aggregateQuote._id;
-                    childRelationship.Type = "Child";
-                    childRelationship.Name = newQuote.applicationType;
-
-                    //newQuote.relationships.Add(childRelationship);
-                }
             }
 
-            // Add the parent Aggregate
-            //aggregateQuote.relationships.Clear();
-            //foreach (Quote newQuote in newQuoteListQueue)
-            //{
-            //    // Create Child relationship
-            //    var childRelationship = new Relationship();
-            //    childRelationship.Author = author.FirstName + " " + author.LastName;
-            //    childRelationship._id = newQuote._id;
-            //    childRelationship.ParentId = aggregateQuote._id;
-            //    childRelationship.Type = "Child";
-            //    childRelationship.Name = newQuote.applicationType;
-
-            //    //aggregateQuote.relationships.Add(childRelationship);
-            //}
-
             // Add the aggregate to the queue
-            newQuoteListQueue.Add(aggregateQuote);
+            //newQuoteListQueue.Add(aggregateQuote);
 
             newQuoteListQueue = newQuoteListQueue.OrderBy(x => x.applicationType).ToList();
 
