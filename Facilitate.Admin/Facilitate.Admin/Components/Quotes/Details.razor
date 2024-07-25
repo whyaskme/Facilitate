@@ -159,7 +159,7 @@ else
 
                             if(CurrentlySelectedQuote.applicationType == "Aggregate")
                             {
-                                <div class="@currentQuoteColorCssClass header-total-element header-total-element-modifier">@quoteTotal</div>
+                                <div class="@currentQuoteColorCssClass header-total-element header-total-element-modifier">Bid Avg (@averageQuoteValue.ToString("C0"))</div>
                             }
                             else
                             {
@@ -198,11 +198,11 @@ else
                                 @{
                                     if (CurrentlySelectedQuote.projectManager != null)
                                     {
-                                        <button class="@currentActionButtonClass" @onclick="@(() => IsAssignPopupVisible = true)">Reassign</button>
+                                            <button class="@currentActionButtonClass" @onclick="@(() => IsAssignPopupVisible = true)">Change Bidder</button>
                                     }
                                     else
                                     {
-                                        <button class="@currentActionButtonClass" @onclick="@(() => IsAssignPopupVisible = true)">Assign</button>
+                                        <button class="@currentActionButtonClass" @onclick="@(() => IsAssignPopupVisible = true)">Add Bidder</button>
                                     }
                                 }
                             </div>
@@ -210,7 +210,7 @@ else
                                 if (CurrentlySelectedQuote.projectManager != null)
                                 {
                                     <div class="col-md-1">
-                                        <h6>Manager</h6>
+                                        <h6>Bidder</h6>
                                     </div>
 
                                     <div class="col-md-10">
@@ -286,9 +286,9 @@ else
                                 <DxGridDataColumn Width="100" Caption="Relationship" FieldName="relationship" />
                                 <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
                                 <DxGridDataColumn Width="165" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-                                <DxGridDataColumn Width="165" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true"  />
+                                    <DxGridDataColumn Width="165" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
                                 <DxGridDataColumn Width="auto" Caption="Last Event" FieldName="lastEventDetails" />
-                                <DxGridDataColumn Width="150" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
+                                <DxGridDataColumn Width="150" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
                                 <DxGridDataColumn Width="100" Caption="Amount" FieldName="totalQuote" DisplayFormat="C0" />
                                 <DxGridDataColumn Visible="false" Width="100" Caption="Qualified?" FieldName="isQualified" />
                                 @{
@@ -580,7 +580,7 @@ else
                             KeyboardNavigationEnabled="true"
                             TextWrapEnabled="false">
                             <Columns>
-                                <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="" />
+                                <DxGridDataColumn Visible="true" Width="50" Caption="Row" FieldName="" />
                                 <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
                                 <DxGridDataColumn Width="175" Caption="DateTime" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                 <DxGridDataColumn Width="150" Caption="Trade" FieldName="Trade" />
@@ -666,8 +666,8 @@ else
                                 Needs Analysis...
                             </DxTabPage>
 
-                            <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Project-Manager-Inspection-Report" Text="3) Project Manager Inspection Report">
-                                Project Manager Inspection Report...
+                            <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Project-Manager-Inspection-Report" Text="3) Project Bidder Inspection Report">
+                                Project Bidder Inspection Report...
                             </DxTabPage>
 
                             <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Pictometry-Measurements" Text="4) Pictometry Measurements">
@@ -937,7 +937,7 @@ else
 
 <DxPopup @bind-Visible="@IsAssignPopupVisible"
          ShowFooter="true"
-         HeaderText="Please select a Project Manager for assignment">
+         HeaderText="Please select a Bidder for assignment">
     <BodyContentTemplate>
         <DxListBox Data="@ProjectManagers"
                    @bind-Values="@QuoteValues"
@@ -1754,7 +1754,7 @@ else
         // Assignment event
         Event assignmentEvent = new Event();
         assignmentEvent.Name = "Assignment";
-        assignmentEvent.Details = CurrentlySelectedQuote.applicationType + " Project assigned to Manager (" + projectManager.FirstName + " " + projectManager.LastName + ") and emailed to: (" + projectManager.Email + ")";
+        assignmentEvent.Details = CurrentlySelectedQuote.applicationType + " Project assigned to Bidder (" + projectManager.FirstName + " " + projectManager.LastName + ") and emailed to: (" + projectManager.Email + ")";
         assignmentEvent.Author = currentUser;
 
         // Email PM and Client here...
@@ -2403,10 +2403,11 @@ else
 
     public int parentCount = 0;
 
+    public double averageQuoteValue = 0;
+
     private async Task TimerRefresh()
     {
         bool isAggregate = false;
-        double aggregateTotal = 0;
         double standaloneTotal = 0;
         string authorName = "";
 
@@ -2419,7 +2420,6 @@ else
 
         _timer = new Timer(new TimerCallback(_ =>
         {
-            aggregateTotal = 0;
             standaloneTotal = 0;
 
             RelatedQuoteSummaryList = new List<QuoteSummary>();
@@ -2443,18 +2443,17 @@ else
                 }
                 AttachmentList.AddRange(CurrentlySelectedQuote.attachments);
 
-                // Process events
-                foreach(Event _event in CurrentlySelectedQuote.events)
+                // Process Related events
+                foreach(Relationship relationship in CurrentlySelectedQuote.relationships)
                 {
-                    _event.Trade = CurrentlySelectedQuote.applicationType;
+                    var quote = WebServices.GetQuote(relationship._id)[0];
 
-                    if(_event.DateTime > lastQuoteEventTimestamp)
+                    foreach(Event _event in quote.events)
                     {
-                        lastQuoteEventTimestamp = _event.DateTime.ToLocalTime();
-                        lastQuoteEventDetails = _event.Details;
+                        _event.Trade = quote.applicationType;
+                        EventList.Add(_event);
                     }
                 }
-                EventList.AddRange(CurrentlySelectedQuote.events);
 
                 // Process notes
                 foreach (Note note in CurrentlySelectedQuote.notes)
@@ -2465,12 +2464,23 @@ else
 
                 // Get child quote summaries
                 RelatedQuoteSummaryList = webServices.GetRelatedQuoteSummaries(CurrentlySelectedQuote);
+                if(RelatedQuoteSummaryList != null)
+                {
+                    averageQuoteValue = 0;
+
+                    foreach(QuoteSummary quoteSummary in RelatedQuoteSummaryList)
+                    {
+                        averageQuoteValue += quoteSummary.totalQuote;
+                    }
+                } 
+
+                averageQuoteValue = (averageQuoteValue / RelatedQuoteSummaryList.Count());
 
                 currentQuoteIndex = 0;
 
                 if (CurrentlySelectedQuote.applicationType == "Aggregate")
                 {
-                    CurrentlySelectedQuote.totalQuote = aggregateTotal;
+                    CurrentlySelectedQuote.totalQuote = averageQuoteValue;
                 }
                 else
                 {
@@ -2511,6 +2521,38 @@ else
 
                 CurrentlySelectedQuote.timestamp = CurrentlySelectedQuote.timestamp.ToLocalTime();
                 CurrentlySelectedQuote.lastUpdated = CurrentlySelectedQuote.lastUpdated.ToLocalTime();
+
+                if(CurrentlySelectedQuote.applicationType == "Aggregate")
+                {
+                    currentQuoteContainerType = "Parent";
+                }
+                else
+                {
+                    if(CurrentlySelectedQuote.relationships.Count() > 0)
+                    {
+                        foreach(Relationship relationship in CurrentlySelectedQuote.relationships)
+                        {
+                            switch(relationship.Type)
+                            {
+                                case "Parent":
+                                    currentQuoteContainerType = "Parent";
+                                    break;
+
+                                case "Child":   
+                                    currentQuoteContainerType = "Child";
+                                    break;
+
+                                case "Sibling":   
+                                    currentQuoteContainerType = "Child";
+                                    break;
+
+                                default:   
+                                    currentQuoteContainerType = "Standalone";
+                                    break;
+                            }
+                        }
+                    }
+                }
 
                 SetUIStyles(currentQuoteContainerType);
 

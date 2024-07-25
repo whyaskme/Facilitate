@@ -666,58 +666,78 @@ else
 
     private async Task TimerRefresh()
     {
-        TimerDispose();
-
-        LoadingPanelVisible = true;
-
-        _timer = new Timer(new TimerCallback(_ =>
+        try
         {
-            // Check to see if user IsEnabled. If not, log them out an redirect to login page
-            // var isUserEnabled = IsUserEnabled();
+            TimerDispose();
 
-            if (isSystemAdmin)
+            LoadingPanelVisible = true;
+
+            _timer = new Timer(new TimerCallback(_ =>
             {
-                if (SelectedTradeType.Contains("All"))
+                // Check to see if user IsEnabled. If not, log them out an redirect to login page
+                // var isUserEnabled = IsUserEnabled();
+
+                if (isSystemAdmin)
                 {
-                    quotes = webServices.GetSummaries("New", ShowTestData);
-                    leaderboardStats = WebServices.GetLeaderBoardStats("New", ShowTestData);
+                    if (SelectedTradeType.Contains("All"))
+                    {
+                        quotes = webServices.GetSummaries("New", ShowTestData);
+                        leaderboardStats = WebServices.GetLeaderBoardStats("New", ShowTestData);
+                    }
+                    else
+                    {
+                        quotes = webServices.GetSummaries(SelectedTradeType, "New", ShowTestData);
+                        leaderboardStats = WebServices.GetLeaderBoardStats(SelectedTradeType, "New", ShowTestData);
+                    }
                 }
                 else
                 {
-                    quotes = webServices.GetSummaries(SelectedTradeType, "New", ShowTestData);
-                    leaderboardStats = WebServices.GetLeaderBoardStats(SelectedTradeType, "New", ShowTestData);
+                    leaderboardStats = WebServices.GetLeaderBoardStats(currentUser.Email);
+                    quotes = webServices.GetSummaries("New", currentUser.Email);
                 }
-            }
-            else
-            {
-                leaderboardStats = WebServices.GetLeaderBoardStats(currentUser.Email);
-                quotes = webServices.GetSummaries("New", currentUser.Email);
-            }
 
-            updateStatus = quotes.Count().ToString("N0");
-            StatusContainerClass = "container-action-buttons-show";
+                List<QuoteHeader> quoteHeaderCollection = new List<QuoteHeader>();
 
-            TradesList.Clear();
-            TradesList.Add(new ListItem() { Text = "All", Value = "All" });
-            foreach (var trade in leaderboardStats.Trades)
-            {
-                TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
-            }
+                foreach (QuoteHeader _quote in quotes)
+                {
+                    if (_quote.applicationType == "Aggregate")
+                    {
+                        quoteHeaderCollection.Add(_quote);
+                    }
+                }
 
-            currentQuoteIndex = quotes.Count()+1;
-            foreach (var quote in quotes)
-            {
-                currentQuoteIndex--;
-                quote.rowIndex = currentQuoteIndex;
-            }
+                quotes.Clear();
+                quotes.AddRange(quoteHeaderCollection);
 
-            InvokeAsync(() =>
-            {
-                StateHasChanged();
-            });
-        }), null, 1000, 1000);
+                updateStatus = quotes.Count().ToString("N0");
+                StatusContainerClass = "container-action-buttons-show";
 
-        LoadingPanelVisible = false;
+                TradesList.Clear();
+                TradesList.Add(new ListItem() { Text = "All", Value = "All" });
+                foreach (var trade in leaderboardStats.Trades)
+                {
+                    TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
+                }
+
+                currentQuoteIndex = quotes.Count() + 1;
+                foreach (var quote in quotes)
+                {
+                    currentQuoteIndex--;
+                    quote.rowIndex = currentQuoteIndex;
+                }
+
+                InvokeAsync(() =>
+                {
+                    StateHasChanged();
+                });
+            }), null, 1000, 1000);
+
+            LoadingPanelVisible = false;
+        }
+        catch(Exception ex)
+        {
+            var errMsg = ex.Message;
+        }
     }
 
     private async Task<bool> IsUserEnabled()
