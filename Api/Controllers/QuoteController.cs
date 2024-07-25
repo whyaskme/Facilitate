@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 
 using System.Net.Http;
+using System.Threading;
 using System.Web.Http.Cors;
 
 namespace Facilitate.Api.Controllers
@@ -23,6 +24,8 @@ namespace Facilitate.Api.Controllers
         IMongoClient _mongoDBClient;
 
         IMongoCollection<Quote> _quoteCollection;
+
+        CancellationToken _cancellationToken;
 
         List<Quote> sortedQuotes = new List<Quote>();
 
@@ -50,7 +53,7 @@ namespace Facilitate.Api.Controllers
                 string headerForwardedFor = "n/a";
                 string headerReferer = "n/a";
 
-                int childBidderQuotesToCreate = 3;
+                int childBidderQuotesToCreate = 5;
                 int biddingExpiresInDays = 7;
 
                 double totalQuoteValue = 0;
@@ -201,23 +204,25 @@ namespace Facilitate.Api.Controllers
                     parentRelationship.Type = "Parent";
                     parentRelationship.Name = aggregateQuote.applicationType;
 
+                    // Add Parent to Child
                     childQuote.relationships.Add(parentRelationship);
 
+                    // Add Child to Parent
                     aggregateQuote.relationships.Add(childRelationship);
 
                     // Insert Child
                     childQuote.relationships = childQuote.relationships.Distinct().ToList();
                     _quoteCollection.InsertOne(childQuote);
+
+                    // Add to queue for sibling relationship processing
+                    newQuoteListQueue.Add(childQuote);
                 }
 
                 // Insert Aggregate
-                var distinctRelationships = aggregateQuote.relationships.Distinct().ToList();
-
                 aggregateQuote.relationships = aggregateQuote.relationships.Distinct().ToList();
-
                 _quoteCollection.InsertOne(aggregateQuote);
 
-                //CreateRelationships(aggregateQuote, newQuoteListQueue);
+                CreateSiblingRelationships(aggregateQuote, newQuoteListQueue);
 
                 //SaveQuotes(aggregateQuote, newQuoteListQueue);
 
@@ -235,39 +240,51 @@ namespace Facilitate.Api.Controllers
             return Ok(resultMsg);
         }
 
-        private List<Quote> CreateRelationships(Quote aggregateQuote, List<Quote> newQuoteListQueue)
+        private void CreateSiblingRelationships(Quote aggregateQuote, List<Quote> newQuoteListQueue)
         {
             var author = new ApplicationUser();
             author.Id = Guid.NewGuid().ToString();
             author.FirstName = "Web";
             author.LastName = "Api";
 
-            foreach (Quote newQuote in newQuoteListQueue)
-            {
-                if(newQuote.applicationType == "Aggregate")
-                {
-                    // Create child relationship here in aggregate
-                }
-                else
-                {
-                    // Create Parent relationship
-                    var parentRelationship = new Relationship();
-                    parentRelationship.Author = author.FirstName + " " + author.LastName;
-                    parentRelationship._id = aggregateQuote._id;
-                    parentRelationship.ParentId = aggregateQuote._id;
-                    parentRelationship.Type = "Parent";
-                    parentRelationship.Name = aggregateQuote.applicationType;
+            var quoteId = "";
 
-                    newQuote.relationships.Add(parentRelationship);
+            foreach (Relationship _relationship in aggregateQuote.relationships)
+            {
+                try
+                {
+                    quoteId = _relationship._id;
+
+                    Quote quoteToUpdate = _quoteCollection.Find(x => x._id == quoteId).FirstOrDefault();
+
+                    foreach (Quote newQuote in newQuoteListQueue)
+                    {
+                        // Create Sibling relationship
+                        var siblingRelationship = new Relationship();
+                        siblingRelationship.Author = author.FirstName + " " + author.LastName;
+                        siblingRelationship._id = newQuote._id;
+                        siblingRelationship.ParentId = quoteId;
+                        siblingRelationship.Type = "Sibling";
+                        siblingRelationship.Name = newQuote.applicationType;
+
+                        quoteToUpdate.relationships.Add(siblingRelationship);
+                    }
+
+                    var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
+
+                    var result = _quoteCollection.ReplaceOne(filter, quoteToUpdate, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+
+                    var tmpVal = "";
+                }
+                catch (Exception ex)
+                {
+                    resultMsg = ex.Message;
+                }
+                finally
+                {
+
                 }
             }
-
-            // Add the aggregate to the queue
-            //newQuoteListQueue.Add(aggregateQuote);
-
-            newQuoteListQueue = newQuoteListQueue.OrderBy(x => x.applicationType).ToList();
-
-            return newQuoteListQueue;
         }
 
         private void SaveQuotes(Quote aggregateQuote, List<Quote> newQuoteListQueue)
