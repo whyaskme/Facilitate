@@ -291,18 +291,6 @@ namespace Facilitate.Api.Controllers
             childQuote.events.Add(childEvent);
         }
 
-        private void CreateSiblingLinkedEvents(Quote aggregateQuote, Quote childQuote)
-        {
-            Event childEvent = new Event();
-            childEvent.Author = author;
-            childEvent.Trade = childQuote.applicationType;
-            childEvent.Name = "Child (" + childQuote.applicationType + ") quote Linked";
-            childEvent.Details = childEvent.Name + " to parent Aggregate Id (" + aggregateQuote._id + ")";
-
-            // Add event to child quote
-            childQuote.events.Add(childEvent);
-        }
-
         private void CreateSiblingRelationships(Quote aggregateQuote, List<Quote> newQuoteListQueue)
         {
             var author = new ApplicationUser();
@@ -332,7 +320,15 @@ namespace Facilitate.Api.Controllers
 
                         quoteToUpdate.relationships.Add(siblingRelationship);
 
-                        CreateSiblingLinkedEvents(aggregateQuote, newQuote);
+                        //CreateSiblingLinkedEvents(newQuote, siblingRelationship);
+                        Event siblingEvent = new Event();
+                        siblingEvent.Author = author;
+                        siblingEvent.Trade = quoteToUpdate.applicationType;
+                        siblingEvent.Name = "Sibling (" + quoteToUpdate.applicationType + ") quote Linked";
+                        siblingEvent.Details = siblingEvent.Name + " to Sibling Id (" + siblingEvent._id + ")";
+
+                        // Add event to child quote
+                        quoteToUpdate.events.Add(siblingEvent);
                     }
 
                     var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
@@ -348,6 +344,22 @@ namespace Facilitate.Api.Controllers
 
                 }
             }
+        }
+
+        private void CreateSiblingLinkedEvents(Quote childQuote, Relationship siblingRelationship)
+        {
+            Event siblingEvent = new Event();
+            siblingEvent.Author = author;
+            siblingEvent.Trade = childQuote.applicationType;
+            siblingEvent.Name = "Sibling (" + childQuote.applicationType + ") quote Linked";
+            siblingEvent.Details = siblingEvent.Name + " to Sibling Id (" + siblingEvent._id + ")";
+
+            // Add event to child quote
+            childQuote.events.Add(siblingEvent);
+
+            var filter = Builders<Quote>.Filter.Eq(x => x._id, childQuote._id);
+
+            var result = _quoteCollection.ReplaceOne(filter, childQuote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
         }
 
         // GET: api/<QuoteController>
