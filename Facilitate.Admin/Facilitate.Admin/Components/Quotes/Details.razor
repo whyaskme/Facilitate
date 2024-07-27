@@ -2510,6 +2510,8 @@ else
                 RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.lastEventTimeStamp).ToList();
                 // RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.Trade).ToList();
 
+                RelatedQuoteSummaryList = RelatedQuoteSummaryList.Distinct().ToList();
+
                 LocalizeAttachments(AttachmentList);
                 AttachmentList = AttachmentList.OrderByDescending(x => x.DateTime).ToList();
 

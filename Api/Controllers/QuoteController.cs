@@ -213,16 +213,6 @@ namespace Facilitate.Api.Controllers
                     childQuote.sessionId = roofleSubmission.sessionId;
                     // End copy data
 
-                    // Create Child relationship to Aggregate
-                    var childRelationship = new Relationship();
-                    childRelationship.Author = author.FirstName + " " + author.LastName;
-                    childRelationship._id = childQuote._id;
-                    childRelationship.ParentId = aggregateQuote._id;
-                    childRelationship.Type = "Child";
-                    childRelationship.Name = childQuote.Trade;
-
-                    aggregateQuote.relationships.Add(childRelationship);
-
                     // Create Aggregate relationship to Child
                     var parentRelationship = new Relationship();
                     parentRelationship.Author = author.FirstName + " " + author.LastName;
@@ -231,30 +221,35 @@ namespace Facilitate.Api.Controllers
                     parentRelationship.Type = "Parent";
                     parentRelationship.Name = aggregateQuote.Trade;
 
-                    // Add Parent to Child
-                    CreateChildSpawnedEvent(aggregateQuote, childQuote);
+                    // Create Child relationship to Aggregate
+                    var childRelationship = new Relationship();
+                    childRelationship.Author = author.FirstName + " " + author.LastName;
+                    childRelationship._id = childQuote._id;
+                    childRelationship.ParentId = aggregateQuote._id;
+                    childRelationship.Type = "Child";
+                    childRelationship.Name = childQuote.Trade;
 
-                    childQuote.relationships.Add(parentRelationship);
-
-                    CreateChildLinkedToParentEvent(aggregateQuote, childQuote);
-
-                    // Add Child to Parent
+                    // Add relationships
+                    //childQuote.relationships.Add(parentRelationship);
                     aggregateQuote.relationships.Add(childRelationship);
 
                     // Insert Child
-                    childQuote.relationships = childQuote.relationships.Distinct().ToList();
-
                     _quoteCollection.InsertOne(childQuote);
 
                     // Add to queue for sibling relationship processing
                     newQuoteListQueue.Add(childQuote);
+
+                    // Add Events
+                    CreateChildSpawnedEvent(aggregateQuote, childQuote);
+
+                    CreateChildLinkedToParentEvent(aggregateQuote, childQuote);
                 }
 
                 // Insert Aggregate
-                aggregateQuote.relationships = aggregateQuote.relationships.Distinct().ToList();
+                //aggregateQuote.relationships = aggregateQuote.relationships.Distinct().ToList();
                 _quoteCollection.InsertOne(aggregateQuote);
 
-                CreateSiblingRelationships(aggregateQuote, newQuoteListQueue);
+                //CreateSiblingRelationships(aggregateQuote, newQuoteListQueue);
 
                 resultMsg = "Added Aggregate QuoteId: " + aggregateQuote._id;
             }
@@ -321,34 +316,43 @@ namespace Facilitate.Api.Controllers
                 try
                 {
                     quoteId = _relationship._id;
+                    var relationshipType = _relationship.Type;
 
                     Quote quoteToUpdate = _quoteCollection.Find(x => x._id == quoteId).FirstOrDefault();
 
                     foreach (Quote newQuote in newQuoteListQueue)
                     {
-                        // Create Sibling relationship
-                        var siblingRelationship = new Relationship();
-                        siblingRelationship.Author = author.FirstName + " " + author.LastName;
-                        siblingRelationship._id = newQuote._id;
-                        siblingRelationship.ParentId = quoteId;
-                        siblingRelationship.Type = "Sibling";
-                        siblingRelationship.Name = newQuote.Trade;
+                        if(relationshipType != "Parent")
+                        {
+                            // Create Sibling relationship
+                            var siblingRelationship = new Relationship();
+                            siblingRelationship.Author = author.FirstName + " " + author.LastName;
+                            siblingRelationship._id = newQuote._id;
+                            siblingRelationship.ParentId = quoteId;
+                            siblingRelationship.Type = "Sibling";
+                            siblingRelationship.Name = newQuote.Trade;
 
-                        quoteToUpdate.relationships.Add(siblingRelationship);
+                            //quoteToUpdate.relationships.Add(siblingRelationship);
 
-                        Event siblingEvent = new Event();
-                        siblingEvent.Author = author;
-                        siblingEvent.Trade = quoteToUpdate.Trade;
-                        siblingEvent.Name = "Sibling (" + quoteToUpdate.Trade + ") quote Linked";
-                        siblingEvent.Details = siblingEvent.Name + " to Sibling Id (" + siblingEvent._id + ")";
+                            Event siblingEvent = new Event();
+                            siblingEvent.Author = author;
+                            siblingEvent.Trade = quoteToUpdate.Trade;
+                            siblingEvent.Name = "Sibling (" + quoteToUpdate.Trade + ") quote Linked";
+                            siblingEvent.Details = siblingEvent.Name + " to Sibling Id (" + siblingEvent._id + ")";
 
-                        // Add event to child quote
-                        quoteToUpdate.events.Add(siblingEvent);
+                            // Add event to child quote
+                            quoteToUpdate.events.Add(siblingEvent);
+
+                            var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
+                            var result = _quoteCollection.ReplaceOne(filter, quoteToUpdate, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+                        }
                     }
 
-                    var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
+                    //childQuote.relationships = childQuote.relationships.Distinct().ToList();
 
-                    var result = _quoteCollection.ReplaceOne(filter, quoteToUpdate, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+                    //var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
+
+                    //var result = _quoteCollection.ReplaceOne(filter, quoteToUpdate, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
                 }
                 catch (Exception ex)
                 {
