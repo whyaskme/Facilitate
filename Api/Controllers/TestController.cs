@@ -247,7 +247,7 @@ namespace Facilitate.Api.Controllers
 
                         CreateChildQuotes(aggregateQuote, Trade, "Default");
 
-                        //CreateSiblingRelationships(aggregateQuote, newQuoteListQueue);
+                        CreateSiblingRelationships(aggregateQuote, newQuoteListQueue);
 
                     }
                     catch (Exception ex)
@@ -282,6 +282,14 @@ namespace Facilitate.Api.Controllers
                 childQuote.status = "New";
                 childQuote.Trade = tradeType;
 
+                Event createdEvent = new Event();
+                createdEvent.Author = author;
+                createdEvent.Trade = childQuote.Trade;
+                createdEvent.Name = "Child (" + childQuote.Trade + ") quote";
+                createdEvent.Details = createdEvent.Name + " Spawned from Aggregate Id (" + createdEvent._id + ")";
+
+                childQuote.events.Add(createdEvent);
+
                 childQuote.Bidder = author;
                 childQuote.BidderType = bidderType;
                 childQuote.BiddingExpires = aggregateQuote.BiddingExpires;
@@ -304,7 +312,6 @@ namespace Facilitate.Api.Controllers
                 childQuote.city = aggregateQuote.city;
                 childQuote.state = aggregateQuote.state;
                 childQuote.zip = aggregateQuote.zip;
-
                 childQuote.market = aggregateQuote.market;
 
                 // Create Aggregate relationship to Child
@@ -314,8 +321,14 @@ namespace Facilitate.Api.Controllers
                 parentRelationship.ParentId = aggregateQuote._id;
                 parentRelationship.Type = "Parent";
                 parentRelationship.Name = aggregateQuote.Trade;
-
                 childQuote.relationships.Add(parentRelationship);
+
+                Event parentRelationshipEvent = new Event();
+                parentRelationshipEvent.Author = author;
+                parentRelationshipEvent.Trade = childQuote.Trade;
+                parentRelationshipEvent.Name = "Child (" + childQuote.Trade + ") relationship Linked to Parent";
+                parentRelationshipEvent.Details = parentRelationshipEvent.Name + " Aggregate Id (" + aggregateQuote._id + ")";
+                childQuote.events.Add(parentRelationshipEvent);
 
                 // Create Child relationship to Aggregate
                 var childRelationship = new Relationship();
@@ -324,6 +337,9 @@ namespace Facilitate.Api.Controllers
                 childRelationship.ParentId = aggregateQuote._id;
                 childRelationship.Type = "Child";
                 childRelationship.Name = childQuote.Trade;
+
+                // Add event to child quote
+                //childQuote.events.Add(parentRelationshipEvent);
 
                 // Save Child
                 _quoteCollection.InsertOne(childQuote);
@@ -390,8 +406,8 @@ namespace Facilitate.Api.Controllers
         {
             var author = new ApplicationUser();
             author.Id = Guid.NewGuid().ToString();
-            author.FirstName = "Web";
-            author.LastName = "Api";
+            author.FirstName = "Roofle";
+            author.LastName = "WebApi";
 
             var quoteId = "";
 
@@ -442,7 +458,7 @@ namespace Facilitate.Api.Controllers
 
                 }
             }
-        }//}
+        }
 
     }
 }
