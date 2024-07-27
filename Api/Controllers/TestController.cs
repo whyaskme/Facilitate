@@ -1,6 +1,7 @@
 ﻿using DevExpress.DocumentServices.ServiceModel.DataContracts;
 using Facilitate.Libraries.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 
 using System.Net.Http;
@@ -39,10 +40,19 @@ namespace Facilitate.Api.Controllers
 
         public ApplicationUser author = new ApplicationUser();
 
+        public List<Quote> newQuoteListQueue = new List<Quote>();
+
+        private int numQuotesToCreate = 0;
+
         // GET api/<TestController>/5
         [HttpGet("{numQuotesToCreate}")]
         public IActionResult Get(string Trade, int numQuotesToCreate)
         {
+            if (Trade == null || Trade == "")
+            {
+                Trade = "Roofing";
+            }
+
             Trade = utils.TitleCaseString(Trade);
 
             Quote aggregateQuote = new Quote();
@@ -50,7 +60,7 @@ namespace Facilitate.Api.Controllers
             author = new ApplicationUser();
             author.Id = Guid.NewGuid().ToString();
             author.FirstName = "Roofle";
-            author.LastName = "Api";
+            author.LastName = "WebApi";
 
             author.PhoneNumber = "555-555-5555";
             author.PhoneNumberConfirmed = true;
@@ -231,12 +241,14 @@ namespace Facilitate.Api.Controllers
 
                             CreateParentSpawnedEvent(aggregateQuote);
 
+                            // Insert Aggregate
                             _quoteCollection.InsertOne(aggregateQuote);
                         }
 
-                        CreateChildQuote(aggregateQuote, Trade, "Default");
+                        CreateChildQuotes(aggregateQuote, Trade, "Default");
 
-                        CreateSiblingRelationships(aggregateQuote);
+                        //CreateSiblingRelationships(aggregateQuote, newQuoteListQueue);
+
                     }
                     catch (Exception ex)
                     {
@@ -261,7 +273,7 @@ namespace Facilitate.Api.Controllers
             return Ok(resultMsg);
         }
 
-        private void CreateChildQuote(Quote aggregateQuote, string tradeType, string bidderType)
+        private void CreateChildQuotes(Quote aggregateQuote, string tradeType, string bidderType)
         {
             try
             {
@@ -303,10 +315,7 @@ namespace Facilitate.Api.Controllers
                 parentRelationship.Type = "Parent";
                 parentRelationship.Name = aggregateQuote.Trade;
 
-                if (aggregateQuote.Trade == "Aggregate")
-                {
-                    childQuote.relationships.Add(parentRelationship);
-                }
+                childQuote.relationships.Add(parentRelationship);
 
                 // Create Child relationship to Aggregate
                 var childRelationship = new Relationship();
@@ -316,16 +325,17 @@ namespace Facilitate.Api.Controllers
                 childRelationship.Type = "Child";
                 childRelationship.Name = childQuote.Trade;
 
-                // Create Parent relationship to Child
-                if(aggregateQuote.Trade == "Aggregate")
-                {
-                    aggregateQuote.relationships.Add(childRelationship);
-                }
-
                 // Save Child
                 _quoteCollection.InsertOne(childQuote);
 
+                // Add to queue for sibling relationship processing
+                newQuoteListQueue.Add(childQuote);
+
+                childQuote = null;
+
                 // Save Parent
+                aggregateQuote.relationships.Add(childRelationship);
+
                 var filter = Builders<Quote>.Filter.Eq(x => x._id, aggregateQuote._id);
                 var result = _quoteCollection.ReplaceOne(filter, aggregateQuote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
             }
@@ -376,54 +386,52 @@ namespace Facilitate.Api.Controllers
             childQuote.events.Add(childEvent);
         }
 
-        private void CreateSiblingRelationships(Quote aggregateQuote)
+        private void CreateSiblingRelationships(Quote aggregateQuote, List<Quote> newQuoteListQueue)
         {
             var author = new ApplicationUser();
             author.Id = Guid.NewGuid().ToString();
             author.FirstName = "Web";
             author.LastName = "Api";
 
-            var relationshipToId = "";
             var quoteId = "";
 
             foreach (Relationship _relationship in aggregateQuote.relationships)
             {
                 try
                 {
-                    //relationshipToId = _relationship._id;
                     quoteId = _relationship._id;
 
                     Quote quoteToUpdate = _quoteCollection.Find(x => x._id == quoteId).FirstOrDefault();
 
-                    foreach(Relationship relationship in quoteToUpdate.relationships)
+                    foreach (Quote newQuote in newQuoteListQueue)
                     {
-                        var childRelationshipType = relationship.Type;
-
                         // Create Sibling relationship
                         var siblingRelationship = new Relationship();
                         siblingRelationship.Author = author.FirstName + " " + author.LastName;
-
-                        siblingRelationship.Type = "Sibling";
-                        siblingRelationship._id = quoteToUpdate._id;
+                        siblingRelationship._id = newQuote._id;
                         siblingRelationship.ParentId = quoteId;
-                        siblingRelationship.Name = quoteToUpdate.Trade;
-
-                        //if (quoteId != quoteToUpdate._id)
-                        //{
-                        //    quoteToUpdate.relationships.Add(siblingRelationship);
-                        //}
-
-                        //if (quoteToUpdate.Trade != "Aggregate")
-                        //{
-                        //    quoteToUpdate.relationships.Add(siblingRelationship);
-                        //}
+                        siblingRelationship.Type = "Sibling";
+                        siblingRelationship.Name = newQuote.Trade;
 
                         quoteToUpdate.relationships.Add(siblingRelationship);
+
+                        Event siblingEvent = new Event();
+                        siblingEvent.Author = author;
+                        siblingEvent.Trade = quoteToUpdate.Trade;
+                        siblingEvent.Name = "Sibling (" + quoteToUpdate.Trade + ") quote Linked";
+                        siblingEvent.Details = siblingEvent.Name + " to Sibling Id (" + siblingEvent._id + ")";
+
+                        // Add event to child quote
+                        quoteToUpdate.events.Add(siblingEvent);
 
                         var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
 
                         var result = _quoteCollection.ReplaceOne(filter, quoteToUpdate, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
                     }
+
+                    //var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
+
+                    //var result = _quoteCollection.ReplaceOne(filter, quoteToUpdate, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
                 }
                 catch (Exception ex)
                 {
@@ -434,7 +442,7 @@ namespace Facilitate.Api.Controllers
 
                 }
             }
-        }
+        }//}
 
     }
 }
