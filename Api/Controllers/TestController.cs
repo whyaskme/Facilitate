@@ -420,7 +420,7 @@ namespace Facilitate.Api.Controllers
             parentRelationship.Type = "Parent";
             parentRelationship.Name = aggregateQuote.Trade;
 
-            List<Relationship> SiblingRelationshipList = new List<Relationship>();
+            List<Relationship> RelationshipList = new List<Relationship>();
 
             try
             {
@@ -428,9 +428,9 @@ namespace Facilitate.Api.Controllers
                 {
                     if (_relationship.Type == "Child")
                     {
-                        SiblingRelationshipList = new List<Relationship>();
+                        RelationshipList = new List<Relationship>();
 
-                        SiblingRelationshipList.Add(parentRelationship);
+                        RelationshipList.Add(parentRelationship);
 
                         relatedQuoteId = _relationship._id;
 
@@ -442,8 +442,12 @@ namespace Facilitate.Api.Controllers
 
                         foreach (Quote newQuote in newQuoteListQueue)
                         {
-                            if (relationshipType != "Parent")
+                            if (_relationship.ParentId != newQuote._id)
                             {
+                                var tmpVal = "No match!";
+
+                                //if (relationshipType == "Child")
+                                //{
                                 // Create Sibling relationship
                                 var siblingRelationship = new Relationship();
                                 siblingRelationship.Author = author.FirstName + " " + author.LastName;
@@ -454,7 +458,7 @@ namespace Facilitate.Api.Controllers
 
                                 //relatedQuoteUpdate.relationships.Add(siblingRelationship);
 
-                                SiblingRelationshipList.Add(siblingRelationship);
+                                RelationshipList.Add(siblingRelationship);
 
                                 Event siblingEvent = new Event();
                                 siblingEvent.Author = author;
@@ -464,10 +468,11 @@ namespace Facilitate.Api.Controllers
 
                                 // Add event to child quote
                                 relatedQuoteUpdate.events.Add(siblingEvent);
+                                //}
                             }
                         }
 
-                        relatedQuoteUpdate.relationships = SiblingRelationshipList;
+                        relatedQuoteUpdate.relationships = RelationshipList;
 
                         var filter = Builders<Quote>.Filter.Eq(x => x._id, relatedQuoteId);
                         var result = _quoteCollection.ReplaceOne(filter, relatedQuoteUpdate, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
