@@ -105,7 +105,7 @@ else
         <Columns>
             <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="" />
             <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
-            <DxGridDataColumn Width="auto" Caption="Trade" FieldName="applicationType" />
+            <DxGridDataColumn Width="auto" Caption="Trade" FieldName="Trade" />
             <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Width="175" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
             <DxGridDataColumn Width="auto" Caption="Street" FieldName="street" />
@@ -129,7 +129,7 @@ else
                     productsCountLabel = productsCount.ToString() + " Products Quoted";
 
 
-                <div class="@currentQuoteContainerTypeCssClass  @currentQuoteColorCssClass">@currentQuoteContainerType (@CurrentlySelectedQuote.applicationType)</div>
+                <div class="@currentQuoteContainerTypeCssClass  @currentQuoteColorCssClass">@currentQuoteContainerType (@CurrentlySelectedQuote.Trade)</div>
 
                 <div class="row">
                     <div class="col-md-4">
@@ -147,7 +147,7 @@ else
                         <div class="@currentQuoteColorCssClass header-total-element">Quote:</div>
 
                         @{
-                            if(CurrentlySelectedQuote.applicationType == "Roofing")
+                            if(CurrentlySelectedQuote.Trade == "Roofing")
                             {
                                 <div class="@currentQuoteColorCssClass header-total-element">@CurrentlySelectedQuote.totalSquareFeet.ToString("N0")</div>
                                 <div class="@currentQuoteColorCssClass header-total-element">sqft &raquo;</div>
@@ -157,7 +157,7 @@ else
                         @{
                             var quoteTotal = CurrentlySelectedQuote.totalQuote.ToString("C0");
 
-                            if(CurrentlySelectedQuote.applicationType == "Aggregate")
+                            if(CurrentlySelectedQuote.Trade == "Aggregate")
                             {
                                 <div class="@currentQuoteColorCssClass header-total-element header-total-element-modifier">Bid Avg (@averageQuoteValue.ToString("C0"))</div>
                             }
@@ -185,7 +185,7 @@ else
                 </div>
 
                 <div class="section-header">
-                    @CurrentlySelectedQuote.applicationType Dashboard
+                    @CurrentlySelectedQuote.Trade Dashboard
                 </div>
 
                 <DxTabs CssClass="tabs-container">
@@ -196,7 +196,7 @@ else
                         <div class="row">
                             <div class="col-md-1">
                                 @{
-                                    if (CurrentlySelectedQuote.projectManager != null)
+                                    if (CurrentlySelectedQuote.Bidder != null)
                                     {
                                             <button class="@currentActionButtonClass" @onclick="@(() => IsAssignPopupVisible = true)">Change Bidder</button>
                                     }
@@ -207,7 +207,7 @@ else
                                 }
                             </div>
                             @{
-                                if (CurrentlySelectedQuote.projectManager != null)
+                                if (CurrentlySelectedQuote.Bidder != null)
                                 {
                                     <div class="col-md-1">
                                         <h6>Bidder</h6>
@@ -216,22 +216,22 @@ else
                                     <div class="col-md-10">
                                         <span class="">
                                             <label>Name</label>
-                                            <span class="detail-item">@CurrentlySelectedQuote.projectManager.FirstName</span><span class="detail-item">@CurrentlySelectedQuote.projectManager.LastName</span>
+                                            <span class="detail-item">@CurrentlySelectedQuote.Bidder.FirstName</span><span class="detail-item">@CurrentlySelectedQuote.Bidder.LastName</span>
                                         </span>
                                         <span class="">
                                             <label>Ph</label>
-                                            <span class="detail-item">@CurrentlySelectedQuote.projectManager.Phone</span>
+                                            <span class="detail-item">@CurrentlySelectedQuote.Bidder.Phone</span>
                                         </span>
                                         <span class="">
                                             <label>Email</label>
-                                            <a href="mailto:@CurrentlySelectedQuote.projectManager.Email" target="_blank">
-                                                <span class="detail-item">@CurrentlySelectedQuote.projectManager.Email</span>
+                                            <a href="mailto:@CurrentlySelectedQuote.Bidder.Email" target="_blank">
+                                                <span class="detail-item">@CurrentlySelectedQuote.Bidder.Email</span>
                                             </a>
                                         </span>
                                         <span class="">
                                             <label>Market</label>
-                                            <a href="https://www.google.com/maps/search/@CurrentlySelectedQuote.projectManager.City, @CurrentlySelectedQuote.projectManager.State @CurrentlySelectedQuote.projectManager.Zip" target="_blank">
-                                                @CurrentlySelectedQuote.projectManager.City, @CurrentlySelectedQuote.projectManager.State
+                                            <a href="https://www.google.com/maps/search/@CurrentlySelectedQuote.Bidder.City, @CurrentlySelectedQuote.Bidder.State @CurrentlySelectedQuote.Bidder.Zip" target="_blank">
+                                                @CurrentlySelectedQuote.Bidder.City, @CurrentlySelectedQuote.Bidder.State
                                             </a>
                                         </span>
                                     </div>
@@ -282,17 +282,17 @@ else
 
                                 <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="rowIndex" />
                                 <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
-                                <DxGridDataColumn Width="100" Caption="Trade" FieldName="applicationType" />
+                                <DxGridDataColumn Width="100" Caption="Trade" FieldName="Trade" />
                                 <DxGridDataColumn Width="100" Caption="Relationship" FieldName="relationship" />
                                 <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
                                 <DxGridDataColumn Width="165" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                     <DxGridDataColumn Width="165" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
                                 <DxGridDataColumn Width="auto" Caption="Last Event" FieldName="lastEventDetails" />
-                                <DxGridDataColumn Width="150" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
+                                <DxGridDataColumn Width="150" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Bidder.FirstName + ' ' + Bidder.LastName" />
                                 <DxGridDataColumn Width="100" Caption="Amount" FieldName="totalQuote" DisplayFormat="C0" />
                                 <DxGridDataColumn Visible="false" Width="100" Caption="Qualified?" FieldName="isQualified" />
                                 @{
-                                    if (CurrentlySelectedQuote.applicationType == "Aggregate")
+                                    if (CurrentlySelectedQuote.Trade == "Aggregate")
                                     {
                                         <DxGridCommandColumn Width="100px" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
                                     }
@@ -313,7 +313,7 @@ else
                     }
 
                     @{
-                        if (CurrentlySelectedQuote.applicationType != "Aggregate")
+                        if (CurrentlySelectedQuote.Trade != "Aggregate")
                         {
                             <DxTabPage Id="Panel-Project-Summary" CssClass="tab-container" Text="@tradesCountLabel">
 
@@ -650,7 +650,7 @@ else
 
                 if (CurrentlySelectedQuote.status != "New")
                 {
-                    if (CurrentlySelectedQuote.applicationType != "Aggregate")
+                    if (CurrentlySelectedQuote.Trade != "Aggregate")
                     {
                         <div class="section-header">
                             10-Step Project Workflow
@@ -1131,7 +1131,7 @@ else
 
         Event _event = new Event();
         _event.Author = currentUser;
-        _event.Name = quoteToRemove.applicationType + " quote (" + quoteIdToRemove + ") removed from Aggregrate Parent (" + CurrentlySelectedQuote._id + ")";
+        _event.Name = quoteToRemove.Trade + " quote (" + quoteIdToRemove + ") removed from Aggregrate Parent (" + CurrentlySelectedQuote._id + ")";
         _event.Details = _event.Name;
 
         // Add event to child quote
@@ -1177,7 +1177,7 @@ else
 
         var quoteToRemove = WebServices.GetQuote(quoteId)[0];
 
-        ConfirmRemoveMessage = "Are you sure you want to REMOVE this (" + quoteToRemove.applicationType + ") project?";
+        ConfirmRemoveMessage = "Are you sure you want to REMOVE this (" + quoteToRemove.Trade + ") project?";
     }
 
     public void RestoreQuoteProject(string quoteId)
@@ -1188,7 +1188,7 @@ else
 
         var quoteToRestore = WebServices.GetQuote(quoteIdToRestore)[0];
 
-        ConfirmRestoreMessage = "Are you sure you want to RESTORE this (" + quoteToRestore.applicationType + ") project?";
+        ConfirmRestoreMessage = "Are you sure you want to RESTORE this (" + quoteToRestore.Trade + ") project?";
     }
 
     public string uploadUrl = "/api/Upload/UploadFile";
@@ -1323,7 +1323,7 @@ else
             QuoteGrid.ExpandDetailRow(0);
             QuoteGrid.SelectAllAsync(true);
 
-            TradesList = webServices.GetTradesList(true, CurrentlySelectedQuote.applicationType);
+            TradesList = webServices.GetTradesList(true, CurrentlySelectedQuote.Trade);
 
             // SetUIStyles(currentQuoteContainerType);
         }
@@ -1421,7 +1421,7 @@ else
     {
         CurrentlySelectedQuote.status = "Customer";
 
-        var projectManager = CurrentlySelectedQuote.projectManager;
+        var Bidder = CurrentlySelectedQuote.Bidder;
 
         Event _event = new Event();
         _event.Details = CurrentlySelectedQuote.firstName + " " + CurrentlySelectedQuote.lastName + " converted to Customer";
@@ -1747,14 +1747,14 @@ else
             CurrentlySelectedQuote.events.Add(statusChanged);
         }
 
-        CurrentlySelectedQuote.projectManager = SelectedProjectManager.ToList()[0];
+        CurrentlySelectedQuote.Bidder = SelectedProjectManager.ToList()[0];
 
-        var projectManager = CurrentlySelectedQuote.projectManager;
+        var Bidder = CurrentlySelectedQuote.Bidder;
 
         // Assignment event
         Event assignmentEvent = new Event();
         assignmentEvent.Name = "Assignment";
-        assignmentEvent.Details = CurrentlySelectedQuote.applicationType + " Project assigned to Bidder (" + projectManager.FirstName + " " + projectManager.LastName + ") and emailed to: (" + projectManager.Email + ")";
+        assignmentEvent.Details = CurrentlySelectedQuote.Trade + " Project assigned to Bidder (" + Bidder.FirstName + " " + Bidder.LastName + ") and emailed to: (" + Bidder.Email + ")";
         assignmentEvent.Author = currentUser;
 
         // Email PM and Client here...
@@ -1847,7 +1847,7 @@ else
             if (NoteDetails != "" || NoteDetails != null)
             {
                 Note note = new Note();
-                note.Summary = currentQuote.applicationType + " (" + currentQuote._id + ") moved to Archives";
+                note.Summary = currentQuote.Trade + " (" + currentQuote._id + ") moved to Archives";
                 note.Details = NoteDetails;
                 note.Author = currentUser;
 
@@ -1855,13 +1855,13 @@ else
             }
 
             Event _event = new Event();
-            _event.Details = currentQuote.applicationType + " (" + currentQuote._id + ") moved to Archives";
+            _event.Details = currentQuote.Trade + " (" + currentQuote._id + ") moved to Archives";
             _event.Author = currentUser;
             currentQuote.events.Add(_event);
 
             Quote relatedQuote = null;
 
-            if (currentQuote.applicationType == "Aggregate")
+            if (currentQuote.Trade == "Aggregate")
             {
                 foreach (Relationship relationship in currentQuote.relationships)
                 {
@@ -1878,7 +1878,7 @@ else
 
                         // _event.DateTime = DateTime.UtcNow;
                         // _event.Name = "Aggregate Project Archived";
-                        // _event.Details = "Child quote " + " relatedQuote.applicationType + " moved to Archives";
+                        // _event.Details = "Child quote " + " relatedQuote.Trade + " moved to Archives";
                         // _event.Author = currentUser;
                         // relatedQuote.events.Add(_event);
 
@@ -1983,7 +1983,7 @@ else
     {
         var originalQuoteId = CurrentlySelectedQuote._id;
 
-        if (CurrentlySelectedQuote.applicationType == "Aggregate")
+        if (CurrentlySelectedQuote.Trade == "Aggregate")
         {
             isAggregate = true;
         }
@@ -1993,7 +1993,7 @@ else
 
         // Master inherits id from the original. That way email links will continue working once converted to an aggregate
         // parentQuote._id = ObjectId.GenerateNewId().ToString();
-        parentQuote.applicationType = "Aggregate";
+        parentQuote.Trade = "Aggregate";
         parentQuote.totalQuote = 0;
         parentQuote.notes = new List<Note>();
         parentQuote.attachments = new List<Attachment>();
@@ -2008,7 +2008,7 @@ else
         parentRelationship._id = parentQuote._id;
         parentRelationship.ParentId = parentQuote._id;
         parentRelationship.Type = "Parent";
-        parentRelationship.Name = parentQuote.applicationType;
+        parentRelationship.Name = parentQuote.Trade;
 
         // Create copy of original quote
         originalQuoteCopy = new Quote(CurrentlySelectedQuote);
@@ -2028,7 +2028,7 @@ else
         childRelationship._id = parentQuote._id;
         childRelationship.ParentId = parentQuote._id;
         childRelationship.Type = "Child";
-        childRelationship.Name = parentQuote.applicationType;
+        childRelationship.Name = parentQuote.Trade;
 
         Event _event = new Event();
         _event.Author = currentUser;
@@ -2042,7 +2042,7 @@ else
                 _event.DateTime = DateTime.UtcNow;
                 _event.Author = currentUser;
                 _event.Name = "Aggregate project created";
-                _event.Details = "Aggregate spawned from original " + originalQuoteCopy.applicationType + " quote (" + originalQuoteCopy._id + ")";
+                _event.Details = "Aggregate spawned from original " + originalQuoteCopy.Trade + " quote (" + originalQuoteCopy._id + ")";
 
                 parentQuote.events.Add(_event);
 
@@ -2052,15 +2052,15 @@ else
                 foreach (var selectedTrade in SelectedTradesToAdd)
                 {
                     Quote childQuote = new Quote(originalQuoteCopy);
-                    childQuote.applicationType = selectedTrade.Value;
+                    childQuote.Trade = selectedTrade.Value;
 
                     // Add Parent relationship to Child
-                    if (childQuote.applicationType != "Aggregate")
+                    if (childQuote.Trade != "Aggregate")
                     {
                         // Reset new child instance product properties.
-                        if (originalQuoteCopy.applicationType != selectedTrade.Value)
+                        if (originalQuoteCopy.Trade != selectedTrade.Value)
                         {
-                            //childQuote.applicationType = "";
+                            //childQuote.Trade = "";
                             childQuote.timestamp = DateTime.UtcNow;
                             childQuote.lastUpdated = DateTime.UtcNow;
                             childQuote.totalQuote = 0;
@@ -2076,8 +2076,8 @@ else
                         _event = new Event();
                         _event.DateTime = DateTime.UtcNow;
                         _event.Author = currentUser;
-                        _event.Name = childQuote.applicationType + " Quote Created";
-                        _event.Details = "Child (" + childQuote.applicationType + ") quote created from original " + originalQuoteCopy.applicationType + " quote (" + originalQuoteCopy._id + ")";
+                        _event.Name = childQuote.Trade + " Quote Created";
+                        _event.Details = "Child (" + childQuote.Trade + ") quote created from original " + originalQuoteCopy.Trade + " quote (" + originalQuoteCopy._id + ")";
 
                         childQuote.events.Add(_event);
 
@@ -2092,7 +2092,7 @@ else
                     // Ensure unique ids
                     currentQuote._id = ObjectId.GenerateNewId().ToString();
 
-                    if (currentQuote.applicationType != "Aggregate")
+                    if (currentQuote.Trade != "Aggregate")
                     {
                         // Create Parent relationship
                         currentQuote.relationships.Add(parentRelationship);
@@ -2102,7 +2102,7 @@ else
                         childRelationship._id = currentQuote._id;
                         childRelationship.ParentId = parentQuote._id;
                         childRelationship.Type = "Child";
-                        childRelationship.Name = currentQuote.applicationType;
+                        childRelationship.Name = currentQuote.Trade;
 
                         parentQuote.relationships.Add(childRelationship);
                     }
@@ -2116,10 +2116,10 @@ else
                 foreach (var selectedTrade in SelectedTradesToAdd)
                 {
                     Quote childQuote = new Quote(originalQuoteCopy);
-                    childQuote.applicationType = selectedTrade.Value;
+                    childQuote.Trade = selectedTrade.Value;
 
                     // Reset new child instance product properties.
-                    if (originalQuoteCopy.applicationType != selectedTrade.Value)
+                    if (originalQuoteCopy.Trade != selectedTrade.Value)
                     {
                         childQuote.totalQuote = 0;
                         childQuote.notes = new List<Note>();
@@ -2136,7 +2136,7 @@ else
                     _event.DateTime = DateTime.UtcNow;
                     _event.Author = currentUser;
                     _event.Name = "Child project Created";
-                    _event.Details = "Child (" + childQuote.applicationType + ") quote created from original " + originalQuoteCopy.applicationType + " quote (" + originalQuoteCopy._id + ")";
+                    _event.Details = "Child (" + childQuote.Trade + ") quote created from original " + originalQuoteCopy.Trade + " quote (" + originalQuoteCopy._id + ")";
 
                     // Add this event to child
                     childQuote.events.Add(_event);
@@ -2146,14 +2146,14 @@ else
                     _event.DateTime = DateTime.UtcNow;
                     _event.Author = currentUser;
                     _event.Name = "Child project Attached";
-                    _event.Details = "Child (" + childQuote.applicationType + ") attached to Aggregate " + originalQuoteCopy.applicationType + " quote (" + originalQuoteCopy._id + ")";
+                    _event.Details = "Child (" + childQuote.Trade + ") attached to Aggregate " + originalQuoteCopy.Trade + " quote (" + originalQuoteCopy._id + ")";
 
                     parentQuote.events.Add(_event);
 
                     // Add Parent relationship to Child
-                    if (childQuote.applicationType != "Aggregate")
+                    if (childQuote.Trade != "Aggregate")
                     {
-                        if(parentQuote.applicationType != "Aggregate")
+                        if(parentQuote.Trade != "Aggregate")
                             parentQuote.relationships.Add(childRelationship);
 
                         newQuoteListQueue.Add(childQuote);
@@ -2165,14 +2165,14 @@ else
                     // Ensure unique ids
                     currentQuote._id = ObjectId.GenerateNewId().ToString();
 
-                    if (currentQuote.applicationType != "Aggregate")
+                    if (currentQuote.Trade != "Aggregate")
                     {
                         // Create Child relationship
                         childRelationship = new Relationship();
                         childRelationship._id = currentQuote._id;
                         childRelationship.ParentId = parentQuote._id;
                         childRelationship.Type = "Child";
-                        childRelationship.Name = currentQuote.applicationType;
+                        childRelationship.Name = currentQuote.Trade;
 
                         parentQuote.relationships.Add(childRelationship);
                     }
@@ -2212,7 +2212,7 @@ else
         {
             foreach (Quote currentQuote in newQuoteListQueue)
             {
-                if (currentQuote.applicationType != "Aggregate")
+                if (currentQuote.Trade != "Aggregate")
                 {
                     Quote tmpQuote = new Quote(currentQuote);
 
@@ -2285,7 +2285,7 @@ else
     {
         CurrentlySelectedQuote.status = "Warranty";
 
-        var projectManager = CurrentlySelectedQuote.projectManager;
+        var Bidder = CurrentlySelectedQuote.Bidder;
 
         Warranty warranty = new Warranty();
         warranty._t = "Claim";
@@ -2345,7 +2345,7 @@ else
 
             CurrentlySelectedQuote.warranties.AddRange(warranties);
 
-            var projectManager = CurrentlySelectedQuote.projectManager;
+            var Bidder = CurrentlySelectedQuote.Bidder;
 
             Note note = new Note();
             note.Summary = "Note Added (Close Warranty Claim)";
@@ -2374,7 +2374,7 @@ else
     {
         CurrentlySelectedQuote.status = "Complete";
 
-        var projectManager = CurrentlySelectedQuote.projectManager;
+        var Bidder = CurrentlySelectedQuote.Bidder;
 
         Event _event = new Event();
         _event.Details = CurrentlySelectedQuote.firstName + " " + CurrentlySelectedQuote.lastName + " converted to Completed Customer";
@@ -2437,7 +2437,7 @@ else
                 // Process attachments
                 foreach(Attachment attachment in CurrentlySelectedQuote.attachments)
                 {
-                    attachment.Trade = CurrentlySelectedQuote.applicationType;
+                    attachment.Trade = CurrentlySelectedQuote.Trade;
                     if (attachment.MediaName == "")
                         attachment.MediaName = "Filename?";
                 }
@@ -2450,7 +2450,7 @@ else
 
                     foreach(Event _event in quote.events)
                     {
-                        _event.Trade = quote.applicationType;
+                        _event.Trade = quote.Trade;
                         EventList.Add(_event);
                     }
                 }
@@ -2458,7 +2458,7 @@ else
                 // Process notes
                 foreach (Note note in CurrentlySelectedQuote.notes)
                 {
-                    note.Trade = CurrentlySelectedQuote.applicationType;
+                    note.Trade = CurrentlySelectedQuote.Trade;
                 }
                 NoteList.AddRange(CurrentlySelectedQuote.notes);
 
@@ -2478,7 +2478,7 @@ else
 
                 currentQuoteIndex = 0;
 
-                if (CurrentlySelectedQuote.applicationType == "Aggregate")
+                if (CurrentlySelectedQuote.Trade == "Aggregate")
                 {
                     CurrentlySelectedQuote.totalQuote = averageQuoteValue;
                 }
@@ -2508,7 +2508,7 @@ else
                 // Sort collections
                 LocalizeRelatedQuotes(RelatedQuoteSummaryList);
                 RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.lastEventTimeStamp).ToList();
-                // RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.applicationType).ToList();
+                // RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.Trade).ToList();
 
                 LocalizeAttachments(AttachmentList);
                 AttachmentList = AttachmentList.OrderByDescending(x => x.DateTime).ToList();
@@ -2522,7 +2522,7 @@ else
                 CurrentlySelectedQuote.timestamp = CurrentlySelectedQuote.timestamp.ToLocalTime();
                 CurrentlySelectedQuote.lastUpdated = CurrentlySelectedQuote.lastUpdated.ToLocalTime();
 
-                if(CurrentlySelectedQuote.applicationType == "Aggregate")
+                if(CurrentlySelectedQuote.Trade == "Aggregate")
                 {
                     currentQuoteContainerType = "Parent";
                 }

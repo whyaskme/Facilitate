@@ -17,7 +17,7 @@ namespace Facilitate.Libraries.Models
             rowIndex = 0;
 
             isQualified = false;
-            applicationType = string.Empty;
+            Trade = string.Empty;
             relationship = string.Empty;
             status = string.Empty;
             actions = string.Empty;
@@ -28,14 +28,14 @@ namespace Facilitate.Libraries.Models
             lastEventDetails = string.Empty;
             events = new List<Event>();
 
-            projectManager = null;
+            Bidder = null;
         }
 
         public string _id { get; set; }
         public string _t { get; set; }
         public int rowIndex { get; set; }
         public bool isQualified { get; set; }
-        public string applicationType { get; set; }
+        public string Trade { get; set; }
         public string relationship { get; set; }
         public string status { get; set; }
         public string actions { get; set; }
@@ -46,8 +46,8 @@ namespace Facilitate.Libraries.Models
         public DateTime lastEventTimeStamp { get; set; }
         public string lastEventDetails { get; set; }
 
-        public virtual ApplicationUser? projectManager { get; set; }
+        public virtual ApplicationUser? Bidder { get; set; }
 
-        //public virtual string projectManager { get; set; }
+        //public virtual string Bidder { get; set; }
     }
 }

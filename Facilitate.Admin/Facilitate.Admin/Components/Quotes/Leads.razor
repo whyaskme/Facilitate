@@ -236,7 +236,7 @@ else
             <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="rowIndex" />
             <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
 @*             <DxGridDataColumn Width="85" Caption="Status" FieldName="status" /> *@
-            <DxGridDataColumn  Visible="@recordIDVisible" Width="115" Caption="Trade" FieldName="applicationType" />
+            <DxGridDataColumn  Visible="@recordIDVisible" Width="115" Caption="Trade" FieldName="Trade" />
             <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Width="100" Caption="First" FieldName="firstName" />
             <DxGridDataColumn Width="125" Caption="Last" FieldName="lastName" />
@@ -277,7 +277,7 @@ else
 
         Event _event = new Event();
         _event.Author = currentUser;
-        _event.Name = quoteToRemove.applicationType + " quote (" + quoteIdToRemove + ") Archived";
+        _event.Name = quoteToRemove.Trade + " quote (" + quoteIdToRemove + ") Archived";
         _event.Details = _event.Name;
 
         // Add event to child quote
@@ -700,7 +700,7 @@ else
 
                 foreach (QuoteHeader _quote in quotes)
                 {
-                    if (_quote.applicationType == "Aggregate")
+                    if (_quote.Trade == "Aggregate")
                     {
                         quoteHeaderCollection.Add(_quote);
                     }

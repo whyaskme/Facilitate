@@ -13,7 +13,7 @@ namespace Facilitate.Libraries.Models
             _id = string.Empty;
             _t = "QuoteHeader";
             rowIndex = 0;
-            applicationType = string.Empty;
+            Trade = string.Empty;
             status = string.Empty;
             street = string.Empty;
             city = string.Empty;
@@ -29,13 +29,13 @@ namespace Facilitate.Libraries.Models
             timestamp = DateTime.UtcNow;
 
             events = new List<Event>();
-            projectManager = null;
+            Bidder = null;
         }
 
         public string _id { get; set; }
         public string _t { get; set; }
         public int rowIndex { get; set; }
-        public string applicationType { get; set; }
+        public string Trade { get; set; }
         public string status { get; set; }
         public string street { get; set; }
         public string city { get; set; }
@@ -52,7 +52,7 @@ namespace Facilitate.Libraries.Models
         public DateTime lastUpdated { get; set; }
 
         public virtual List<Event>? events { get; set; }
-        public virtual ApplicationUser? projectManager { get; set; }
+        public virtual ApplicationUser? Bidder { get; set; }
 
     }
 }

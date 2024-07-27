@@ -8,7 +8,7 @@ namespace Facilitate.Libraries.Models
         {
             _id = ObjectId.GenerateNewId().ToString();
             _t = "Quote";
-            applicationType = "Unspecified";
+            Trade = "Unspecified";
 
             ipAddress = "127.0.0.1";
 
@@ -34,7 +34,9 @@ namespace Facilitate.Libraries.Models
 
             timestamp = DateTime.UtcNow;
             lastUpdated = DateTime.UtcNow;
-            biddingExpires = DateTime.UtcNow;
+
+            Bidder = new ApplicationUser();
+            BiddingExpires = DateTime.UtcNow;
 
             totalQuote = 0;
 
@@ -52,7 +54,7 @@ namespace Facilitate.Libraries.Models
             products = new List<Product>();
             attachments = new List<Attachment>();
             notes = new List<Note>();
-            projectManager = null;
+            Bidder = null;
             events = new List<Event>();
             warranties = new List<Warranty>();
     }
@@ -62,7 +64,7 @@ namespace Facilitate.Libraries.Models
             _id = OriginalQuote._id;
             _t = OriginalQuote._t;
 
-            applicationType = OriginalQuote.applicationType;
+            Trade = OriginalQuote.Trade;
 
             ipAddress = OriginalQuote.ipAddress;
 
@@ -86,7 +88,9 @@ namespace Facilitate.Libraries.Models
 
             timestamp = OriginalQuote.timestamp;
             lastUpdated = OriginalQuote.lastUpdated;
-            biddingExpires = OriginalQuote.biddingExpires;
+
+            Bidder = OriginalQuote.Bidder;
+            BiddingExpires = OriginalQuote.BiddingExpires;
 
             totalQuote = OriginalQuote.totalQuote;
 
@@ -105,15 +109,17 @@ namespace Facilitate.Libraries.Models
             products = new List<Product>();
             attachments = new List<Attachment>();
             notes = new List<Note>();
-            projectManager = OriginalQuote.projectManager;
+            Bidder = OriginalQuote.Bidder;
             events = OriginalQuote.events;
             warranties = new List<Warranty>();
         }
 
         public string _id { get; set; }
         public string _t { get; set; }
-        public string applicationType { get; set; }
+        
         public string ipAddress { get; set; }
+
+        public string Trade { get; set; }
 
         public string status { get; set; }
         public string statusPrevious { get; set; }
@@ -139,7 +145,9 @@ namespace Facilitate.Libraries.Models
 
         public DateTime timestamp { get; set; }
         public DateTime lastUpdated { get; set; }
-        public DateTime biddingExpires { get; set; }
+
+        public virtual ApplicationUser? Bidder { get; set; }
+        public DateTime BiddingExpires { get; set; }
 
         public double totalQuote { get; set; }
 
@@ -154,9 +162,6 @@ namespace Facilitate.Libraries.Models
         public string repName { get; set; }
         public string repEmail { get; set; }
         public int leadId { get; set; }
-
-        //public virtual User? projectManager { get; set; }
-        public virtual ApplicationUser? projectManager { get; set; }
 
         public List<Relationship>? relationships { get; set; }
         public List<Product>? products { get; set; }

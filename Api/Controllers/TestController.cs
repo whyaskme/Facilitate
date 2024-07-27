@@ -37,7 +37,7 @@ namespace Facilitate.Api.Controllers
 
         // GET api/<TestController>/5
         [HttpGet("{numQuotesToCreate}")]
-        public IActionResult Get(string applicationType, int numQuotesToCreate)
+        public IActionResult Get(string Trade, int numQuotesToCreate)
         {
             List<String> nameGenders = new List<string>();
             nameGenders.Add("male");
@@ -55,7 +55,7 @@ namespace Facilitate.Api.Controllers
                         quote.status = "New";
 
                         // Will need to figure out how to set dynamically
-                        quote.applicationType = utils.TitleCaseString(applicationType);
+                        quote.Trade = utils.TitleCaseString(Trade);
 
                         var randomStreetNumber = utils.GetRandomStreetNumber();
                         var randomStreetName = utils.GetRandomStreetName();

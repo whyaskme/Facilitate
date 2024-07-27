@@ -63,8 +63,8 @@ namespace Facilitate.Admin.Data
                     .Include(p => p._id)
                     .Include(p => p.email)
                     .Include(p => p.status)
-                    .Include(p => p.projectManager)
-                    .Include(p => p.applicationType)
+                    .Include(p => p.Bidder)
+                    .Include(p => p.Trade)
                     .Include(p => p.numberOfStructures)
                     .Include(p => p.numberOfIncludedStructures)
                     .Include(p => p.totalQuote)
@@ -112,8 +112,8 @@ namespace Facilitate.Admin.Data
                     .Include(p => p._id)
                     .Include(p => p.email)
                     .Include(p => p.status)
-                    .Include(p => p.projectManager)
-                    .Include(p => p.applicationType)
+                    .Include(p => p.Bidder)
+                    .Include(p => p.Trade)
                     .Include(p => p.numberOfStructures)
                     .Include(p => p.numberOfIncludedStructures)
                     .Include(p => p.totalQuote)
@@ -126,7 +126,7 @@ namespace Facilitate.Admin.Data
                     .Include(p => p.zip);
 
                 var filterBuilder = Builders<Quote>.Filter;
-                var filter = filterBuilder.Eq("status", status) & filterBuilder.Eq("applicationType", utils.TitleCaseString(tradeType));
+                var filter = filterBuilder.Eq("status", status) & filterBuilder.Eq("Trade", utils.TitleCaseString(tradeType));
 
                 if (!showHideTestData)
                 {
@@ -177,7 +177,7 @@ namespace Facilitate.Admin.Data
                 var builder = Builders<Quote>.Filter;
                 var filter = Builders<Quote>.Filter.And(
                     Builders<Quote>.Filter.Where(p => p.status.Contains(status)),
-                    Builders<Quote>.Filter.Where(p => p.projectManager.Email.Contains(userId))
+                    Builders<Quote>.Filter.Where(p => p.Bidder.Email.Contains(userId))
                     );
 
                 List<Quote> quotes = _mongoDBCollection.Find(filter).Project<Quote>(fields).ToList();
@@ -243,11 +243,11 @@ namespace Facilitate.Admin.Data
 
                     _summary.relationship = relationship.Type;
                     _summary._id = relatedQuote._id;
-                    _summary.applicationType = relatedQuote.applicationType;
+                    _summary.Trade = relatedQuote.Trade;
                     _summary.status = relatedQuote.status;
 
                     _summary.totalQuote = relatedQuote.totalQuote;
-                    _summary.projectManager = relatedQuote.projectManager;
+                    _summary.Bidder = relatedQuote.Bidder;
 
                     Event lastEvent = relatedQuote.events.LastOrDefault();
                     _summary.events = relatedQuote.events;
@@ -350,10 +350,10 @@ namespace Facilitate.Admin.Data
             List<Quote> sortedQuotes = new List<Quote>();
             try
             {
-                var tradeFilter = Builders<Quote>.Filter.Where(p => p.applicationType.Contains(utils.TitleCaseString(tradeType)));
+                var tradeFilter = Builders<Quote>.Filter.Where(p => p.Trade.Contains(utils.TitleCaseString(tradeType)));
 
                 var filterBuilder = Builders<Quote>.Filter;
-                var filter = filterBuilder.Eq("status", status) & filterBuilder.Eq("applicationType", utils.TitleCaseString(tradeType));
+                var filter = filterBuilder.Eq("status", status) & filterBuilder.Eq("Trade", utils.TitleCaseString(tradeType));
 
                 if (!showHideTestData)
                 {
@@ -505,7 +505,7 @@ namespace Facilitate.Admin.Data
                 var builder = Builders<Quote>.Filter;
                 var filter = Builders<Quote>.Filter.And(
                     Builders<Quote>.Filter.Where(p => p.status.Contains(status)),
-                    Builders<Quote>.Filter.Where(p => p.projectManager.Email.Contains(userId))
+                    Builders<Quote>.Filter.Where(p => p.Bidder.Email.Contains(userId))
                     );
 
                 sortedQuotes = _mongoDBCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
@@ -583,12 +583,12 @@ namespace Facilitate.Admin.Data
 
                 //if (filterActiveTrade)
                 //{
-                //    var dataSourceFilter = Builders<Quote>.Filter.Not(Builders<Quote>.Filter.Eq(p => p.applicationType, activeQuoteTrade));
+                //    var dataSourceFilter = Builders<Quote>.Filter.Not(Builders<Quote>.Filter.Eq(p => p.Trade, activeQuoteTrade));
 
                 //    tradeFilter = Builders<Quote>.Filter.And(filter, dataSourceFilter);
                 //}
 
-                var tradesList = _mongoDBCollection.Distinct(s => s.applicationType, tradeFilter).ToList();
+                var tradesList = _mongoDBCollection.Distinct(s => s.Trade, tradeFilter).ToList();
 
                 foreach (var trade in tradesList)
                 {
@@ -622,7 +622,7 @@ namespace Facilitate.Admin.Data
                 {
                     var statusFilter = Builders<Quote>.Filter.Where(p => p._t == "Quote");
 
-                    var tradesList = _mongoDBCollection.Distinct(s => s.applicationType, statusFilter);
+                    var tradesList = _mongoDBCollection.Distinct(s => s.Trade, statusFilter);
 
                     return tradesList.ToList();
                 }
@@ -630,7 +630,7 @@ namespace Facilitate.Admin.Data
                 {
                     var statusFilter = Builders<Quote>.Filter.Where(p => p.status.Contains(status));
 
-                    var tradesList = _mongoDBCollection.Distinct(s => s.applicationType, statusFilter);
+                    var tradesList = _mongoDBCollection.Distinct(s => s.Trade, statusFilter);
 
                     return tradesList.ToList();
                 }
@@ -955,10 +955,10 @@ namespace Facilitate.Admin.Data
             var searchResults = new List<QuoteStat>();
             var dataSourceFilter = Builders<Quote>.Filter.Not(Builders<Quote>.Filter.Eq(p => p.externalUrl, "Auto-generated WebApi"));
 
-            //var tradeFilter = Builders<Quote>.Filter.Where(p => p.applicationType.Contains(utils.TitleCaseString(tradeType)));
+            //var tradeFilter = Builders<Quote>.Filter.Where(p => p.Trade.Contains(utils.TitleCaseString(tradeType)));
 
             var filterBuilder = Builders<Quote>.Filter;
-            var filter = filterBuilder.Eq("status", status) & filterBuilder.Eq("applicationType", utils.TitleCaseString(tradeType));
+            var filter = filterBuilder.Eq("status", status) & filterBuilder.Eq("Trade", utils.TitleCaseString(tradeType));
 
             if (!showHideTestData)
             {
@@ -1067,7 +1067,7 @@ namespace Facilitate.Admin.Data
             try
             {
                 var countsByQuoteStatus = _mongoDBCollection.Aggregate()
-                    .Match(x => x.projectManager.Email == userId)
+                    .Match(x => x.Bidder.Email == userId)
                           .Group(
                               x => x.status,
                               g => new QuoteStat

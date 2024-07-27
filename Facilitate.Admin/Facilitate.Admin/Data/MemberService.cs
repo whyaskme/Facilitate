@@ -38,7 +38,7 @@ namespace Facilitate.Admin.Data
         public List<User> GetMembers(Tuple<ObjectId, string> memberType)
         {
             List<User> members = null;
-            List<ListItem> projectManagers = new List<ListItem>();
+            List<ListItem> Bidders = new List<ListItem>();
 
             ObjectId memberTypeId = memberType.Item1;
             string memberTypeValue = memberType.Item2;

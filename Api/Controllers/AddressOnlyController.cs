@@ -64,7 +64,7 @@ namespace Facilitate.Api.Controllers
             quote.status = "Address Only";
 
             // Will need to figure out how to set dynamically
-            quote.applicationType = "Roofing";
+            quote.Trade = "Roofing";
 
             quote.ipAddress = headerForwardedFor;
             quote.externalUrl = headerReferer;

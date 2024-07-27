@@ -52,16 +52,37 @@ namespace Facilitate.Api.Controllers
         {
             author = new ApplicationUser();
             author.Id = Guid.NewGuid().ToString();
-            author.FirstName = "Web";
+            author.FirstName = "Roofle";
             author.LastName = "Api";
+
+            author.PhoneNumber = "555-555-5555";
+            author.PhoneNumberConfirmed = true;
+
+            author.Address1 = "123 Main St";
+            author.Address2 = "";
+            author.City = "Austin";
+            author.State = "TX";
+            author.Zip = "78753";
+
+            author.Email = "admin@facilitate.org";
+            author.EmailConfirmed = true;
+            
+            author.UserName = "RoofleApi";
+            author.NormalizedUserName = "ROOFLEAPI";
+            author.NormalizedEmail = author.Email;
+            author.LockoutEnabled = false;
+            author.LockoutEnd = null;
+            author.ConcurrencyStamp = Guid.NewGuid().ToString();
+            author.SecurityStamp = Guid.NewGuid().ToString();
+            author.PasswordHash = "";
 
             try
             {
                 string headerForwardedFor = "n/a";
                 string headerReferer = "n/a";
 
-                int childBidderQuotesToCreate = 5;
-                int biddingExpiresInDays = 7;
+                int childBidderQuotesToCreate = 1;
+                int BiddingExpiresInDays = 1;
 
                 double totalQuoteValue = 0;
 
@@ -76,10 +97,11 @@ namespace Facilitate.Api.Controllers
                 }
 
                 Quote aggregateQuote = new Quote();
-                aggregateQuote.applicationType = utils.TitleCaseString("Aggregate");
+                aggregateQuote.Trade = utils.TitleCaseString("Aggregate");
 
-                // Set expiration
-                aggregateQuote.biddingExpires = DateTime.UtcNow.AddDays(biddingExpiresInDays);
+                // Set Bidding properties
+                aggregateQuote.Bidder = author;
+                aggregateQuote.BiddingExpires = DateTime.UtcNow.AddDays(BiddingExpiresInDays);
 
                 aggregateQuote.ipAddress = headerForwardedFor;
                 aggregateQuote.externalUrl = headerReferer;
@@ -135,15 +157,16 @@ namespace Facilitate.Api.Controllers
 
                     if (i == 0)
                     {
-                        childQuote.statusSubcategory = "spec-bidder";
+                        childQuote.statusSubcategory = "default-bidder";
                         childQuote.totalQuote = totalQuoteValue;
                     }
 
                     // Will need to figure out how to set dynamically
-                    childQuote.applicationType = utils.TitleCaseString("Roofing");
+                    childQuote.Trade = utils.TitleCaseString("Roofing");
 
-                    // Set expiration
-                    childQuote.biddingExpires = DateTime.UtcNow.AddDays(biddingExpiresInDays);
+                    // Set Bidding properties
+                    childQuote.Bidder = author;
+                    childQuote.BiddingExpires = DateTime.UtcNow.AddDays(BiddingExpiresInDays);
 
                     // Begin copy data
                     childQuote.ipAddress = headerForwardedFor;
@@ -201,7 +224,7 @@ namespace Facilitate.Api.Controllers
                     childRelationship._id = childQuote._id;
                     childRelationship.ParentId = aggregateQuote._id;
                     childRelationship.Type = "Child";
-                    childRelationship.Name = childQuote.applicationType;
+                    childRelationship.Name = childQuote.Trade;
 
                     aggregateQuote.relationships.Add(childRelationship);
 
@@ -211,7 +234,7 @@ namespace Facilitate.Api.Controllers
                     parentRelationship._id = aggregateQuote._id;
                     parentRelationship.ParentId = aggregateQuote._id;
                     parentRelationship.Type = "Parent";
-                    parentRelationship.Name = aggregateQuote.applicationType;
+                    parentRelationship.Name = aggregateQuote.Trade;
 
                     // Add Parent to Child
                     CreateChildSpawnedEvent(aggregateQuote, childQuote);
@@ -258,8 +281,8 @@ namespace Facilitate.Api.Controllers
         {
             Event _event = new Event();
             _event.Author = author;
-            _event.Trade = aggregateQuote.applicationType;
-            _event.Name = aggregateQuote.applicationType + " quote Created";
+            _event.Trade = aggregateQuote.Trade;
+            _event.Name = aggregateQuote.Trade + " quote Created";
             _event.Details = _event.Name;
 
             // Add event to child quote
@@ -271,8 +294,8 @@ namespace Facilitate.Api.Controllers
             // Child event
             Event childEvent = new Event();
             childEvent.Author = author;
-            childEvent.Trade = childQuote.applicationType;
-            childEvent.Name = "Child (" + childQuote.applicationType + ") quote Spawned";
+            childEvent.Trade = childQuote.Trade;
+            childEvent.Name = "Child (" + childQuote.Trade + ") quote Spawned";
             childEvent.Details = childEvent.Name + " for parent Aggregate Id (" + aggregateQuote._id + ")";
 
             // Add event to child quote
@@ -283,8 +306,8 @@ namespace Facilitate.Api.Controllers
         {
             Event childEvent = new Event();
             childEvent.Author = author;
-            childEvent.Trade = childQuote.applicationType;
-            childEvent.Name = "Child (" + childQuote.applicationType + ") quote Linked";
+            childEvent.Trade = childQuote.Trade;
+            childEvent.Name = "Child (" + childQuote.Trade + ") quote Linked";
             childEvent.Details = childEvent.Name + " to parent Aggregate Id (" + aggregateQuote._id + ")";
 
             // Add event to child quote
@@ -316,15 +339,15 @@ namespace Facilitate.Api.Controllers
                         siblingRelationship._id = newQuote._id;
                         siblingRelationship.ParentId = quoteId;
                         siblingRelationship.Type = "Sibling";
-                        siblingRelationship.Name = newQuote.applicationType;
+                        siblingRelationship.Name = newQuote.Trade;
 
                         quoteToUpdate.relationships.Add(siblingRelationship);
 
                         //CreateSiblingLinkedEvents(newQuote, siblingRelationship);
                         Event siblingEvent = new Event();
                         siblingEvent.Author = author;
-                        siblingEvent.Trade = quoteToUpdate.applicationType;
-                        siblingEvent.Name = "Sibling (" + quoteToUpdate.applicationType + ") quote Linked";
+                        siblingEvent.Trade = quoteToUpdate.Trade;
+                        siblingEvent.Name = "Sibling (" + quoteToUpdate.Trade + ") quote Linked";
                         siblingEvent.Details = siblingEvent.Name + " to Sibling Id (" + siblingEvent._id + ")";
 
                         // Add event to child quote
@@ -350,8 +373,8 @@ namespace Facilitate.Api.Controllers
         {
             Event siblingEvent = new Event();
             siblingEvent.Author = author;
-            siblingEvent.Trade = childQuote.applicationType;
-            siblingEvent.Name = "Sibling (" + childQuote.applicationType + ") quote Linked";
+            siblingEvent.Trade = childQuote.Trade;
+            siblingEvent.Name = "Sibling (" + childQuote.Trade + ") quote Linked";
             siblingEvent.Details = siblingEvent.Name + " to Sibling Id (" + siblingEvent._id + ")";
 
             // Add event to child quote
