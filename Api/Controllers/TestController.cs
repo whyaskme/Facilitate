@@ -1,8 +1,10 @@
-﻿using Facilitate.Libraries.Models;
+﻿using DevExpress.DocumentServices.ServiceModel.DataContracts;
+using Facilitate.Libraries.Models;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Web.Http.Cors;
 
 namespace Facilitate.Api.Controllers
@@ -41,6 +43,8 @@ namespace Facilitate.Api.Controllers
         [HttpGet("{numQuotesToCreate}")]
         public IActionResult Get(string Trade, int numQuotesToCreate)
         {
+            Trade = utils.TitleCaseString(Trade);
+
             Quote aggregateQuote = new Quote();
 
             author = new ApplicationUser();
@@ -230,7 +234,9 @@ namespace Facilitate.Api.Controllers
                             _quoteCollection.InsertOne(aggregateQuote);
                         }
 
+                        CreateChildQuote(aggregateQuote, Trade, "Default");
 
+                        CreateSiblingRelationships(aggregateQuote);
                     }
                     catch (Exception ex)
                     {
@@ -253,6 +259,84 @@ namespace Facilitate.Api.Controllers
 
             }
             return Ok(resultMsg);
+        }
+
+        private void CreateChildQuote(Quote aggregateQuote, string tradeType, string bidderType)
+        {
+            try
+            {
+                // Create Child Quote
+                Quote childQuote = new Quote();
+                childQuote.status = "New";
+                childQuote.Trade = tradeType;
+
+                childQuote.Bidder = author;
+                childQuote.BidderType = bidderType;
+                childQuote.BiddingExpires = aggregateQuote.BiddingExpires;
+
+                childQuote.ipAddress = aggregateQuote.ipAddress;
+                childQuote.externalUrl = aggregateQuote.externalUrl;
+
+                childQuote.mainRoofTotalSquareFeet = aggregateQuote.mainRoofTotalSquareFeet;
+                childQuote.totalQuote = aggregateQuote.totalQuote;
+                childQuote.totalSquareFeet = aggregateQuote.totalSquareFeet;
+                childQuote.totalInitialSquareFeet = aggregateQuote.totalInitialSquareFeet;
+
+                childQuote.firstName = aggregateQuote.firstName;
+                childQuote.lastName = aggregateQuote.lastName;
+                childQuote.email = aggregateQuote.email;
+                childQuote.phone = aggregateQuote.phone;
+                childQuote.address = aggregateQuote.address;
+                childQuote.fullAddress = aggregateQuote.fullAddress;
+                childQuote.street = aggregateQuote.street;
+                childQuote.city = aggregateQuote.city;
+                childQuote.state = aggregateQuote.state;
+                childQuote.zip = aggregateQuote.zip;
+
+                childQuote.market = aggregateQuote.market;
+
+                // Create Aggregate relationship to Child
+                var parentRelationship = new Relationship();
+                parentRelationship.Author = author.FirstName + " " + author.LastName;
+                parentRelationship._id = aggregateQuote._id;
+                parentRelationship.ParentId = aggregateQuote._id;
+                parentRelationship.Type = "Parent";
+                parentRelationship.Name = aggregateQuote.Trade;
+
+                if (aggregateQuote.Trade == "Aggregate")
+                {
+                    childQuote.relationships.Add(parentRelationship);
+                }
+
+                // Create Child relationship to Aggregate
+                var childRelationship = new Relationship();
+                childRelationship.Author = author.FirstName + " " + author.LastName;
+                childRelationship._id = childQuote._id;
+                childRelationship.ParentId = aggregateQuote._id;
+                childRelationship.Type = "Child";
+                childRelationship.Name = childQuote.Trade;
+
+                // Create Parent relationship to Child
+                if(aggregateQuote.Trade == "Aggregate")
+                {
+                    aggregateQuote.relationships.Add(childRelationship);
+                }
+
+                // Save Child
+                _quoteCollection.InsertOne(childQuote);
+
+                // Save Parent
+                var filter = Builders<Quote>.Filter.Eq(x => x._id, aggregateQuote._id);
+                var result = _quoteCollection.ReplaceOne(filter, aggregateQuote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
         }
 
         private void CreateParentSpawnedEvent(Quote aggregateQuote)
@@ -292,48 +376,54 @@ namespace Facilitate.Api.Controllers
             childQuote.events.Add(childEvent);
         }
 
-        private void CreateSiblingRelationships(Quote aggregateQuote, List<Quote> newQuoteListQueue)
+        private void CreateSiblingRelationships(Quote aggregateQuote)
         {
             var author = new ApplicationUser();
             author.Id = Guid.NewGuid().ToString();
             author.FirstName = "Web";
             author.LastName = "Api";
 
+            var relationshipToId = "";
             var quoteId = "";
 
             foreach (Relationship _relationship in aggregateQuote.relationships)
             {
                 try
                 {
+                    //relationshipToId = _relationship._id;
                     quoteId = _relationship._id;
 
                     Quote quoteToUpdate = _quoteCollection.Find(x => x._id == quoteId).FirstOrDefault();
 
-                    foreach (Quote newQuote in newQuoteListQueue)
+                    foreach(Relationship relationship in quoteToUpdate.relationships)
                     {
+                        var childRelationshipType = relationship.Type;
+
                         // Create Sibling relationship
                         var siblingRelationship = new Relationship();
                         siblingRelationship.Author = author.FirstName + " " + author.LastName;
-                        siblingRelationship._id = newQuote._id;
-                        siblingRelationship.ParentId = quoteId;
+
                         siblingRelationship.Type = "Sibling";
-                        siblingRelationship.Name = newQuote.Trade;
+                        siblingRelationship._id = quoteToUpdate._id;
+                        siblingRelationship.ParentId = quoteId;
+                        siblingRelationship.Name = quoteToUpdate.Trade;
+
+                        //if (quoteId != quoteToUpdate._id)
+                        //{
+                        //    quoteToUpdate.relationships.Add(siblingRelationship);
+                        //}
+
+                        //if (quoteToUpdate.Trade != "Aggregate")
+                        //{
+                        //    quoteToUpdate.relationships.Add(siblingRelationship);
+                        //}
 
                         quoteToUpdate.relationships.Add(siblingRelationship);
 
-                        Event siblingEvent = new Event();
-                        siblingEvent.Author = author;
-                        siblingEvent.Trade = quoteToUpdate.Trade;
-                        siblingEvent.Name = "Sibling (" + quoteToUpdate.Trade + ") quote Linked";
-                        siblingEvent.Details = siblingEvent.Name + " to Sibling Id (" + siblingEvent._id + ")";
+                        var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
 
-                        // Add event to child quote
-                        quoteToUpdate.events.Add(siblingEvent);
+                        var result = _quoteCollection.ReplaceOne(filter, quoteToUpdate, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
                     }
-
-                    var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
-
-                    var result = _quoteCollection.ReplaceOne(filter, quoteToUpdate, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
                 }
                 catch (Exception ex)
                 {

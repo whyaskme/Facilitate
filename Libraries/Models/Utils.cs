@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Net;
 using System.Net.Mail;
+using System.Reflection.Emit;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -355,10 +356,11 @@ namespace Facilitate.Libraries.Models
 
             try 
             {
+                //var zipCodeCollection = _mongoClient.GetDatabase(_mongoDBName).GetCollection<ZipCode>("ReferenceData");
+                //var selectedZipCodes = zipCodeCollection.Find(s => s.CityId == cityId).ToListAsync().Result;
+
                 var zipCodeCollection = _mongoClient.GetDatabase(_mongoDBName).GetCollection<ZipCode>(_mongoDBCollectionName);
                 randomZipCodes = zipCodeCollection.Find(s => s._t == "ZipCode").ToListAsync().Result;
-
-                var itemCount = randomZipCodes.Count();
 
                 foreach (ZipCode zipCode in randomZipCodes)
                 {
