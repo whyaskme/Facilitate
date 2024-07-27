@@ -36,6 +36,7 @@ namespace Facilitate.Libraries.Models
             lastUpdated = DateTime.UtcNow;
 
             Bidder = new ApplicationUser();
+            BidderType = "Open";
             BiddingExpires = DateTime.UtcNow;
 
             totalQuote = 0;
@@ -90,6 +91,7 @@ namespace Facilitate.Libraries.Models
             lastUpdated = OriginalQuote.lastUpdated;
 
             Bidder = OriginalQuote.Bidder;
+            BidderType = OriginalQuote.BidderType;
             BiddingExpires = OriginalQuote.BiddingExpires;
 
             totalQuote = OriginalQuote.totalQuote;
@@ -147,6 +149,7 @@ namespace Facilitate.Libraries.Models
         public DateTime lastUpdated { get; set; }
 
         public virtual ApplicationUser? Bidder { get; set; }
+        public string BidderType { get; set; }
         public DateTime BiddingExpires { get; set; }
 
         public double totalQuote { get; set; }
@@ -171,7 +174,7 @@ namespace Facilitate.Libraries.Models
         public virtual List<Warranty>? warranties { get; set; }
 
         #region Implementation of IEnumerable
-        List<Quote> quotes;
+        //List<Quote> quotes;
         //public IEnumerator<Quote> GetEnumerator()
         //{
         //    return quotes.GetEnumerator();

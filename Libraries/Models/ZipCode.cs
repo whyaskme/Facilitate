@@ -24,7 +24,7 @@ namespace Facilitate.Libraries.Models
         /// </summary>
         public ZipCode()
         {
-            _t = "Zip";
+            _t = "ZipCode";
 
             Zip = 00000;
             City = string.Empty;

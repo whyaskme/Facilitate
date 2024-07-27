@@ -213,11 +213,6 @@ namespace Facilitate.Api.Controllers
                     childQuote.sessionId = roofleSubmission.sessionId;
                     // End copy data
 
-                    //var author = new ApplicationUser();
-                    //author.Id = Guid.NewGuid().ToString();
-                    //author.FirstName = "Web";
-                    //author.LastName = "Api";
-
                     // Create Child relationship to Aggregate
                     var childRelationship = new Relationship();
                     childRelationship.Author = author.FirstName + " " + author.LastName;
@@ -248,8 +243,6 @@ namespace Facilitate.Api.Controllers
 
                     // Insert Child
                     childQuote.relationships = childQuote.relationships.Distinct().ToList();
-
-                    //CreateChildSpawnedEvent(aggregateQuote, childQuote);
 
                     _quoteCollection.InsertOne(childQuote);
 
@@ -343,7 +336,6 @@ namespace Facilitate.Api.Controllers
 
                         quoteToUpdate.relationships.Add(siblingRelationship);
 
-                        //CreateSiblingLinkedEvents(newQuote, siblingRelationship);
                         Event siblingEvent = new Event();
                         siblingEvent.Author = author;
                         siblingEvent.Trade = quoteToUpdate.Trade;
@@ -369,22 +361,6 @@ namespace Facilitate.Api.Controllers
             }
         }
 
-        private void CreateSiblingLinkedEvents(Quote childQuote, Relationship siblingRelationship)
-        {
-            Event siblingEvent = new Event();
-            siblingEvent.Author = author;
-            siblingEvent.Trade = childQuote.Trade;
-            siblingEvent.Name = "Sibling (" + childQuote.Trade + ") quote Linked";
-            siblingEvent.Details = siblingEvent.Name + " to Sibling Id (" + siblingEvent._id + ")";
-
-            // Add event to child quote
-            childQuote.events.Add(siblingEvent);
-
-            var filter = Builders<Quote>.Filter.Eq(x => x._id, childQuote._id);
-
-            var result = _quoteCollection.ReplaceOne(filter, childQuote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
-        }
-
         // GET: api/<QuoteController>
         [Produces("application/json")]
         [ProducesResponseType<IEnumerable<Quote>>(StatusCodes.Status200OK)]
@@ -401,43 +377,43 @@ namespace Facilitate.Api.Controllers
 
                 sortedQuotes = _quoteCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
 
-                for (var i = 0; i < sortedQuotes.Count; i++)
-                {
-                    unSortedFiles.Clear();
-                    unSortedNotes.Clear();
-                    unSortedEvents.Clear();
+                //for (var i = 0; i < sortedQuotes.Count; i++)
+                //{
+                //    unSortedFiles.Clear();
+                //    unSortedNotes.Clear();
+                //    unSortedEvents.Clear();
 
-                    for (var j = 0; j < sortedQuotes[i].attachments.Count; j++)
-                    {
-                        Attachment currentAttachment = sortedQuotes[i].attachments[j];
+                //    for (var j = 0; j < sortedQuotes[i].attachments.Count; j++)
+                //    {
+                //        Attachment currentAttachment = sortedQuotes[i].attachments[j];
 
-                        var currentDateTime = currentAttachment.DateTime;
+                //        var currentDateTime = currentAttachment.DateTime;
 
-                        currentAttachment.DateTime = currentAttachment.DateTime.ToLocalTime();
+                //        currentAttachment.DateTime = currentAttachment.DateTime.ToLocalTime();
 
-                        unSortedFiles.Add(currentAttachment);
-                    }
+                //        unSortedFiles.Add(currentAttachment);
+                //    }
 
-                    for (var j = 0; j < sortedQuotes[i].notes.Count; j++)
-                    {
-                        Note currentNote = sortedQuotes[i].notes[j];
-                        currentNote.DateTime = currentNote.DateTime.ToLocalTime();
+                //    for (var j = 0; j < sortedQuotes[i].notes.Count; j++)
+                //    {
+                //        Note currentNote = sortedQuotes[i].notes[j];
+                //        currentNote.DateTime = currentNote.DateTime.ToLocalTime();
 
-                        unSortedNotes.Add(currentNote);
-                    }
+                //        unSortedNotes.Add(currentNote);
+                //    }
 
-                    for (var j = 0; j < sortedQuotes[i].events.Count; j++)
-                    {
-                        Event currentEvent = sortedQuotes[i].events[j];
-                        currentEvent.DateTime = currentEvent.DateTime.ToLocalTime();
+                //    for (var j = 0; j < sortedQuotes[i].events.Count; j++)
+                //    {
+                //        Event currentEvent = sortedQuotes[i].events[j];
+                //        currentEvent.DateTime = currentEvent.DateTime.ToLocalTime();
 
-                        unSortedEvents.Add(currentEvent);
-                    }
+                //        unSortedEvents.Add(currentEvent);
+                //    }
 
-                    sortedQuotes[i].attachments = SortFilesByDateDesc(unSortedFiles);
-                    sortedQuotes[i].notes = SortNotesByDateDesc(unSortedNotes);
-                    sortedQuotes[i].events = SortEventsByDateDesc(unSortedEvents);
-                }
+                //    sortedQuotes[i].attachments = SortFilesByDateDesc(unSortedFiles);
+                //    sortedQuotes[i].notes = SortNotesByDateDesc(unSortedNotes);
+                //    sortedQuotes[i].events = SortEventsByDateDesc(unSortedEvents);
+                //}
             }
             catch (Exception ex)
             {

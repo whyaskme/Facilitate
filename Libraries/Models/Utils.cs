@@ -8,6 +8,7 @@ using System.Xml;
 
 using MongoDB.Bson;
 using MongoDB.Driver;
+using static Facilitate.Libraries.Models.Constants.Messaging;
 
 namespace Facilitate.Libraries.Models
 {
@@ -347,39 +348,29 @@ namespace Facilitate.Libraries.Models
             return randomStateInfo;
         }
 
-        public string GetRandomZipCode(ObjectId cityId)
+        public ZipCode GetRandomZipCode(ObjectId cityId)
         {
-            List<ZipCode> myZipCodes = new List<ZipCode>();
+            List<ZipCode> randomZipCodes = null;
+            ZipCode randomZipcode = null;
 
-            try
+            try 
             {
                 var zipCodeCollection = _mongoClient.GetDatabase(_mongoDBName).GetCollection<ZipCode>(_mongoDBCollectionName);
-                var randomZipCodes = zipCodeCollection.Find(s => s._t == "ZipCode").ToListAsync().Result;
+                randomZipCodes = zipCodeCollection.Find(s => s._t == "ZipCode").ToListAsync().Result;
 
-                foreach (ZipCode randomZipCode in randomZipCodes)
+                var itemCount = randomZipCodes.Count();
+
+                foreach (ZipCode zipCode in randomZipCodes)
                 {
-                    if (randomZipCode.CityId == cityId)
+                    if (zipCode.CityId == cityId)
                     {
-                        myZipCodes.Add(randomZipCode);
+                        return zipCode;
                     }
                 }
             }
             catch (Exception ex)
             {
-                return ex.Message;
-            }
-
-            Random rnd = new Random();
-            int i = 0;
-            int randomRecordNumber = rnd.Next(myZipCodes.Count);
-
-            foreach (ZipCode randomZipCode in myZipCodes)
-            {
-                if (i == randomRecordNumber)
-                {
-                    return randomZipCode.Zip.ToString();
-                }
-                i++;
+                var errMsg = ex.ToString();
             }
 
             return null;
