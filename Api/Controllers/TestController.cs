@@ -48,60 +48,65 @@ namespace Facilitate.Api.Controllers
         [HttpGet("{numQuotesToCreate}")]
         public IActionResult Get(string Trade, int numQuotesToCreate)
         {
+            int numberOfChildrenToCreate = 2;
+
             if (Trade == null || Trade == "")
             {
                 Trade = "Roofing";
             }
 
-            for(var h = 0; h < numQuotesToCreate; h++)
-            {
-                Trade = utils.TitleCaseString(Trade);
+            Trade = utils.TitleCaseString(Trade);
 
+            author = new ApplicationUser();
+            author.Id = Guid.NewGuid().ToString();
+            author.FirstName = "Roofle";
+            author.LastName = "WebApi";
+
+            author.PhoneNumber = "555-555-5555";
+            author.PhoneNumberConfirmed = true;
+
+            author.Address1 = "123 Main St";
+            author.Address2 = "";
+            author.City = "Austin";
+            author.State = "TX";
+            author.Zip = "78753";
+
+            author.Email = "admin@facilitate.org";
+            author.EmailConfirmed = true;
+
+            author.UserName = "RoofleApi";
+            author.NormalizedUserName = "ROOFLEAPI";
+            author.NormalizedEmail = author.Email;
+            author.LockoutEnabled = false;
+            author.LockoutEnd = null;
+            author.ConcurrencyStamp = Guid.NewGuid().ToString();
+            author.SecurityStamp = Guid.NewGuid().ToString();
+            author.PasswordHash = "";
+
+            string headerForwardedFor = "n/a";
+            string headerReferer = "n/a";
+
+            int childBidderQuotesToCreate = 1;
+            int BiddingExpiresInDays = 1;
+
+            double AvgPricePerSqFt = 4.50;
+            double totalQuoteValue = 0;
+
+            var requestHeaders = HttpContext.Request.Headers;
+
+            List<String> nameGenders = new List<string>();
+            nameGenders.Add("male");
+            nameGenders.Add("female");
+
+            Random rnd = new Random();
+            int randomInt = 0;
+
+            for (var h = 0; h < numQuotesToCreate; h++)
+            {
                 Quote aggregateQuote = new Quote();
 
-                author = new ApplicationUser();
-                author.Id = Guid.NewGuid().ToString();
-                author.FirstName = "Roofle";
-                author.LastName = "WebApi";
-
-                author.PhoneNumber = "555-555-5555";
-                author.PhoneNumberConfirmed = true;
-
-                author.Address1 = "123 Main St";
-                author.Address2 = "";
-                author.City = "Austin";
-                author.State = "TX";
-                author.Zip = "78753";
-
-                author.Email = "admin@facilitate.org";
-                author.EmailConfirmed = true;
-
-                author.UserName = "RoofleApi";
-                author.NormalizedUserName = "ROOFLEAPI";
-                author.NormalizedEmail = author.Email;
-                author.LockoutEnabled = false;
-                author.LockoutEnd = null;
-                author.ConcurrencyStamp = Guid.NewGuid().ToString();
-                author.SecurityStamp = Guid.NewGuid().ToString();
-                author.PasswordHash = "";
-
-                string headerForwardedFor = "n/a";
-                string headerReferer = "n/a";
-
-                int childBidderQuotesToCreate = 1;
-                int BiddingExpiresInDays = 1;
-
-                double AvgPricePerSqFt = 4.50;
-                double totalQuoteValue = 0;
-
-                var requestHeaders = HttpContext.Request.Headers;
-
-                List<String> nameGenders = new List<string>();
-                nameGenders.Add("male");
-                nameGenders.Add("female");
-
-                Random rnd = new Random();
-                int randomInt = rnd.Next(0, 1);
+                rnd = new Random();
+                randomInt = rnd.Next(0, 1);
 
                 var firstName = utils.GetRandomFirstName(nameGenders[randomInt]);
                 var lastName = utils.GetRandomLastName();
@@ -239,7 +244,7 @@ namespace Facilitate.Api.Controllers
                     CreateParentSpawnedEvent(aggregateQuote);
 
                     // Create Children
-                    for (var i = 0; i < numQuotesToCreate; i++)
+                    for (var i = 0; i < numberOfChildrenToCreate; i++)
                     {
                         try
                         {
