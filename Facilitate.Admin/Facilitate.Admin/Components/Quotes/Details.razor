@@ -106,7 +106,7 @@ else
             TextWrapEnabled="false">
         <Columns>
             <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="" />
-            <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
+            <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
             <DxGridDataColumn Visible="@ShowTradeColumn" Width="auto" Caption="Trade" FieldName="Trade" />
             <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Width="175" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
@@ -230,7 +230,7 @@ else
                                 </dxg:TableView.FormatConditions>
 
                                 <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="rowIndex" />
-                                <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
+                                <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
                                 <DxGridDataColumn Width="100" Caption="Trade" FieldName="Trade" />
                                 <DxGridDataColumn Width="100" Caption="Relationship" FieldName="relationship" />
                                 <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
@@ -471,7 +471,7 @@ else
                                     TextWrapEnabled="false">
                                     <Columns>
                                         <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="" />
-                                        <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
+                                        <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
                                         <DxGridDataColumn Width="175" Caption="DateTime" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                         <DxGridDataColumn Width="100" Caption="Trade" FieldName="Trade" />
                                         <DxGridDataColumn Width="150" Caption="Name" FieldName="MediaName" />
@@ -513,7 +513,7 @@ else
                                 TextWrapEnabled="false">
                             <Columns>
                                 <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="" />
-                                <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
+                                <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
                                 <DxGridDataColumn Width="175" Caption="DateTime" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                 <DxGridDataColumn Width="150" Caption="Trade" FieldName="Trade" />
                                 <DxGridDataColumn Width="auto" Caption="Details" FieldName="Details" />
@@ -541,7 +541,7 @@ else
                             TextWrapEnabled="false">
                             <Columns>
                                 <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="" />
-                                <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
+                                <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
                                 <DxGridDataColumn Width="175" Caption="DateTime" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                 <DxGridDataColumn Width="150" Caption="Trade" FieldName="Trade" />
                                 <DxGridDataColumn Width="auto" Caption="Details" FieldName="Details" />
@@ -1112,9 +1112,24 @@ else
         WebServices.UpdateQuote(CurrentlySelectedQuote);
     }
 
-    public bool recordIDVisible = false;
-
+    public bool ShowRowIndexColumn { get; set; }
+    public bool ShowRecordIdColumn { get; set; }
+    public bool ShowStatusColumn { get; set; }
     public bool ShowTradeColumn { get; set; }
+    public bool ShowCategoryColumn { get; set; }
+    public bool ShowCreatedColumn { get; set; }
+    public bool ShowUpdatedColumn { get; set; }
+    public bool ShowFirstNameColumn { get; set; }
+    public bool ShowLastNameColumn { get; set; }
+    public bool ShowStreetColumn { get; set; }
+    public bool ShowCityColumn { get; set; }
+    public bool ShowStateColumn { get; set; }
+    public bool ShowZipColumn { get; set; }
+    public bool ShowBidColumn { get; set; }
+    public bool ShowBidderColumn { get; set; }
+    public bool ShowBidExpiresColumn { get; set; }
+    public bool ShowBidTypeColumn { get; set; }
+    public bool ShowActionsColumn { get; set; }
 
     public string quoteIdToRemove = "";
     public string quoteIdToRestore = "";
@@ -1252,14 +1267,14 @@ else
     public string RedcordIdButtonLabel = "Show Record Id";
     public void ShowRecordIDs()
     {
-        if(recordIDVisible)
+        if(ShowRecordId)
         {
-            recordIDVisible = false;
+            ShowRecordId = false;
             RedcordIdButtonLabel = "Show Record Id";
         }
         else
         {
-            recordIDVisible = true;
+            ShowRecordId = true;
             RedcordIdButtonLabel = "Hide Record Id";
         }
     }

@@ -205,7 +205,7 @@ else
             KeyboardNavigationEnabled="true">
         <Columns>
             <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="rowIndex" />
-            <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
+            <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
             <DxGridDataColumn Visible="true" Width="115" Caption="Trade" FieldName="Trade" />
             <DxGridDataColumn Visible="true" Width="115" Caption="Category" FieldName="TradeCategory" />
             <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
@@ -238,11 +238,26 @@ else
 
     public string currentActionButtonClass = "action-button-standalone";
 
-    public bool recordIDVisible = false;
-
+    public bool ShowRowIndexColumn { get; set; }
+    public bool ShowRecordIdColumn { get; set; }
+    public bool ShowStatusColumn { get; set; }
     public bool ShowTradeColumn { get; set; }
-
+    public bool ShowCategoryColumn { get; set; }
+    public bool ShowCreatedColumn { get; set; }
+    public bool ShowUpdatedColumn { get; set; }
+    public bool ShowFirstNameColumn { get; set; }
+    public bool ShowLastNameColumn { get; set; }
+    public bool ShowEmailColumn { get; set; }
+    public bool ShowStreetColumn { get; set; }
+    public bool ShowCityColumn { get; set; }
+    public bool ShowStateColumn { get; set; }
+    public bool ShowZipColumn { get; set; }
+    public bool ShowSqFtColumn { get; set; }
     public bool ShowBidColumn { get; set; }
+    public bool ShowBidderColumn { get; set; }
+    public bool ShowBidExpiresColumn { get; set; }
+    public bool ShowBidTypeColumn { get; set; }
+    public bool ShowActionsColumn { get; set; }
 
     public string LeadTypeFilterLabel { get; set; } = "Types (Complete Info)";
 
@@ -275,14 +290,14 @@ else
     public string RedcordIdButtonLabel = "Show Record Id";
     public void ShowRecordIDs()
     {
-        if (recordIDVisible)
+        if (ShowRecordId)
         {
-            recordIDVisible = false;
+            ShowRecordId = false;
             RedcordIdButtonLabel = "Show Record Id";
         }
         else
         {
-            recordIDVisible = true;
+            ShowRecordId = true;
             RedcordIdButtonLabel = "Hide Record Id";
         }
     }
