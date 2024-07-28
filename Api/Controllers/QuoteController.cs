@@ -346,7 +346,6 @@ namespace Facilitate.Api.Controllers
                         var result = _quoteCollection.ReplaceOne(filter, newQuote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
                     }
 
-
                     if (newQuote.Trade != "Aggregate")
                     {
                         // Create Sibling relationship
