@@ -229,25 +229,29 @@ else
                                    <dxg:FormatCondition ValueRule="Equal" Value="Opportunity" FieldName="status" PredefinedFormatName="LightRedFillWithDarkRedText" />   
                                 </dxg:TableView.FormatConditions>
 
-                                <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="rowIndex" />
-                                <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
-                                <DxGridDataColumn Width="100" Caption="Trade" FieldName="Trade" />
-                                <DxGridDataColumn Width="100" Caption="Relationship" FieldName="relationship" />
-                                <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
-                                <DxGridDataColumn Width="165" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-                                <DxGridDataColumn Width="165" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+
+                                <DxGridDataColumn Visible="@ShowRowIndexColumn" Width="35" Caption="Row" FieldName="rowIndex" />
+                                <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="215" Caption="Record Id" FieldName="_id" />
+                                <DxGridDataColumn Visible="@ShowStatusColumn" Width="85" Caption="Status" FieldName="status" />
+                                <DxGridDataColumn Visible="@ShowTradeColumn" Width="85" Caption="Trade" FieldName="Trade" />
+                                <DxGridDataColumn Visible="@ShowCategoryColumn" Width="85" Caption="Category" FieldName="TradeCategory" />
+                                <DxGridDataColumn Visible="@ShowCreatedColumn" Width="160" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+
+                                <DxGridDataColumn Visible="@ShowCreatedColumn" Width="165" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
                                 <DxGridDataColumn Width="auto" Caption="Last Event" FieldName="lastEventDetails" />
-                                
-                                <DxGridDataColumn Width="100" Caption="Bid" FieldName="totalQuote" DisplayFormat="C0" />
-                                <DxGridDataColumn Width="100" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Bidder.FirstName + ' ' + Bidder.LastName" />
-                                <DxGridDataColumn Width="100" Caption="Bid Exp" FieldName="BiddingExpires" />
-                                <DxGridDataColumn Width="100" Caption="Bid Type" FieldName="BidderType" />
-                                
+
+                                <DxGridDataColumn Visible="@ShowBidColumn" Width="85" Caption="Bid" DisplayFormat="C0" FieldName="totalQuote" />
+                                <DxGridDataColumn Visible="@ShowBidderColumn" Width="125" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Bidder.FirstName + ' ' + Bidder.LastName" />
+                                <DxGridDataColumn Visible="@ShowBidExpiresColumn" Width="85" Caption="Bid Expires" FieldName="BiddingExpires" />
+                                <DxGridDataColumn Visible="@ShowBidTypeColumn" Width="85" Caption="Bid Type" FieldName="BidderType" />
+
+                                <DxGridDataColumn Visible="@ShowSqFtColumn" Width="65" Caption="SqFt" FieldName="totalSquareFeet" />
+
                                 <DxGridDataColumn Visible="false" Width="100" Caption="Qualified?" FieldName="isQualified" />
                                 @{
                                     if (CurrentlySelectedQuote.Trade == "Aggregate")
                                     {
-                                        <DxGridCommandColumn Width="100px" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
+                                        <DxGridCommandColumn Visible="@ShowActionsColumn" Width="100px" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
                                     }
                                 }
 
@@ -552,7 +556,7 @@ else
                                 <DxGridDataColumn Visible="@ShowCreatedColumn" Width="160" Caption="DateTime" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                 <DxGridDataColumn Visible="@ShowTradeColumn" Width="85" Caption="Trade" FieldName="Trade" />
                                 <DxGridDataColumn Visible="true" Width="auto" Caption="Details" FieldName="Details" />
-                                <DxGridDataColumn Visible="true" Width="100" Caption="Author" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Author.FirstName + ' ' + Author.LastName" />
+                                <DxGridDataColumn Visible="true" Width="125" Caption="Author" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Author.FirstName + ' ' + Author.LastName" />
                             </Columns>
                         </DxGrid>
 
@@ -1124,11 +1128,13 @@ else
 
         // Add event to child quote
         quoteToRemove.events.Add(_event);
+
         WebServices.UpdateQuote(quoteToRemove);
 
         // Add event to parent quote
         // Actually, the parent aggregate should only refkect individual child events at runtime.
         CurrentlySelectedQuote.events.Add(_event);
+
         WebServices.UpdateQuote(CurrentlySelectedQuote);
     }
 
@@ -1506,7 +1512,7 @@ else
         ShowRecordIdColumn = false;
         ShowStatusColumn = false;
         ShowTradeColumn = true;
-        ShowCategoryColumn = true;
+        ShowCategoryColumn = false;
         ShowCreatedColumn = true;
         ShowUpdatedColumn = false;
         ShowFirstNameColumn = true;
@@ -1986,12 +1992,6 @@ else
                         tmpQuote.statusPrevious = tmpQuote.status;
                         tmpQuote.status = "Archive";
 
-                        // _event.DateTime = DateTime.UtcNow;
-                        // _event.Name = "Aggregate Project Archived";
-                        // _event.Details = "Child quote " + " relatedQuote.Trade + " moved to Archives";
-                        // _event.Author = currentUser;
-                        // relatedQuote.events.Add(_event);
-
                         WebServices.UpdateQuote(tmpQuote);
                     }
                 }
@@ -2001,8 +2001,6 @@ else
             currentQuote.status = "Archive";
 
             WebServices.UpdateQuote(currentQuote);
-
-            // WebServices.UpdateQuote(currentQuote);
 
             IsArchivePopupVisible = false;
             NoteDetails = "";
@@ -2301,8 +2299,6 @@ else
 
             IsPopupVisibleAddTrade = false;
 
-            //TimerRefresh();
-
             if(!isAggregate)
             {
                 // Redirect to Master details page
@@ -2347,7 +2343,6 @@ else
         // var quoteToRemove = WebServices.GetQuote(quoteId)[0];
 
         // quoteToRemove.status = "Archive";
-        // quoteToRemove.lastUpdated = DateTime.UtcNow;
 
         // WebServices.UpdateQuote(quoteToRemove);
 
@@ -2374,7 +2369,6 @@ else
         var quoteToRemove = WebServices.GetQuote(quoteId)[0];
 
         quoteToRemove.status = "Archive";
-        quoteToRemove.lastUpdated = DateTime.UtcNow;
 
         WebServices.UpdateQuote(quoteToRemove);
 
@@ -2402,7 +2396,6 @@ else
 
         // What is the current aggregate Status and set this to that
         quoteToRestore.status = CurrentlySelectedQuote.statusPrevious;
-        quoteToRestore.lastUpdated = DateTime.UtcNow;
 
         WebServices.UpdateQuote(quoteToRestore);
 

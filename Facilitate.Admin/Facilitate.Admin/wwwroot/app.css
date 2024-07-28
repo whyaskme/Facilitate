@@ -6,6 +6,87 @@ html, body {
     overflow: auto !important;
 }
 
+.ShowRowIndexColumn {
+    border: solid 1px #ff0000 !important;
+}
+
+.ShowRecordIdColumn {
+    border: solid 1px #ff0000 !important;
+}
+
+.ShowStatusColumn {
+    border: solid 1px #ff0000 !important;
+}
+
+.ShowTradeColumn {
+    border: solid 1px #ff0000 !important;
+}
+
+.ShowCategoryColumn {
+    border: solid 1px #ff0000 !important;
+}
+
+.ShowCreatedColumn {
+    border: solid 1px #ff0000 !important;
+}
+
+.ShowUpdatedColumn {
+    border: solid 1px #ff0000 !important;
+}
+
+.ShowFirstNameColumn {
+    border: solid 1px #ff0000 !important;
+}
+
+.ShowLastNameColumn {
+    border: solid 1px #ff0000 !important;
+}
+
+.ShowEmailColumn {
+    border: solid 1px #ff0000 !important;
+}
+
+.ShowStreetColumn {
+    border: solid 1px #ff0000 !important;
+}
+
+.ShowCityColumn {
+    border: solid 1px #ff0000 !important;
+}
+
+.ShowStateColumn {
+    border: solid 1px #ff0000 !important;
+}
+
+.ShowZipColumn {
+    border: solid 1px #ff0000 !important;
+}
+
+.ShowBidColumn {
+    border: solid 1px #ff0000 !important;
+}
+
+.ShowBidderColumn {
+    border: solid 1px #ff0000 !important;
+}
+
+.ShowBidExpiresColumn {
+    border: solid 1px #ff0000 !important;
+}
+
+.ShowBidTypeColumn {
+    border: solid 1px #ff0000 !important;
+}
+
+.ShowActionsColumn {
+    border: solid 1px #ff0000 !important;
+}
+
+.ShowSqFtColumn {
+    border: solid 1px #ff0000 !important;
+}
+
+
 .error-details {
     border: solid 1px #ff0000 !important;
     margin-bottom: 75px !important;
