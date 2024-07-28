@@ -247,7 +247,10 @@ namespace Facilitate.Admin.Data
                     _summary.status = relatedQuote.status;
 
                     _summary.totalQuote = relatedQuote.totalQuote;
+
                     _summary.Bidder = relatedQuote.Bidder;
+                    _summary.BidderType = relatedQuote.BidderType;
+                    _summary.BiddingExpires = relatedQuote.BiddingExpires;
 
                     Event lastEvent = relatedQuote.events.LastOrDefault();
                     _summary.events = relatedQuote.events;

@@ -144,7 +144,7 @@ else
                     </div>
                     <div class="col-md-4 quote-total">
 
-                        <div class="@currentQuoteColorCssClass header-total-element">Quote:</div>
+                        <div class="@currentQuoteColorCssClass header-total-element">Bid:</div>
 
                         @{
                             if(CurrentlySelectedQuote.Trade == "Roofing")
@@ -286,10 +286,12 @@ else
                                 <DxGridDataColumn Width="100" Caption="Relationship" FieldName="relationship" />
                                 <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
                                 <DxGridDataColumn Width="165" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-                                    <DxGridDataColumn Width="165" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+                                <DxGridDataColumn Width="165" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
                                 <DxGridDataColumn Width="auto" Caption="Last Event" FieldName="lastEventDetails" />
                                 <DxGridDataColumn Width="150" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Bidder.FirstName + ' ' + Bidder.LastName" />
-                                <DxGridDataColumn Width="100" Caption="Amount" FieldName="totalQuote" DisplayFormat="C0" />
+                                <DxGridDataColumn Width="75" Caption="Bid Type" FieldName="BidderType" />
+                                <DxGridDataColumn Width="100" Caption="Expires" FieldName="BiddingExpires" />
+                                <DxGridDataColumn Width="100" Caption="Bid" FieldName="totalQuote" DisplayFormat="C0" />
                                 <DxGridDataColumn Visible="false" Width="100" Caption="Qualified?" FieldName="isQualified" />
                                 @{
                                     if (CurrentlySelectedQuote.Trade == "Aggregate")
@@ -2510,7 +2512,16 @@ else
                 RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.lastEventTimeStamp).ToList();
                 // RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.Trade).ToList();
 
-                RelatedQuoteSummaryList = RelatedQuoteSummaryList.Distinct().ToList();
+                var currentQuoteId = CurrentlySelectedQuote._id;
+                foreach(QuoteSummary _summary in RelatedQuoteSummaryList)
+                {
+                    if(_summary._id == CurrentlySelectedQuote._id)
+                    {
+                        // Remove current Item. Don't want this to link back to itself.
+                        RelatedQuoteSummaryList.Remove(_summary);
+                        break;
+                    }
+                }
 
                 LocalizeAttachments(AttachmentList);
                 AttachmentList = AttachmentList.OrderByDescending(x => x.DateTime).ToList();

@@ -141,113 +141,198 @@ namespace Facilitate.Api.Controllers
 
                 _quoteCollection = _mongoDBClient.GetDatabase(_mongoDBName).GetCollection<Quote>(_mongoDBCollectionName);
 
+                // Create the parent Aggregate quote
+                aggregateQuote = new Quote();
+                aggregateQuote.Trade = utils.TitleCaseString("Aggregate");
+
+                // Set Bidding properties
+                aggregateQuote.Bidder = author;
+                aggregateQuote.BidderType = "Parent";
+                aggregateQuote.BiddingExpires = DateTime.UtcNow.AddDays(BiddingExpiresInDays);
+
+                aggregateQuote.ipAddress = headerForwardedFor;
+                aggregateQuote.externalUrl = headerReferer;
+
+                aggregateQuote.firstName = firstName;
+                aggregateQuote.lastName = lastName;
+
+                aggregateQuote.email = aggregateQuote.firstName.ToLower() + "@" + aggregateQuote.lastName.ToLower() + ".com";
+                aggregateQuote.phone = "(" + utils.GetRandomAreaCode() + ") " + utils.GetRandomHomePhoneNumber();
+                aggregateQuote.market = aggregateQuote.city + ", " + aggregateQuote.state;
+
+                randomInt = rnd.Next(5000, 9999);
+                aggregateQuote.leadId = randomInt;
+
+                randomInt = rnd.Next(1, 3);
+                aggregateQuote.numberOfStructures = randomInt;
+                aggregateQuote.numberOfIncludedStructures = aggregateQuote.numberOfStructures;
+
+                aggregateQuote.structures = null;
+                aggregateQuote.structures = new List<Structure>();
+
+                for (var j = 0; j < aggregateQuote.numberOfStructures; j++)
+                {
+                    Structure structure = new Structure();
+                    switch (j)
+                    {
+                        case 1:
+                            structure.initialSquareFeet = rnd.Next(1000, 5000);
+                            structure.isIncluded = true;
+                            structure.name = "Main Roof";
+                            structure.roofComplexity = "Complex";
+                            structure.slope = "steep";
+                            break;
+                        case 2:
+                            structure.initialSquareFeet = rnd.Next(500, 1500);
+                            structure.isIncluded = true;
+                            structure.name = "Garage Roof";
+                            structure.roofComplexity = "Simple";
+                            structure.slope = "medium";
+                            break;
+                        default:
+                            structure.initialSquareFeet = rnd.Next(250, 1000);
+                            structure.isIncluded = false;
+                            structure.name = "Misc Roof";
+                            structure.roofComplexity = "Compound";
+                            structure.slope = "shallow";
+                            break;
+                    }
+
+                    structure.squareFeet = structure.initialSquareFeet;
+
+                    aggregateQuote.structures.Add(structure);
+
+                    totalSquareFeet += structure.initialSquareFeet;
+                }
+
+                aggregateQuote.totalSquareFeet = totalSquareFeet;
+                aggregateQuote.totalInitialSquareFeet = aggregateQuote.totalSquareFeet;
+
+                aggregateQuote.mainRoofTotalSquareFeet = totalSquareFeet;
+
+                aggregateQuote.sessionId = Guid.NewGuid().ToString();
+
+                aggregateQuote.totalQuote = (totalSquareFeet * AvgPricePerSqFt);
+
+                aggregateQuote.address = randomStreetNumber + " " + randomStreetName + ", " + cityName + ", " + stateAbbr + " " + randomZipCode;
+                aggregateQuote.fullAddress = aggregateQuote.address;
+                aggregateQuote.street = randomStreetNumber + " " + randomStreetName;
+                aggregateQuote.city = cityName;
+
+                aggregateQuote.state = stateAbbr;
+                aggregateQuote.zip = randomZipCode;
+
+                aggregateQuote.timestamp = DateTime.UtcNow;
+
+                randomInt = rnd.Next(0, 1);
+                repName = utils.GetRandomFirstName(nameGenders[randomInt]) + " " + utils.GetRandomLastName();
+
+                aggregateQuote.repName = repName;
+                aggregateQuote.repEmail = repName.Replace(" ", ".").ToLower() + "@facilitate.org";
+
+                randomInt = rnd.Next(5000, 9999);
+                aggregateQuote.leadId = randomInt;
+
+                CreateParentSpawnedEvent(aggregateQuote);
+
+                //// Insert Aggregate
+                //_quoteCollection.InsertOne(aggregateQuote);
+
+                // Create Children
                 for (var i = 0; i < numQuotesToCreate; i++)
                 {
                     try
                     {
-                        if (i == 0)
+                        // Create Child Quote
+                        Quote childQuote = new Quote();
+                        childQuote.status = "New";
+                        childQuote.Trade = "Roofing";
+
+                        Event createdEvent = new Event();
+                        createdEvent.Author = author;
+                        createdEvent.Trade = childQuote.Trade;
+                        createdEvent.Name = "Child (" + childQuote.Trade + ") quote";
+                        createdEvent.Details = createdEvent.Name + " Spawned from Aggregate Id (" + createdEvent._id + ")";
+
+                        childQuote.events.Add(createdEvent);
+
+                        childQuote.Bidder = author;
+                        childQuote.BiddingExpires = aggregateQuote.BiddingExpires;
+
+                        switch (i)
                         {
-                            // Create the parent Aggregate quote
-                            aggregateQuote = new Quote();
-                            aggregateQuote.Trade = utils.TitleCaseString("Aggregate");
-
-                            // Set Bidding properties
-                            aggregateQuote.Bidder = author;
-                            aggregateQuote.BidderType = "Parent";
-                            aggregateQuote.BiddingExpires = DateTime.UtcNow.AddDays(BiddingExpiresInDays);
-
-                            aggregateQuote.ipAddress = headerForwardedFor;
-                            aggregateQuote.externalUrl = headerReferer;
-
-                            aggregateQuote.firstName = firstName;
-                            aggregateQuote.lastName = lastName;
-
-                            aggregateQuote.email = aggregateQuote.firstName.ToLower() + "@" + aggregateQuote.lastName.ToLower() + ".com";
-                            aggregateQuote.phone = "(" + utils.GetRandomAreaCode() + ") " + utils.GetRandomHomePhoneNumber();
-                            aggregateQuote.market = aggregateQuote.city + ", " + aggregateQuote.state;
-
-                            randomInt = rnd.Next(5000, 9999);
-                            aggregateQuote.leadId = randomInt;
-
-                            randomInt = rnd.Next(1, 3);
-                            aggregateQuote.numberOfStructures = randomInt;
-                            aggregateQuote.numberOfIncludedStructures = aggregateQuote.numberOfStructures;
-
-                            aggregateQuote.structures = null;
-                            aggregateQuote.structures = new List<Structure>();
-
-                            for (var j = 0; j < aggregateQuote.numberOfStructures; j++)
-                            {
-                                Structure structure = new Structure();
-                                switch (j)
-                                {
-                                    case 1:
-                                        structure.initialSquareFeet = rnd.Next(1000, 5000);
-                                        structure.isIncluded = true;
-                                        structure.name = "Main Roof";
-                                        structure.roofComplexity = "Complex";
-                                        structure.slope = "steep";
-                                        break;
-                                    case 2:
-                                        structure.initialSquareFeet = rnd.Next(500, 1500);
-                                        structure.isIncluded = true;
-                                        structure.name = "Garage Roof";
-                                        structure.roofComplexity = "Simple";
-                                        structure.slope = "medium";
-                                        break;
-                                    default:
-                                        structure.initialSquareFeet = rnd.Next(250, 1000);
-                                        structure.isIncluded = false;
-                                        structure.name = "Misc Roof";
-                                        structure.roofComplexity = "Compound";
-                                        structure.slope = "shallow";
-                                        break;
-                                }
-
-                                structure.squareFeet = structure.initialSquareFeet;
-
-                                aggregateQuote.structures.Add(structure);
-
-                                totalSquareFeet += structure.initialSquareFeet;
-                            }
-
-                            aggregateQuote.totalSquareFeet = totalSquareFeet;
-                            aggregateQuote.totalInitialSquareFeet = aggregateQuote.totalSquareFeet;
-
-                            aggregateQuote.mainRoofTotalSquareFeet = totalSquareFeet;
-
-                            aggregateQuote.sessionId = Guid.NewGuid().ToString();
-
-                            aggregateQuote.totalQuote = (totalSquareFeet*AvgPricePerSqFt);
-
-                            aggregateQuote.address = randomStreetNumber + " " + randomStreetName + ", " + cityName + ", " + stateAbbr + " " + randomZipCode;
-                            aggregateQuote.fullAddress = aggregateQuote.address;
-                            aggregateQuote.street = randomStreetNumber + " " + randomStreetName;
-                            aggregateQuote.city = cityName;
-
-                            aggregateQuote.state = stateAbbr;
-                            aggregateQuote.zip = randomZipCode;
-
-                            aggregateQuote.timestamp = DateTime.UtcNow;
-
-                            randomInt = rnd.Next(0, 1);
-                            repName = utils.GetRandomFirstName(nameGenders[randomInt]) + " " + utils.GetRandomLastName();
-
-                            aggregateQuote.repName = repName;
-                            aggregateQuote.repEmail = repName.Replace(" ", ".").ToLower() + "@facilitate.org";
-
-                            randomInt = rnd.Next(5000, 9999);
-                            aggregateQuote.leadId = randomInt;
-
-                            CreateParentSpawnedEvent(aggregateQuote);
-
-                            // Insert Aggregate
-                            _quoteCollection.InsertOne(aggregateQuote);
+                            case 0:
+                                childQuote.BidderType = "Default";
+                                childQuote.totalQuote = 0;
+                                break;
+                            case 1:
+                                childQuote.BidderType = "Spec";
+                                childQuote.totalQuote = 0;
+                                break;
+                            default:
+                                childQuote.BidderType = "Open";
+                                childQuote.totalQuote = 0;
+                                break;
                         }
 
-                        CreateChildQuotes(aggregateQuote, Trade, "Default");
+                        childQuote.ipAddress = aggregateQuote.ipAddress;
+                        childQuote.externalUrl = aggregateQuote.externalUrl;
 
-                        CreateSiblingRelationships(aggregateQuote, newQuoteListQueue);
+                        childQuote.mainRoofTotalSquareFeet = aggregateQuote.mainRoofTotalSquareFeet;
+
+                        childQuote.totalSquareFeet = aggregateQuote.totalSquareFeet;
+                        childQuote.totalInitialSquareFeet = aggregateQuote.totalInitialSquareFeet;
+
+                        childQuote.firstName = aggregateQuote.firstName;
+                        childQuote.lastName = aggregateQuote.lastName;
+                        childQuote.email = aggregateQuote.email;
+                        childQuote.phone = aggregateQuote.phone;
+                        childQuote.address = aggregateQuote.address;
+                        childQuote.fullAddress = aggregateQuote.fullAddress;
+                        childQuote.street = aggregateQuote.street;
+                        childQuote.city = aggregateQuote.city;
+                        childQuote.state = aggregateQuote.state;
+                        childQuote.zip = aggregateQuote.zip;
+                        childQuote.market = aggregateQuote.market;
+
+                        // Create Aggregate relationship to Child
+                        var parentRelationship = new Relationship();
+                        parentRelationship.Author = author.FirstName + " " + author.LastName;
+                        parentRelationship._id = aggregateQuote._id;
+                        parentRelationship.ParentId = aggregateQuote._id;
+                        parentRelationship.Type = "Parent";
+                        parentRelationship.Name = aggregateQuote.Trade;
+                        childQuote.relationships.Add(parentRelationship);
+
+                        Event parentRelationshipEvent = new Event();
+                        parentRelationshipEvent.Author = author;
+                        parentRelationshipEvent.Trade = childQuote.Trade;
+                        parentRelationshipEvent.Name = "Child (" + childQuote.Trade + ") relationship Linked to Parent";
+                        parentRelationshipEvent.Details = parentRelationshipEvent.Name + " Aggregate Id (" + aggregateQuote._id + ")";
+                        childQuote.events.Add(parentRelationshipEvent);
+
+                        // Add to queue for sibling relationship processing
+                        newQuoteListQueue.Add(childQuote);
+
+                        // Save Child relationship to Aggregate
+                        var childRelationship = new Relationship();
+                        childRelationship.Author = author.FirstName + " " + author.LastName;
+                        childRelationship._id = childQuote._id;
+                        childRelationship.ParentId = aggregateQuote._id;
+                        childRelationship.Type = "Child";
+                        childRelationship.Name = childQuote.Trade;
+
+                        aggregateQuote.relationships.Add(childRelationship);
+
+                        // Insert Aggregate
+                        _quoteCollection.InsertOne(childQuote);
+
+                        //var filter = Builders<Quote>.Filter.Eq(x => x._id, aggregateQuote._id);
+                        //var result = _quoteCollection.ReplaceOne(filter, aggregateQuote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+
+                        childQuote = null;
+
+                        //CreateSiblingRelationships(aggregateQuote, newQuoteListQueue);
 
                     }
                     catch (Exception ex)
@@ -270,90 +355,95 @@ namespace Facilitate.Api.Controllers
             {
 
             }
+
+            // Insert Aggregate
+            _quoteCollection.InsertOne(aggregateQuote);
+
             return Ok(resultMsg);
         }
 
-        private void CreateChildQuotes(Quote aggregateQuote, string tradeType, string bidderType)
+        private void CreateChildQuotes(Quote aggregateQuote)
         {
             try
             {
-                // Create Child Quote
-                Quote childQuote = new Quote();
-                childQuote.status = "New";
-                childQuote.Trade = tradeType;
+                foreach(Relationship relationship in aggregateQuote.relationships)
+                {
+                    // Create Child Quote
+                    Quote childQuote = new Quote();
+                    childQuote.status = "New";
+                    childQuote.Trade = aggregateQuote.Trade;
 
-                Event createdEvent = new Event();
-                createdEvent.Author = author;
-                createdEvent.Trade = childQuote.Trade;
-                createdEvent.Name = "Child (" + childQuote.Trade + ") quote";
-                createdEvent.Details = createdEvent.Name + " Spawned from Aggregate Id (" + createdEvent._id + ")";
+                    Event createdEvent = new Event();
+                    createdEvent.Author = author;
+                    createdEvent.Trade = childQuote.Trade;
+                    createdEvent.Name = "Child (" + childQuote.Trade + ") quote";
+                    createdEvent.Details = createdEvent.Name + " Spawned from Aggregate Id (" + createdEvent._id + ")";
 
-                childQuote.events.Add(createdEvent);
+                    childQuote.events.Add(createdEvent);
 
-                childQuote.Bidder = author;
-                childQuote.BidderType = bidderType;
-                childQuote.BiddingExpires = aggregateQuote.BiddingExpires;
+                    childQuote.Bidder = author;
+                    childQuote.BidderType = "Spec";
+                    childQuote.totalQuote = 0;
 
-                childQuote.ipAddress = aggregateQuote.ipAddress;
-                childQuote.externalUrl = aggregateQuote.externalUrl;
+                    childQuote.BiddingExpires = aggregateQuote.BiddingExpires;
 
-                childQuote.mainRoofTotalSquareFeet = aggregateQuote.mainRoofTotalSquareFeet;
-                childQuote.totalQuote = aggregateQuote.totalQuote;
-                childQuote.totalSquareFeet = aggregateQuote.totalSquareFeet;
-                childQuote.totalInitialSquareFeet = aggregateQuote.totalInitialSquareFeet;
+                    childQuote.ipAddress = aggregateQuote.ipAddress;
+                    childQuote.externalUrl = aggregateQuote.externalUrl;
 
-                childQuote.firstName = aggregateQuote.firstName;
-                childQuote.lastName = aggregateQuote.lastName;
-                childQuote.email = aggregateQuote.email;
-                childQuote.phone = aggregateQuote.phone;
-                childQuote.address = aggregateQuote.address;
-                childQuote.fullAddress = aggregateQuote.fullAddress;
-                childQuote.street = aggregateQuote.street;
-                childQuote.city = aggregateQuote.city;
-                childQuote.state = aggregateQuote.state;
-                childQuote.zip = aggregateQuote.zip;
-                childQuote.market = aggregateQuote.market;
+                    childQuote.mainRoofTotalSquareFeet = aggregateQuote.mainRoofTotalSquareFeet;
 
-                // Create Aggregate relationship to Child
-                var parentRelationship = new Relationship();
-                parentRelationship.Author = author.FirstName + " " + author.LastName;
-                parentRelationship._id = aggregateQuote._id;
-                parentRelationship.ParentId = aggregateQuote._id;
-                parentRelationship.Type = "Parent";
-                parentRelationship.Name = aggregateQuote.Trade;
-                childQuote.relationships.Add(parentRelationship);
+                    childQuote.totalSquareFeet = aggregateQuote.totalSquareFeet;
+                    childQuote.totalInitialSquareFeet = aggregateQuote.totalInitialSquareFeet;
 
-                Event parentRelationshipEvent = new Event();
-                parentRelationshipEvent.Author = author;
-                parentRelationshipEvent.Trade = childQuote.Trade;
-                parentRelationshipEvent.Name = "Child (" + childQuote.Trade + ") relationship Linked to Parent";
-                parentRelationshipEvent.Details = parentRelationshipEvent.Name + " Aggregate Id (" + aggregateQuote._id + ")";
-                childQuote.events.Add(parentRelationshipEvent);
+                    childQuote.firstName = aggregateQuote.firstName;
+                    childQuote.lastName = aggregateQuote.lastName;
+                    childQuote.email = aggregateQuote.email;
+                    childQuote.phone = aggregateQuote.phone;
+                    childQuote.address = aggregateQuote.address;
+                    childQuote.fullAddress = aggregateQuote.fullAddress;
+                    childQuote.street = aggregateQuote.street;
+                    childQuote.city = aggregateQuote.city;
+                    childQuote.state = aggregateQuote.state;
+                    childQuote.zip = aggregateQuote.zip;
+                    childQuote.market = aggregateQuote.market;
 
-                // Create Child relationship to Aggregate
-                var childRelationship = new Relationship();
-                childRelationship.Author = author.FirstName + " " + author.LastName;
-                childRelationship._id = childQuote._id;
-                childRelationship.ParentId = aggregateQuote._id;
-                childRelationship.Type = "Child";
-                childRelationship.Name = childQuote.Trade;
+                    // Create Aggregate relationship to Child
+                    var parentRelationship = new Relationship();
+                    parentRelationship.Author = author.FirstName + " " + author.LastName;
+                    parentRelationship._id = aggregateQuote._id;
+                    parentRelationship.ParentId = aggregateQuote._id;
+                    parentRelationship.Type = "Parent";
+                    parentRelationship.Name = aggregateQuote.Trade;
+                    childQuote.relationships.Add(parentRelationship);
 
-                // Add event to child quote
-                //childQuote.events.Add(parentRelationshipEvent);
+                    Event parentRelationshipEvent = new Event();
+                    parentRelationshipEvent.Author = author;
+                    parentRelationshipEvent.Trade = childQuote.Trade;
+                    parentRelationshipEvent.Name = "Child (" + childQuote.Trade + ") relationship Linked to Parent";
+                    parentRelationshipEvent.Details = parentRelationshipEvent.Name + " Aggregate Id (" + aggregateQuote._id + ")";
+                    childQuote.events.Add(parentRelationshipEvent);
 
-                // Save Child
-                _quoteCollection.InsertOne(childQuote);
+                    // Save Child
+                    _quoteCollection.InsertOne(childQuote);
 
-                // Add to queue for sibling relationship processing
-                newQuoteListQueue.Add(childQuote);
+                    // Add to queue for sibling relationship processing
+                    newQuoteListQueue.Add(childQuote);
 
-                childQuote = null;
+                    // Save Child relationship to Aggregate
+                    var childRelationship = new Relationship();
+                    childRelationship.Author = author.FirstName + " " + author.LastName;
+                    childRelationship._id = childQuote._id;
+                    childRelationship.ParentId = aggregateQuote._id;
+                    childRelationship.Type = "Child";
+                    childRelationship.Name = childQuote.Trade;
 
-                // Save Parent
-                aggregateQuote.relationships.Add(childRelationship);
+                    aggregateQuote.relationships.Add(childRelationship);
 
-                var filter = Builders<Quote>.Filter.Eq(x => x._id, aggregateQuote._id);
-                var result = _quoteCollection.ReplaceOne(filter, aggregateQuote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+                    var filter = Builders<Quote>.Filter.Eq(x => x._id, aggregateQuote._id);
+                    var result = _quoteCollection.ReplaceOne(filter, aggregateQuote, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+
+                    childQuote = null;
+                }
             }
             catch (Exception ex)
             {
@@ -361,7 +451,6 @@ namespace Facilitate.Api.Controllers
             }
             finally
             {
-
             }
         }
 
@@ -446,8 +535,6 @@ namespace Facilitate.Api.Controllers
                             {
                                 var tmpVal = "No match!";
 
-                                //if (relationshipType == "Child")
-                                //{
                                 // Create Sibling relationship
                                 var siblingRelationship = new Relationship();
                                 siblingRelationship.Author = author.FirstName + " " + author.LastName;
@@ -456,26 +543,28 @@ namespace Facilitate.Api.Controllers
                                 siblingRelationship.Type = "Sibling";
                                 siblingRelationship.Name = newQuote.Trade;
 
-                                //relatedQuoteUpdate.relationships.Add(siblingRelationship);
-
                                 RelationshipList.Add(siblingRelationship);
 
                                 Event siblingEvent = new Event();
                                 siblingEvent.Author = author;
-                                siblingEvent.Trade = relatedQuoteUpdate.Trade;
-                                siblingEvent.Name = "Sibling (" + relatedQuoteUpdate.Trade + ") quote Linked";
-                                siblingEvent.Details = siblingEvent.Name + " to Sibling Id (" + siblingEvent._id + ")";
+
+                                siblingEvent.Trade = newQuote.Trade;
+
+                                siblingEvent.Name = "Sibling (" + newQuote.Trade + ") quote Linked";
+                                siblingEvent.Details = siblingEvent.Name + " to (" + newQuote.Trade + ") Sibling Id (" + siblingEvent._id + ")";
 
                                 // Add event to child quote
-                                relatedQuoteUpdate.events.Add(siblingEvent);
-                                //}
+                                newQuote.events.Add(siblingEvent);
+
+                                // Save Child
+                                //_quoteCollection.InsertOne(newQuote);
                             }
                         }
 
-                        relatedQuoteUpdate.relationships = RelationshipList;
+                        //relatedQuoteUpdate.relationships = RelationshipList;
 
-                        var filter = Builders<Quote>.Filter.Eq(x => x._id, relatedQuoteId);
-                        var result = _quoteCollection.ReplaceOne(filter, relatedQuoteUpdate, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+                        //var filter = Builders<Quote>.Filter.Eq(x => x._id, relatedQuoteId);
+                        //var result = _quoteCollection.ReplaceOne(filter, relatedQuoteUpdate, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
                     }
                 }
             }

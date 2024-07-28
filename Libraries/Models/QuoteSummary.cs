@@ -29,6 +29,8 @@ namespace Facilitate.Libraries.Models
             events = new List<Event>();
 
             Bidder = null;
+            BidderType = "Open";
+            BiddingExpires = DateTime.UtcNow;
         }
 
         public string _id { get; set; }
@@ -47,7 +49,7 @@ namespace Facilitate.Libraries.Models
         public string lastEventDetails { get; set; }
 
         public virtual ApplicationUser? Bidder { get; set; }
-
-        //public virtual string Bidder { get; set; }
+        public string BidderType { get; set; }
+        public DateTime BiddingExpires { get; set; }
     }
 }
