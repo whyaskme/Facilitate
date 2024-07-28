@@ -143,6 +143,7 @@ else
             <div id="dropdown-customization-target-container-trades">
                 <DxButton CssClass="action-button" Id="btnTrades" Click="() => IsTradesListOpen = !IsTradesListOpen">@TradesFilterLabel</DxButton>
             </div>
+
             <DxDropDown
                 @bind-IsOpen="@IsTradesListOpen"
                 MinWidth="max(20vw, 100px)"
@@ -387,14 +388,6 @@ else
                             adminUsers.Add(adminUser);
 
                             // var userRoles = await UserManager.GetRolesAsync(adminUser);
-                        }
-                    }
-
-                    foreach(var trade in TradesList)
-                    {
-                        if(trade.Value == "Roofing")
-                        {
-                            SelectedTradeType = "Roofing";
                         }
                     }
 
@@ -694,17 +687,6 @@ else
                     leaderboardStats = WebServices.GetLeaderBoardStats(currentUser.Email);
                     quotes = webServices.GetSummaries("New", currentUser.Email);
                 }
-
-                // List<QuoteHeader> quoteHeaderCollection = new List<QuoteHeader>();
-                // foreach (QuoteHeader _quote in quotes)
-                // {
-                //     if (_quote.Trade == "Aggregate")
-                //     {
-                //         quoteHeaderCollection.Add(_quote);
-                //     }
-                // }
-                // quotes.Clear();
-                // quotes.AddRange(quoteHeaderCollection);
 
                 updateStatus = quotes.Count().ToString("N0");
                 StatusContainerClass = "container-action-buttons-show";

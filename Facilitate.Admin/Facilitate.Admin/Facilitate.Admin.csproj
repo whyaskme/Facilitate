@@ -25,6 +25,7 @@
     <PackageReference Include="jQuery" Version="3.7.1" />
     <PackageReference Include="jquery.iframeDialog" Version="1.2.1" />
     <PackageReference Include="jQuery.UI.Combined" Version="1.13.2" />
+    <PackageReference Include="jQuery.Validation" Version="1.20.0" />
     <PackageReference Include="Json.Net" Version="1.0.33" />
     <PackageReference Include="MaxMind.Db" Version="4.1.0" />
     <PackageReference Include="MaxMind.GeoIP2" Version="5.2.0" />
