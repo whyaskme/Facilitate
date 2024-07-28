@@ -148,12 +148,12 @@ else
                         @{
                             if(CurrentlySelectedQuote.Trade == "Aggregate")
                             {
-                                <div class="@currentQuoteColorCssClass header-total-element">Quote: @defaultQuoteValue.ToString("C0")</div>
+                                <div class="@currentQuoteColorCssClass header-total-element">Default Quote: @defaultQuoteValue.ToString("C0")</div>
                                 <div class="@currentQuoteColorCssClass header-total-element header-total-element-modifier">Avg Bid: @averageQuoteValue.ToString("C0")</div>
                             }
                             else
                             {
-                                <div class="@currentQuoteColorCssClass header-total-element">Quote: @defaultQuoteValue.ToString("C0")</div>
+                                <div class="@currentQuoteColorCssClass header-total-element">Default Quote: @defaultQuoteValue.ToString("C0")</div>
                                 <div class="@currentQuoteColorCssClass header-total-element">
                                     <DxTextBox Text="@CurrentlySelectedQuote.totalQuote.ToString("C0")" TextChanged="@((newValue) => OnTotalQuoteValueChanged(newValue))" CssClass="total-quote-value" />
                                 </div>
@@ -239,9 +239,9 @@ else
                                 <DxGridDataColumn Width="auto" Caption="Last Event" FieldName="lastEventDetails" />
                                 
                                 <DxGridDataColumn Width="100" Caption="Bid" FieldName="totalQuote" DisplayFormat="C0" />
-                                <DxGridDataColumn Width="150" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Bidder.FirstName + ' ' + Bidder.LastName" />
+                                <DxGridDataColumn Width="100" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Bidder.FirstName + ' ' + Bidder.LastName" />
                                 <DxGridDataColumn Width="100" Caption="Bid Exp" FieldName="BiddingExpires" />
-                                <DxGridDataColumn Width="75" Caption="Bid Type" FieldName="BidderType" />
+                                <DxGridDataColumn Width="100" Caption="Bid Type" FieldName="BidderType" />
                                 
                                 <DxGridDataColumn Visible="false" Width="100" Caption="Qualified?" FieldName="isQualified" />
                                 @{
@@ -533,7 +533,7 @@ else
                             KeyboardNavigationEnabled="true"
                             TextWrapEnabled="false">
                             <Columns>
-                                <DxGridDataColumn Visible="true" Width="50" Caption="Row" FieldName="" />
+                                <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="" />
                                 <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
                                 <DxGridDataColumn Width="175" Caption="DateTime" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                 <DxGridDataColumn Width="150" Caption="Trade" FieldName="Trade" />
@@ -1097,7 +1097,7 @@ else
         WebServices.UpdateQuote(CurrentlySelectedQuote);
     }
 
-    public bool recordIDVisible = false;
+    public bool recordIDVisible = true;
 
     public bool ShowTradeColumn { get; set; }
 
@@ -1234,7 +1234,7 @@ else
         NavigationManager.NavigateTo(previousPageUrl);
     }
 
-    public string RedcordIdButtonLabel = "Show Record Id";
+    public string RedcordIdButtonLabel = "Hide Record Id";
     public void ShowRecordIDs()
     {
         if(recordIDVisible)

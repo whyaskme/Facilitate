@@ -253,16 +253,6 @@ namespace Facilitate.Api.Controllers
                     aggregateQuote.relationships.Add(childRelationship);
 
                     // Add Events
-                    // Child Spawned event
-                    Event childSpawnedEvent = new Event();
-                    childSpawnedEvent.Author = author;
-                    childSpawnedEvent.Trade = childQuote.Trade;
-                    childSpawnedEvent.Name = "Child (" + childQuote.Trade + ") quote Spawned";
-                    childSpawnedEvent.Details = childSpawnedEvent.Name + " for Aggregate Id (" + aggregateQuote._id + ")";
-
-                    // Add event to child quote
-                    childQuote.events.Add(childSpawnedEvent);
-
                     // Child Linked event
                     Event childLinkedEvent = new Event();
                     childLinkedEvent.Author = author;
@@ -272,6 +262,16 @@ namespace Facilitate.Api.Controllers
 
                     // Add event to child quote
                     childQuote.events.Add(childLinkedEvent);
+
+                    // Child Spawned event
+                    Event childSpawnedEvent = new Event();
+                    childSpawnedEvent.Author = author;
+                    childSpawnedEvent.Trade = childQuote.Trade;
+                    childSpawnedEvent.Name = "Child (" + childQuote.Trade + ") quote Spawned";
+                    childSpawnedEvent.Details = childSpawnedEvent.Name + " for Aggregate Id (" + aggregateQuote._id + ")";
+
+                    // Add event to child quote
+                    childQuote.events.Add(childSpawnedEvent);
 
                     // Insert Child
                     childQuote.relationships = childQuote.relationships.Distinct().ToList();
@@ -285,7 +285,7 @@ namespace Facilitate.Api.Controllers
                 aggregateQuote.relationships = aggregateQuote.relationships.Distinct().ToList();
                 _quoteCollection.InsertOne(aggregateQuote);
 
-                CreateSiblingRelationships(aggregateQuote, newQuoteListQueue);
+                //CreateSiblingRelationships(aggregateQuote, newQuoteListQueue);
 
                 resultMsg = "Added Aggregate QuoteId: " + aggregateQuote._id;
             }
@@ -316,10 +316,10 @@ namespace Facilitate.Api.Controllers
                 {
                     foreach(Quote relatedSiblinigQuote in referenceQuoteList)
                     {
-                        if (newQuote._id == relatedSiblinigQuote._id)
-                        {
-                            continue;
-                        }
+                        //if (newQuote._id == relatedSiblinigQuote._id)
+                        //{
+                        //    continue;
+                        //}
 
                         // Create Sibling relationship
                         var siblingRelationship = new Relationship();
