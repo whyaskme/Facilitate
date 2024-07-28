@@ -2019,19 +2019,23 @@ else
         note.Summary = "Note Added";
         note.Details = @NoteDetails;
         note.Author = currentUser;
+        note.Trade = CurrentlySelectedQuote.Trade;
 
-        CurrentlySelectedQuote.notes.Add(note);
+        Quote quoteToUpdate = WebServices.GetQuote(CurrentlySelectedQuote._id)[0];
+
+        quoteToUpdate.notes.Add(note);
 
         Event _event = new Event();
         _event.Details = "Note (" + note.Details + ") added to Quote";
         _event.Author = currentUser;
+        _event.Trade = quoteToUpdate.Trade;
 
-        CurrentlySelectedQuote.events.Add(_event);
+        quoteToUpdate.events.Add(_event);
 
         IsPopupVisibleAddNote = false;
         NoteDetails = "";
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        WebServices.UpdateQuote(quoteToUpdate);
     }
 
     public void CloseDetails()
@@ -2572,6 +2576,9 @@ else
 
                 standaloneTotal = CurrentlySelectedQuote.totalQuote;
 
+                // Get child quote summaries
+                RelatedQuoteSummaryList = webServices.GetRelatedQuoteSummaries(CurrentlySelectedQuote);
+
                 // Process attachments
                 foreach(Attachment attachment in CurrentlySelectedQuote.attachments)
                 {
@@ -2582,35 +2589,52 @@ else
                 AttachmentList.AddRange(CurrentlySelectedQuote.attachments);
 
                 // Process Related events
-                foreach(Relationship relationship in CurrentlySelectedQuote.relationships)
+                foreach (Event _event in CurrentlySelectedQuote.events)
                 {
-                    var quote = WebServices.GetQuote(relationship._id)[0];
-
-                    foreach(Event _event in quote.events)
-                    {
-                        _event.Trade = quote.Trade;
-                        EventList.Add(_event);
-                    }
+                    _event.Trade = CurrentlySelectedQuote.Trade;
+                    EventList.Add(_event);
                 }
 
-                // Process notes
+                if(CurrentlySelectedQuote.Trade == "Aggregate")
+                {
+                    // Process remote Child events
+                    List<Event> childEvents = new List<Event>();
+
+                    foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
+                    {
+                        var childQuote = WebServices.GetQuote(relationship._id)[0];
+
+                        childEvents.AddRange(childQuote.events);
+                    }
+                    EventList.AddRange(childEvents);
+                }
+
+                // Process local Aggregate or standalone notes
                 foreach (Note note in CurrentlySelectedQuote.notes)
                 {
                     note.Trade = CurrentlySelectedQuote.Trade;
                 }
                 NoteList.AddRange(CurrentlySelectedQuote.notes);
 
+                if(CurrentlySelectedQuote.Trade == "Aggregate")
+                {
+                    // Process remote Child notes
+                    List<Note> childNotes = new List<Note>();
+
+                    foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
+                    {
+                        var childQuote = WebServices.GetQuote(relationship._id)[0];
+
+                        childNotes.AddRange(childQuote.notes);
+                    }
+                    NoteList.AddRange(childNotes);
+                }
+
                 averageQuoteValue = 0;
-
-                // Get child quote summaries
-                RelatedQuoteSummaryList = webServices.GetRelatedQuoteSummaries(CurrentlySelectedQuote);
-
                 var quotesWithBidValue = 0;
 
                 foreach(QuoteSummary quoteSummary in RelatedQuoteSummaryList)
                 {
-                    //defaultQuoteValue
-
                     if(quoteSummary.BidderType == "Default")
                     {
                         defaultQuoteValue = quoteSummary.totalQuote;
@@ -2648,12 +2672,6 @@ else
                         }
                     }
                 }
-
-                // Add Parent to summary list   
-                // if(currentParentQuoteSummary != null)
-                // {
-                //     RelatedQuoteSummaryList.Add(currentParentQuoteSummary);
-                // }
 
                 // Sort collections
                 LocalizeRelatedQuotes(RelatedQuoteSummaryList);
