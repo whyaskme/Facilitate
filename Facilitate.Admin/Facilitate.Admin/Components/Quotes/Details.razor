@@ -149,7 +149,7 @@ else
                         @{
                             if(CurrentlySelectedQuote.Trade == "Roofing")
                             {
-                                <div class="@currentQuoteColorCssClass header-total-element">@CurrentlySelectedQuote.totalSquareFeet.ToString("N0")</div>
+                                <div class="@currentQuoteColorCssClass">@CurrentlySelectedQuote.totalSquareFeet.ToString("N0")</div>
                                 <div class="@currentQuoteColorCssClass header-total-element">sqft &raquo;</div>
                             }
                         }
@@ -1146,7 +1146,7 @@ else
         WebServices.UpdateQuote(CurrentlySelectedQuote);
     }
 
-    public bool recordIDVisible = true;
+    public bool recordIDVisible = false;
 
     public string quoteIdToRemove = "";
     public string quoteIdToRestore = "";

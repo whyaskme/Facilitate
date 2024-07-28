@@ -14,6 +14,7 @@ namespace Facilitate.Libraries.Models
             _t = "QuoteHeader";
             rowIndex = 0;
             Trade = string.Empty;
+            TradeSubcategory = string.Empty;
             status = string.Empty;
             street = string.Empty;
             city = string.Empty;
@@ -29,13 +30,17 @@ namespace Facilitate.Libraries.Models
             timestamp = DateTime.UtcNow;
 
             events = new List<Event>();
+
             Bidder = null;
+            BidderType = "Open";
+            BiddingExpires = DateTime.UtcNow;
         }
 
         public string _id { get; set; }
         public string _t { get; set; }
         public int rowIndex { get; set; }
         public string Trade { get; set; }
+        public string TradeSubcategory { get; set; }
         public string status { get; set; }
         public string street { get; set; }
         public string city { get; set; }
@@ -52,7 +57,10 @@ namespace Facilitate.Libraries.Models
         public DateTime lastUpdated { get; set; }
 
         public virtual List<Event>? events { get; set; }
+
         public virtual ApplicationUser? Bidder { get; set; }
+        public string BidderType { get; set; }
+        public DateTime BiddingExpires { get; set; }
 
     }
 }

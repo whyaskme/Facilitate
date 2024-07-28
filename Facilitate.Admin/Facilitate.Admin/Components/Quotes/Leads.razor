@@ -237,6 +237,7 @@ else
             <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
 @*             <DxGridDataColumn Width="85" Caption="Status" FieldName="status" /> *@
             <DxGridDataColumn  Visible="true" Width="115" Caption="Trade" FieldName="Trade" />
+            <DxGridDataColumn Visible="true" Width="115" Caption="Sub" FieldName="TradeSubcategory" />
             <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Width="100" Caption="First" FieldName="firstName" />
             <DxGridDataColumn Width="125" Caption="Last" FieldName="lastName" />
@@ -246,6 +247,11 @@ else
             <DxGridDataColumn Width="50" Caption="State" FieldName="state" />
             <DxGridDataColumn Width="65" Caption="Zip" FieldName="zip" />
             <DxGridDataColumn Visible="false" Width="65" Caption="SqFt" FieldName="totalSquareFeet" />
+
+            <DxGridDataColumn Width="150" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Bidder.FirstName + ' ' + Bidder.LastName" />
+            <DxGridDataColumn Width="75" Caption="Bid Type" FieldName="BidderType" />
+            <DxGridDataColumn Width="100" Caption="Expires" FieldName="BiddingExpires" />
+
             <DxGridDataColumn Width="75" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
             <DxGridCommandColumn Width="100px" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
         </Columns>

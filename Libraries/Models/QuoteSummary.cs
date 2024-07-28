@@ -18,6 +18,7 @@ namespace Facilitate.Libraries.Models
 
             isQualified = false;
             Trade = string.Empty;
+            TradeSubcategory = string.Empty;
             relationship = string.Empty;
             status = string.Empty;
             actions = string.Empty;
@@ -38,6 +39,7 @@ namespace Facilitate.Libraries.Models
         public int rowIndex { get; set; }
         public bool isQualified { get; set; }
         public string Trade { get; set; }
+        public string TradeSubcategory { get; set; }
         public string relationship { get; set; }
         public string status { get; set; }
         public string actions { get; set; }
