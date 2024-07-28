@@ -6,6 +6,10 @@ html, body {
     overflow: auto !important;
 }
 
+grid-item {
+    border: solid 1px #ff0000 !important;
+}
+
 .ShowRowIndexColumn {
     border: solid 1px #ff0000 !important;
 }
@@ -80,6 +84,7 @@ html, body {
 
 .ShowActionsColumn {
     border: solid 1px #ff0000 !important;
+    width: 250px !important;
 }
 
 .ShowSqFtColumn {
