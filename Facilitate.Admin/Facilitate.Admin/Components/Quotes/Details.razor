@@ -153,7 +153,7 @@ else
                             }
                             else
                             {
-                                <div class="@currentQuoteColorCssClass header-total-element">Default Quote: @defaultQuoteValue.ToString("C0")</div>
+                                <div class="@currentQuoteColorCssClass header-total-element">Current Bid: </div>
                                 <div class="@currentQuoteColorCssClass header-total-element">
                                     <DxTextBox Text="@CurrentlySelectedQuote.totalQuote.ToString("C0")" TextChanged="@((newValue) => OnTotalQuoteValueChanged(newValue))" CssClass="total-quote-value" />
                                 </div>
@@ -1076,6 +1076,9 @@ else
         Quote quoteToUpdate = WebServices.GetQuote(CurrentlySelectedQuote._id)[0];
 
         double newTotal = Convert.ToDouble(newValue);
+
+        // Update value
+        quoteToUpdate.totalQuote = newTotal;
 
         var modType = "Lowered";
         if (newTotal > CurrentlySelectedQuote.totalQuote)
