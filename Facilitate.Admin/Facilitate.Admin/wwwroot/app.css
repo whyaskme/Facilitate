@@ -263,7 +263,8 @@ button {
 }
 
 .header-total-element {
-    border: solid 0px #ff0000 !important;
+    border-right: solid 1px #808080 !important;
+    padding-right: 15px !important;
     width: auto !important;
     float: left !important;
     margin-right: 5px !important;

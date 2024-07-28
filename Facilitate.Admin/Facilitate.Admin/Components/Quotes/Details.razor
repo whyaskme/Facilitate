@@ -144,7 +144,7 @@ else
                     </div>
                     <div class="col-md-4 quote-total">
 
-                        <div class="@currentQuoteColorCssClass header-total-element">Bid:</div>
+                        <div class="@currentQuoteColorCssClass header-total-element">Quote: @CurrentlySelectedQuote.totalQuote.ToString("C0")</div>
 
                         @{
                             if(CurrentlySelectedQuote.Trade == "Roofing")
@@ -159,7 +159,7 @@ else
 
                             if(CurrentlySelectedQuote.Trade == "Aggregate")
                             {
-                                <div class="@currentQuoteColorCssClass header-total-element header-total-element-modifier">Bid Avg (@averageQuoteValue.ToString("C0"))</div>
+                                <div class="@currentQuoteColorCssClass header-total-element header-total-element-modifier">Avg Bid: @averageQuoteValue.ToString("C0")</div>
                             }
                             else
                             {
@@ -1146,7 +1146,7 @@ else
         WebServices.UpdateQuote(CurrentlySelectedQuote);
     }
 
-    public bool recordIDVisible = false;
+    public bool recordIDVisible = true;
 
     public string quoteIdToRemove = "";
     public string quoteIdToRestore = "";
@@ -2405,6 +2405,7 @@ else
 
     public int parentCount = 0;
 
+    public double defaultQuoteValue = 0;
     public double averageQuoteValue = 0;
 
     private async Task TimerRefresh()
@@ -2464,19 +2465,31 @@ else
                 }
                 NoteList.AddRange(CurrentlySelectedQuote.notes);
 
+                averageQuoteValue = 0;
+
                 // Get child quote summaries
                 RelatedQuoteSummaryList = webServices.GetRelatedQuoteSummaries(CurrentlySelectedQuote);
-                if(RelatedQuoteSummaryList != null)
-                {
-                    averageQuoteValue = 0;
 
-                    foreach(QuoteSummary quoteSummary in RelatedQuoteSummaryList)
+                var quotesWithBidValue = 0;
+
+                foreach(QuoteSummary quoteSummary in RelatedQuoteSummaryList)
+                {
+                    //defaultQuoteValue
+
+                    if(quoteSummary.BidderType == "Default")
                     {
+                        defaultQuoteValue = quoteSummary.totalQuote;
+                    }
+
+                    if(quoteSummary.totalQuote > 0)
+                    {
+                        quotesWithBidValue++;
+
                         averageQuoteValue += quoteSummary.totalQuote;
                     }
-                } 
+                }
 
-                averageQuoteValue = (averageQuoteValue / RelatedQuoteSummaryList.Count());
+                averageQuoteValue = (averageQuoteValue / quotesWithBidValue);
 
                 currentQuoteIndex = 0;
 
@@ -2502,10 +2515,10 @@ else
                 }
 
                 // Add Parent to summary list   
-                if(currentParentQuoteSummary != null)
-                {
-                    RelatedQuoteSummaryList.Add(currentParentQuoteSummary);
-                }
+                // if(currentParentQuoteSummary != null)
+                // {
+                //     RelatedQuoteSummaryList.Add(currentParentQuoteSummary);
+                // }
 
                 // Sort collections
                 LocalizeRelatedQuotes(RelatedQuoteSummaryList);
