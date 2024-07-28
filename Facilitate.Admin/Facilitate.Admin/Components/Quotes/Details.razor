@@ -487,10 +487,17 @@ else
 
                     <DxTabPage Id="Panel-Notes" Text="Notes">
 
-                        <h6>@NoteList.Count() Notes</h6>
+                        <div class="row">
+                            <div class="col-md-1">
+                                <button class="@currentActionButtonClass" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
+                            </div>
+                            <div class="col-md-11">
+                                <h6>@NoteList.Count() Notes</h6>
+                            </div>
+                        </div>
 
-                        <button class="@currentActionButtonClass" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
                         <br /><br />
+
                         <DxGrid @ref="NoteGrid"
                                 Data="@NoteList"
                                 KeyFieldName="_id"
@@ -1049,17 +1056,25 @@ else
         Event _event = new Event();
         _event.Author = currentUser;
 
-        var oldTotal = CurrentlySelectedQuote.totalQuote.ToString("C0");
-        var newTotal = newValue.Replace("$", "");
+        Quote quoteToUpdate = WebServices.GetQuote(CurrentlySelectedQuote._id)[0];
 
-        CurrentlySelectedQuote.totalQuote = Convert.ToDouble(newTotal);
+        double newTotal = Convert.ToDouble(newValue);
 
-        _event.Name = "Quote Total Modified";
-        _event.Details = "Quote modified from (" + oldTotal + ") to ($" + newTotal + ")";
+        var modType = "Lowered";
+        if (newTotal > CurrentlySelectedQuote.totalQuote)
+        {
+            modType = "Raised";
+        }
 
-        CurrentlySelectedQuote.events.Add(_event);
+        _event.Trade = CurrentlySelectedQuote.Trade;
+        _event.Name = _event.Trade + " quote (" + modType + ")";
+        _event.Details = _event.Name + " from (" + CurrentlySelectedQuote.totalQuote.ToString("C0") + ") to (" + newTotal.ToString("C0") + ")";
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        quoteToUpdate.events.Add(_event);
+
+        WebServices.UpdateQuote(quoteToUpdate);
+
+        TimerRefresh();
     }
 
     public void RemoveSelectedChildItem(GridRowClickEventArgs args)
@@ -1097,7 +1112,7 @@ else
         WebServices.UpdateQuote(CurrentlySelectedQuote);
     }
 
-    public bool recordIDVisible = true;
+    public bool recordIDVisible = false;
 
     public bool ShowTradeColumn { get; set; }
 
@@ -1234,7 +1249,7 @@ else
         NavigationManager.NavigateTo(previousPageUrl);
     }
 
-    public string RedcordIdButtonLabel = "Hide Record Id";
+    public string RedcordIdButtonLabel = "Show Record Id";
     public void ShowRecordIDs()
     {
         if(recordIDVisible)
@@ -1639,7 +1654,7 @@ else
             Quote childQuote = new Quote();
             childQuote.status = "New";
             childQuote.Trade = CurrentlySelectedQuote.TradeCategory;
-            childQuote.TradeCategory = CurrentlySelectedQuote.TradeCategory;
+            childQuote.TradeCategory = "Child";
 
             Event createdEvent = new Event();
             createdEvent.Author = currentUser;
