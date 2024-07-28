@@ -75,15 +75,14 @@ button {
     border: solid 1px #ff0000 !important;
     background-color: #ffff00 !important;
     float: left !important;
-    font-size: 0.85em !important;
+    font-size: 0.75em !important;
 }
 
 .button-header-right {
-    border: solid 1px #ff0000 !important;
+    border: solid 1px #ffffff !important;
     background-color: #ffff00 !important;
     float: right !important;
-    margin-right: 25px !important;
-    font-size: 0.85em !important;
+    font-size: 0.75em !important;
 }
 
 .quote-color-standalone {
@@ -122,21 +121,21 @@ button {
     border: solid 1px #014b01 !important;
     color: #ffffff !important;
     background-color: #014b01 !important;
-    width: 125px !important;
+    width: 135px !important;
 }
 
 .action-button-child {
     border: solid 1px #8b0309 !important;
     color: #ffffff !important;
     background-color: #8b0309 !important;
-    width: 125px !important;
+    width: 135px !important;
 }
 
 .action-button-sibling {
     border: solid 1px #8b0309 !important;
     color: #ffffff !important;
     background-color: #8b0309 !important;
-    width: 125px !important;
+    width: 135px !important;
 }
 
 .quote-header-standalone {
@@ -744,7 +743,17 @@ h6 {
     border: solid 0px #ff0000 !important;
     font-size: 1.0em !important;
     padding: 0px !important;
-    margin-left: 15px !important;
+    position: relative !important;
+    top: 3px !important;
+    left: 30px !important;
+}
+
+#NoteGrid,
+#EventGrid 
+{
+    position: relative !important;
+    top: 10px !important;
+    left: 0px !important;
 }
 
 .not-authorized {

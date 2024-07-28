@@ -102,7 +102,7 @@ else
 
     <div class="div-filters">
 
-        <button class="action-button header-recordID-button" @onclick="ShowRecordIDs">@RedcordIdButtonLabel</button>
+        <button class="action-button header-recordID-button" @onclick="ShowRecordIdColumns">@RedcordIdButtonLabel</button>
 
         @{
             if (isSystemAdmin)
@@ -204,24 +204,26 @@ else
             PageSizeSelectorAllRowsItemVisible="false"
             KeyboardNavigationEnabled="true">
         <Columns>
-            <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="rowIndex" />
-            <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
-            <DxGridDataColumn Visible="true" Width="115" Caption="Trade" FieldName="Trade" />
-            <DxGridDataColumn Visible="true" Width="115" Caption="Category" FieldName="TradeCategory" />
-            <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
-            <DxGridDataColumn Width="175" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-            <DxGridDataColumn Width="100" Caption="First" FieldName="firstName" />
-            <DxGridDataColumn Width="125" Caption="Last" FieldName="lastName" />
-            <DxGridDataColumn Width="200" Caption="Email" FieldName="email" />
-            <DxGridDataColumn Width="auto" Caption="Street" FieldName="street" />
-            <DxGridDataColumn Width="125" Caption="City" FieldName="city" />
-            <DxGridDataColumn Width="50" Caption="State" FieldName="state" />
-            <DxGridDataColumn Width="65" Caption="Zip" FieldName="zip" />
-            <DxGridDataColumn Visible="false" Width="65" Caption="SqFt" FieldName="totalSquareFeet" />
-            <DxGridDataColumn Width="75" Caption="Bid" DisplayFormat="C0" FieldName="totalQuote" />
-            <DxGridDataColumn Width="100" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Bidder.FirstName + ' ' + Bidder.LastName" />
-            <DxGridDataColumn Width="100" Caption="Expires" FieldName="BiddingExpires" />
-            <DxGridDataColumn Width="100" Caption="Bid Type" FieldName="BidderType" />
+            <DxGridDataColumn Visible="@ShowRowIndexColumn" Width="35" Caption="Row" FieldName="rowIndex" />
+            <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="215" Caption="Record Id" FieldName="_id" />
+            <DxGridDataColumn Visible="@ShowStatusColumn" Width="85" Caption="Status" FieldName="status" />
+            <DxGridDataColumn Visible="@ShowTradeColumn" Width="85" Caption="Trade" FieldName="Trade" />
+            <DxGridDataColumn Visible="@ShowCategoryColumn" Width="85" Caption="Category" FieldName="TradeCategory" />
+            <DxGridDataColumn Visible="@ShowCreatedColumn" Width="160" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+            <DxGridDataColumn Visible="@ShowCreatedColumn" Width="160" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+            <DxGridDataColumn Visible="@ShowFirstNameColumn" Width="85" Caption="First" FieldName="firstName" />
+            <DxGridDataColumn Visible="@ShowLastNameColumn" Width="100" Caption="Last" FieldName="lastName" />
+            <DxGridDataColumn Visible="@ShowEmailColumn" Width="150" Caption="Email" FieldName="email" />
+            <DxGridDataColumn Visible="@ShowStreetColumn" Width="auto" Caption="Street" FieldName="street" />
+            <DxGridDataColumn Visible="@ShowCityColumn" Width="125" Caption="City" FieldName="city" />
+            <DxGridDataColumn Visible="@ShowStateColumn" Width="50" Caption="State" FieldName="state" />
+            <DxGridDataColumn Visible="@ShowZipColumn" Width="65" Caption="Zip" FieldName="zip" />
+            <DxGridDataColumn Visible="@ShowSqFtColumn" Width="65" Caption="SqFt" FieldName="totalSquareFeet" />
+            <DxGridDataColumn Visible="@ShowBidColumn" Width="85" Caption="Bid" DisplayFormat="C0" FieldName="totalQuote" />
+            <DxGridDataColumn Visible="@ShowBidderColumn" Width="125" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Bidder.FirstName + ' ' + Bidder.LastName" />
+            <DxGridDataColumn Visible="@ShowBidExpiresColumn" Width="85" Caption="Bid Expires" FieldName="BiddingExpires" />
+            <DxGridDataColumn Visible="@ShowBidTypeColumn" Width="85" Caption="Bid Type" FieldName="BidderType" />
+            <DxGridCommandColumn Visible="@ShowActionsColumn" Width="100px" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
         </Columns>
     </DxGrid>
 }
@@ -287,18 +289,18 @@ else
         }
     }
 
-    public string RedcordIdButtonLabel = "Show Record Id";
-    public void ShowRecordIDs()
+    public string RedcordIdButtonLabel = "Show Hidden Data";
+    public void ShowRecordIdColumns()
     {
-        if (ShowRecordId)
+        if (ShowRecordIdColumn)
         {
-            ShowRecordId = false;
-            RedcordIdButtonLabel = "Show Record Id";
+            ShowRecordIdColumn = false;
+            RedcordIdButtonLabel = "Show Hidden Data";
         }
         else
         {
-            ShowRecordId = true;
-            RedcordIdButtonLabel = "Hide Record Id";
+            ShowRecordIdColumn = true;
+            RedcordIdButtonLabel = "Hide Hidden Data";
         }
     }
 
@@ -391,6 +393,27 @@ else
     protected override void OnInitialized()
     {
         NavigationManager.LocationChanged += OnLocationChanged;
+
+        ShowRowIndexColumn = false;
+        ShowRecordIdColumn = false;
+        ShowStatusColumn = false;
+        ShowTradeColumn = true;
+        ShowCategoryColumn = true;
+        ShowCreatedColumn = true;
+        ShowUpdatedColumn = false;
+        ShowFirstNameColumn = true;
+        ShowLastNameColumn = true;
+        ShowEmailColumn = false;
+        ShowStreetColumn = true;
+        ShowCityColumn = true;
+        ShowStateColumn = true;
+        ShowZipColumn = true;
+        ShowBidColumn = true;
+        ShowBidderColumn = true;
+        ShowBidExpiresColumn = true;
+        ShowBidTypeColumn = true;
+        ShowActionsColumn = true;
+        ShowSqFtColumn = false;
     }
 
     IEnumerable<string> Values { get; set; }
@@ -646,18 +669,18 @@ else
                 switch (SelectedTradeType)
                 {
                     case "All":
-                        quotes = webServices.GetSummaries("New", ShowTestData);
-                        leaderboardStats = WebServices.GetLeaderBoardStats("New", ShowTestData);
+                        quotes = webServices.GetSummaries("Customer", ShowTestData);
+                        leaderboardStats = WebServices.GetLeaderBoardStats("Customer", ShowTestData);
                         break;
                     case "Aggregate":
-                        quotes = webServices.GetSummaries(SelectedTradeType, "New", ShowTestData);
-                        leaderboardStats = WebServices.GetLeaderBoardStats("New", ShowTestData);
+                        quotes = webServices.GetSummaries(SelectedTradeType, "Customer", ShowTestData);
+                        leaderboardStats = WebServices.GetLeaderBoardStats("Customer", ShowTestData);
                         ShowBidColumn = false;
                         break;
 
                     default:
-                        quotes = webServices.GetSummaries(SelectedTradeType, "New", ShowTestData);
-                        leaderboardStats = WebServices.GetLeaderBoardStats(SelectedTradeType, "New", ShowTestData);
+                        quotes = webServices.GetSummaries(SelectedTradeType, "Customer", ShowTestData);
+                        leaderboardStats = WebServices.GetLeaderBoardStats(SelectedTradeType, "Customer", ShowTestData);
                         break;
                 }
             }

@@ -97,7 +97,7 @@ else
     <div class="@currentQuoteHeaderTypeCssClass">
         <button class="@currentActionButtonClass button-header-left" @onclick="ReturnPreviousPage">Return</button>
        @CurrentlySelectedQuote.status Details for @CurrentlySelectedQuote.firstName @CurrentlySelectedQuote.lastName
-        <button class="@currentActionButtonClass button-header-right" @onclick="ShowRecordIDs">@RedcordIdButtonLabel</button>
+        <button class="@currentActionButtonClass button-header-right" @onclick="ShowRecordIdColumns">@RedcordIdButtonLabel</button>
     </div>
 
     <DxGrid @ref="QuoteGrid"
@@ -496,9 +496,8 @@ else
                             </div>
                         </div>
 
-                        <br /><br />
-
                         <DxGrid @ref="NoteGrid"
+                                id="NoteGrid"
                                 Data="@NoteList"
                                 KeyFieldName="_id"
                                 PageSize="10"
@@ -524,9 +523,17 @@ else
 
                     <DxTabPage Id="Panel-History" Text="History">
 
-                        <h6>@EventList.Count() Events</h6>
+                        <div class="row">
+                            <div class="col-md-1">
+                                <button class="@currentActionButtonClass" @onclick="@(() => IsPopupVisibleExportEvents = true)">Export Events</button>
+                            </div>
+                            <div class="col-md-11">
+                                <h6>@EventList.Count() Events</h6>
+                            </div>
+                        </div>
 
                         <DxGrid @ref="EventGrid"
+                                id="EventGrid"
                             Data="@EventList"
                             KeyFieldName="_id"
                             PageSize="10"
@@ -540,12 +547,12 @@ else
                             KeyboardNavigationEnabled="true"
                             TextWrapEnabled="false">
                             <Columns>
-                                <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="" />
+                                <DxGridDataColumn Visible="@ShowRowIndexColumn" Width="50" Caption="Row" FieldName="" />
                                 <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
-                                <DxGridDataColumn Width="175" Caption="DateTime" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-                                <DxGridDataColumn Width="150" Caption="Trade" FieldName="Trade" />
-                                <DxGridDataColumn Width="auto" Caption="Details" FieldName="Details" />
-                                <DxGridDataColumn Width="175" Caption="Author" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Author.FirstName + ' ' + Author.LastName" />
+                                <DxGridDataColumn Visible="@ShowCreatedColumn" Width="160" Caption="DateTime" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                <DxGridDataColumn Visible="@ShowTradeColumn" Width="85" Caption="Trade" FieldName="Trade" />
+                                <DxGridDataColumn Visible="true" Width="auto" Caption="Details" FieldName="Details" />
+                                <DxGridDataColumn Visible="true" Width="100" Caption="Author" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Author.FirstName + ' ' + Author.LastName" />
                             </Columns>
                         </DxGrid>
 
@@ -843,6 +850,16 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
+<DxPopup @bind-Visible="@IsPopupVisibleExportEvents" ShowFooter="true" HeaderText="Export Events as .csv">
+    <BodyContentTemplate>
+        Export event history data...
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="ExportEventHistory" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleExportEvents = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
 <DxPopup @bind-Visible="@IsPopupVisibleRestoreTrade" ShowFooter="true" HeaderText="Confirm trade project RESTORATION?">
     <BodyContentTemplate>
         @ConfirmRestoreMessage
@@ -1121,10 +1138,12 @@ else
     public bool ShowUpdatedColumn { get; set; }
     public bool ShowFirstNameColumn { get; set; }
     public bool ShowLastNameColumn { get; set; }
+    public bool ShowEmailColumn { get; set; }
     public bool ShowStreetColumn { get; set; }
     public bool ShowCityColumn { get; set; }
     public bool ShowStateColumn { get; set; }
     public bool ShowZipColumn { get; set; }
+    public bool ShowSqFtColumn { get; set; }
     public bool ShowBidColumn { get; set; }
     public bool ShowBidderColumn { get; set; }
     public bool ShowBidExpiresColumn { get; set; }
@@ -1264,18 +1283,18 @@ else
         NavigationManager.NavigateTo(previousPageUrl);
     }
 
-    public string RedcordIdButtonLabel = "Show Record Id";
-    public void ShowRecordIDs()
+    public string RedcordIdButtonLabel = "Show Hidden Data";
+    public void ShowRecordIdColumns()
     {
-        if(ShowRecordId)
+        if(ShowRecordIdColumn)
         {
-            ShowRecordId = false;
-            RedcordIdButtonLabel = "Show Record Id";
+            ShowRecordIdColumn = false;
+            RedcordIdButtonLabel = "Show Hidden Data";
         }
         else
         {
-            ShowRecordId = true;
-            RedcordIdButtonLabel = "Hide Record Id";
+            ShowRecordIdColumn = true;
+            RedcordIdButtonLabel = "Hide Hidden Data";
         }
     }
 
@@ -1479,6 +1498,27 @@ else
     protected override void OnInitialized()
     {
         NavigationManager.LocationChanged += OnLocationChanged;
+
+        ShowRowIndexColumn = false;
+        ShowRecordIdColumn = false;
+        ShowStatusColumn = false;
+        ShowTradeColumn = true;
+        ShowCategoryColumn = true;
+        ShowCreatedColumn = true;
+        ShowUpdatedColumn = false;
+        ShowFirstNameColumn = true;
+        ShowLastNameColumn = true;
+        ShowEmailColumn = false;
+        ShowStreetColumn = true;
+        ShowCityColumn = true;
+        ShowStateColumn = true;
+        ShowZipColumn = true;
+        ShowBidColumn = true;
+        ShowBidderColumn = true;
+        ShowBidExpiresColumn = true;
+        ShowBidTypeColumn = true;
+        ShowActionsColumn = true;
+        ShowSqFtColumn = false;
     }
 
     public int currentItemIndex = 0;
@@ -1557,6 +1597,9 @@ else
     bool IsPopupVisibleSelectAttachmentToDelete { get; set; }
 
     bool IsPopupVisibleAddNote { get; set; }
+
+    bool IsPopupVisibleExportEvents { get; set; }
+
     bool IsPopupVisibleSelectNoteToDelete { get; set; }
 
     bool IsArchivePopupVisible { get; set; }
@@ -2288,6 +2331,33 @@ else
         {
             var errMsg = ex.Message;
         }
+    }
+
+    public void ExportEventHistory()
+    {
+        // Get this quote, set it archive and update it
+        // var quoteId = quoteIdToRemove;
+        // var quoteToRemove = WebServices.GetQuote(quoteId)[0];
+
+        // quoteToRemove.status = "Archive";
+        // quoteToRemove.lastUpdated = DateTime.UtcNow;
+
+        // WebServices.UpdateQuote(quoteToRemove);
+
+        // // Parse and remove all relationships including siblings
+        // var tmpQuote = CurrentlySelectedQuote;
+
+        // foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
+        // {
+        //     // Disable removed quoteId from all siblings
+        //     if (relationship._id == quoteId)
+        //         relationship.IsEnabled = false;
+        // }
+
+        // WebServices.UpdateQuote(CurrentlySelectedQuote);
+
+        // IsPopupVisibleDeleteTrade = false;
+
     }
 
     public void DeleteTrade()
