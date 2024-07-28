@@ -258,10 +258,13 @@ namespace Facilitate.Admin.Data
                     _summary.BidderType = relatedQuote.BidderType;
                     _summary.BiddingExpires = relatedQuote.BiddingExpires;
 
-                    Event lastEvent = relatedQuote.events.LastOrDefault();
-                    _summary.events = relatedQuote.events;
-                    _summary.lastEventDetails = lastEvent.Details;
-                    _summary.lastEventTimeStamp = lastEvent.DateTime.ToLocalTime();
+                    if(relatedQuote.events.Count > 0)
+                    {
+                        Event lastEvent = relatedQuote.events.LastOrDefault();
+                        _summary.events = relatedQuote.events;
+                        _summary.lastEventDetails = lastEvent.Details;
+                        _summary.lastEventTimeStamp = lastEvent.DateTime.ToLocalTime();
+                    }
 
                     QuoteHeaders.Add(_summary);
                 }

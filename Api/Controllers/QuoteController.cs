@@ -81,7 +81,7 @@ namespace Facilitate.Api.Controllers
                 string headerForwardedFor = "n/a";
                 string headerReferer = "n/a";
 
-                int childBidderQuotesToCreate = 1;
+                int childBidderQuotesToCreate = 2;
                 int BiddingExpiresInDays = 1;
 
                 double totalQuoteValue = 0;
@@ -98,6 +98,7 @@ namespace Facilitate.Api.Controllers
 
                 Quote aggregateQuote = new Quote();
                 aggregateQuote.Trade = utils.TitleCaseString("Aggregate");
+                aggregateQuote.TradeSubcategory = utils.TitleCaseString("Aggregate");  //aggregateQuote.Trade;
 
                 // Set Bidding properties
                 aggregateQuote.Bidder = author;
@@ -152,17 +153,28 @@ namespace Facilitate.Api.Controllers
                 {
                     Quote childQuote = new Quote();
 
-                    childQuote.statusSubcategory = "bidder";
                     childQuote.totalQuote = 0;
 
-                    if (i == 0)
+                    switch (i)
                     {
-                        childQuote.statusSubcategory = "default-bidder";
-                        childQuote.totalQuote = totalQuoteValue;
+                        case 0:
+
+                            childQuote.BidderType = "Default";
+                            childQuote.totalQuote = totalQuoteValue;
+                            break;
+                        case 1:
+                            childQuote.BidderType = "Spec";
+                            childQuote.totalQuote = 0;
+                            break;
+                        default:
+                            childQuote.BidderType = "Open";
+                            childQuote.totalQuote = 0;
+                            break;
                     }
 
                     // Will need to figure out how to set dynamically
                     childQuote.Trade = utils.TitleCaseString("Roofing");
+                    childQuote.TradeSubcategory = utils.TitleCaseString("Roofing");
 
                     // Set Bidding properties
                     childQuote.Bidder = author;
@@ -176,8 +188,6 @@ namespace Facilitate.Api.Controllers
                     {
                         totalQuoteValue = roofleSubmission.products[0].priceInfo.total;
                     }
-
-                    childQuote.totalQuote = 0;
 
                     childQuote.address = roofleSubmission.address;
                     childQuote.fullAddress = roofleSubmission.fullAddress;
@@ -220,6 +230,8 @@ namespace Facilitate.Api.Controllers
                     parentRelationship.ParentId = aggregateQuote._id;
                     parentRelationship.Type = "Parent";
                     parentRelationship.Name = aggregateQuote.Trade;
+
+                    childQuote.relationships.Add(parentRelationship);
 
                     // Create Child relationship to Aggregate
                     var childRelationship = new Relationship();

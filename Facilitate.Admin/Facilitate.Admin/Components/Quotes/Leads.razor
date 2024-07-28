@@ -245,7 +245,7 @@ else
             <DxGridDataColumn Width="75" Caption="Bid Type" FieldName="BidderType" />
             <DxGridDataColumn Width="100" Caption="Expires" FieldName="BiddingExpires" />
 
-            <DxGridDataColumn Width="75" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
+            <DxGridDataColumn Visible="@ShowBidColumn" Width="75" Caption="Bid" DisplayFormat="C0" FieldName="totalQuote" />
             <DxGridCommandColumn Width="100px" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
         </Columns>
     </DxGrid>
@@ -288,6 +288,8 @@ else
     public bool recordIDVisible = false;
 
     public bool ShowTradeColumn { get; set; }
+
+    public bool ShowBidColumn { get; set; }
 
     public string LeadTypeFilterLabel { get; set; } = "Types (Complete Info)";
 
@@ -670,17 +672,26 @@ else
                 // Check to see if user IsEnabled. If not, log them out an redirect to login page
                 // var isUserEnabled = IsUserEnabled();
 
+                ShowBidColumn = true;
+
                 if (isSystemAdmin)
                 {
-                    if (SelectedTradeType.Contains("All"))
+                    switch (SelectedTradeType)
                     {
-                        quotes = webServices.GetSummaries("New", ShowTestData);
-                        leaderboardStats = WebServices.GetLeaderBoardStats("New", ShowTestData);
-                    }
-                    else
-                    {
-                        quotes = webServices.GetSummaries(SelectedTradeType, "New", ShowTestData);
-                        leaderboardStats = WebServices.GetLeaderBoardStats(SelectedTradeType, "New", ShowTestData);
+                        case "All":
+                            quotes = webServices.GetSummaries("New", ShowTestData);
+                            leaderboardStats = WebServices.GetLeaderBoardStats("New", ShowTestData);
+                            break;
+                        case "Aggregate":
+                            quotes = webServices.GetSummaries("New", ShowTestData);
+                            leaderboardStats = WebServices.GetLeaderBoardStats("New", ShowTestData);
+                            ShowBidColumn = false;
+                            break;
+
+                        default:
+                            quotes = webServices.GetSummaries(SelectedTradeType, "New", ShowTestData);
+                            leaderboardStats = WebServices.GetLeaderBoardStats(SelectedTradeType, "New", ShowTestData);
+                            break;
                     }
                 }
                 else

@@ -194,62 +194,24 @@ else
 
                     <DxTabPage Id="Panel-Project-Manager" Text="Relationships">
                     @{
-                        
-                        // <div class="row">
-                        //     <div class="col-md-1">
-                        //         @{
-                        //             if (CurrentlySelectedQuote.Bidder != null)
-                        //             {
-                        //                     <button class="@currentActionButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Change Bidder</button>
-                        //             }
-                        //             else
-                        //             {
-                        //                 <button class="@currentActionButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Add Bidder</button>
-                        //             }
-                        //         }
-                        //     </div>
-                        //     @{
-                        //         if (CurrentlySelectedQuote.Bidder != null)
-                        //         {
-                        //             <div class="col-md-1">
-                        //                 <h6>Bidder</h6>
-                        //             </div>
-
-                        //             <div class="col-md-10">
-                        //                 <span class="">
-                        //                     <label>Name</label>
-                        //                     <span class="detail-item">@CurrentlySelectedQuote.Bidder.FirstName</span><span class="detail-item">@CurrentlySelectedQuote.Bidder.LastName</span>
-                        //                 </span>
-                        //                 <span class="">
-                        //                     <label>Ph</label>
-                        //                     <span class="detail-item">@CurrentlySelectedQuote.Bidder.Phone</span>
-                        //                 </span>
-                        //                 <span class="">
-                        //                     <label>Email</label>
-                        //                     <a href="mailto:@CurrentlySelectedQuote.Bidder.Email" target="_blank">
-                        //                         <span class="detail-item">@CurrentlySelectedQuote.Bidder.Email</span>
-                        //                     </a>
-                        //                 </span>
-                        //                 <span class="">
-                        //                     <label>Market</label>
-                        //                     <a href="https://www.google.com/maps/search/@CurrentlySelectedQuote.Bidder.City, @CurrentlySelectedQuote.Bidder.State @CurrentlySelectedQuote.Bidder.Zip" target="_blank">
-                        //                         @CurrentlySelectedQuote.Bidder.City, @CurrentlySelectedQuote.Bidder.State
-                        //                     </a>
-                        //                 </span>
-                        //             </div>
-                        //         }
-                        //     }
-                        // </div>
-
-                        // <hr />
-
                         <div class="row">
-                            <div class="col-md-1">
-                                <button class="@currentActionButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Add Bidder</button>
-                            </div>
-                            <div class="col-md-11">
-                                <h6>@RelatedQuoteSummaryList.Count() Bidders</h6>
-                            </div>
+                            @{
+                                if(CurrentlySelectedQuote.Trade == "Aggregate")
+                                {
+                                    <div class="col-md-1">
+                                        <button class="@currentActionButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Add Bidder</button>
+                                    </div>
+                                    <div class="col-md-11">
+                                        <h6>@RelatedQuoteSummaryList.Count() Bidders</h6>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-md-12">
+                                        <h6>@RelatedQuoteSummaryList.Count() Bidders</h6>
+                                    </div>
+                                }
+                            }
                         </div>
 
                         <DxGrid @ref="RelatedQuoteGrid"
@@ -2657,10 +2619,13 @@ else
 
             var quoteEvents = currentQuote.events.OrderByDescending(x => x.DateTime).ToList();
 
-            var lastEvent = quoteEvents.FirstOrDefault();
+            if(quoteEvents.Count > 0)
+            {
+                var lastEvent = quoteEvents.FirstOrDefault();
 
-            _summary.lastEventTimeStamp = lastEvent.DateTime.ToLocalTime();
-            _summary.lastEventDetails = lastEvent.Details;
+                _summary.lastEventTimeStamp = lastEvent.DateTime.ToLocalTime();
+                _summary.lastEventDetails = lastEvent.Details;
+            }
         }
     }
 
