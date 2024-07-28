@@ -241,11 +241,11 @@ else
             <DxGridDataColumn Width="65" Caption="Zip" FieldName="zip" />
             <DxGridDataColumn Visible="false" Width="65" Caption="SqFt" FieldName="totalSquareFeet" />
 
-            <DxGridDataColumn Width="150" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Bidder.FirstName + ' ' + Bidder.LastName" />
-            <DxGridDataColumn Width="75" Caption="Bid Type" FieldName="BidderType" />
-            <DxGridDataColumn Width="100" Caption="Expires" FieldName="BiddingExpires" />
-
             <DxGridDataColumn Visible="@ShowBidColumn" Width="75" Caption="Bid" DisplayFormat="C0" FieldName="totalQuote" />
+            <DxGridDataColumn Width="150" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Bidder.FirstName + ' ' + Bidder.LastName" />
+            <DxGridDataColumn Width="100" Caption="Bid Expires" FieldName="BiddingExpires" />
+            <DxGridDataColumn Width="75" Caption="Bid Type" FieldName="BidderType" />
+
             <DxGridCommandColumn Width="100px" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
         </Columns>
     </DxGrid>
