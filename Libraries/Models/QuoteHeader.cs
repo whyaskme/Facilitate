@@ -14,7 +14,7 @@ namespace Facilitate.Libraries.Models
             _t = "QuoteHeader";
             rowIndex = 0;
             Trade = string.Empty;
-            TradeSubcategory = string.Empty;
+            TradeCategory = string.Empty;
             status = string.Empty;
             street = string.Empty;
             city = string.Empty;
@@ -40,7 +40,7 @@ namespace Facilitate.Libraries.Models
         public string _t { get; set; }
         public int rowIndex { get; set; }
         public string Trade { get; set; }
-        public string TradeSubcategory { get; set; }
+        public string TradeCategory { get; set; }
         public string status { get; set; }
         public string street { get; set; }
         public string city { get; set; }

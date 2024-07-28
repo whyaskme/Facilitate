@@ -145,28 +145,17 @@ else
                         </a>
                     </div>
                     <div class="col-md-4 quote-total">
-
-                        <div class="@currentQuoteColorCssClass header-total-element">Quote: @defaultQuoteValue.ToString("C0")</div>
-
                         @{
-                            if(CurrentlySelectedQuote.Trade == "Roofing")
-                            {
-                                <div class="@currentQuoteColorCssClass">@CurrentlySelectedQuote.totalSquareFeet.ToString("N0")</div>
-                                <div class="@currentQuoteColorCssClass header-total-element">sqft &raquo;</div>
-                            }
-                        }
-
-                        @{
-                            var quoteTotal = CurrentlySelectedQuote.totalQuote.ToString("C0");
-
                             if(CurrentlySelectedQuote.Trade == "Aggregate")
                             {
+                                <div class="@currentQuoteColorCssClass header-total-element">Quote: @defaultQuoteValue.ToString("C0")</div>
                                 <div class="@currentQuoteColorCssClass header-total-element header-total-element-modifier">Avg Bid: @averageQuoteValue.ToString("C0")</div>
                             }
                             else
                             {
+                                <div class="@currentQuoteColorCssClass header-total-element">Quote: @defaultQuoteValue.ToString("C0")</div>
                                 <div class="@currentQuoteColorCssClass header-total-element">
-                                    <DxTextBox Text="@quoteTotal" TextChanged="@((newValue) => OnTotalQuoteValueChanged(newValue))" CssClass="total-quote-value" />
+                                    <DxTextBox Text="@CurrentlySelectedQuote.totalQuote.ToString("C0")" TextChanged="@((newValue) => OnTotalQuoteValueChanged(newValue))" CssClass="total-quote-value" />
                                 </div>
                             }
                         }
@@ -253,7 +242,6 @@ else
                                 <DxGridDataColumn Width="150" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Bidder.FirstName + ' ' + Bidder.LastName" />
                                 <DxGridDataColumn Width="100" Caption="Bid Exp" FieldName="BiddingExpires" />
                                 <DxGridDataColumn Width="75" Caption="Bid Type" FieldName="BidderType" />
-                                
                                 
                                 <DxGridDataColumn Visible="false" Width="100" Caption="Qualified?" FieldName="isQualified" />
                                 @{
@@ -1650,8 +1638,8 @@ else
             // Create Child Quote
             Quote childQuote = new Quote();
             childQuote.status = "New";
-            childQuote.Trade = CurrentlySelectedQuote.TradeSubcategory;
-            childQuote.TradeSubcategory = CurrentlySelectedQuote.TradeSubcategory;
+            childQuote.Trade = CurrentlySelectedQuote.TradeCategory;
+            childQuote.TradeCategory = CurrentlySelectedQuote.TradeCategory;
 
             Event createdEvent = new Event();
             createdEvent.Author = currentUser;

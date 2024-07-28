@@ -10,7 +10,7 @@ namespace Facilitate.Libraries.Models
             _t = "Quote";
 
             Trade = string.Empty;
-            TradeSubcategory = string.Empty;
+            TradeCategory = string.Empty;
 
             ipAddress = "127.0.0.1";
 
@@ -68,7 +68,7 @@ namespace Facilitate.Libraries.Models
             _t = OriginalQuote._t;
 
             Trade = OriginalQuote.Trade;
-            TradeSubcategory = OriginalQuote.TradeSubcategory;
+            TradeCategory = OriginalQuote.TradeCategory;
 
             ipAddress = OriginalQuote.ipAddress;
 
@@ -125,7 +125,7 @@ namespace Facilitate.Libraries.Models
         public string ipAddress { get; set; }
 
         public string Trade { get; set; }
-        public string TradeSubcategory { get; set; }
+        public string TradeCategory { get; set; }
 
         public string status { get; set; }
         public string statusPrevious { get; set; }

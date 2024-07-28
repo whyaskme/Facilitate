@@ -98,7 +98,7 @@ namespace Facilitate.Api.Controllers
 
                 Quote aggregateQuote = new Quote();
                 aggregateQuote.Trade = utils.TitleCaseString("Aggregate");
-                aggregateQuote.TradeSubcategory = "Roofing";  //aggregateQuote.Trade;
+                aggregateQuote.TradeCategory = "Roofing";  //aggregateQuote.Trade;
 
                 // Set Bidding properties
                 aggregateQuote.Bidder = author;
@@ -182,7 +182,7 @@ namespace Facilitate.Api.Controllers
 
                     // Will need to figure out how to set dynamically
                     childQuote.Trade = utils.TitleCaseString("Roofing");
-                    childQuote.TradeSubcategory = utils.TitleCaseString("Roofing");
+                    childQuote.TradeCategory = utils.TitleCaseString("Child");
 
                     // Set Bidding properties
                     childQuote.Bidder = author;

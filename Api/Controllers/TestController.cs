@@ -144,7 +144,7 @@ namespace Facilitate.Api.Controllers
                 // Create the parent Aggregate quote
                 aggregateQuote = new Quote();
                 aggregateQuote.Trade = utils.TitleCaseString("Aggregate");
-                aggregateQuote.TradeSubcategory = utils.TitleCaseString(Trade);
+                aggregateQuote.TradeCategory = utils.TitleCaseString(Trade);
 
                 // Set Bidding properties
                 aggregateQuote.Bidder = author;
@@ -245,7 +245,7 @@ namespace Facilitate.Api.Controllers
                         Quote childQuote = new Quote();
                         childQuote.status = "New";
                         childQuote.Trade = Trade;
-                        childQuote.TradeSubcategory = Trade;
+                        childQuote.TradeCategory = Trade;
 
                         Event createdEvent = new Event();
                         createdEvent.Author = author;
