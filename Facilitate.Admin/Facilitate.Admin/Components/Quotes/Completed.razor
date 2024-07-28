@@ -63,9 +63,6 @@ else
             <span class="stat-value"><b>@leaderboardStats.TotalQuoteCount.ToString("N0") Quotes</b></span>
             <span class="stat-divider">|</span>
             <span class="stat-value">@leaderboardStats.TotalQuoteValue.ToString("C0")</span>
-            <span class="stat-divider">|</span>
-            <span class="stat-value">@leaderboardStats.TotalQuoteSqFt.ToString("N0")sqft</span>
-            <span class="stat-divider">|</span>
         </div>
 
         <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
@@ -125,31 +122,24 @@ else
             <div id="dropdown-customization-target-container-trades">
                 <DxButton CssClass="action-button" Id="btnTrades" Click="() => IsTradesListOpen = !IsTradesListOpen">@TradesFilterLabel</DxButton>
             </div>
-            <DxDropDown
-                @bind-IsOpen="@IsTradesListOpen"
-                MinWidth="max(20vw, 100px)"
-                PositionMode="DropDownPositionMode.Bottom"
+            <DxDropDown @bind-IsOpen="@IsTradesListOpen"
+                        MinWidth="max(20vw, 100px)"
+                        PositionMode="DropDownPositionMode.Bottom"
                         PositionTarget="#dropdown-customization-target-container-trades"
-                RestrictionTarget="#Navigation-DropDown-Customization"
-                CloseMode="DropDownCloseMode.Close"
-                PreventCloseOnPositionTargetClick="true"
-                HeaderVisible="false"
-                HeaderText="Trades"
-                FooterVisible="false"
-               >
+                        RestrictionTarget="#Navigation-DropDown-Customization"
+                        CloseMode="DropDownCloseMode.Close"
+                        PreventCloseOnPositionTargetClick="true"
+                        HeaderVisible="false"
+                        HeaderText="Trades"
+                        FooterVisible="false">
                 <BodyContentTemplate>
-                        <DxListBox Data="@TradesList"
-                                   id="ddlTradesList"
-                                   @bind-Values="@TradeTypeValues"
-                                   SelectedItemsChanged="@((IEnumerable<ListItem> values) => FilterTradeType(values))"
-                                   SelectionMode="ListBoxSelectionMode.Single">
-                        </DxListBox>
-                    <SampleEditForm/>
+                    <DxListBox Data="@TradesList"
+                               id="ddlTradesList"
+                               @bind-Values="@TradeTypeValues"
+                               SelectedItemsChanged="@((IEnumerable<ListItem> values) => FilterTradeType(values))"
+                               SelectionMode="ListBoxSelectionMode.Single">
+                    </DxListBox>
                 </BodyContentTemplate>
-                <FooterContentTemplate>
-                    <DxButton CssClass="@currentActionButtonClass" Text="OK" Click="@context.CloseCallback"/>
-                    <DxButton CssClass="@currentActionButtonClass" Text="Cancel" Click="@context.CloseCallback"/>
-                </FooterContentTemplate>
             </DxDropDown>
         </div>
 

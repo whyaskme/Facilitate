@@ -27,6 +27,8 @@
 
 @using MongoDB.Bson;
 
+@using MongoDB.Driver;
+
 @using System.Text.Json;
 
 @using DevExpress.Blazor;
@@ -105,7 +107,7 @@ else
         <Columns>
             <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="" />
             <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
-            <DxGridDataColumn Width="auto" Caption="Trade" FieldName="Trade" />
+            <DxGridDataColumn Visible="@ShowTradeColumn" Width="auto" Caption="Trade" FieldName="Trade" />
             <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Width="175" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
             <DxGridDataColumn Width="auto" Caption="Street" FieldName="street" />
@@ -193,56 +195,59 @@ else
                     <DxTabPage Id="Panel-Project-Manager" Text="Relationships">
                     @{
                         
+                        // <div class="row">
+                        //     <div class="col-md-1">
+                        //         @{
+                        //             if (CurrentlySelectedQuote.Bidder != null)
+                        //             {
+                        //                     <button class="@currentActionButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Change Bidder</button>
+                        //             }
+                        //             else
+                        //             {
+                        //                 <button class="@currentActionButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Add Bidder</button>
+                        //             }
+                        //         }
+                        //     </div>
+                        //     @{
+                        //         if (CurrentlySelectedQuote.Bidder != null)
+                        //         {
+                        //             <div class="col-md-1">
+                        //                 <h6>Bidder</h6>
+                        //             </div>
+
+                        //             <div class="col-md-10">
+                        //                 <span class="">
+                        //                     <label>Name</label>
+                        //                     <span class="detail-item">@CurrentlySelectedQuote.Bidder.FirstName</span><span class="detail-item">@CurrentlySelectedQuote.Bidder.LastName</span>
+                        //                 </span>
+                        //                 <span class="">
+                        //                     <label>Ph</label>
+                        //                     <span class="detail-item">@CurrentlySelectedQuote.Bidder.Phone</span>
+                        //                 </span>
+                        //                 <span class="">
+                        //                     <label>Email</label>
+                        //                     <a href="mailto:@CurrentlySelectedQuote.Bidder.Email" target="_blank">
+                        //                         <span class="detail-item">@CurrentlySelectedQuote.Bidder.Email</span>
+                        //                     </a>
+                        //                 </span>
+                        //                 <span class="">
+                        //                     <label>Market</label>
+                        //                     <a href="https://www.google.com/maps/search/@CurrentlySelectedQuote.Bidder.City, @CurrentlySelectedQuote.Bidder.State @CurrentlySelectedQuote.Bidder.Zip" target="_blank">
+                        //                         @CurrentlySelectedQuote.Bidder.City, @CurrentlySelectedQuote.Bidder.State
+                        //                     </a>
+                        //                 </span>
+                        //             </div>
+                        //         }
+                        //     }
+                        // </div>
+
+                        // <hr />
+
                         <div class="row">
                             <div class="col-md-1">
-                                @{
-                                    if (CurrentlySelectedQuote.Bidder != null)
-                                    {
-                                            <button class="@currentActionButtonClass" @onclick="@(() => IsAssignPopupVisible = true)">Change Bidder</button>
-                                    }
-                                    else
-                                    {
-                                        <button class="@currentActionButtonClass" @onclick="@(() => IsAssignPopupVisible = true)">Add Bidder</button>
-                                    }
-                                }
+                                <button class="@currentActionButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Add Bidder</button>
                             </div>
-                            @{
-                                if (CurrentlySelectedQuote.Bidder != null)
-                                {
-                                    <div class="col-md-1">
-                                        <h6>Bidder</h6>
-                                    </div>
-
-                                    <div class="col-md-10">
-                                        <span class="">
-                                            <label>Name</label>
-                                            <span class="detail-item">@CurrentlySelectedQuote.Bidder.FirstName</span><span class="detail-item">@CurrentlySelectedQuote.Bidder.LastName</span>
-                                        </span>
-                                        <span class="">
-                                            <label>Ph</label>
-                                            <span class="detail-item">@CurrentlySelectedQuote.Bidder.Phone</span>
-                                        </span>
-                                        <span class="">
-                                            <label>Email</label>
-                                            <a href="mailto:@CurrentlySelectedQuote.Bidder.Email" target="_blank">
-                                                <span class="detail-item">@CurrentlySelectedQuote.Bidder.Email</span>
-                                            </a>
-                                        </span>
-                                        <span class="">
-                                            <label>Market</label>
-                                            <a href="https://www.google.com/maps/search/@CurrentlySelectedQuote.Bidder.City, @CurrentlySelectedQuote.Bidder.State @CurrentlySelectedQuote.Bidder.Zip" target="_blank">
-                                                @CurrentlySelectedQuote.Bidder.City, @CurrentlySelectedQuote.Bidder.State
-                                            </a>
-                                        </span>
-                                    </div>
-                                }
-                            }
-                        </div>
-
-                        <hr />
-
-                        <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-11">
                                 <h6>@RelatedQuoteSummaryList.Count() Bidders</h6>
                             </div>
                         </div>
@@ -930,7 +935,7 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup @bind-Visible="@IsAssignPopupVisible"
+<DxPopup @bind-Visible="@IsBidderPopupVisible"
          ShowFooter="true"
          HeaderText="Please select a Bidder for assignment">
     <BodyContentTemplate>
@@ -950,7 +955,7 @@ else
     </BodyContentTemplate>
     <FooterContentTemplate>
         <DxButton CssClass="@currentActionButtonClass" Enabled="true" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
-        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsAssignPopupVisible = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsBidderPopupVisible = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -1140,6 +1145,8 @@ else
     }
 
     public bool recordIDVisible = false;
+
+    public bool ShowTradeColumn { get; set; }
 
     public string quoteIdToRemove = "";
     public string quoteIdToRestore = "";
@@ -1561,7 +1568,7 @@ else
 
     #region Popup properties
 
-    bool IsAssignPopupVisible { get; set; }
+    bool IsBidderPopupVisible { get; set; }
 
     bool IsPopupVisibleAddFile { get; set; }
     bool IsPopupVisibleSelectAttachmentToDelete { get; set; }
@@ -1649,6 +1656,9 @@ else
     [Parameter]
     public string SelectedTradeType { get; set; } = "Roofing";
 
+    IMongoCollection<Quote> _mongoDBCollection;
+    private CancellationToken _cancellationToken;
+
     #endregion
 
     #region Methods
@@ -1672,10 +1682,86 @@ else
         {
             SelectedProjectManager = selectedProjectManager;
 
-            if (SelectedProjectManager.Count() > 0)
-                IsAssignButtonEnabled = true;
-            else
-                IsAssignButtonEnabled = false;
+            // Create Child Quote
+            Quote childQuote = new Quote();
+            childQuote.status = "New";
+            childQuote.Trade = CurrentlySelectedQuote.TradeSubcategory;
+            childQuote.TradeSubcategory = CurrentlySelectedQuote.TradeSubcategory;
+
+            Event createdEvent = new Event();
+            createdEvent.Author = currentUser;
+            createdEvent.Trade = childQuote.Trade;
+            createdEvent.Name = "Child (" + childQuote.Trade + ") quote";
+            createdEvent.Details = createdEvent.Name + " Spawned from Aggregate Id (" + CurrentlySelectedQuote._id + ")";
+
+            childQuote.events.Add(createdEvent);
+
+            childQuote.Bidder = (ApplicationUser)selectedProjectManager.ToList()[0];
+
+            childQuote.BidderType = "Open";
+            childQuote.totalQuote = 0;
+
+            childQuote.BiddingExpires = CurrentlySelectedQuote.BiddingExpires;
+
+            childQuote.ipAddress = CurrentlySelectedQuote.ipAddress;
+            childQuote.externalUrl = CurrentlySelectedQuote.externalUrl;
+
+            childQuote.mainRoofTotalSquareFeet = CurrentlySelectedQuote.mainRoofTotalSquareFeet;
+
+            childQuote.totalSquareFeet = CurrentlySelectedQuote.totalSquareFeet;
+            childQuote.totalInitialSquareFeet = CurrentlySelectedQuote.totalInitialSquareFeet;
+
+            childQuote.firstName = CurrentlySelectedQuote.firstName;
+            childQuote.lastName = CurrentlySelectedQuote.lastName;
+            childQuote.email = CurrentlySelectedQuote.email;
+            childQuote.phone = CurrentlySelectedQuote.phone;
+            childQuote.address = CurrentlySelectedQuote.address;
+            childQuote.fullAddress = CurrentlySelectedQuote.fullAddress;
+            childQuote.street = CurrentlySelectedQuote.street;
+            childQuote.city = CurrentlySelectedQuote.city;
+            childQuote.state = CurrentlySelectedQuote.state;
+            childQuote.zip = CurrentlySelectedQuote.zip;
+            childQuote.market = CurrentlySelectedQuote.market;
+
+            // Create Aggregate relationship to Child
+            var parentRelationship = new Relationship();
+            parentRelationship.Author = currentUser.FirstName + " " + currentUser.LastName;
+            parentRelationship._id = CurrentlySelectedQuote._id;
+            parentRelationship.ParentId = CurrentlySelectedQuote._id;
+            parentRelationship.Type = "Parent";
+            parentRelationship.Name = CurrentlySelectedQuote.Trade;
+            childQuote.relationships.Add(parentRelationship);
+
+            Event parentRelationshipEvent = new Event();
+            parentRelationshipEvent.Author = currentUser;
+            parentRelationshipEvent.Trade = childQuote.Trade;
+            parentRelationshipEvent.Name = "Child (" + childQuote.Trade + ") relationship Linked to Parent";
+            parentRelationshipEvent.Details = parentRelationshipEvent.Name + " Aggregate Id (" + CurrentlySelectedQuote._id + ")";
+            childQuote.events.Add(parentRelationshipEvent);
+
+            // Create Sibling relationships
+
+            // Save new Child Quote
+            webServices.CreateQuote(childQuote);
+
+            // Save Child relationship to Aggregate
+            var childRelationship = new Relationship();
+            childRelationship.Author = currentUser.FirstName + " " + currentUser.LastName;
+            childRelationship._id = childQuote._id;
+            childRelationship.ParentId = CurrentlySelectedQuote._id;
+            childRelationship.Type = "Child";
+            childRelationship.Name = childQuote.Trade;
+
+            CurrentlySelectedQuote.relationships.Add(childRelationship);
+
+            childQuote = null;
+
+            // Save Parent Quote
+            webServices.UpdateQuote(CurrentlySelectedQuote);
+
+            TimerRefresh();
+
+            IsBidderPopupVisible = false;
         }
     }
 
@@ -1758,7 +1844,7 @@ else
 
         WebServices.UpdateQuote(CurrentlySelectedQuote);
 
-        IsAssignPopupVisible = false;
+        IsBidderPopupVisible = false;
         IsAssignButtonEnabled = false;
     }
 
@@ -2547,30 +2633,7 @@ else
                 }
                 else
                 {
-                    if(CurrentlySelectedQuote.relationships.Count() > 0)
-                    {
-                        foreach(Relationship relationship in CurrentlySelectedQuote.relationships)
-                        {
-                            switch(relationship.Type)
-                            {
-                                case "Parent":
-                                    currentQuoteContainerType = "Parent";
-                                    break;
-
-                                case "Child":   
-                                    currentQuoteContainerType = "Child";
-                                    break;
-
-                                case "Sibling":   
-                                    currentQuoteContainerType = "Child";
-                                    break;
-
-                                default:   
-                                    currentQuoteContainerType = "Standalone";
-                                    break;
-                            }
-                        }
-                    }
+                    currentQuoteContainerType = "Child";
                 }
 
                 SetUIStyles(currentQuoteContainerType);

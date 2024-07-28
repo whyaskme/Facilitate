@@ -245,7 +245,7 @@ namespace Facilitate.Api.Controllers
                         Quote childQuote = new Quote();
                         childQuote.status = "New";
                         childQuote.Trade = Trade;
-                        childQuote.TradeSubcategory = "";
+                        childQuote.TradeSubcategory = Trade;
 
                         Event createdEvent = new Event();
                         createdEvent.Author = author;

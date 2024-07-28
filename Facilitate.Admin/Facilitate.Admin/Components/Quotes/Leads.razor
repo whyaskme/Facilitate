@@ -71,9 +71,6 @@ else
             <span class="stat-value"><b>@leaderboardStats.TotalQuoteCount.ToString("N0") Quotes</b></span>
             <span class="stat-divider">|</span>
             <span class="stat-value">@leaderboardStats.TotalQuoteValue.ToString("C0")</span>
-            <span class="stat-divider">|</span>
-            <span class="stat-value">@leaderboardStats.TotalQuoteSqFt.ToString("N0")sqft</span>
-            <span class="stat-divider">|</span>
         </div>
         <div class="col-md-1 stat-element">
             <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
@@ -148,7 +145,7 @@ else
                 @bind-IsOpen="@IsTradesListOpen"
                 MinWidth="max(20vw, 100px)"
                 PositionMode="DropDownPositionMode.Bottom"
-                        PositionTarget="#dropdown-customization-target-container-trades"
+                PositionTarget="#dropdown-customization-target-container-trades"
                 RestrictionTarget="#Navigation-DropDown-Customization"
                 CloseMode="DropDownCloseMode.Close"
                 PreventCloseOnPositionTargetClick="true"
@@ -157,18 +154,13 @@ else
                 FooterVisible="false"
                >
                 <BodyContentTemplate>
-                        <DxListBox Data="@TradesList"
-                                   id="ddlTradesList"
-                                   @bind-Values="@TradeTypeValues"
-                                   SelectedItemsChanged="@((IEnumerable<ListItem> values) => FilterTradeType(values))"
-                                   SelectionMode="ListBoxSelectionMode.Single">
-                        </DxListBox>
-                    <SampleEditForm/>
+                    <DxListBox Data="@TradesList"
+                                id="ddlTradesList"
+                                @bind-Values="@TradeTypeValues"
+                                SelectedItemsChanged="@((IEnumerable<ListItem> values) => FilterTradeType(values))"
+                                SelectionMode="ListBoxSelectionMode.Single">
+                    </DxListBox>
                 </BodyContentTemplate>
-                <FooterContentTemplate>
-                    <DxButton CssClass="@currentActionButtonClass" Text="OK" Click="@context.CloseCallback"/>
-                    <DxButton CssClass="@currentActionButtonClass" Text="Cancel" Click="@context.CloseCallback"/>
-                </FooterContentTemplate>
             </DxDropDown>
         </div>
 
@@ -236,8 +228,8 @@ else
             <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="rowIndex" />
             <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
 
-            <DxGridDataColumn  Visible="true" Width="115" Caption="Trade" FieldName="Trade" />
-            <DxGridDataColumn Visible="true" Width="115" Caption="Sub" FieldName="TradeSubcategory" />
+            <DxGridDataColumn Visible="false" Width="115" Caption="Trade" FieldName="Trade" />
+            <DxGridDataColumn Visible="true" Width="115" Caption="Trade" FieldName="TradeSubcategory" />
 
             <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Width="100" Caption="First" FieldName="firstName" />
@@ -294,6 +286,8 @@ else
     }
 
     public bool recordIDVisible = false;
+
+    public bool ShowTradeColumn { get; set; }
 
     public string LeadTypeFilterLabel { get; set; } = "Types (Complete Info)";
 
