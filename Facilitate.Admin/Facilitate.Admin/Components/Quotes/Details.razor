@@ -215,7 +215,7 @@ else
                                 @bind-SelectedDataItem="@SelectedChildQuoteItem"
                                 PageSize="10"
                                 PagerPosition="GridPagerPosition.Bottom"
-                                ShowGroupPanel="true"
+                                ShowGroupPanel="false"
                                 AutoExpandAllGroupRows="true"
                                 ShowFilterRow="false"
                                 PagerNavigationMode="PagerNavigationMode.InputBox"
@@ -228,7 +228,6 @@ else
                                 <dxg:TableView.FormatConditions>
                                    <dxg:FormatCondition ValueRule="Equal" Value="Opportunity" FieldName="status" PredefinedFormatName="LightRedFillWithDarkRedText" />   
                                 </dxg:TableView.FormatConditions>
-
 
                                 <DxGridDataColumn Visible="@ShowRowIndexColumn" Width="35" Caption="Row" FieldName="rowIndex" />
                                 <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="215" Caption="Record Id" FieldName="_id" />
@@ -465,7 +464,7 @@ else
                                     CssClass="AttachmentGrid"
                                     PageSize="10"
                                     PagerPosition="GridPagerPosition.Bottom"
-                                    ShowGroupPanel="true"
+                                    ShowGroupPanel="false"
                                     AutoExpandAllGroupRows="true"
                                     ShowFilterRow="false"
                                     PagerNavigationMode="PagerNavigationMode.InputBox"
@@ -476,7 +475,7 @@ else
                                     <Columns>
                                         <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="" />
                                         <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
-                                        <DxGridDataColumn Width="175" Caption="DateTime" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                        <DxGridDataColumn Width="175" Caption="Date" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                         <DxGridDataColumn Width="100" Caption="Trade" FieldName="Trade" />
                                         <DxGridDataColumn Width="150" Caption="Name" FieldName="MediaName" />
                                         <DxGridDataColumn Width="auto" Caption="Description" FieldName="MediaDescription" />
@@ -506,7 +505,7 @@ else
                                 KeyFieldName="_id"
                                 PageSize="10"
                                 PagerPosition="GridPagerPosition.Bottom"
-                                ShowGroupPanel="true"
+                                ShowGroupPanel="false"
                                 AutoExpandAllGroupRows="true"
                                 ShowFilterRow="false"
                                 PagerNavigationMode="PagerNavigationMode.InputBox"
@@ -517,7 +516,7 @@ else
                             <Columns>
                                 <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="" />
                                 <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
-                                <DxGridDataColumn Width="175" Caption="DateTime" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                <DxGridDataColumn Width="175" Caption="Date" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                 <DxGridDataColumn Width="150" Caption="Trade" FieldName="Trade" />
                                 <DxGridDataColumn Width="auto" Caption="Details" FieldName="Details" />
                                 <DxGridDataColumn Width="175" Caption="Author" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Author.FirstName + ' ' + Author.LastName" />
@@ -542,7 +541,7 @@ else
                             KeyFieldName="_id"
                             PageSize="10"
                             PagerPosition="GridPagerPosition.Bottom"
-                            ShowGroupPanel="true"
+                            ShowGroupPanel="false"
                             AutoExpandAllGroupRows="true"
                             ShowFilterRow="false"
                             PagerNavigationMode="PagerNavigationMode.InputBox"
@@ -553,7 +552,7 @@ else
                             <Columns>
                                 <DxGridDataColumn Visible="@ShowRowIndexColumn" Width="50" Caption="Row" FieldName="" />
                                 <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
-                                <DxGridDataColumn Visible="@ShowCreatedColumn" Width="160" Caption="DateTime" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                <DxGridDataColumn Visible="@ShowCreatedColumn" Width="160" Caption="Date" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                 <DxGridDataColumn Visible="@ShowTradeColumn" Width="85" Caption="Trade" FieldName="Trade" />
                                 <DxGridDataColumn Visible="true" Width="auto" Caption="Details" FieldName="Details" />
                                 <DxGridDataColumn Visible="true" Width="125" Caption="Author" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Author.FirstName + ' ' + Author.LastName" />
