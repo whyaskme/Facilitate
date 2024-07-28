@@ -144,7 +144,7 @@ else
                     </div>
                     <div class="col-md-4 quote-total">
 
-                        <div class="@currentQuoteColorCssClass header-total-element">Quote: @CurrentlySelectedQuote.totalQuote.ToString("C0")</div>
+                        <div class="@currentQuoteColorCssClass header-total-element">Quote: @defaultQuoteValue.ToString("C0")</div>
 
                         @{
                             if(CurrentlySelectedQuote.Trade == "Roofing")
@@ -242,16 +242,9 @@ else
                         <hr />
 
                         <div class="row">
-                            <div class="col-md-1">
-                                <button class="@currentActionButtonClass" @onclick="@(() => IsPopupVisibleAddTrade = true)">Add Trade</button>
+                            <div class="col-md-12">
+                                <h6>@RelatedQuoteSummaryList.Count() Bidders</h6>
                             </div>
-                            <div class="col-md-11">
-                                <h6>@RelatedQuoteSummaryList.Count() Trades</h6>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-12"></div>
                         </div>
 
                         <DxGrid @ref="RelatedQuoteGrid"
@@ -284,7 +277,7 @@ else
                                 <DxGridDataColumn Visible="@recordIDVisible" Width="225" Caption="Record Id" FieldName="_id" />
                                 <DxGridDataColumn Width="100" Caption="Trade" FieldName="Trade" />
                                 <DxGridDataColumn Width="100" Caption="Relationship" FieldName="relationship" />
-                                <DxGridDataColumn Width="75" Caption="Status" FieldName="status" />
+                                <DxGridDataColumn Width="100" Caption="Status" FieldName="status" />
                                 <DxGridDataColumn Width="165" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                 <DxGridDataColumn Width="165" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
                                 <DxGridDataColumn Width="auto" Caption="Last Event" FieldName="lastEventDetails" />

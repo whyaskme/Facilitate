@@ -340,7 +340,7 @@ namespace Facilitate.Api.Controllers
 
                 resultMsg = numQuotesToCreate + " Quotes added";
 
-                CreateSiblingRelationships(aggregateQuote, newQuoteListQueue);
+                //CreateSiblingRelationships(aggregateQuote, newQuoteListQueue);
 
                 // Reset value since the Default quote contains it
                 aggregateQuote.totalQuote = 0;
@@ -508,44 +508,40 @@ namespace Facilitate.Api.Controllers
 
                         Quote relatedQuoteUpdate = _quoteCollection.Find(x => x._id == relatedQuoteId).FirstOrDefault();
 
-                        var relationshipCount = newQuoteListQueue.Count;
-
-                        var childQuoteCount = newQuoteListQueue.Count;
-
                         foreach (Quote newQuote in newQuoteListQueue)
                         {
-                            //if (_relationship.ParentId != newQuote._id)
-                            //{
+                            if (_relationship.ParentId != newQuote._id)
+                            {
+                                Quote quoteToUpdate = _quoteCollection.Find(x => x._id == newQuote._id).FirstOrDefault();
 
-                            //}
+                                // Create Sibling relationship
+                                var siblingRelationship = new Relationship();
+                                siblingRelationship.Author = author.FirstName + " " + author.LastName;
+                                siblingRelationship._id = newQuote._id;
 
-                            Quote quoteToUpdate = _quoteCollection.Find(x => x._id == newQuote._id).FirstOrDefault();
+                                siblingRelationship.ParentId = relatedQuoteId;
 
-                            // Create Sibling relationship
-                            var siblingRelationship = new Relationship();
-                            siblingRelationship.Author = author.FirstName + " " + author.LastName;
-                            siblingRelationship._id = newQuote._id;
-                            siblingRelationship.ParentId = relatedQuoteId;
-                            siblingRelationship.Type = "Sibling";
-                            siblingRelationship.Name = newQuote.Trade;
+                                siblingRelationship.Type = "Sibling";
+                                siblingRelationship.Name = newQuote.Trade;
 
-                            quoteToUpdate.relationships.Add(siblingRelationship);
+                                quoteToUpdate.relationships.Add(siblingRelationship);
 
-                            Event siblingEvent = new Event();
-                            siblingEvent.Author = author;
 
-                            siblingEvent.Trade = newQuote.Trade;
+                                Event siblingEvent = new Event();
+                                siblingEvent.Author = author;
 
-                            siblingEvent.Name = "Sibling (" + newQuote.Trade + ") quote Linked";
-                            siblingEvent.Details = siblingEvent.Name + " to (" + newQuote.Trade + ") Sibling Id (" + siblingEvent._id + ")";
+                                siblingEvent.Trade = newQuote.Trade;
 
-                            // Add event to child quote
-                            quoteToUpdate.events.Add(siblingEvent);
+                                siblingEvent.Name = "Sibling (" + newQuote.Trade + ") quote Linked";
+                                siblingEvent.Details = siblingEvent.Name + " to (" + newQuote.Trade + ") Sibling Id (" + siblingEvent._id + ")";
 
-                            // Save Child
-                            var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteToUpdate._id);
-                            var result = _quoteCollection.ReplaceOne(filter, quoteToUpdate, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
-                            
+                                // Add event to child quote
+                                quoteToUpdate.events.Add(siblingEvent);
+
+                                // Save Child
+                                var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteToUpdate._id);
+                                var result = _quoteCollection.ReplaceOne(filter, quoteToUpdate, new UpdateOptions() { IsUpsert = true }, _cancellationToken);
+                            }
                         }
                     }
                 }
