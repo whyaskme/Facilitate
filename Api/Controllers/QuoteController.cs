@@ -98,11 +98,12 @@ namespace Facilitate.Api.Controllers
 
                 Quote aggregateQuote = new Quote();
                 aggregateQuote.Trade = utils.TitleCaseString("Aggregate");
-                aggregateQuote.TradeSubcategory = utils.TitleCaseString("Aggregate");  //aggregateQuote.Trade;
+                aggregateQuote.TradeSubcategory = "Roofing";  //aggregateQuote.Trade;
 
                 // Set Bidding properties
                 aggregateQuote.Bidder = author;
                 aggregateQuote.BiddingExpires = DateTime.UtcNow.AddDays(BiddingExpiresInDays);
+                aggregateQuote.BidderType = utils.TitleCaseString("Aggregate");
 
                 aggregateQuote.ipAddress = headerForwardedFor;
                 aggregateQuote.externalUrl = headerReferer;
@@ -147,7 +148,14 @@ namespace Facilitate.Api.Controllers
                 aggregateQuote.totalInitialSquareFeet = roofleSubmission.totalInitialSquareFeet;
                 aggregateQuote.sessionId = roofleSubmission.sessionId;
 
-                CreateParentSpawnedEvent(aggregateQuote);
+                Event _event = new Event();
+                _event.Author = author;
+                _event.Trade = aggregateQuote.Trade;
+                _event.Name = aggregateQuote.Trade + " quote Created";
+                _event.Details = _event.Name;
+
+                // Add event to child quote
+                aggregateQuote.events.Add(_event);
 
                 for (var i = 0; i < childBidderQuotesToCreate; i++)
                 {
@@ -242,23 +250,41 @@ namespace Facilitate.Api.Controllers
                     childRelationship.Name = childQuote.Trade;
 
                     // Add relationships
-                    //childQuote.relationships.Add(parentRelationship);
                     aggregateQuote.relationships.Add(childRelationship);
 
+                    // Add Events
+                    // Child Spawned event
+                    Event childSpawnedEvent = new Event();
+                    childSpawnedEvent.Author = author;
+                    childSpawnedEvent.Trade = childQuote.Trade;
+                    childSpawnedEvent.Name = "Child (" + childQuote.Trade + ") quote Spawned";
+                    childSpawnedEvent.Details = childSpawnedEvent.Name + " for parent Aggregate Id (" + aggregateQuote._id + ")";
+
+                    // Add event to child quote
+                    childQuote.events.Add(childSpawnedEvent);
+
+                    // Child Linked event
+                    Event childLinkedEvent = new Event();
+                    childLinkedEvent.Author = author;
+                    childLinkedEvent.Trade = childQuote.Trade;
+                    childLinkedEvent.Name = "Child (" + childQuote.Trade + ") quote Linked";
+                    childLinkedEvent.Details = childLinkedEvent.Name + " to parent Aggregate Id (" + aggregateQuote._id + ")";
+
+                    // Add event to child quote
+                    childQuote.events.Add(childLinkedEvent);
+
                     // Insert Child
+                    childQuote.relationships = childQuote.relationships.Distinct().ToList();
                     _quoteCollection.InsertOne(childQuote);
 
                     // Add to queue for sibling relationship processing
                     newQuoteListQueue.Add(childQuote);
 
-                    // Add Events
-                    CreateChildSpawnedEvent(aggregateQuote, childQuote);
-
-                    CreateChildLinkedToParentEvent(aggregateQuote, childQuote);
+                    //CreateChildLinkedToParentEvent(aggregateQuote, childQuote);
                 }
 
                 // Insert Aggregate
-                //aggregateQuote.relationships = aggregateQuote.relationships.Distinct().ToList();
+                aggregateQuote.relationships = aggregateQuote.relationships.Distinct().ToList();
                 _quoteCollection.InsertOne(aggregateQuote);
 
                 //CreateSiblingRelationships(aggregateQuote, newQuoteListQueue);
@@ -275,43 +301,6 @@ namespace Facilitate.Api.Controllers
 
             }
             return Ok(resultMsg);
-        }
-
-        private void CreateParentSpawnedEvent(Quote aggregateQuote)
-        {
-            Event _event = new Event();
-            _event.Author = author;
-            _event.Trade = aggregateQuote.Trade;
-            _event.Name = aggregateQuote.Trade + " quote Created";
-            _event.Details = _event.Name;
-
-            // Add event to child quote
-            aggregateQuote.events.Add(_event);
-        }
-
-        private void CreateChildSpawnedEvent(Quote aggregateQuote, Quote childQuote)
-        {
-            // Child event
-            Event childEvent = new Event();
-            childEvent.Author = author;
-            childEvent.Trade = childQuote.Trade;
-            childEvent.Name = "Child (" + childQuote.Trade + ") quote Spawned";
-            childEvent.Details = childEvent.Name + " for parent Aggregate Id (" + aggregateQuote._id + ")";
-
-            // Add event to child quote
-            childQuote.events.Add(childEvent);
-        }
-
-        private void CreateChildLinkedToParentEvent(Quote aggregateQuote, Quote childQuote)
-        {
-            Event childEvent = new Event();
-            childEvent.Author = author;
-            childEvent.Trade = childQuote.Trade;
-            childEvent.Name = "Child (" + childQuote.Trade + ") quote Linked";
-            childEvent.Details = childEvent.Name + " to parent Aggregate Id (" + aggregateQuote._id + ")";
-
-            // Add event to child quote
-            childQuote.events.Add(childEvent);
         }
 
         private void CreateSiblingRelationships(Quote aggregateQuote, List<Quote> newQuoteListQueue)
