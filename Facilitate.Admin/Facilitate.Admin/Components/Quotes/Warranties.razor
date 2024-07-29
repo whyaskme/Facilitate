@@ -52,7 +52,7 @@
     }
 </script>
 
-@if (quotes == null)
+@if (QuoteHeaders == null)
 {
     @*     <p><em>Loading...</em></p> *@
 }
@@ -186,7 +186,7 @@ else
     </div>
 
     <DxGrid @ref="QuoteGrid"
-            Data="@quotes"
+            Data="@QuoteHeaders"
             KeyFieldName="_id"
             PageSize="10"
             PagerPosition="GridPagerPosition.Bottom"
@@ -537,7 +537,7 @@ else
 
     #region Private Properties
 
-    private List<QuoteHeader>? quotes;
+    private List<QuoteHeader>? QuoteHeaders;
 
     IGrid QuoteGrid { get; set; }
 
@@ -772,17 +772,17 @@ else
                 switch (SelectedTradeType)
                 {
                     case "All":
-                        quotes = webServices.GetSummaries("Warranty", ShowTestData);
+                        QuoteHeaders = webServices.GetSummaries("Warranty", ShowTestData);
                         leaderboardStats = WebServices.GetLeaderBoardStats("Warranty", ShowTestData);
                         break;
                     case "Aggregate":
-                        quotes = webServices.GetSummaries(SelectedTradeType, "Warranty", ShowTestData);
+                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "Warranty", ShowTestData);
                         leaderboardStats = WebServices.GetLeaderBoardStats("Warranty", ShowTestData);
                         ShowBidColumn = false;
                         break;
 
                     default:
-                        quotes = webServices.GetSummaries(SelectedTradeType, "Warranty", ShowTestData);
+                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "Warranty", ShowTestData);
                         leaderboardStats = WebServices.GetLeaderBoardStats(SelectedTradeType, "Warranty", ShowTestData);
                         break;
                 }
@@ -790,10 +790,10 @@ else
             else
             {
                 leaderboardStats = WebServices.GetLeaderBoardStats(currentUser.Email);
-                quotes = webServices.GetSummaries("Warranty", currentUser.Email);
+                QuoteHeaders = webServices.GetSummaries("Warranty", currentUser.Email);
             }
 
-            updateStatus = quotes.Count().ToString("N0");
+            updateStatus = QuoteHeaders.Count().ToString("N0");
             StatusContainerClass = "container-action-buttons-show";
 
             TradesList.Clear();
@@ -803,8 +803,8 @@ else
                 TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
             }
 
-            currentQuoteIndex = quotes.Count() + 1;
-            foreach (var quote in quotes)
+            currentQuoteIndex = QuoteHeaders.Count() + 1;
+            foreach (var quote in QuoteHeaders)
             {
                 currentQuoteIndex--;
                 quote.rowIndex = currentQuoteIndex;

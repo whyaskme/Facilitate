@@ -52,7 +52,7 @@
     }
 </script>
 
-@if (quotes == null)
+@if (QuoteHeaders == null)
 {
     @*     <p><em>Loading...</em></p> *@
 }
@@ -186,7 +186,7 @@ else
     </div>
 
     <DxGrid @ref="QuoteGrid"
-            Data="@quotes"
+            Data="@QuoteHeaders"
             KeyFieldName="_id"
             PageSize="10"
             PagerPosition="GridPagerPosition.Bottom"
@@ -534,7 +534,7 @@ else
 
     #region Private Properties
 
-    private List<QuoteHeader>? quotes;
+    private List<QuoteHeader>? QuoteHeaders;
 
     public int currentItemIndex = 0;
 
@@ -768,17 +768,17 @@ else
                 switch (SelectedTradeType)
                 {
                     case "All":
-                        quotes = webServices.GetSummaries("Opportunity", ShowTestData);
+                        QuoteHeaders = webServices.GetSummaries("Opportunity", ShowTestData);
                         leaderboardStats = WebServices.GetLeaderBoardStats("Opportunity", ShowTestData);
                         break;
                     case "Aggregate":
-                        quotes = webServices.GetSummaries(SelectedTradeType, "Opportunity", ShowTestData);
+                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "Opportunity", ShowTestData);
                         leaderboardStats = WebServices.GetLeaderBoardStats("Opportunity", ShowTestData);
                         ShowBidColumn = false;
                         break;
 
                     default:
-                        quotes = webServices.GetSummaries(SelectedTradeType, "Opportunity", ShowTestData);
+                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "Opportunity", ShowTestData);
                         leaderboardStats = WebServices.GetLeaderBoardStats(SelectedTradeType, "Opportunity", ShowTestData);
                         break;
                 }
@@ -786,10 +786,10 @@ else
             else
             {
                 leaderboardStats = WebServices.GetLeaderBoardStats(currentUser.Email);
-                quotes = webServices.GetSummaries("Opportunity", currentUser.Email);
+                QuoteHeaders = webServices.GetSummaries("Opportunity", currentUser.Email);
             }
 
-            updateStatus = quotes.Count().ToString("N0");
+            updateStatus = QuoteHeaders.Count().ToString("N0");
             StatusContainerClass = "container-action-buttons-show";
 
             TradesList.Clear();
@@ -801,8 +801,8 @@ else
 
             // Update dates to local time
 
-            currentQuoteIndex = quotes.Count() + 1;
-            foreach (var quote in quotes)
+            currentQuoteIndex = QuoteHeaders.Count() + 1;
+            foreach (var quote in QuoteHeaders)
             {
                 currentQuoteIndex--;
                 quote.rowIndex = currentQuoteIndex;
