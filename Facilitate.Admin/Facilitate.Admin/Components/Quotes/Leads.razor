@@ -317,7 +317,7 @@ else
     public int FirstNameColumnWidth = 0;
     public int LastNameColumnWidth = 0;
     public int EmailColumnWidth = 0;
-    public int StreetColumnWidth = 0;
+    public string StreetColumnWidth = "auto";
     public int CityColumnWidth = 0;
     public int StateColumnWidth = 0;
     public int ZipColumnWidth = 0;
@@ -519,17 +519,17 @@ else
                 case "Updated":
                     UpdatedColumnWidth = Convert.ToInt32(listItem.Text);
                     break;
-                case "First":
+                case "FirstName":
                     FirstNameColumnWidth = Convert.ToInt32(listItem.Text);
                     break;
-                case "Last":
+                case "LastName":
                     LastNameColumnWidth = Convert.ToInt32(listItem.Text);
                     break;
                 case "Email":
                     EmailColumnWidth = Convert.ToInt32(listItem.Text);
                     break;
                 case "Street":
-                    StreetColumnWidth = Convert.ToInt32(listItem.Text);
+                    StreetColumnWidth = listItem.Text;
                     break;
                 case "City":
                     CityColumnWidth = Convert.ToInt32(listItem.Text);

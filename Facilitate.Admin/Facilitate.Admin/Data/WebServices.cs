@@ -57,107 +57,107 @@ namespace Facilitate.Admin.Data
             List<ListItem> columnWidths = new List<ListItem>();
 
             ListItem columItem = new ListItem();
-            columItem.Text = "RowIndexColumnWidth";
+            columItem.Text = "Row";
             columItem.Value = "35";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
-            columItem.Text = "RecordIdColumnWidth";
+            columItem.Text = "Record Id";
             columItem.Value = "215";
             columnWidths.Add(columItem);
             
             columItem = new ListItem();
-            columItem.Text = "StatusColumnWidth";
+            columItem.Text = "Status";
             columItem.Value = "85";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
-            columItem.Text = "TradeColumnWidth";
+            columItem.Text = "Trade";
             columItem.Value = "85";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
-            columItem.Text = "CategoryColumnWidth";
+            columItem.Text = "Category";
             columItem.Value = "85";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
-            columItem.Text = "CreatedColumnWidth";
+            columItem.Text = "Created";
             columItem.Value = "160";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
-            columItem.Text = "UpdatedColumnWidth";
+            columItem.Text = "Updated";
             columItem.Value = "160";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
-            columItem.Text = "FirstNameColumnWidth";
+            columItem.Text = "FirstName";
             columItem.Value = "85";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
-            columItem.Text = "LastNameColumnWidth";
+            columItem.Text = "LastName";
             columItem.Value = "100";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
-            columItem.Text = "EmailColumnWidth";
+            columItem.Text = "Email";
             columItem.Value = "150";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
-            columItem.Text = "StreetColumnWidth";
+            columItem.Text = "Street";
             columItem.Value = "auto";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
-            columItem.Text = "CityColumnWidth";
+            columItem.Text = "City";
             columItem.Value = "125";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
-            columItem.Text = "StateColumnWidth";
+            columItem.Text = "State";
             columItem.Value = "50";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
-            columItem.Text = "ZipColumnWidth";
+            columItem.Text = "Zip";
             columItem.Value = "65";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
-            columItem.Text = "SqFtColumnWidth";
+            columItem.Text = "SqFt";
             columItem.Value = "65";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
-            columItem.Text = "BidColumnWidth";
+            columItem.Text = "Bid";
             columItem.Value = "85";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
-            columItem.Text = "BidderColumnWidth";
+            columItem.Text = "Bidder";
             columItem.Value = "125";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
-            columItem.Text = "BidExpiresColumnWidth";
+            columItem.Text = "BidExpires";
             columItem.Value = "85";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
-            columItem.Text = "BidTypeColumnWidth";
+            columItem.Text = "BidType";
             columItem.Value = "85";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
-            columItem.Text = "ActionsColumnWidth";
+            columItem.Text = "Actions";
             columItem.Value = "100";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
-            columItem.Text = "RelationshipColumnWidth";
+            columItem.Text = "Relationship";
             columItem.Value = "85";
             columnWidths.Add(columItem);
 
