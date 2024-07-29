@@ -13,6 +13,7 @@ namespace Facilitate.Libraries.Models
             _id = string.Empty;
             _t = "QuoteHeader";
             rowIndex = 0;
+            isQualified = false;
             Trade = string.Empty;
             TradeCategory = string.Empty;
             status = string.Empty;
@@ -39,6 +40,7 @@ namespace Facilitate.Libraries.Models
         public string _id { get; set; }
         public string _t { get; set; }
         public int rowIndex { get; set; }
+        public bool isQualified { get; set; }
         public string Trade { get; set; }
         public string TradeCategory { get; set; }
         public string status { get; set; }

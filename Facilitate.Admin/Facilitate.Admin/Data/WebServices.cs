@@ -901,7 +901,7 @@ namespace Facilitate.Admin.Data
             return 0;
         }
 
-        public QuoteLeaderboard GetLeaderBoardStats()
+        public QuoteLeaderboard GetLeaderboardStats()
         {
             QuoteLeaderboard quoteLeaderboard = new QuoteLeaderboard();
 
@@ -974,7 +974,7 @@ namespace Facilitate.Admin.Data
             return quoteLeaderboard;
         }
 
-        public QuoteLeaderboard GetLeaderBoardStats(string status, bool showHideTestData)
+        public QuoteLeaderboard GetLeaderboardStats(string status, bool showHideTestData)
         {
             QuoteLeaderboard quoteLeaderboard = new QuoteLeaderboard();
 
@@ -1075,7 +1075,7 @@ namespace Facilitate.Admin.Data
             return quoteLeaderboard;
         }
 
-        public QuoteLeaderboard GetLeaderBoardStats(string tradeType, string status, bool showHideTestData)
+        public QuoteLeaderboard GetLeaderboardStats(string tradeType, string status, bool showHideTestData)
         {
             QuoteLeaderboard quoteLeaderboard = new QuoteLeaderboard();
 
@@ -1189,7 +1189,7 @@ namespace Facilitate.Admin.Data
             return quoteLeaderboard;
         }
 
-        public QuoteLeaderboard GetLeaderBoardStats(string userId)
+        public QuoteLeaderboard GetLeaderboardStats(string userId)
         {
             QuoteLeaderboard quoteLeaderboard = new QuoteLeaderboard();
 

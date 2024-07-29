@@ -60,16 +60,16 @@ else
 {
     <div class="quotes-leaderboard-page-header">
         <div class="col-md-3 stat-element">
-            <span class="stat-value"><b>@leaderboardStats.TotalQuoteCount.ToString("N0") Quotes</b></span>
+            <span class="stat-value"><b>@LeaderboardStats.TotalQuoteCount.ToString("N0") Quotes</b></span>
             <span class="stat-divider">|</span>
-            <span class="stat-value">@leaderboardStats.TotalQuoteValue.ToString("C0")</span>
+            <span class="stat-value">@LeaderboardStats.TotalQuoteValue.ToString("C0")</span>
         </div>
 
         <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
             <Authorized>
                 <div class="col-md-1 stat-element">
                 <a href="/quotes/leads">Leads</a>
-                <span class="stat-value"><b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
+                <span class="stat-value"><b>@LeaderboardStats.LeadCount.ToString("N0")</b></span>
             </div>
             </Authorized>
             <NotAuthorized></NotAuthorized>
@@ -77,26 +77,26 @@ else
         
         <div class="col-md-1 stat-element">
             <a href="/quotes/opportunities">Opportunities</a>
-            <span class="stat-value"><b>@leaderboardStats.OpportunityCount.ToString("N0")</b></span>
+            <span class="stat-value"><b>@LeaderboardStats.OpportunityCount.ToString("N0")</b></span>
         </div>
         <div class="col-md-1 stat-element">
             <a href="/quotes/customers">Customers</a>
-            <span class="stat-value"><b>@leaderboardStats.CustomerCount.ToString("N0")</b></span>
+            <span class="stat-value"><b>@LeaderboardStats.CustomerCount.ToString("N0")</b></span>
         </div>
 
         <div class="col-md-1 stat-element">
             <a href="/quotes/completed">Completions</a>
-            <span class="stat-value"><b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
+            <span class="stat-value"><b>@LeaderboardStats.CompletionCount.ToString("N0")</b></span>
         </div>
 
         <div class="col-md-1 stat-element">
             <a href="/quotes/archives">Archives</a>
-            <span class="stat-value"><b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
+            <span class="stat-value"><b>@LeaderboardStats.ArchiveCount.ToString("N0")</b></span>
         </div>
 
         <div class="col-md-1 stat-element">
             <a href="/quotes/warranties">Warranties</a>
-            <span class="stat-value"><b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
+            <span class="stat-value"><b>@LeaderboardStats.WarrantyCount.ToString("N0")</b></span>
         </div>
     </div>
 
@@ -179,7 +179,7 @@ else
 
     <div class="quote-stats-header">
         <span class="quote-stats-count">@updateStatus Opportunities</span>
-        <span class="quote-stats-value">@leaderboardStats.OpportunityValue.ToString("C0")</span>
+        <span class="quote-stats-value">@LeaderboardStats.OpportunityValue.ToString("C0")</span>
     </div>
     <div class="quote-stats-hints">
         Select row to view details. Click column headers to sort. Type and hit enter in any empty cell to search that column. If you have grouped columns below, drag and drop the column back into the grid header to restore.
@@ -420,7 +420,7 @@ else
         }
     }
 
-    public QuoteLeaderboard leaderboardStats;
+    public QuoteLeaderboard LeaderboardStats;
 
     protected override void OnInitialized()
     {
@@ -775,23 +775,23 @@ else
                 {
                     case "All":
                         QuoteHeaders = webServices.GetSummaries("Opportunity", ShowTestData);
-                        leaderboardStats = WebServices.GetLeaderBoardStats("Opportunity", ShowTestData);
+                        LeaderboardStats = WebServices.GetLeaderboardStats("Opportunity", ShowTestData);
                         break;
                     case "Aggregate":
                         QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "Opportunity", ShowTestData);
-                        leaderboardStats = WebServices.GetLeaderBoardStats("Opportunity", ShowTestData);
+                        LeaderboardStats = WebServices.GetLeaderboardStats("Opportunity", ShowTestData);
                         ShowBidColumn = false;
                         break;
 
                     default:
                         QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "Opportunity", ShowTestData);
-                        leaderboardStats = WebServices.GetLeaderBoardStats(SelectedTradeType, "Opportunity", ShowTestData);
+                        LeaderboardStats = WebServices.GetLeaderboardStats(SelectedTradeType, "Opportunity", ShowTestData);
                         break;
                 }
             }
             else
             {
-                leaderboardStats = WebServices.GetLeaderBoardStats(currentUser.Email);
+                LeaderboardStats = WebServices.GetLeaderboardStats(currentUser.Email);
                 QuoteHeaders = webServices.GetSummaries("Opportunity", currentUser.Email);
             }
 
@@ -800,7 +800,7 @@ else
 
             TradesList.Clear();
             TradesList.Add(new ListItem() { Text = "All", Value = "All" });
-            foreach (var trade in leaderboardStats.Trades)
+            foreach (var trade in LeaderboardStats.Trades)
             {
                 TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
             }
