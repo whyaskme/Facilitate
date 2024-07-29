@@ -1505,7 +1505,7 @@ else
 
     private readonly IClaimsProvider _claimsProvider;
 
-    public string currentQuoteContainerType = "Child";
+    public string currentQuoteContainerType = "Standalone";
     public string currentQuoteColorCssClass = "quote-color-standalone";
     public string currentQuoteHeaderTypeCssClass = "quote-header-standalone";
     public string currentQuoteContainerTypeCssClass = "quote-title-standalone";
@@ -2808,10 +2808,15 @@ else
 
                     foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
                     {
-                        if(relationship.Type == "Child")
+                        switch(relationship.Type)
                         {
-                            currentQuoteContainerType = "Parent";
-                            CreateSiblings();
+                            case "Child":
+                                currentQuoteContainerType = "Parent";
+                                CreateSiblings();
+                                break;
+                            case "Parent":
+                                currentQuoteContainerType = "Child";
+                                break;
                         }
                     }
 
