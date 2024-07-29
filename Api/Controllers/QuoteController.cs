@@ -161,6 +161,10 @@ namespace Facilitate.Api.Controllers
                 {
                     Quote childQuote = new Quote();
 
+                    childQuote.repName = aggregateQuote.repName;
+                    childQuote.repEmail = aggregateQuote.repEmail;
+                    childQuote.leadId = aggregateQuote.leadId;
+
                     childQuote.totalQuote = 0;
 
                     switch (i)
@@ -174,6 +178,7 @@ namespace Facilitate.Api.Controllers
                             childQuote.totalSquareFeet = aggregateQuote.totalSquareFeet;
                             childQuote.totalInitialSquareFeet = aggregateQuote.totalInitialSquareFeet;
                             childQuote.mainRoofTotalSquareFeet = aggregateQuote.mainRoofTotalSquareFeet;
+                            childQuote.sessionId = aggregateQuote.sessionId;
                             break;
                         case 1:
                             childQuote.BidderType = "Spec";
@@ -206,10 +211,7 @@ namespace Facilitate.Api.Controllers
                     childQuote.fullAddress = aggregateQuote.fullAddress;
                     childQuote.street = aggregateQuote.street;
                     childQuote.city = aggregateQuote.city;
-
-                    var stateAbbr = utils.GetStateAbbrByName(aggregateQuote.state);
-
-                    childQuote.state = stateAbbr;
+                    childQuote.state = aggregateQuote.state;
                     childQuote.zip = aggregateQuote.zip;
 
                     childQuote.firstName = aggregateQuote.firstName;

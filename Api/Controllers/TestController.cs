@@ -165,7 +165,6 @@ namespace Facilitate.Api.Controllers
 
                     aggregateQuote.email = aggregateQuote.firstName.ToLower() + "@" + aggregateQuote.lastName.ToLower() + ".com";
                     aggregateQuote.phone = "(" + utils.GetRandomAreaCode() + ") " + utils.GetRandomHomePhoneNumber();
-                    aggregateQuote.market = aggregateQuote.city + ", " + aggregateQuote.state;
 
                     randomInt = rnd.Next(5000, 9999);
                     aggregateQuote.leadId = randomInt;
@@ -229,6 +228,8 @@ namespace Facilitate.Api.Controllers
                     aggregateQuote.state = stateAbbr;
                     aggregateQuote.zip = randomZipCode;
 
+                    aggregateQuote.market = aggregateQuote.city + ", " + aggregateQuote.state;
+
                     aggregateQuote.timestamp = DateTime.UtcNow;
 
                     randomInt = rnd.Next(0, 1);
@@ -249,9 +250,16 @@ namespace Facilitate.Api.Controllers
                         {
                             // Create Child Quote
                             Quote childQuote = new Quote();
+
+                            childQuote.repName = aggregateQuote.repName;
+                            childQuote.repEmail = aggregateQuote.repEmail;
+                            childQuote.leadId = aggregateQuote.leadId;
+
+                            childQuote.totalQuote = 0;
+
                             childQuote.status = "New";
                             childQuote.Trade = Trade;
-                            childQuote.TradeCategory = Trade;
+                            childQuote.TradeCategory = ""; // Trade;
 
                             Event createdEvent = new Event();
                             createdEvent.Author = author;
@@ -275,6 +283,7 @@ namespace Facilitate.Api.Controllers
                                     childQuote.totalSquareFeet = aggregateQuote.totalSquareFeet;
                                     childQuote.totalInitialSquareFeet = aggregateQuote.totalInitialSquareFeet;
                                     childQuote.mainRoofTotalSquareFeet = aggregateQuote.mainRoofTotalSquareFeet;
+                                    childQuote.sessionId = aggregateQuote.sessionId;
                                     break;
                                 case 1:
                                     childQuote.BidderType = "Spec";
