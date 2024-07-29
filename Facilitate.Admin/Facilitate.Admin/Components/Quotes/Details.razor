@@ -230,6 +230,7 @@ else
                                 <dxg:TableView.FormatConditions>
                                     <dxg:FormatCondition ValueRule="Equal" Value="Opportunity" FieldName="status" PredefinedFormatName="LightRedFillWithDarkRedText" />
                                 </dxg:TableView.FormatConditions>
+
                                 <DxGridDataColumn Visible="@ShowRowIndexColumn" Width="@RowIndexColumnWidth" Caption="Row" FieldName="rowIndex" />
                                 <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="@RecordIdColumnWidth" Caption="Record Id" FieldName="_id" />
                                 <DxGridDataColumn Visible="@ShowStatusColumn" Width="@StatusColumnWidth" Caption="Status" FieldName="status" />
@@ -238,18 +239,15 @@ else
                                 <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="" />
                                 <DxGridDataColumn Visible="@ShowCreatedColumn" Width="@CreatedColumnWidth" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
                                 <DxGridDataColumn Visible="@ShowUpdatedColumn" Width="@UpdatedColumnWidth" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-                                <DxGridDataColumn Visible="@ShowFirstNameColumn" Width="@FirstNameColumnWidth" Caption="First" FieldName="firstName" />
-                                <DxGridDataColumn Visible="@ShowLastNameColumn" Width="@LastNameColumnWidth" Caption="Last" FieldName="lastName" />
-                                <DxGridDataColumn Visible="@ShowEmailColumn" Width="@EmailColumnWidth" Caption="Email" FieldName="email" />
-                                <DxGridDataColumn Visible="@ShowStreetColumn" Width="@StreetColumnWidth" Caption="Street" FieldName="street" />
-                                <DxGridDataColumn Visible="@ShowCityColumn" Width="@CityColumnWidth" Caption="City" FieldName="city" />
-                                <DxGridDataColumn Visible="@ShowStateColumn" Width="@StateColumnWidth" Caption="State" FieldName="state" />
-                                <DxGridDataColumn Visible="@ShowZipColumn" Width="@ZipColumnWidth" Caption="Zip" FieldName="zip" />
+
+                                <DxGridDataColumn Visible="@ShowLastEventColumn" Width="@LastEventColumnWidth" Caption="Last Event" FieldName="lastEventDetails" />
+ 
                                 <DxGridDataColumn Visible="@ShowSqFtColumn" Width="@SqFtColumnWidth" Caption="SqFt" FieldName="totalSquareFeet" />
                                 <DxGridDataColumn Visible="@ShowBidColumn" Width="@BidColumnWidth" Caption="Bid" DisplayFormat="C0" FieldName="totalQuote" />
                                 <DxGridDataColumn Visible="@ShowBidderColumn" Width="@BidderColumnWidth" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Bidder.FirstName + ' ' + Bidder.LastName" />
                                 <DxGridDataColumn Visible="@ShowBidExpiresColumn" Width="@BidExpiresColumnWidth" Caption="Bid Expires" FieldName="BiddingExpires" />
                                 <DxGridDataColumn Visible="@ShowBidTypeColumn" Width="@BidTypeColumnWidth" Caption="Bid Type" FieldName="BidderType" />
+
                                 <DxGridDataColumn Visible="@ShowIsQualifiedColumn" Width="@IsQualifiedColumnWidth" Caption="Qualified?" FieldName="isQualified" />
                                 @{
                                     if (CurrentlySelectedQuote.Trade == "Aggregate")
@@ -1162,6 +1160,7 @@ else
     public bool ShowCategoryColumn { get; set; }
     public bool ShowCreatedColumn { get; set; }
     public bool ShowUpdatedColumn { get; set; }
+    public bool ShowLastEventColumn { get; set; }
     public bool ShowFirstNameColumn { get; set; }
     public bool ShowLastNameColumn { get; set; }
     public bool ShowEmailColumn { get; set; }
@@ -1185,6 +1184,7 @@ else
     public string CategoryColumnWidth = "auto";
     public string CreatedColumnWidth = "auto";
     public string UpdatedColumnWidth = "auto";
+    public string LastEventColumnWidth = "auto";
     public string FirstNameColumnWidth = "auto";
     public string LastNameColumnWidth = "auto";
     public string EmailColumnWidth = "auto";
@@ -1550,13 +1550,14 @@ else
     {
         NavigationManager.LocationChanged += OnLocationChanged;
 
-        ShowRowIndexColumn = false;
+        ShowRowIndexColumn = true;
         ShowRecordIdColumn = false;
         ShowStatusColumn = true;
         ShowTradeColumn = true;
         ShowCategoryColumn = false;
         ShowCreatedColumn = true;
-        ShowUpdatedColumn = false;
+        ShowUpdatedColumn = true;
+        ShowLastEventColumn = true;
         ShowFirstNameColumn = true;
         ShowLastNameColumn = true;
         ShowEmailColumn = false;
@@ -1571,7 +1572,7 @@ else
         ShowActionsColumn = true;
         ShowSqFtColumn = false;
         ShowRelationshipColumn = true;
-        ShowIsQualifiedColumn = true;
+        ShowIsQualifiedColumn = false;
 
         columnWidths = WebServices.GetColumnWidths();
 
@@ -1599,6 +1600,9 @@ else
                     break;
                 case "Updated":
                     UpdatedColumnWidth = listItem.Value;
+                    break;
+                case "LastEventDetails":
+                    LastEventColumnWidth = listItem.Value;
                     break;
                 case "FirstName":
                     FirstNameColumnWidth = listItem.Value;
@@ -2667,194 +2671,192 @@ else
         DateTime lastQuoteEventTimestamp = DateTime.MinValue;
         string lastQuoteEventDetails = "";
 
-        TimerDispose();
-
-        _timer = new Timer(new TimerCallback(_ =>
+        try
         {
-            standaloneTotal = 0;
+            TimerDispose();
 
-            RelatedQuoteSummaryList = new List<QuoteSummary>();
-            AttachmentList = new List<Attachment>();
-            EventList = new List<Event>();
-            NoteList = new List<Note>();
-
-            try
+            _timer = new Timer(new TimerCallback(_ =>
             {
-            
-            }
-            catch(Exception ex)
-            {
-                var errMsg = ex.Message;
-            }
+                standaloneTotal = 0;
 
-            QuotesList = webServices.GetQuote(QuoteId);
-            if(QuotesList != null)
-            {
-                CurrentlySelectedQuote = QuotesList[0];
+                RelatedQuoteSummaryList = new List<QuoteSummary>();
+                AttachmentList = new List<Attachment>();
+                EventList = new List<Event>();
+                NoteList = new List<Note>();
 
-                standaloneTotal = CurrentlySelectedQuote.totalQuote;
-
-                // Get child quote summaries
-                RelatedQuoteSummaryList = webServices.GetRelatedQuoteSummaries(CurrentlySelectedQuote);
-
-                if(RelatedQuoteSummaryList.Count > 0)
+                QuotesList = webServices.GetQuote(QuoteId);
+                if (QuotesList != null)
                 {
-                    // foreach(QuoteSummary _summary in RelatedQuoteSummaryList)
-                    // {
-                    //     if(_summary.BidderType == "Default")
-                    //     {
-                    //         defaultQuoteValue = _summary.totalQuote;
-                    //     }
+                    CurrentlySelectedQuote = QuotesList[0];
 
-                    //     if(_summary.totalQuote > 0)
-                    //     {
-                    //         averageQuoteValue += _summary.totalQuote;
-                    //     }
-                    // }
+                    standaloneTotal = CurrentlySelectedQuote.totalQuote;
 
-                    // averageQuoteValue = (averageQuoteValue / RelatedQuoteSummaryList.Count);
-                }
+                    // Get child quote summaries
+                    RelatedQuoteSummaryList = webServices.GetRelatedQuoteSummaries(CurrentlySelectedQuote);
 
-                // Process attachments
-                foreach(Attachment attachment in CurrentlySelectedQuote.attachments)
-                {
-                    attachment.Trade = CurrentlySelectedQuote.Trade;
-                    if (attachment.MediaName == "")
-                        attachment.MediaName = "Filename?";
-                }
-                AttachmentList.AddRange(CurrentlySelectedQuote.attachments);
-
-                // Process Related events
-                foreach (Event _event in CurrentlySelectedQuote.events)
-                {
-                    _event.Trade = CurrentlySelectedQuote.Trade;
-                    EventList.Add(_event);
-                }
-
-                if(CurrentlySelectedQuote.Trade == "Aggregate")
-                {
-                    // Process remote Child events
-                    List<Event> childEvents = new List<Event>();
-
-                    foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
+                    if (RelatedQuoteSummaryList.Count > 0)
                     {
-                        var childQuote = WebServices.GetQuote(relationship._id)[0];
+                        // foreach(QuoteSummary _summary in RelatedQuoteSummaryList)
+                        // {
+                        //     if(_summary.BidderType == "Default")
+                        //     {
+                        //         defaultQuoteValue = _summary.totalQuote;
+                        //     }
 
-                        childEvents.AddRange(childQuote.events);
-                    }
-                    EventList.AddRange(childEvents);
-                }
+                        //     if(_summary.totalQuote > 0)
+                        //     {
+                        //         averageQuoteValue += _summary.totalQuote;
+                        //     }
+                        // }
 
-                // Process local Aggregate or standalone notes
-                foreach (Note note in CurrentlySelectedQuote.notes)
-                {
-                    note.Trade = CurrentlySelectedQuote.Trade;
-                }
-                NoteList.AddRange(CurrentlySelectedQuote.notes);
-
-                if(CurrentlySelectedQuote.Trade == "Aggregate")
-                {
-                    // Process remote Child notes
-                    List<Note> childNotes = new List<Note>();
-
-                    foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
-                    {
-                        var childQuote = WebServices.GetQuote(relationship._id)[0];
-
-                        childNotes.AddRange(childQuote.notes);
-                    }
-                    NoteList.AddRange(childNotes);
-                }
-
-                averageQuoteValue = 0;
-                var quotesWithBidValue = 0;
-
-                foreach(QuoteSummary quoteSummary in RelatedQuoteSummaryList)
-                {
-                    if(quoteSummary.BidderType == "Default")
-                    {
-                        defaultQuoteValue = quoteSummary.totalQuote;
+                        // averageQuoteValue = (averageQuoteValue / RelatedQuoteSummaryList.Count);
                     }
 
-                    if(quoteSummary.totalQuote > 0)
+                    // Process attachments
+                    foreach (Attachment attachment in CurrentlySelectedQuote.attachments)
                     {
-                        quotesWithBidValue++;
-
-                        averageQuoteValue += quoteSummary.totalQuote;
+                        attachment.Trade = CurrentlySelectedQuote.Trade;
+                        if (attachment.MediaName == "")
+                            attachment.MediaName = "Filename?";
                     }
-                }
+                    AttachmentList.AddRange(CurrentlySelectedQuote.attachments);
 
-                averageQuoteValue = (averageQuoteValue / quotesWithBidValue);
-
-                currentQuoteIndex = 0;
-
-                if (CurrentlySelectedQuote.Trade == "Aggregate")
-                {
-                    CurrentlySelectedQuote.totalQuote = averageQuoteValue;
-                }
-                else
-                {
-                    CurrentlySelectedQuote.totalQuote = standaloneTotal;
-                }
-
-                foreach (QuoteSummary RelatedQuote in RelatedQuoteSummaryList)
-                {
-                    foreach(Event _event in RelatedQuote.events)
+                    // Process Related events
+                    foreach (Event _event in CurrentlySelectedQuote.events)
                     {
-                        if(_event.DateTime > lastQuoteEventTimestamp)
+                        _event.Trade = CurrentlySelectedQuote.Trade;
+                        EventList.Add(_event);
+                    }
+
+                    if (CurrentlySelectedQuote.Trade == "Aggregate")
+                    {
+                        // Process remote Child events
+                        List<Event> childEvents = new List<Event>();
+
+                        foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
                         {
-                            lastQuoteEventTimestamp = _event.DateTime.ToLocalTime();
-                            lastQuoteEventDetails = _event.Details;
+                            var childQuote = WebServices.GetQuote(relationship._id)[0];
+
+                            childEvents.AddRange(childQuote.events);
+                        }
+                        EventList.AddRange(childEvents);
+                    }
+
+                    // Process local Aggregate or standalone notes
+                    foreach (Note note in CurrentlySelectedQuote.notes)
+                    {
+                        note.Trade = CurrentlySelectedQuote.Trade;
+                    }
+                    NoteList.AddRange(CurrentlySelectedQuote.notes);
+
+                    if (CurrentlySelectedQuote.Trade == "Aggregate")
+                    {
+                        // Process remote Child notes
+                        List<Note> childNotes = new List<Note>();
+
+                        foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
+                        {
+                            var childQuote = WebServices.GetQuote(relationship._id)[0];
+
+                            childNotes.AddRange(childQuote.notes);
+                        }
+                        NoteList.AddRange(childNotes);
+                    }
+
+                    averageQuoteValue = 0;
+                    var quotesWithBidValue = 0;
+
+                    foreach (QuoteSummary quoteSummary in RelatedQuoteSummaryList)
+                    {
+                        if (quoteSummary.BidderType == "Default")
+                        {
+                            defaultQuoteValue = quoteSummary.totalQuote;
+                        }
+
+                        if (quoteSummary.totalQuote > 0)
+                        {
+                            quotesWithBidValue++;
+
+                            averageQuoteValue += quoteSummary.totalQuote;
                         }
                     }
-                }
 
-                // Sort collections
-                LocalizeRelatedQuotes(RelatedQuoteSummaryList);
-                RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.lastEventTimeStamp).ToList();
+                    averageQuoteValue = (averageQuoteValue / quotesWithBidValue);
 
-                var currentQuoteId = CurrentlySelectedQuote._id;
-                foreach(QuoteSummary _summary in RelatedQuoteSummaryList)
-                {
-                    if(_summary._id == CurrentlySelectedQuote._id)
+                    currentQuoteIndex = 0;
+
+                    if (CurrentlySelectedQuote.Trade == "Aggregate")
                     {
-                        // Remove current Item. Don't want this to link back to itself.
-                        RelatedQuoteSummaryList.Remove(_summary);
-                        break;
+                        CurrentlySelectedQuote.totalQuote = averageQuoteValue;
                     }
+                    else
+                    {
+                        CurrentlySelectedQuote.totalQuote = standaloneTotal;
+                    }
+
+                    foreach (QuoteSummary RelatedQuote in RelatedQuoteSummaryList)
+                    {
+                        foreach (Event _event in RelatedQuote.events)
+                        {
+                            if (_event.DateTime > lastQuoteEventTimestamp)
+                            {
+                                lastQuoteEventTimestamp = _event.DateTime.ToLocalTime();
+                                lastQuoteEventDetails = _event.Details;
+                            }
+                        }
+                    }
+
+                    // Sort collections
+                    LocalizeRelatedQuotes(RelatedQuoteSummaryList);
+                    RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.lastEventTimeStamp).ToList();
+
+                    var currentQuoteId = CurrentlySelectedQuote._id;
+                    foreach (QuoteSummary _summary in RelatedQuoteSummaryList)
+                    {
+                        if (_summary._id == CurrentlySelectedQuote._id)
+                        {
+                            // Remove current Item. Don't want this to link back to itself.
+                            RelatedQuoteSummaryList.Remove(_summary);
+                            break;
+                        }
+                    }
+
+                    LocalizeAttachments(AttachmentList);
+                    AttachmentList = AttachmentList.OrderByDescending(x => x.DateTime).ToList();
+
+                    LocalizeEvents(EventList);
+                    EventList = EventList.OrderByDescending(x => x.DateTime).ToList();
+
+                    LocalizeNotes(NoteList);
+                    NoteList = NoteList.OrderByDescending(x => x.DateTime).ToList();
+
+                    CurrentlySelectedQuote.timestamp = CurrentlySelectedQuote.timestamp.ToLocalTime();
+                    CurrentlySelectedQuote.lastUpdated = CurrentlySelectedQuote.lastUpdated.ToLocalTime();
+
+                    if (CurrentlySelectedQuote.Trade == "Aggregate")
+                    {
+                        currentQuoteContainerType = "Parent";
+                    }
+                    else
+                    {
+                        currentQuoteContainerType = "Child";
+                    }
+
+                    SetUIStyles(currentQuoteContainerType);
+
+                    InvokeAsync(() =>
+                    {
+                        StateHasChanged();
+                    });
                 }
+            }), null, 1000, 1000);
 
-                LocalizeAttachments(AttachmentList);
-                AttachmentList = AttachmentList.OrderByDescending(x => x.DateTime).ToList();
-
-                LocalizeEvents(EventList);
-                EventList = EventList.OrderByDescending(x => x.DateTime).ToList();
-
-                LocalizeNotes(NoteList);
-                NoteList = NoteList.OrderByDescending(x => x.DateTime).ToList();
-
-                CurrentlySelectedQuote.timestamp = CurrentlySelectedQuote.timestamp.ToLocalTime();
-                CurrentlySelectedQuote.lastUpdated = CurrentlySelectedQuote.lastUpdated.ToLocalTime();
-
-                if(CurrentlySelectedQuote.Trade == "Aggregate")
-                {
-                    currentQuoteContainerType = "Parent";
-                }
-                else
-                {
-                    currentQuoteContainerType = "Child";
-                }
-
-                SetUIStyles(currentQuoteContainerType);
-
-                InvokeAsync(() =>
-                {
-                    StateHasChanged();
-                });
-            }  
-        }), null, 1000, 1000);
-
-        LoadingPanelVisible = false;
+            LoadingPanelVisible = false;
+        }
+        catch(Exception ex)
+        {
+            var errMsg = ex.Message;
+        }
     }
 
     public void LocalizeRelatedQuotes(List<QuoteSummary> RelatedQuoteSummaryList)

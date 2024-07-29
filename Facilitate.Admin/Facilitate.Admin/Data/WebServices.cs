@@ -97,6 +97,11 @@ namespace Facilitate.Admin.Data
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
+            columItem.Text = "LastEventDetails";
+            columItem.Value = "auto";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
             columItem.Text = "FirstName";
             columItem.Value = "85";
             columnWidths.Add(columItem);
@@ -148,12 +153,12 @@ namespace Facilitate.Admin.Data
 
             columItem = new ListItem();
             columItem.Text = "BidExpires";
-            columItem.Value = "85";
+            columItem.Value = "100";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
             columItem.Text = "BidType";
-            columItem.Value = "85";
+            columItem.Value = "100";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
