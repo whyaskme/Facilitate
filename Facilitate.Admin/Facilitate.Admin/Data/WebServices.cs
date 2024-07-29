@@ -68,7 +68,7 @@ namespace Facilitate.Admin.Data
             
             columItem = new ListItem();
             columItem.Text = "Status";
-            columItem.Value = "85";
+            columItem.Value = "100";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
