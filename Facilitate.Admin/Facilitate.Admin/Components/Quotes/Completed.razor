@@ -772,22 +772,26 @@ else
             if (isSystemAdmin)
             {
                 ShowBidColumn = true;
+                ShowRelationshipColumn = true;
+                ShowCategoryColumn = true;
+                ShowIsQualifiedColumn = false;
 
                 switch (SelectedTradeType)
                 {
                     case "All":
-                        QuoteHeaders = webServices.GetSummaries("Complete", ShowTestData);
-                        LeaderboardStats = WebServices.GetLeaderboardStats("Complete", ShowTestData);
+                        QuoteHeaders = webServices.GetSummaries("New", ShowTestData);
+                        LeaderboardStats = WebServices.GetLeaderboardStats("New", ShowTestData);
                         break;
                     case "Aggregate":
-                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "Complete", ShowTestData);
-                        LeaderboardStats = WebServices.GetLeaderboardStats("Complete", ShowTestData);
+                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "New", ShowTestData);
+                        LeaderboardStats = WebServices.GetLeaderboardStats("New", ShowTestData);
                         ShowBidColumn = false;
+                        ShowRelationshipColumn = false;
                         break;
-
                     default:
-                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "Complete", ShowTestData);
-                        LeaderboardStats = WebServices.GetLeaderboardStats(SelectedTradeType, "Complete", ShowTestData);
+                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "New", ShowTestData);
+                        LeaderboardStats = WebServices.GetLeaderboardStats(SelectedTradeType, "New", ShowTestData);
+                        ShowCategoryColumn = false;
                         break;
                 }
             }

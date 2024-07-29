@@ -769,24 +769,28 @@ else
         _timer = new Timer(new TimerCallback(_ =>
         {
             ShowBidColumn = true;
+            ShowRelationshipColumn = true;
+            ShowCategoryColumn = true;
+            ShowIsQualifiedColumn = false;
 
             if (isSystemAdmin)
             {
                 switch (SelectedTradeType)
                 {
                     case "All":
-                        QuoteHeaders = webServices.GetSummaries("Archive", ShowTestData);
-                        LeaderboardStats = WebServices.GetLeaderboardStats("Archive", ShowTestData);
+                        QuoteHeaders = webServices.GetSummaries("New", ShowTestData);
+                        LeaderboardStats = WebServices.GetLeaderboardStats("New", ShowTestData);
                         break;
                     case "Aggregate":
-                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "Archive", ShowTestData);
-                        LeaderboardStats = WebServices.GetLeaderboardStats("Archive", ShowTestData);
+                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "New", ShowTestData);
+                        LeaderboardStats = WebServices.GetLeaderboardStats("New", ShowTestData);
                         ShowBidColumn = false;
+                        ShowRelationshipColumn = false;
                         break;
-
                     default:
-                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "Archive", ShowTestData);
-                        LeaderboardStats = WebServices.GetLeaderboardStats(SelectedTradeType, "Archive", ShowTestData);
+                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "New", ShowTestData);
+                        LeaderboardStats = WebServices.GetLeaderboardStats(SelectedTradeType, "New", ShowTestData);
+                        ShowCategoryColumn = false;
                         break;
                 }
             }

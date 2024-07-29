@@ -816,6 +816,9 @@ else
                 // var isUserEnabled = IsUserEnabled();
 
                 ShowBidColumn = true;
+                ShowRelationshipColumn = true;
+                ShowCategoryColumn = true;
+                ShowIsQualifiedColumn = false;
 
                 if (isSystemAdmin)
                 {
@@ -829,11 +832,12 @@ else
                             QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "New", ShowTestData);
                             LeaderboardStats = WebServices.GetLeaderboardStats("New", ShowTestData);
                             ShowBidColumn = false;
+                            ShowRelationshipColumn = false;
                             break;
-
                         default:
                             QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "New", ShowTestData);
                             LeaderboardStats = WebServices.GetLeaderboardStats(SelectedTradeType, "New", ShowTestData);
+                            ShowCategoryColumn = false;
                             break;
                     }
                 }
