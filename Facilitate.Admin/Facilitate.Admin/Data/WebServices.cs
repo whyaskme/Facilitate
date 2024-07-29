@@ -212,8 +212,14 @@ namespace Facilitate.Admin.Data
                 }
 
                 List<QuoteHeader> quoteHeaders = _mongoDBCollection.Find(filter).Project<QuoteHeader>(fields).ToList();
+
+                var rowIndex = quoteHeaders.Count;
+
                 foreach (var quote in quoteHeaders)
                 {
+                    rowIndex--;
+
+                    //quote.rowIndex = rowIndex;
                     quote.lastUpdated = quote.lastUpdated.ToLocalTime();
                     quote.timestamp = quote.timestamp.ToLocalTime();
                 }

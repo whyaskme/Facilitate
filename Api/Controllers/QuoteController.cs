@@ -97,8 +97,10 @@ namespace Facilitate.Api.Controllers
                 }
 
                 Quote aggregateQuote = new Quote();
+                aggregateQuote.status = "Opportunity";
+
                 aggregateQuote.Trade = utils.TitleCaseString("Aggregate");
-                aggregateQuote.TradeCategory = "Roofing";  //aggregateQuote.Trade;
+                aggregateQuote.TradeCategory = "Roofing";
 
                 // Set Bidding properties
                 aggregateQuote.Bidder = author;
@@ -160,6 +162,7 @@ namespace Facilitate.Api.Controllers
                 for (var i = 0; i <= childBidderQuotesToCreate; i++)
                 {
                     Quote childQuote = new Quote();
+                    childQuote.status = aggregateQuote.status;
 
                     childQuote.repName = aggregateQuote.repName;
                     childQuote.repEmail = aggregateQuote.repEmail;

@@ -72,7 +72,7 @@ else
             <span class="stat-divider">|</span>
             <span class="stat-value">@LeaderboardStats.TotalQuoteValue.ToString("C0")</span>
         </div>
-        <div class="col-md-1 stat-element">
+@*         <div class="col-md-1 stat-element">
             <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
                 <Authorized>
                     <a href="/quotes/leads">Leads</a>
@@ -80,7 +80,7 @@ else
                 </Authorized>
                 <NotAuthorized></NotAuthorized>
             </AuthorizeView>
-        </div>
+        </div> *@
         <div class="col-md-1 stat-element">
             <a href="/quotes/opportunities">Opportunities</a>
             <span class="stat-value"><b>@LeaderboardStats.OpportunityCount.ToString("N0")</b></span>
@@ -233,7 +233,7 @@ else
             <DxGridDataColumn Visible="@ShowStatusColumn" Width="@StatusColumnWidth" Caption="Status" FieldName="status" />
             <DxGridDataColumn Visible="@ShowTradeColumn" Width="@TradeColumnWidth" Caption="Trade" FieldName="Trade" />
             <DxGridDataColumn Visible="@ShowCategoryColumn" Width="@CategoryColumnWidth" Caption="Category" FieldName="TradeCategory" />
-            <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="" />
+            <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="relationship" />
             <DxGridDataColumn Visible="@ShowCreatedColumn" Width="@CreatedColumnWidth" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
             <DxGridDataColumn Visible="@ShowUpdatedColumn" Width="@UpdatedColumnWidth" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
             <DxGridDataColumn Visible="@ShowFirstNameColumn" Width="@FirstNameColumnWidth" Caption="First" FieldName="firstName" />
@@ -481,7 +481,7 @@ else
     {
         NavigationManager.LocationChanged += OnLocationChanged;
 
-        ShowRowIndexColumn = false;
+        ShowRowIndexColumn = true;
         ShowRecordIdColumn = false;
         ShowStatusColumn = false;
         ShowTradeColumn = true;
@@ -598,7 +598,7 @@ else
 
     #region Private Properties
 
-    private List<QuoteHeader>? QuoteHeaders;
+    public List<QuoteHeader>? QuoteHeaders;
 
     IGrid QuoteGrid { get; set; }
 
@@ -861,11 +861,21 @@ else
                     TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
                 }
 
-                currentQuoteIndex = QuoteHeaders.Count() + 1;
-                foreach (var quote in QuoteHeaders)
+                var rowIndex = QuoteHeaders.Count();
+                foreach (var quoteHeader in QuoteHeaders)
                 {
-                    currentQuoteIndex--;
-                    quote.rowIndex = currentQuoteIndex;
+                    quoteHeader.rowIndex = rowIndex;
+
+                    if (quoteHeader.Trade == "Aggregate")
+                    {
+                        quoteHeader.relationship = "Parent";
+                    }
+                    else
+                    {
+                        quoteHeader.relationship = "Child";
+                    }
+
+                    rowIndex--;
                 }
 
                 InvokeAsync(() =>
@@ -879,6 +889,9 @@ else
         catch(Exception ex)
         {
             var errMsg = ex.Message;
+        }
+        finally
+        {           
         }
     }
 

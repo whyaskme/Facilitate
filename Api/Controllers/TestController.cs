@@ -103,6 +103,7 @@ namespace Facilitate.Api.Controllers
             for (var h = 0; h < numQuotesToCreate; h++)
             {
                 Quote aggregateQuote = new Quote();
+                aggregateQuote.status = "Opportunity";
 
                 rnd = new Random();
                 randomInt = rnd.Next(0, 1);
@@ -149,6 +150,8 @@ namespace Facilitate.Api.Controllers
 
                     // Create the parent Aggregate quote
                     aggregateQuote = new Quote();
+                    aggregateQuote.status = "Opportunity";
+
                     aggregateQuote.Trade = utils.TitleCaseString("Aggregate");
                     aggregateQuote.TradeCategory = utils.TitleCaseString(Trade);
 
@@ -250,6 +253,7 @@ namespace Facilitate.Api.Controllers
                         {
                             // Create Child Quote
                             Quote childQuote = new Quote();
+                            childQuote.status = aggregateQuote.status;
 
                             childQuote.repName = aggregateQuote.repName;
                             childQuote.repEmail = aggregateQuote.repEmail;
@@ -257,7 +261,7 @@ namespace Facilitate.Api.Controllers
 
                             childQuote.totalQuote = 0;
 
-                            childQuote.status = "New";
+                            childQuote.status = "Opportunity";
                             childQuote.Trade = Trade;
                             childQuote.TradeCategory = ""; // Trade;
 
@@ -388,7 +392,7 @@ namespace Facilitate.Api.Controllers
                 {
                     // Create Child Quote
                     Quote childQuote = new Quote();
-                    childQuote.status = "New";
+                    childQuote.status = "Opportunity";
                     childQuote.Trade = aggregateQuote.Trade;
 
                     Event createdEvent = new Event();

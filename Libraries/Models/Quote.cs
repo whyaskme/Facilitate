@@ -14,8 +14,8 @@ namespace Facilitate.Libraries.Models
 
             ipAddress = "127.0.0.1";
 
-            status = "New";
-            statusPrevious = "New";
+            status = "";
+            statusPrevious = "";
             statusSubcategory = string.Empty;
             statusPreviousSubcategory = string.Empty;
 

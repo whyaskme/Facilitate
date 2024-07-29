@@ -24,6 +24,7 @@ namespace Facilitate.Libraries.Models
             firstName = string.Empty;
             lastName = string.Empty;
             email = string.Empty;
+            relationship = string.Empty;
             numberOfStructures = 0;
             numberOfIncludedStructures = 0;
             totalSquareFeet = 0;
@@ -51,6 +52,7 @@ namespace Facilitate.Libraries.Models
         public string firstName { get; set; }
         public string lastName { get; set; }
         public string email { get; set; }
+        public string relationship { get; set; }
         public int numberOfStructures { get; set; }
         public int numberOfIncludedStructures { get; set; }
         public int totalSquareFeet { get; set; }

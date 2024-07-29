@@ -236,7 +236,7 @@ else
                                 <DxGridDataColumn Visible="@ShowStatusColumn" Width="@StatusColumnWidth" Caption="Status" FieldName="status" />
                                 <DxGridDataColumn Visible="@ShowTradeColumn" Width="@TradeColumnWidth" Caption="Trade" FieldName="Trade" />
                                 <DxGridDataColumn Visible="@ShowCategoryColumn" Width="@CategoryColumnWidth" Caption="Category" FieldName="TradeCategory" />
-                                <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="" />
+                                <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="relationship" />
                                 <DxGridDataColumn Visible="@ShowCreatedColumn" Width="@CreatedColumnWidth" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
                                 <DxGridDataColumn Visible="@ShowUpdatedColumn" Width="@UpdatedColumnWidth" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
 
@@ -482,7 +482,7 @@ else
                                         <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
                                         <DxGridDataColumn Width="175" Caption="Date" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                         <DxGridDataColumn Width="100" Caption="Trade" FieldName="Trade" />
-                                        <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="" />
+                                        <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="relationship" />
                                         <DxGridDataColumn Width="150" Caption="Name" FieldName="MediaName" />
                                         <DxGridDataColumn Width="auto" Caption="Description" FieldName="MediaDescription" />
                                         <DxGridDataColumn Width="auto" Caption="Url" FieldName="MediaUrl" />
@@ -527,7 +527,7 @@ else
                                 <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
                                 <DxGridDataColumn Width="175" Caption="Date" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                 <DxGridDataColumn Width="150" Caption="Trade" FieldName="Trade" />
-                                <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="" />
+                                <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="relationship" />
                                 <DxGridDataColumn Width="auto" Caption="Details" FieldName="Details" />
                                 <DxGridDataColumn Width="175" Caption="Author" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Author.FirstName + ' ' + Author.LastName" />
                             </Columns>
@@ -567,7 +567,7 @@ else
                                 <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
                                 <DxGridDataColumn Visible="@ShowCreatedColumn" Width="160" Caption="Date" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                 <DxGridDataColumn Visible="@ShowTradeColumn" Width="85" Caption="Trade" FieldName="Trade" />
-                                <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="" />
+                                <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="relationship" />
                                 <DxGridDataColumn Visible="true" Width="auto" Caption="Details" FieldName="Details" />
                                 <DxGridDataColumn Visible="true" Width="125" Caption="Author" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Author.FirstName + ' ' + Author.LastName" />
                             </Columns>
@@ -2835,6 +2835,9 @@ else
                             RelatedQuoteSummaryList.Remove(_summary);
                             break;
                         }
+
+                        // Notate relationship type
+
                     }
 
                     LocalizeAttachments(AttachmentList);
