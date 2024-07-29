@@ -230,6 +230,8 @@ else
 
 @code {
 
+    public string StatusType = "Opportunity";
+
     List<ListItem> columnWidths = new List<ListItem>();
 
     public int currentQuoteIndex = 0;
@@ -766,18 +768,17 @@ else
                 switch (SelectedTradeType)
                 {
                     case "All":
-                        QuoteHeaders = webServices.GetSummaries("Opportunity", ShowTestData);
-                        LeaderboardStats = WebServices.GetLeaderboardStats("Opportunity", ShowTestData);
+                        QuoteHeaders = webServices.GetSummaries(StatusType, ShowTestData);
+                        LeaderboardStats = WebServices.GetLeaderboardStats(StatusType, ShowTestData);
                         break;
                     case "Aggregate":
-                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "Opportunity", ShowTestData);
-                        LeaderboardStats = WebServices.GetLeaderboardStats("Opportunity", ShowTestData);
+                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, StatusType, ShowTestData);
+                        LeaderboardStats = WebServices.GetLeaderboardStats(StatusType, ShowTestData);
                         ShowBidColumn = false;
-                        ShowRelationshipColumn = false;
                         break;
                     default:
-                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "Opportunity", ShowTestData);
-                        LeaderboardStats = WebServices.GetLeaderboardStats(SelectedTradeType, "Opportunity", ShowTestData);
+                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, StatusType, ShowTestData);
+                        LeaderboardStats = WebServices.GetLeaderboardStats(SelectedTradeType, StatusType, ShowTestData);
                         ShowCategoryColumn = false;
                         break;
                 }
@@ -785,7 +786,7 @@ else
             else
             {
                 LeaderboardStats = WebServices.GetLeaderboardStats(currentUser.Email);
-                QuoteHeaders = webServices.GetSummaries("Opportunity", currentUser.Email);
+                QuoteHeaders = webServices.GetSummaries(StatusType, currentUser.Email);
             }
 
             updateStatus = QuoteHeaders.Count().ToString("N0");
@@ -798,13 +799,21 @@ else
                 TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
             }
 
-            // Update dates to local time
-
-            currentQuoteIndex = QuoteHeaders.Count() + 1;
-            foreach (var quote in QuoteHeaders)
+            var rowIndex = QuoteHeaders.Count();
+            foreach (var quoteHeader in QuoteHeaders)
             {
-                currentQuoteIndex--;
-                quote.rowIndex = currentQuoteIndex;
+                quoteHeader.rowIndex = rowIndex;
+
+                if (quoteHeader.Trade == "Aggregate")
+                {
+                    quoteHeader.relationship = "Parent";
+                }
+                else
+                {
+                    quoteHeader.relationship = "Child";
+                }
+
+                rowIndex--;
             }
 
             InvokeAsync(() =>

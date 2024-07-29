@@ -2834,13 +2834,14 @@ else
                     CurrentlySelectedQuote.timestamp = CurrentlySelectedQuote.timestamp.ToLocalTime();
                     CurrentlySelectedQuote.lastUpdated = CurrentlySelectedQuote.lastUpdated.ToLocalTime();
 
-                    if (CurrentlySelectedQuote.Trade == "Aggregate")
+                    if(CurrentlySelectedQuote.relationships.Count > 1)
                     {
                         currentQuoteContainerType = "Parent";
                     }
-                    else
-                    {
+                    else{
                         currentQuoteContainerType = "Child";
+
+                        CreateSiblings();
                     }
 
                     SetUIStyles(currentQuoteContainerType);
@@ -2858,6 +2859,11 @@ else
         {
             var errMsg = ex.Message;
         }
+    }
+
+    public void CreateSiblings()
+    {
+
     }
 
     public void LocalizeRelatedQuotes(List<QuoteSummary> RelatedQuoteSummaryList)

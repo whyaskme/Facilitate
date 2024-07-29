@@ -257,6 +257,8 @@ else
 
 @code {
 
+    public string StatusType = "Lead";
+
     List<ListItem> columnWidths = new List<ListItem>();
 
     public int currentQuoteIndex = 0;
@@ -820,18 +822,17 @@ else
                     switch (SelectedTradeType)
                     {
                         case "All":
-                            QuoteHeaders = webServices.GetSummaries("New", ShowTestData);
-                            LeaderboardStats = WebServices.GetLeaderboardStats("New", ShowTestData);
+                            QuoteHeaders = webServices.GetSummaries(StatusType, ShowTestData);
+                            LeaderboardStats = WebServices.GetLeaderboardStats(StatusType, ShowTestData);
                             break;
                         case "Aggregate":
-                            QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "New", ShowTestData);
-                            LeaderboardStats = WebServices.GetLeaderboardStats("New", ShowTestData);
+                            QuoteHeaders = webServices.GetSummaries(SelectedTradeType, StatusType, ShowTestData);
+                            LeaderboardStats = WebServices.GetLeaderboardStats(StatusType, ShowTestData);
                             ShowBidColumn = false;
-                            ShowRelationshipColumn = false;
                             break;
                         default:
-                            QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "New", ShowTestData);
-                            LeaderboardStats = WebServices.GetLeaderboardStats(SelectedTradeType, "New", ShowTestData);
+                            QuoteHeaders = webServices.GetSummaries(SelectedTradeType, StatusType, ShowTestData);
+                            LeaderboardStats = WebServices.GetLeaderboardStats(SelectedTradeType, StatusType, ShowTestData);
                             ShowCategoryColumn = false;
                             break;
                     }
@@ -839,7 +840,7 @@ else
                 else
                 {
                     LeaderboardStats = WebServices.GetLeaderboardStats(currentUser.Email);
-                    QuoteHeaders = webServices.GetSummaries("New", currentUser.Email);
+                    QuoteHeaders = webServices.GetSummaries(StatusType, currentUser.Email);
                 }
 
                 updateStatus = QuoteHeaders.Count().ToString("N0");
