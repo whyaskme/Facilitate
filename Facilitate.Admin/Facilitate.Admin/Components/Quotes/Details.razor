@@ -936,7 +936,7 @@ else
         <DxListBox Data="@ProjectManagers"
                    @bind-Values="@QuoteValues"
                    CssClass="popup-grid"
-                   SelectedItemsChanged="@((IEnumerable<ApplicationUser> values) => SelectedProjectManagerChanged(values))"
+                   SelectedItemsChanged="@((IEnumerable<ApplicationUser> values) => AddBidderToAggregateQuote(values))"
                    SelectionMode="ListBoxSelectionMode.Single"
                    ShowCheckboxes="true">
             <Columns>
@@ -1831,7 +1831,7 @@ else
         }
     }
 
-    void SelectedProjectManagerChanged(IEnumerable<ApplicationUser> selectedProjectManager)
+    void AddBidderToAggregateQuote(IEnumerable<ApplicationUser> selectedProjectManager)
     {
         if (selectedProjectManager.Count() > 0)
         {
@@ -1839,7 +1839,7 @@ else
 
             // Create Child Quote
             Quote childQuote = new Quote();
-            childQuote.status = "New";
+            childQuote.status = CurrentlySelectedQuote.status;
             childQuote.Trade = CurrentlySelectedQuote.TradeCategory;
             childQuote.TradeCategory = "";
 
@@ -2233,7 +2233,6 @@ else
         parentQuote = new Quote(CurrentlySelectedQuote);
 
         // Master inherits id from the original. That way email links will continue working once converted to an aggregate
-        // parentQuote._id = ObjectId.GenerateNewId().ToString();
         parentQuote.Trade = "Aggregate";
         parentQuote.totalQuote = 0;
         parentQuote.notes = new List<Note>();
@@ -2282,8 +2281,8 @@ else
                 _event = new Event();
                 _event.DateTime = DateTime.UtcNow;
                 _event.Author = currentUser;
-                _event.Name = "Aggregate project created";
-                _event.Details = "Aggregate spawned from original " + originalQuoteCopy.Trade + " quote (" + originalQuoteCopy._id + ")";
+                _event.Name = "Aggregate project spawned";
+                _event.Details = _event.Name + " from original " + originalQuoteCopy.Trade + " quote (" + originalQuoteCopy._id + ")";
 
                 parentQuote.events.Add(_event);
 
@@ -2294,6 +2293,8 @@ else
                 {
                     Quote childQuote = new Quote(originalQuoteCopy);
                     childQuote.Trade = selectedTrade.Value;
+
+                    childQuote.status = CurrentlySelectedQuote.status;
 
                     // Add Parent relationship to Child
                     if (childQuote.Trade != "Aggregate")
@@ -2802,36 +2803,6 @@ else
                         }
                     }
 
-                    // Sort collections
-                    LocalizeRelatedQuotes(RelatedQuoteSummaryList);
-                    RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.lastEventTimeStamp).ToList();
-
-                    var summaryIndex = 0;
-
-                    var currentQuoteId = CurrentlySelectedQuote._id;
-                    foreach (QuoteSummary _summary in RelatedQuoteSummaryList)
-                    {
-                        if (_summary._id == CurrentlySelectedQuote._id)
-                        {
-                            // Remove current Item. Don't want this to link back to itself.
-                            RelatedQuoteSummaryList.Remove(_summary);
-                            break;
-                        }
-
-                        // Set the row number for grid column display
-                        summaryIndex++;
-                        _summary.rowIndex = summaryIndex;
-                    }
-
-                    LocalizeAttachments(AttachmentList);
-                    AttachmentList = AttachmentList.OrderByDescending(x => x.DateTime).ToList();
-
-                    LocalizeEvents(EventList);
-                    EventList = EventList.OrderByDescending(x => x.DateTime).ToList();
-
-                    LocalizeNotes(NoteList);
-                    NoteList = NoteList.OrderByDescending(x => x.DateTime).ToList();
-
                     CurrentlySelectedQuote.timestamp = CurrentlySelectedQuote.timestamp.ToLocalTime();
                     CurrentlySelectedQuote.lastUpdated = CurrentlySelectedQuote.lastUpdated.ToLocalTime();
 
@@ -2844,6 +2815,38 @@ else
 
                         CreateSiblings();
                     }
+
+                    var summaryIndex = 0;
+
+                    var currentQuoteId = CurrentlySelectedQuote._id;
+                    foreach (QuoteSummary _summary in RelatedQuoteSummaryList)
+                    {
+                        if (_summary._id == CurrentlySelectedQuote._id)
+                        {
+                            // Remove current Item. Don't want this to link back to itself.
+                            RelatedQuoteSummaryList.Remove(_summary);
+                            break;
+                        }
+                        else
+                        {
+                            // Set the row number for grid column display
+                            summaryIndex++;
+                            _summary.rowIndex = summaryIndex;
+                        }
+                    }
+
+                    // Sort collections
+                    LocalizeRelatedQuotes(RelatedQuoteSummaryList);
+                    RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.lastEventTimeStamp).ToList();
+
+                    LocalizeAttachments(AttachmentList);
+                    AttachmentList = AttachmentList.OrderByDescending(x => x.DateTime).ToList();
+
+                    LocalizeEvents(EventList);
+                    EventList = EventList.OrderByDescending(x => x.DateTime).ToList();
+
+                    LocalizeNotes(NoteList);
+                    NoteList = NoteList.OrderByDescending(x => x.DateTime).ToList();
 
                     SetUIStyles(currentQuoteContainerType);
 
@@ -2878,7 +2881,7 @@ else
 
             if(quoteEvents.Count > 0)
             {
-                var lastEvent = quoteEvents.FirstOrDefault();
+                var lastEvent = quoteEvents.LastOrDefault();
 
                 _summary.lastEventTimeStamp = lastEvent.DateTime.ToLocalTime();
                 _summary.lastEventDetails = lastEvent.Details;
