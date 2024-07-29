@@ -46,7 +46,7 @@ namespace Facilitate.Api.Controllers
 
         // GET api/<TestController>/5
         [HttpGet("{numQuotesToCreate}")]
-        public IActionResult Get(string Trade, int numQuotesToCreate)
+        public IActionResult Get(string Trade, int numQuotesToCreate, int bidExpiresInDays)
         {
             int numberOfChildrenToCreate = 2;
 
@@ -87,7 +87,6 @@ namespace Facilitate.Api.Controllers
             string headerReferer = "n/a";
 
             int childBidderQuotesToCreate = 1;
-            int BiddingExpiresInDays = 1;
 
             double AvgPricePerSqFt = 4.50;
             double totalQuoteValue = 0;
@@ -156,7 +155,7 @@ namespace Facilitate.Api.Controllers
                     // Set Bidding properties
                     aggregateQuote.Bidder = author;
                     aggregateQuote.BidderType = "Parent";
-                    aggregateQuote.BiddingExpires = DateTime.UtcNow.AddDays(BiddingExpiresInDays);
+                    aggregateQuote.BiddingExpires = DateTime.UtcNow.AddDays(bidExpiresInDays);
 
                     aggregateQuote.ipAddress = headerForwardedFor;
                     aggregateQuote.externalUrl = headerReferer;

@@ -82,7 +82,7 @@ namespace Facilitate.Api.Controllers
                 string headerReferer = "n/a";
 
                 int childBidderQuotesToCreate = 1;
-                int BiddingExpiresInDays = 1;
+                int BiddingExpiresInDays = 7;
 
                 double totalQuoteValue = 0;
 
