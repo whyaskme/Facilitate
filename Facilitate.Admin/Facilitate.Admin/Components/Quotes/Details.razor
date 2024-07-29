@@ -1841,7 +1841,7 @@ else
             Quote childQuote = new Quote();
             childQuote.status = "New";
             childQuote.Trade = CurrentlySelectedQuote.TradeCategory;
-            childQuote.TradeCategory = "Child";
+            childQuote.TradeCategory = "";
 
             Event createdEvent = new Event();
             createdEvent.Author = currentUser;
@@ -1853,7 +1853,16 @@ else
 
             childQuote.Bidder = (ApplicationUser)selectedProjectManager.ToList()[0];
 
-            childQuote.BidderType = "Open";
+            switch(CurrentlySelectedQuote.relationships.Count)
+            {
+                case 1:
+                    childQuote.BidderType = "Spec";
+                    break;
+                default:
+                    childQuote.BidderType = "Open";
+                    break;
+            }
+
             childQuote.totalQuote = 0;
 
             childQuote.BiddingExpires = CurrentlySelectedQuote.BiddingExpires;
@@ -2810,9 +2819,16 @@ else
                     LocalizeRelatedQuotes(RelatedQuoteSummaryList);
                     RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.lastEventTimeStamp).ToList();
 
+                    var summaryIndex = 0;
+
                     var currentQuoteId = CurrentlySelectedQuote._id;
                     foreach (QuoteSummary _summary in RelatedQuoteSummaryList)
                     {
+                        summaryIndex++;
+
+                        // Set the row number for grid column display
+                        _summary.rowIndex = summaryIndex;
+
                         if (_summary._id == CurrentlySelectedQuote._id)
                         {
                             // Remove current Item. Don't want this to link back to itself.
