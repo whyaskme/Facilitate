@@ -48,7 +48,7 @@ namespace Facilitate.Api.Controllers
         [HttpGet("{numQuotesToCreate}")]
         public IActionResult Get(string Trade, int numQuotesToCreate, int bidExpiresInDays)
         {
-            int numberOfChildrenToCreate = 2;
+            int numberOfChildrenToCreate = 0;
 
             if (Trade == null || Trade == "")
             {
@@ -182,14 +182,14 @@ namespace Facilitate.Api.Controllers
                         Structure structure = new Structure();
                         switch (j)
                         {
-                            case 1:
+                            case 0:
                                 structure.initialSquareFeet = rnd.Next(1000, 5000);
                                 structure.isIncluded = true;
                                 structure.name = "Main Roof";
                                 structure.roofComplexity = "Complex";
                                 structure.slope = "steep";
                                 break;
-                            case 2:
+                            case 1:
                                 structure.initialSquareFeet = rnd.Next(500, 1500);
                                 structure.isIncluded = true;
                                 structure.name = "Garage Roof";
@@ -243,7 +243,7 @@ namespace Facilitate.Api.Controllers
                     CreateParentSpawnedEvent(aggregateQuote);
 
                     // Create Children
-                    for (var i = 0; i < numberOfChildrenToCreate; i++)
+                    for (var i = 0; i <= numberOfChildrenToCreate; i++)
                     {
                         try
                         {
@@ -267,9 +267,14 @@ namespace Facilitate.Api.Controllers
                             switch (i)
                             {
                                 case 0:
-
                                     childQuote.BidderType = "Default";
                                     childQuote.totalQuote = aggregateQuote.totalQuote;
+                                    childQuote.structures = aggregateQuote.structures;
+                                    childQuote.numberOfStructures = aggregateQuote.numberOfStructures;
+                                    childQuote.numberOfIncludedStructures = aggregateQuote.numberOfIncludedStructures;
+                                    childQuote.totalSquareFeet = aggregateQuote.totalSquareFeet;
+                                    childQuote.totalInitialSquareFeet = aggregateQuote.totalInitialSquareFeet;
+                                    childQuote.mainRoofTotalSquareFeet = aggregateQuote.mainRoofTotalSquareFeet;
                                     break;
                                 case 1:
                                     childQuote.BidderType = "Spec";

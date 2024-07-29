@@ -81,7 +81,7 @@ namespace Facilitate.Api.Controllers
                 string headerForwardedFor = "n/a";
                 string headerReferer = "n/a";
 
-                int childBidderQuotesToCreate = 1;
+                int childBidderQuotesToCreate = 0;
                 int BiddingExpiresInDays = 7;
 
                 double totalQuoteValue = 0;
@@ -157,7 +157,7 @@ namespace Facilitate.Api.Controllers
                 // Add event to child quote
                 aggregateQuote.events.Add(_event);
 
-                for (var i = 0; i < childBidderQuotesToCreate; i++)
+                for (var i = 0; i <= childBidderQuotesToCreate; i++)
                 {
                     Quote childQuote = new Quote();
 
@@ -166,9 +166,14 @@ namespace Facilitate.Api.Controllers
                     switch (i)
                     {
                         case 0:
-
                             childQuote.BidderType = "Default";
                             childQuote.totalQuote = totalQuoteValue;
+                            childQuote.structures = aggregateQuote.structures;
+                            childQuote.numberOfStructures = aggregateQuote.numberOfStructures;
+                            childQuote.numberOfIncludedStructures = aggregateQuote.numberOfIncludedStructures;
+                            childQuote.totalSquareFeet = aggregateQuote.totalSquareFeet;
+                            childQuote.totalInitialSquareFeet = aggregateQuote.totalInitialSquareFeet;
+                            childQuote.mainRoofTotalSquareFeet = aggregateQuote.mainRoofTotalSquareFeet;
                             break;
                         case 1:
                             childQuote.BidderType = "Spec";
@@ -182,7 +187,7 @@ namespace Facilitate.Api.Controllers
 
                     // Will need to figure out how to set dynamically
                     childQuote.Trade = utils.TitleCaseString("Roofing");
-                    childQuote.TradeCategory = utils.TitleCaseString("Child");
+                    childQuote.TradeCategory = ""; // utils.TitleCaseString("Child");
 
                     // Set Bidding properties
                     childQuote.Bidder = author;
@@ -192,43 +197,43 @@ namespace Facilitate.Api.Controllers
                     childQuote.ipAddress = headerForwardedFor;
                     childQuote.externalUrl = headerReferer;
 
-                    if (roofleSubmission.products[0].priceInfo.total != null)
+                    if (aggregateQuote.products[0].priceInfo.total != null)
                     {
-                        totalQuoteValue = roofleSubmission.products[0].priceInfo.total;
+                        totalQuoteValue = aggregateQuote.products[0].priceInfo.total;
                     }
 
-                    childQuote.address = roofleSubmission.address;
-                    childQuote.fullAddress = roofleSubmission.fullAddress;
-                    childQuote.street = roofleSubmission.street;
-                    childQuote.city = roofleSubmission.city;
+                    childQuote.address = aggregateQuote.address;
+                    childQuote.fullAddress = aggregateQuote.fullAddress;
+                    childQuote.street = aggregateQuote.street;
+                    childQuote.city = aggregateQuote.city;
 
-                    var stateAbbr = utils.GetStateAbbrByName(roofleSubmission.state);
+                    var stateAbbr = utils.GetStateAbbrByName(aggregateQuote.state);
 
                     childQuote.state = stateAbbr;
-                    childQuote.zip = roofleSubmission.zip;
+                    childQuote.zip = aggregateQuote.zip;
 
-                    childQuote.firstName = roofleSubmission.firstName;
-                    childQuote.lastName = roofleSubmission.lastName;
-                    childQuote.email = roofleSubmission.email;
-                    childQuote.phone = roofleSubmission.phone;
-                    childQuote.market = roofleSubmission.market;
+                    childQuote.firstName = aggregateQuote.firstName;
+                    childQuote.lastName = aggregateQuote.lastName;
+                    childQuote.email = aggregateQuote.email;
+                    childQuote.phone = aggregateQuote.phone;
+                    childQuote.market = aggregateQuote.market;
 
                     childQuote.timestamp = DateTime.UtcNow;
 
-                    childQuote.numberOfStructures = roofleSubmission.numberOfStructures;
-                    childQuote.numberOfIncludedStructures = roofleSubmission.numberOfIncludedStructures;
-                    childQuote.totalSquareFeet = roofleSubmission.totalSquareFeet;
+                    childQuote.numberOfStructures = aggregateQuote.numberOfStructures;
+                    childQuote.numberOfIncludedStructures = aggregateQuote.numberOfIncludedStructures;
+                    childQuote.totalSquareFeet = aggregateQuote.totalSquareFeet;
 
-                    childQuote.repName = roofleSubmission.repName;
-                    childQuote.repEmail = roofleSubmission.repEmail;
-                    childQuote.leadId = roofleSubmission.leadId;
+                    childQuote.repName = aggregateQuote.repName;
+                    childQuote.repEmail = aggregateQuote.repEmail;
+                    childQuote.leadId = aggregateQuote.leadId;
 
-                    childQuote.products = roofleSubmission.products;
-                    childQuote.structures = roofleSubmission.structures;
+                    childQuote.products = aggregateQuote.products;
+                    childQuote.structures = aggregateQuote.structures;
 
-                    childQuote.mainRoofTotalSquareFeet = roofleSubmission.mainRoofTotalSquareFeet;
-                    childQuote.totalInitialSquareFeet = roofleSubmission.totalInitialSquareFeet;
-                    childQuote.sessionId = roofleSubmission.sessionId;
+                    childQuote.mainRoofTotalSquareFeet = aggregateQuote.mainRoofTotalSquareFeet;
+                    childQuote.totalInitialSquareFeet = aggregateQuote.totalInitialSquareFeet;
+                    childQuote.sessionId = aggregateQuote.sessionId;
                     // End copy data
 
                     // Create Aggregate relationship to Child
