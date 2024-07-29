@@ -244,10 +244,14 @@ else
             <DxGridDataColumn Visible="@ShowStateColumn" Width="@StateColumnWidth" Caption="State" FieldName="state" />
             <DxGridDataColumn Visible="@ShowZipColumn" Width="@ZipColumnWidth" Caption="Zip" FieldName="zip" />
             <DxGridDataColumn Visible="@ShowSqFtColumn" Width="@SqFtColumnWidth" Caption="SqFt" FieldName="totalSquareFeet" />
+
             <DxGridDataColumn Visible="@ShowBidColumn" Width="@BidColumnWidth" Caption="Bid" DisplayFormat="C0" FieldName="totalQuote" />
+
             <DxGridDataColumn Visible="@ShowBidderColumn" Width="@BidderColumnWidth" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Bidder.FirstName + ' ' + Bidder.LastName" />
             <DxGridDataColumn Visible="@ShowBidExpiresColumn" Width="@BidExpiresColumnWidth" Caption="Bid Expires" FieldName="BiddingExpires" />
+
             <DxGridDataColumn Visible="@ShowBidTypeColumn" Width="@BidTypeColumnWidth" Caption="Bid Type" FieldName="BidderType" />
+
             <DxGridDataColumn Visible="@ShowIsQualifiedColumn" Width="@IsQualifiedColumnWidth" Caption="Qualified?" FieldName="isQualified" />
             <DxGridCommandColumn Visible="@ShowActionsColumn" Width="@ActionsColumnWidth" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
         </Columns>
@@ -557,10 +561,10 @@ else
                 case "Bidder":
                     BidderColumnWidth = listItem.Value;
                     break;
-                case "Bid Expires":
+                case "BidExpires":
                     BidExpiresColumnWidth = listItem.Value;
                     break;
-                case "Bid Type":
+                case "BidType":
                     BidTypeColumnWidth = listItem.Value;
                     break;
                 case "Actions":
