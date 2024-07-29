@@ -72,6 +72,11 @@ namespace Facilitate.Admin.Data
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
+            columItem.Text = "IsQualified";
+            columItem.Value = "85";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
             columItem.Text = "Trade";
             columItem.Value = "85";
             columnWidths.Add(columItem);

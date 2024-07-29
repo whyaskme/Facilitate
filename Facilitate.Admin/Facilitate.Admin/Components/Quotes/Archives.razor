@@ -204,6 +204,9 @@ else
             PageSizeSelectorAllRowsItemVisible="false"
             KeyboardNavigationEnabled="true">
         <Columns>
+            <dxg:TableView.FormatConditions>
+                <dxg:FormatCondition ValueRule="Equal" Value="Opportunity" FieldName="status" PredefinedFormatName="LightRedFillWithDarkRedText" />
+            </dxg:TableView.FormatConditions>
             <DxGridDataColumn Visible="@ShowRowIndexColumn" Width="@RowIndexColumnWidth" Caption="Row" FieldName="rowIndex" />
             <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="@RecordIdColumnWidth" Caption="Record Id" FieldName="_id" />
             <DxGridDataColumn Visible="@ShowStatusColumn" Width="@StatusColumnWidth" Caption="Status" FieldName="status" />
@@ -211,7 +214,7 @@ else
             <DxGridDataColumn Visible="@ShowCategoryColumn" Width="@CategoryColumnWidth" Caption="Category" FieldName="TradeCategory" />
             <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="" />
             <DxGridDataColumn Visible="@ShowCreatedColumn" Width="@CreatedColumnWidth" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
-            <DxGridDataColumn Visible="@ShowCreatedColumn" Width="@UpdatedColumnWidth" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+            <DxGridDataColumn Visible="@ShowUpdatedColumn" Width="@UpdatedColumnWidth" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
             <DxGridDataColumn Visible="@ShowFirstNameColumn" Width="@FirstNameColumnWidth" Caption="First" FieldName="firstName" />
             <DxGridDataColumn Visible="@ShowLastNameColumn" Width="@LastNameColumnWidth" Caption="Last" FieldName="lastName" />
             <DxGridDataColumn Visible="@ShowEmailColumn" Width="@EmailColumnWidth" Caption="Email" FieldName="email" />
@@ -224,7 +227,7 @@ else
             <DxGridDataColumn Visible="@ShowBidderColumn" Width="@BidderColumnWidth" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Bidder.FirstName + ' ' + Bidder.LastName" />
             <DxGridDataColumn Visible="@ShowBidExpiresColumn" Width="@BidExpiresColumnWidth" Caption="Bid Expires" FieldName="BiddingExpires" />
             <DxGridDataColumn Visible="@ShowBidTypeColumn" Width="@BidTypeColumnWidth" Caption="Bid Type" FieldName="BidderType" />
-            <DxGridDataColumn Visible="false" Width="100" Caption="Qualified?" FieldName="isQualified" />
+            <DxGridDataColumn Visible="@ShowIsQualifiedColumn" Width="@IsQualifiedColumnWidth" Caption="Qualified?" FieldName="isQualified" />
             <DxGridCommandColumn Visible="@ShowActionsColumn" Width="@ActionsColumnWidth" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
         </Columns>
     </DxGrid>
@@ -265,6 +268,7 @@ else
     public bool ShowBidTypeColumn { get; set; }
     public bool ShowActionsColumn { get; set; }
     public bool ShowRelationshipColumn { get; set; }
+    public bool ShowIsQualifiedColumn { get; set; }
 
     public string RowIndexColumnWidth = "auto";
     public string RecordIdColumnWidth = "auto";
@@ -287,6 +291,7 @@ else
     public string BidTypeColumnWidth = "auto";
     public string ActionsColumnWidth = "auto";
     public string RelationshipColumnWidth = "auto";
+    public string IsQualifiedColumnWidth = "auto";
 
     public string LeadTypeFilterLabel { get; set; } = "Types (Complete Info)";
 
@@ -442,6 +447,7 @@ else
         ShowActionsColumn = true;
         ShowSqFtColumn = false;
         ShowRelationshipColumn = true;
+        ShowIsQualifiedColumn = true;
 
         columnWidths = WebServices.GetColumnWidths();
 
