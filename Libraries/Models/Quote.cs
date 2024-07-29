@@ -176,14 +176,6 @@ namespace Facilitate.Libraries.Models
         public List<Note>? notes { get; set; }
         public virtual List<Event>? events { get; set; }
         public virtual List<Warranty>? warranties { get; set; }
-
-        #region Implementation of IEnumerable
-        //List<Quote> quotes;
-        //public IEnumerator<Quote> GetEnumerator()
-        //{
-        //    return quotes.GetEnumerator();
-        //}
-        #endregion
     }
 
 }

@@ -137,45 +137,51 @@ else
                 <div class="@currentQuoteContainerTypeCssClass  @currentQuoteColorCssClass">@currentQuoteContainerType (@CurrentlySelectedQuote.Trade)</div>
 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label>Name</label>
                         <span class="@currentQuoteColorCssClass">@CurrentlySelectedQuote.firstName @CurrentlySelectedQuote.lastName</span>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label>Address</label>
                         <a href="https://www.google.com/maps/search/@CurrentlySelectedQuote.street @CurrentlySelectedQuote.city, @CurrentlySelectedQuote.state @CurrentlySelectedQuote.zip" target="_blank">
                             @CurrentlySelectedQuote.street @CurrentlySelectedQuote.city, @CurrentlySelectedQuote.state @CurrentlySelectedQuote.zip
                         </a>
                     </div>
-                    <div class="col-md-4 quote-total">
-                        @{
-                            if(CurrentlySelectedQuote.Trade == "Aggregate")
-                            {
-                                <div class="@currentQuoteColorCssClass header-total-element">Default Quote: @defaultQuoteValue.ToString("C0")</div>
-                                <div class="@currentQuoteColorCssClass header-total-element header-total-element-modifier">Avg Bid: @averageQuoteValue.ToString("C0")</div>
-                            }
-                            else
-                            {
-                                <div class="@currentQuoteColorCssClass header-total-element">Current Bid: </div>
-                                <div class="@currentQuoteColorCssClass header-total-element">
-                                    <DxTextBox Text="@CurrentlySelectedQuote.totalQuote.ToString("C0")" TextChanged="@((newValue) => OnTotalQuoteValueChanged(newValue))" CssClass="total-quote-value" />
-                                </div>
-                            }
-                        }
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label>Email</label>
                         <a href="mailto:@CurrentlySelectedQuote.email">
                             <span>@CurrentlySelectedQuote.email</span>
                         </a>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label>Ph</label>
                         <span>@CurrentlySelectedQuote.phone</span>
                     </div>
-                    <div class="col-md-4"></div>
+                </div>
+
+
+                <div class="row">
+
+                    <div class="col-md-3">
+                        <span class="header-total-element"><label>Default</label><b>@defaultQuoteValue.ToString("C0")</b></span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="header-total-element"><label>Expires</label>@CurrentlySelectedQuote.BiddingExpires</div>
+                    </div>
+
+                    <div class="col-md-3">
+                        @{
+                            if (CurrentlySelectedQuote.Trade != "Aggregate")
+                            {
+                                <label class="header-total-element">Bid</label>
+                                <DxTextBox InputCssClass="header-total-element" Text="@CurrentlySelectedQuote.totalQuote.ToString("C0")" TextChanged="@((newValue) => OnTotalQuoteValueChanged(newValue))" CssClass="total-quote-value" />
+                            }
+                        }
+                    </div>
+
+                    <div class="col-md-3"></div>
+
                 </div>
 
                 <div class="section-header">
@@ -200,7 +206,27 @@ else
                                 else
                                 {
                                     <div class="col-md-12">
-                                        <h6>@RelatedQuoteSummaryList.Count() Bidders</h6>
+                                        <h5>Bidder</h5>
+                                        <span class="">
+                                            <label>Name</label>
+                                                <span class="detail-item">@CurrentlySelectedQuote.Bidder.FirstName</span><span class="detail-item">@CurrentlySelectedQuote.Bidder.LastName</span>
+                                        </span>
+                                        <span class="">
+                                            <label>Ph</label>
+                                                <span class="detail-item">@CurrentlySelectedQuote.Bidder.Phone</span>
+                                        </span>
+                                        <span class="">
+                                            <label>Email</label>
+                                                <a href="mailto:@CurrentlySelectedQuote.Bidder.Email" target="_blank">
+                                                    <span class="detail-item">@CurrentlySelectedQuote.Bidder.Email</span>
+                                                </a>
+                                        </span>
+                                        <span class="">
+                                            <label>Market</label>
+                                            <a href="https://www.google.com/maps/search/@CurrentlySelectedQuote.Bidder.City, @CurrentlySelectedQuote.Bidder.State @CurrentlySelectedQuote.Bidder.Zip" target="_blank">
+                                                @CurrentlySelectedQuote.Bidder.City, @CurrentlySelectedQuote.Bidder.State
+                                            </a>
+                                        </span>
                                     </div>
                                 }
                             }
@@ -2810,12 +2836,12 @@ else
                     {
                         switch(relationship.Type)
                         {
-                            case "Child":
-                                currentQuoteContainerType = "Parent";
-                                CreateSiblings();
-                                break;
                             case "Parent":
                                 currentQuoteContainerType = "Child";
+                                CreateSiblings();
+                                break;
+                            case "Child":
+                                currentQuoteContainerType = "Parent";
                                 break;
                         }
                     }
@@ -2871,7 +2897,7 @@ else
 
     public void CreateSiblings()
     {
-
+        var tmpVal = "";
     }
 
     public void LocalizeRelatedQuotes(List<QuoteSummary> RelatedQuoteSummaryList)
