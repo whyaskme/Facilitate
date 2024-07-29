@@ -567,7 +567,7 @@ else
                                 <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
                                 <DxGridDataColumn Visible="@ShowCreatedColumn" Width="160" Caption="Date" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
                                 <DxGridDataColumn Visible="@ShowTradeColumn" Width="85" Caption="Trade" FieldName="Trade" />
-                                <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="relationship" />
+                                <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="Relationship" />
                                 <DxGridDataColumn Visible="true" Width="auto" Caption="Details" FieldName="Details" />
                                 <DxGridDataColumn Visible="true" Width="125" Caption="Author" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Author.FirstName + ' ' + Author.LastName" />
                             </Columns>
@@ -2715,6 +2715,7 @@ else
                     // Process Related events
                     foreach (Event _event in CurrentlySelectedQuote.events)
                     {
+                        _event.Relationship = "Parent";
                         _event.Trade = CurrentlySelectedQuote.Trade;
                         EventList.Add(_event);
                     }
@@ -2728,10 +2729,16 @@ else
                         {
                             var childQuote = WebServices.GetQuote(relationship._id)[0];
 
-                            childEvents.AddRange(childQuote.events);
+                            foreach (Event _event in childQuote.events)
+                            {
+                                _event.Relationship = "Child";
+                                _event.Trade = childQuote.Trade;
+                                EventList.Add(_event);
+                            }
                         }
-                        EventList.AddRange(childEvents);
                     }
+
+                    var tmpHuh = "";
 
                     // Process local Aggregate or standalone notes
                     foreach (Note note in CurrentlySelectedQuote.notes)
@@ -2806,11 +2813,6 @@ else
                     var currentQuoteId = CurrentlySelectedQuote._id;
                     foreach (QuoteSummary _summary in RelatedQuoteSummaryList)
                     {
-                        summaryIndex++;
-
-                        // Set the row number for grid column display
-                        _summary.rowIndex = summaryIndex;
-
                         if (_summary._id == CurrentlySelectedQuote._id)
                         {
                             // Remove current Item. Don't want this to link back to itself.
@@ -2818,8 +2820,9 @@ else
                             break;
                         }
 
-                        // Notate relationship type
-
+                        // Set the row number for grid column display
+                        summaryIndex++;
+                        _summary.rowIndex = summaryIndex;
                     }
 
                     LocalizeAttachments(AttachmentList);

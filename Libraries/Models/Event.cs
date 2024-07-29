@@ -19,6 +19,7 @@ namespace Facilitate.Libraries.Models
 
             Trade = string.Empty;
             Name = string.Empty;
+            Relationship = string.Empty;
             TypeId = 0;
             DateTime = DateTime.UtcNow;
             Details = "None";
@@ -29,6 +30,7 @@ namespace Facilitate.Libraries.Models
         public string _t { get; set; }
         public string Trade { get; set; }
         public string Name { get; set; }
+        public string Relationship { get; set; }
         public int TypeId { get; set; }
         public DateTime DateTime { get; set; }
         public string Details { get; set; }
