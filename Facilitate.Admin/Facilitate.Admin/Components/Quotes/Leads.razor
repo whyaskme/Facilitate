@@ -257,6 +257,8 @@ else
 
 @code {
 
+    List<ListItem> columnWidths = new List<ListItem>();
+
     public int currentQuoteIndex = 0;
 
     public string currentActionButtonClass = "action-button-standalone";
@@ -303,6 +305,29 @@ else
     public bool ShowBidExpiresColumn { get; set; }
     public bool ShowBidTypeColumn { get; set; }
     public bool ShowActionsColumn { get; set; }
+    public bool ShowRelationshipColumn { get; set; }
+
+    public int RowIndexColumnWidth = 0;
+    public int RecordIdColumnWidth = 0;
+    public int StatusColumnWidth = 0;
+    public int TradeColumnWidth = 0;
+    public int CategoryColumnWidth = 0;
+    public int CreatedColumnWidth = 0;
+    public int UpdatedColumnWidth = 0;
+    public int FirstNameColumnWidth = 0;
+    public int LastNameColumnWidth = 0;
+    public int EmailColumnWidth = 0;
+    public int StreetColumnWidth = 0;
+    public int CityColumnWidth = 0;
+    public int StateColumnWidth = 0;
+    public int ZipColumnWidth = 0;
+    public int SqFtColumnWidth = 0;
+    public int BidColumnWidth = 0;
+    public int BidderColumnWidth = 0;
+    public int BidExpiresColumnWidth = 0;
+    public int BidTypeColumnWidth = 0;
+    public int ActionsColumnWidth = 0;
+    public int RelationshipColumnWidth = 0;
 
     public string LeadTypeFilterLabel { get; set; } = "Types (Complete Info)";
 
@@ -465,6 +490,79 @@ else
         ShowBidTypeColumn = true;
         ShowActionsColumn = true;
         ShowSqFtColumn = false;
+        ShowRelationshipColumn = true;
+
+        columnWidths = WebServices.GetColumnWidths();
+
+        foreach (ListItem listItem in columnWidths)
+        {
+            switch (listItem.Value)
+            {
+                case "Row":
+                    RowIndexColumnWidth = Convert.ToInt32(listItem.Text);
+                    break;
+                case "Record Id":
+                    RecordIdColumnWidth = Convert.ToInt32(listItem.Text);
+                    break;
+                case "Status":
+                    StatusColumnWidth = Convert.ToInt32(listItem.Text);
+                    break;
+                case "Trade":
+                    TradeColumnWidth = Convert.ToInt32(listItem.Text);
+                    break;
+                case "Category":
+                    CategoryColumnWidth = Convert.ToInt32(listItem.Text);
+                    break;
+                case "Created":
+                    CreatedColumnWidth = Convert.ToInt32(listItem.Text);
+                    break;
+                case "Updated":
+                    UpdatedColumnWidth = Convert.ToInt32(listItem.Text);
+                    break;
+                case "First":
+                    FirstNameColumnWidth = Convert.ToInt32(listItem.Text);
+                    break;
+                case "Last":
+                    LastNameColumnWidth = Convert.ToInt32(listItem.Text);
+                    break;
+                case "Email":
+                    EmailColumnWidth = Convert.ToInt32(listItem.Text);
+                    break;
+                case "Street":
+                    StreetColumnWidth = Convert.ToInt32(listItem.Text);
+                    break;
+                case "City":
+                    CityColumnWidth = Convert.ToInt32(listItem.Text);
+                    break;
+                case "State":
+                    StateColumnWidth = Convert.ToInt32(listItem.Text);
+                    break;
+                case "Zip":
+                    ZipColumnWidth = Convert.ToInt32(listItem.Text);
+                    break;
+                case "SqFt":
+                    SqFtColumnWidth = Convert.ToInt32(listItem.Text);
+                    break;
+                case "Bid":
+                    BidColumnWidth = Convert.ToInt32(listItem.Text);
+                    break;
+                case "Bidder":
+                    BidderColumnWidth = Convert.ToInt32(listItem.Text);
+                    break;
+                case "Bid Expires":
+                    BidExpiresColumnWidth = Convert.ToInt32(listItem.Text);
+                    break;
+                case "Bid Type":
+                    BidTypeColumnWidth = Convert.ToInt32(listItem.Text);
+                    break;
+                case "Actions":
+                    ActionsColumnWidth = Convert.ToInt32(listItem.Text);
+                    break;
+                case "Relationship":
+                    RelationshipColumnWidth = Convert.ToInt32(listItem.Text);
+                    break;
+            }
+        }
     }
 
     public int currentItemIndex = 0;

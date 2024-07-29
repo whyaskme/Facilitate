@@ -52,6 +52,118 @@ namespace Facilitate.Admin.Data
             _apiClient.BaseAddress = new Uri("https://api.facilitate.org/api");
         }
 
+        public List<ListItem> GetColumnWidths()
+        {
+            List<ListItem> columnWidths = new List<ListItem>();
+
+            ListItem columItem = new ListItem();
+            columItem.Text = "RowIndexColumnWidth";
+            columItem.Value = "35";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "RecordIdColumnWidth";
+            columItem.Value = "215";
+            columnWidths.Add(columItem);
+            
+            columItem = new ListItem();
+            columItem.Text = "StatusColumnWidth";
+            columItem.Value = "85";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "TradeColumnWidth";
+            columItem.Value = "85";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "CategoryColumnWidth";
+            columItem.Value = "85";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "CreatedColumnWidth";
+            columItem.Value = "160";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "UpdatedColumnWidth";
+            columItem.Value = "160";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "FirstNameColumnWidth";
+            columItem.Value = "85";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "LastNameColumnWidth";
+            columItem.Value = "100";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "EmailColumnWidth";
+            columItem.Value = "150";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "StreetColumnWidth";
+            columItem.Value = "auto";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "CityColumnWidth";
+            columItem.Value = "125";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "StateColumnWidth";
+            columItem.Value = "50";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "ZipColumnWidth";
+            columItem.Value = "65";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "SqFtColumnWidth";
+            columItem.Value = "65";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "BidColumnWidth";
+            columItem.Value = "85";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "BidderColumnWidth";
+            columItem.Value = "125";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "BidExpiresColumnWidth";
+            columItem.Value = "85";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "BidTypeColumnWidth";
+            columItem.Value = "85";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "ActionsColumnWidth";
+            columItem.Value = "100";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "RelationshipColumnWidth";
+            columItem.Value = "85";
+            columnWidths.Add(columItem);
+
+            return columnWidths;
+    }
+
         public List<Quote> quoteList = new List<Quote>();
 
         public List<QuoteHeader> GetSummaries(string status, bool showHideTestData)
