@@ -204,26 +204,28 @@ else
             PageSizeSelectorAllRowsItemVisible="false"
             KeyboardNavigationEnabled="true">
         <Columns>
-            <DxGridDataColumn Visible="@ShowRowIndexColumn" Width="35" Caption="Row" FieldName="rowIndex" />
-            <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="215" Caption="Record Id" FieldName="_id" />
-            <DxGridDataColumn Visible="@ShowStatusColumn" Width="85" Caption="Status" FieldName="status" />
-            <DxGridDataColumn Visible="@ShowTradeColumn" Width="85" Caption="Trade" FieldName="Trade" />
-            <DxGridDataColumn Visible="@ShowCategoryColumn" Width="85" Caption="Category" FieldName="TradeCategory" />
-            <DxGridDataColumn Visible="@ShowCreatedColumn" Width="160" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
-            <DxGridDataColumn Visible="@ShowCreatedColumn" Width="160" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-            <DxGridDataColumn Visible="@ShowFirstNameColumn" Width="85" Caption="First" FieldName="firstName" />
-            <DxGridDataColumn Visible="@ShowLastNameColumn" Width="100" Caption="Last" FieldName="lastName" />
-            <DxGridDataColumn Visible="@ShowEmailColumn" Width="150" Caption="Email" FieldName="email" />
-            <DxGridDataColumn Visible="@ShowStreetColumn" Width="auto" Caption="Street" FieldName="street" />
-            <DxGridDataColumn Visible="@ShowCityColumn" Width="125" Caption="City" FieldName="city" />
-            <DxGridDataColumn Visible="@ShowStateColumn" Width="50" Caption="State" FieldName="state" />
-            <DxGridDataColumn Visible="@ShowZipColumn" Width="65" Caption="Zip" FieldName="zip" />
-            <DxGridDataColumn Visible="@ShowSqFtColumn" Width="65" Caption="SqFt" FieldName="totalSquareFeet" />
-            <DxGridDataColumn Visible="@ShowBidColumn" Width="85" Caption="Bid" DisplayFormat="C0" FieldName="totalQuote" />
-            <DxGridDataColumn Visible="@ShowBidderColumn" Width="125" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Bidder.FirstName + ' ' + Bidder.LastName" />
-            <DxGridDataColumn Visible="@ShowBidExpiresColumn" Width="85" Caption="Bid Expires" FieldName="BiddingExpires" />
-            <DxGridDataColumn Visible="@ShowBidTypeColumn" Width="85" Caption="Bid Type" FieldName="BidderType" />
-            <DxGridCommandColumn Visible="@ShowActionsColumn" Width="100px" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
+            <DxGridDataColumn Visible="@ShowRowIndexColumn" Width="@RowIndexColumnWidth" Caption="Row" FieldName="rowIndex" />
+            <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="@RecordIdColumnWidth" Caption="Record Id" FieldName="_id" />
+            <DxGridDataColumn Visible="@ShowStatusColumn" Width="@StatusColumnWidth" Caption="Status" FieldName="status" />
+            <DxGridDataColumn Visible="@ShowTradeColumn" Width="@TradeColumnWidth" Caption="Trade" FieldName="Trade" />
+            <DxGridDataColumn Visible="@ShowCategoryColumn" Width="@CategoryColumnWidth" Caption="Category" FieldName="TradeCategory" />
+            <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="" />
+            <DxGridDataColumn Visible="@ShowCreatedColumn" Width="@CreatedColumnWidth" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+            <DxGridDataColumn Visible="@ShowCreatedColumn" Width="@UpdatedColumnWidth" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+            <DxGridDataColumn Visible="@ShowFirstNameColumn" Width="@FirstNameColumnWidth" Caption="First" FieldName="firstName" />
+            <DxGridDataColumn Visible="@ShowLastNameColumn" Width="@LastNameColumnWidth" Caption="Last" FieldName="lastName" />
+            <DxGridDataColumn Visible="@ShowEmailColumn" Width="@EmailColumnWidth" Caption="Email" FieldName="email" />
+            <DxGridDataColumn Visible="@ShowStreetColumn" Width="@StreetColumnWidth" Caption="Street" FieldName="street" />
+            <DxGridDataColumn Visible="@ShowCityColumn" Width="@CityColumnWidth" Caption="City" FieldName="city" />
+            <DxGridDataColumn Visible="@ShowStateColumn" Width="@StateColumnWidth" Caption="State" FieldName="state" />
+            <DxGridDataColumn Visible="@ShowZipColumn" Width="@ZipColumnWidth" Caption="Zip" FieldName="zip" />
+            <DxGridDataColumn Visible="@ShowSqFtColumn" Width="@SqFtColumnWidth" Caption="SqFt" FieldName="totalSquareFeet" />
+            <DxGridDataColumn Visible="@ShowBidColumn" Width="@BidColumnWidth" Caption="Bid" DisplayFormat="C0" FieldName="totalQuote" />
+            <DxGridDataColumn Visible="@ShowBidderColumn" Width="@BidderColumnWidth" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Bidder.FirstName + ' ' + Bidder.LastName" />
+            <DxGridDataColumn Visible="@ShowBidExpiresColumn" Width="@BidExpiresColumnWidth" Caption="Bid Expires" FieldName="BiddingExpires" />
+            <DxGridDataColumn Visible="@ShowBidTypeColumn" Width="@BidTypeColumnWidth" Caption="Bid Type" FieldName="BidderType" />
+            <DxGridDataColumn Visible="false" Width="100" Caption="Qualified?" FieldName="isQualified" />
+            <DxGridCommandColumn Visible="@ShowActionsColumn" Width="@ActionsColumnWidth" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
         </Columns>
     </DxGrid>
 }
@@ -264,27 +266,27 @@ else
     public bool ShowActionsColumn { get; set; }
     public bool ShowRelationshipColumn { get; set; }
 
-    public int RowIndexColumnWidth = 0;
-    public int RecordIdColumnWidth = 0;
-    public int StatusColumnWidth = 0;
-    public int TradeColumnWidth = 0;
-    public int CategoryColumnWidth = 0;
-    public int CreatedColumnWidth = 0;
-    public int UpdatedColumnWidth = 0;
-    public int FirstNameColumnWidth = 0;
-    public int LastNameColumnWidth = 0;
-    public int EmailColumnWidth = 0;
+    public string RowIndexColumnWidth = "auto";
+    public string RecordIdColumnWidth = "auto";
+    public string StatusColumnWidth = "auto";
+    public string TradeColumnWidth = "auto";
+    public string CategoryColumnWidth = "auto";
+    public string CreatedColumnWidth = "auto";
+    public string UpdatedColumnWidth = "auto";
+    public string FirstNameColumnWidth = "auto";
+    public string LastNameColumnWidth = "auto";
+    public string EmailColumnWidth = "auto";
     public string StreetColumnWidth = "auto";
-    public int CityColumnWidth = 0;
-    public int StateColumnWidth = 0;
-    public int ZipColumnWidth = 0;
-    public int SqFtColumnWidth = 0;
-    public int BidColumnWidth = 0;
-    public int BidderColumnWidth = 0;
-    public int BidExpiresColumnWidth = 0;
-    public int BidTypeColumnWidth = 0;
-    public int ActionsColumnWidth = 0;
-    public int RelationshipColumnWidth = 0;
+    public string CityColumnWidth = "auto";
+    public string StateColumnWidth = "auto";
+    public string ZipColumnWidth = "auto";
+    public string SqFtColumnWidth = "auto";
+    public string BidColumnWidth = "auto";
+    public string BidderColumnWidth = "auto";
+    public string BidExpiresColumnWidth = "auto";
+    public string BidTypeColumnWidth = "auto";
+    public string ActionsColumnWidth = "auto";
+    public string RelationshipColumnWidth = "auto";
 
     public string LeadTypeFilterLabel { get; set; } = "Types (Complete Info)";
 
@@ -442,6 +444,76 @@ else
         ShowRelationshipColumn = true;
 
         columnWidths = WebServices.GetColumnWidths();
+
+        foreach (ListItem listItem in columnWidths)
+        {
+            switch (listItem.Text)
+            {
+                case "Row":
+                    RowIndexColumnWidth = listItem.Value;
+                    break;
+                case "Record Id":
+                    RecordIdColumnWidth = listItem.Value;
+                    break;
+                case "Status":
+                    StatusColumnWidth = listItem.Value;
+                    break;
+                case "Trade":
+                    TradeColumnWidth = listItem.Value;
+                    break;
+                case "Category":
+                    CategoryColumnWidth = listItem.Value;
+                    break;
+                case "Created":
+                    CreatedColumnWidth = listItem.Value;
+                    break;
+                case "Updated":
+                    UpdatedColumnWidth = listItem.Value;
+                    break;
+                case "FirstName":
+                    FirstNameColumnWidth = listItem.Value;
+                    break;
+                case "LastName":
+                    LastNameColumnWidth = listItem.Value;
+                    break;
+                case "Email":
+                    EmailColumnWidth = listItem.Value;
+                    break;
+                case "Street":
+                    StreetColumnWidth = listItem.Value;
+                    break;
+                case "City":
+                    CityColumnWidth = listItem.Value;
+                    break;
+                case "State":
+                    StateColumnWidth = listItem.Value;
+                    break;
+                case "Zip":
+                    ZipColumnWidth = listItem.Value;
+                    break;
+                case "SqFt":
+                    SqFtColumnWidth = listItem.Value;
+                    break;
+                case "Bid":
+                    BidColumnWidth = listItem.Value;
+                    break;
+                case "Bidder":
+                    BidderColumnWidth = listItem.Value;
+                    break;
+                case "Bid Expires":
+                    BidExpiresColumnWidth = listItem.Value;
+                    break;
+                case "Bid Type":
+                    BidTypeColumnWidth = listItem.Value;
+                    break;
+                case "Actions":
+                    ActionsColumnWidth = listItem.Value;
+                    break;
+                case "Relationship":
+                    RelationshipColumnWidth = listItem.Value;
+                    break;
+            }
+        }
     }
 
     IEnumerable<string> Values { get; set; }

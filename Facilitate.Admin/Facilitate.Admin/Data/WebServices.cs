@@ -158,7 +158,7 @@ namespace Facilitate.Admin.Data
 
             columItem = new ListItem();
             columItem.Text = "Relationship";
-            columItem.Value = "85";
+            columItem.Value = "100";
             columnWidths.Add(columItem);
 
             return columnWidths;
