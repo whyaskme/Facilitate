@@ -1505,7 +1505,7 @@ else
 
     private readonly IClaimsProvider _claimsProvider;
 
-    public string currentQuoteContainerType = "Standalone";
+    public string currentQuoteContainerType = "Child";
     public string currentQuoteColorCssClass = "quote-color-standalone";
     public string currentQuoteHeaderTypeCssClass = "quote-header-standalone";
     public string currentQuoteContainerTypeCssClass = "quote-title-standalone";
@@ -2806,14 +2806,13 @@ else
                     CurrentlySelectedQuote.timestamp = CurrentlySelectedQuote.timestamp.ToLocalTime();
                     CurrentlySelectedQuote.lastUpdated = CurrentlySelectedQuote.lastUpdated.ToLocalTime();
 
-                    if(CurrentlySelectedQuote.relationships.Count > 1)
+                    foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
                     {
-                        currentQuoteContainerType = "Parent";
-                    }
-                    else{
-                        currentQuoteContainerType = "Child";
-
-                        CreateSiblings();
+                        if(relationship.Type == "Child")
+                        {
+                            currentQuoteContainerType = "Parent";
+                            CreateSiblings();
+                        }
                     }
 
                     var summaryIndex = 0;
