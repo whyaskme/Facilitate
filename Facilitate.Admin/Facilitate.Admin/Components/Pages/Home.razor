@@ -36,7 +36,7 @@
 <AuthorizeView>
     <Authorized>
         @{
-            navMan.NavigateTo("/Quotes/Leads");
+            navMan.NavigateTo("/Quotes/Opportunities");
         }
     </Authorized>
     <NotAuthorized>
@@ -45,55 +45,6 @@
         }
     </NotAuthorized>
 </AuthorizeView>
-
-@* <AuthorizeView>
-    <Authorized>
-        <div class="quotes-leaderboard">
-            <span class="summary-item">
-                <span class="stat-count"><b>@LeaderboardStats.TotalQuoteCount.ToString("N0") Quotes</b></span>
-                <span class="stat-count">@LeaderboardStats.TotalQuoteValue.ToString("C0")</span>
-                <span class="stat-count"><span class="value-sqft-separator">&raquo;</span>@LeaderboardStats.TotalQuoteSqFt.ToString("N0")sqft</span>
-            </span>
-            <span class="summary-item">
-                <a href="/quotes/leads">Leads</a>
-                <span class="stat-count"><b>@LeaderboardStats.LeadCount.ToString("N0")</b></span>
-                <span class="stat-count">@LeaderboardStats.LeadValue.ToString("C0")</span>
-            </span>
-            <span class="summary-item">
-                <a href="/quotes/opportunities">Opportunities</a>
-                <span class="stat-count"><b>@LeaderboardStats.OpportunityCount.ToString("N0")</b></span>
-                <span class="stat-count">@LeaderboardStats.OpportunityValue.ToString("C0")</span>
-            </span>
-            <span class="summary-item">
-                <a href="/quotes/customers">Customers</a>
-                <span class="stat-count"><b>@LeaderboardStats.CustomerCount.ToString("N0")</b></span>
-                <span class="stat-count">@LeaderboardStats.CustomerValue.ToString("C0")</span>
-            </span>
-            <span class="summary-item">
-                <a href="/quotes/completed">Completions</a>
-                <span class="stat-count"><b>@LeaderboardStats.CompletionCount.ToString("N0")</b></span>
-                <span class="stat-count">@LeaderboardStats.CompletionValue.ToString("C0")</span>
-            </span>
-            <span class="summary-item">
-                <a href="/quotes/archives">Archives</a>
-                <span class="stat-count"><b>@LeaderboardStats.ArchiveCount.ToString("N0")</b></span>
-                <span class="stat-count">@LeaderboardStats.ArchiveValue.ToString("C0")</span>
-            </span>
-            <span class="summary-item">
-                <a href="/quotes/warranties">Warranties</a>
-                <span class="stat-count"><b>@LeaderboardStats.WarrantyCount.ToString("N0")</b></span>
-                <span class="stat-count">@LeaderboardStats.WarrantyValue.ToString("C0")</span>
-            </span>
-        </div>
-    </Authorized>
-    <NotAuthorized>
-        <div class="row">
-            <div class="col-md-4 system-warning">
-                You must be logged in to access this system
-            </div>
-        </div>
-    </NotAuthorized>
-</AuthorizeView> *@
 
 @code {
 

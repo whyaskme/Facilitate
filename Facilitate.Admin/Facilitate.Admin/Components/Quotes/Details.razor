@@ -2703,24 +2703,6 @@ else
                     // Get child quote summaries
                     RelatedQuoteSummaryList = webServices.GetRelatedQuoteSummaries(CurrentlySelectedQuote);
 
-                    if (RelatedQuoteSummaryList.Count > 0)
-                    {
-                        // foreach(QuoteSummary _summary in RelatedQuoteSummaryList)
-                        // {
-                        //     if(_summary.BidderType == "Default")
-                        //     {
-                        //         defaultQuoteValue = _summary.totalQuote;
-                        //     }
-
-                        //     if(_summary.totalQuote > 0)
-                        //     {
-                        //         averageQuoteValue += _summary.totalQuote;
-                        //     }
-                        // }
-
-                        // averageQuoteValue = (averageQuoteValue / RelatedQuoteSummaryList.Count);
-                    }
-
                     // Process attachments
                     foreach (Attachment attachment in CurrentlySelectedQuote.attachments)
                     {

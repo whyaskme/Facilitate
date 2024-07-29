@@ -64,17 +64,6 @@ else
             <span class="stat-divider">|</span>
             <span class="stat-value">@LeaderboardStats.TotalQuoteValue.ToString("C0")</span>
         </div>
-
-@*         <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
-            <Authorized>
-                <div class="col-md-1 stat-element">
-                <a href="/quotes/leads">Leads</a>
-                <span class="stat-value"><b>@LeaderboardStats.LeadCount.ToString("N0")</b></span>
-            </div>
-            </Authorized>
-            <NotAuthorized></NotAuthorized>
-        </AuthorizeView> *@
-        
         <div class="col-md-1 stat-element">
             <a href="/quotes/opportunities">Opportunities</a>
             <span class="stat-value"><b>@LeaderboardStats.OpportunityCount.ToString("N0")</b></span>
@@ -777,18 +766,18 @@ else
                 switch (SelectedTradeType)
                 {
                     case "All":
-                        QuoteHeaders = webServices.GetSummaries("New", ShowTestData);
-                        LeaderboardStats = WebServices.GetLeaderboardStats("New", ShowTestData);
+                        QuoteHeaders = webServices.GetSummaries("Opportunity", ShowTestData);
+                        LeaderboardStats = WebServices.GetLeaderboardStats("Opportunity", ShowTestData);
                         break;
                     case "Aggregate":
-                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "New", ShowTestData);
-                        LeaderboardStats = WebServices.GetLeaderboardStats("New", ShowTestData);
+                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "Opportunity", ShowTestData);
+                        LeaderboardStats = WebServices.GetLeaderboardStats("Opportunity", ShowTestData);
                         ShowBidColumn = false;
                         ShowRelationshipColumn = false;
                         break;
                     default:
-                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "New", ShowTestData);
-                        LeaderboardStats = WebServices.GetLeaderboardStats(SelectedTradeType, "New", ShowTestData);
+                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, "Opportunity", ShowTestData);
+                        LeaderboardStats = WebServices.GetLeaderboardStats(SelectedTradeType, "Opportunity", ShowTestData);
                         ShowCategoryColumn = false;
                         break;
                 }

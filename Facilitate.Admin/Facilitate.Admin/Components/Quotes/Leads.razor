@@ -72,15 +72,6 @@ else
             <span class="stat-divider">|</span>
             <span class="stat-value">@LeaderboardStats.TotalQuoteValue.ToString("C0")</span>
         </div>
-@*         <div class="col-md-1 stat-element">
-            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
-                <Authorized>
-                    <a href="/quotes/leads">Leads</a>
-                    <span class="stat-value"><b>@LeaderboardStats.LeadCount.ToString("N0")</b></span>
-                </Authorized>
-                <NotAuthorized></NotAuthorized>
-            </AuthorizeView>
-        </div> *@
         <div class="col-md-1 stat-element">
             <a href="/quotes/opportunities">Opportunities</a>
             <span class="stat-value"><b>@LeaderboardStats.OpportunityCount.ToString("N0")</b></span>
