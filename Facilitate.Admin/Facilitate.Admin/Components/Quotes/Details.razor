@@ -2864,10 +2864,21 @@ else
                                 ValueHiliteCss = "quote-color-value-parent";
                                 ShowRelationshipColumn = false;
 
-                                // Set default quote value
-                                // var relatedQuote = WebServices.GetQuote(relationship.ParentId)[0];
+                                // Get the parent quote for it's value
+                                var relatedQuote = WebServices.GetQuote(relationship.ParentId)[0];
+                                foreach (Relationship childRelationship in relatedQuote.relationships)
+                                {
+                                    if (childRelationship.Type == "Child")
+                                    {
+                                        var childQuote = WebServices.GetQuote(childRelationship._id)[0];
 
-                                // defaultQuoteValue = relatedQuote.totalQuote;
+                                        if (childQuote.BidderType == "Default")
+                                        {
+                                            // Set default quote value
+                                            defaultQuoteValue = childQuote.totalQuote;
+                                        }
+                                    }
+                                }
                                 break;
                         }
                     }
