@@ -134,7 +134,14 @@ else
                     productsCountLabel = productsCount.ToString() + " Products Quoted";
 
 
-                <div class="@currentQuoteContainerTypeCssClass  @currentQuoteColorCssClass">@currentQuoteContainerType (@CurrentlySelectedQuote.Trade)</div>
+                if(CurrentlySelectedQuote.status == "Archive")
+                {
+                    <div class="@currentQuoteContainerTypeCssClass  @currentQuoteColorCssClass">Archived @CurrentlySelectedQuote.Trade @currentQuoteContainerType</div>
+                }
+                else
+                {
+                    <div class="@currentQuoteContainerTypeCssClass  @currentQuoteColorCssClass">@CurrentlySelectedQuote.Trade @currentQuoteContainerType</div>
+                }
 
                 <div class="row">
                     <div class="col-md-3">
@@ -849,7 +856,7 @@ else
                             break;
                         case "Opportunity":
                             <button class="@currentActionButtonClass" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
-                            <button class="@currentActionButtonClass" @onclick="@(() => IsPopupVisibleMakeCustomer = true)">Make Customer</button>
+                            // <button class="@currentActionButtonClass" @onclick="@(() => IsPopupVisibleMakeCustomer = true)">Make Customer</button>
                             break;
                         case "Customer":
                             <button class="@currentActionButtonClass" @onclick="@(() => IsPopupVisibleCompleteCustomer = true)">Complete Customer</button>
@@ -1118,6 +1125,11 @@ else
         CurrentlySelectedQuote.events.Add(_event);
 
         WebServices.UpdateQuote(CurrentlySelectedQuote);
+
+        restoreButtonClass = "restore-button-hidden";
+        IsRestoreButtonVisble = false;
+
+        TimerRefresh();
     }
 
     void OnTotalQuoteValueChanged(string newValue)
@@ -2722,9 +2734,6 @@ else
 
         bool hasParent = false;
 
-        IsRestoreButtonVisble = false;
-        IsAcceptBidVisble = false;
-
         DateTime lastQuoteEventTimestamp = DateTime.MinValue;
         string lastQuoteEventDetails = "";
 
@@ -2949,6 +2958,8 @@ else
                     {
                         restoreButtonClass = "restore-button-visible";
                         //acceptBidClass = false;
+
+                        currentQuoteContainerType = "Standalone";
                     }
 
                     LocalizeAttachments(AttachmentList);
