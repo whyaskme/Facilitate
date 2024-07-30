@@ -163,7 +163,7 @@ else
                 <div class="row">
 
                     <div class="col-md-3">
-                        <span class="header-total-element"><label>Default</label><b>@defaultQuoteValue.ToString("C0")</b></span>
+                        <span class="header-total-element"><label>Quoted</label><span class="@ValueHiliteCss">@defaultQuoteValue.ToString("C0")</span></span>
                     </div>
 
                     <div class="col-md-3">
@@ -1056,6 +1056,8 @@ else
 @code 
 {
     public int currentQuoteIndex = 0;
+
+    public string ValueHiliteCss = "quote-color-value-standalone";
 
     public class DataGridViewRowPostPaintEventArgs : EventArgs;
 
@@ -2791,11 +2793,6 @@ else
 
                     foreach (QuoteSummary quoteSummary in RelatedQuoteSummaryList)
                     {
-                        if (quoteSummary.BidderType == "Default")
-                        {
-                            defaultQuoteValue = quoteSummary.totalQuote;
-                        }
-
                         if (quoteSummary.totalQuote > 0)
                         {
                             quotesWithBidValue++;
@@ -2838,10 +2835,31 @@ else
                         {
                             case "Parent":
                                 currentQuoteContainerType = "Child";
-                                CreateSiblings();
+
+                                ValueHiliteCss = "quote-color-value-child";
+
+                                // Get the parent quote for it's value
+                                var parentQuote = WebServices.GetQuote(relationship.ParentId)[0];
+                                foreach (Relationship childRelationship in parentQuote.relationships)
+                                {
+                                    if(childRelationship.Type == "Child")
+                                    {
+                                        var childQuote = WebServices.GetQuote(childRelationship._id)[0];
+
+                                        if (childQuote.BidderType == "Default")
+                                        {
+                                            // Set default quote value
+                                            defaultQuoteValue = childQuote.totalQuote;
+                                        }
+                                    }
+                                }
+
+                                CreateSiblings(parentQuote);
                                 break;
                             case "Child":
                                 currentQuoteContainerType = "Parent";
+                                ValueHiliteCss = "quote-color-value-parent";
+                                ShowRelationshipColumn = false;
                                 break;
                         }
                     }
@@ -2895,7 +2913,7 @@ else
         }
     }
 
-    public void CreateSiblings()
+    public void CreateSiblings(Quote parentQuote)
     {
         var tmpVal = "";
     }
