@@ -593,7 +593,7 @@ else
                         </div>
 
                         <DxGrid @ref="EventGrid"
-                                id="EventGrid"
+                            id="EventGrid"
                             Data="@EventList"
                             KeyFieldName="_id"
                             PageSize="10"
@@ -610,13 +610,13 @@ else
                                 <dxg:TableView.FormatConditions>
                                     <dxg:FormatCondition ValueRule="Equal" Value="Opportunity" FieldName="status" PredefinedFormatName="LightRedFillWithDarkRedText" />
                                 </dxg:TableView.FormatConditions>
-                                <DxGridDataColumn Visible="@ShowRowIndexColumn" Width="50" Caption="Row" FieldName="" />
-                                <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
-                                <DxGridDataColumn Visible="@ShowCreatedColumn" Width="160" Caption="Date" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-                                <DxGridDataColumn Visible="@ShowTradeColumn" Width="85" Caption="Trade" FieldName="Trade" />
+                                <DxGridDataColumn Visible="@ShowRowIndexColumn" Width="@RowIndexColumnWidth" Caption="Row" FieldName="" />
+                                <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="@RecordIdColumnWidth" Caption="Record Id" FieldName="_id" />
+                                <DxGridDataColumn Visible="@ShowCreatedColumn" Width="@CreatedColumnWidth" Caption="Date" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                <DxGridDataColumn Visible="@ShowTradeColumn" Width="@TradeColumnWidth" Caption="Trade" FieldName="Trade" />
                                 <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="Relationship" />
-                                <DxGridDataColumn Visible="true" Width="auto" Caption="Details" FieldName="Details" />
-                                <DxGridDataColumn Visible="true" Width="125" Caption="Author" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Author.FirstName + ' ' + Author.LastName" />
+                                <DxGridDataColumn Visible="@ShowEventDetailsColumn" Width="@EventDetailsColumnWidth" Caption="Details" FieldName="Details" />
+                                <DxGridDataColumn Visible="@ShowEventAuthorColumn" Width="@EventAuthorColumnWidth" Caption="Author" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Author.FirstName + ' ' + Author.LastName" />
                             </Columns>
                         </DxGrid>
 
@@ -1106,31 +1106,34 @@ else
 
     public void RestoreArchiveToActiveAggregate()
     {
+        // Restore Parent
+        if (CurrentlySelectedQuote.status == "Archive")
+        {
+            CurrentlySelectedQuote.status = CurrentlySelectedQuote.statusPrevious;
+        }
+
+        // Restore Children
         foreach(Relationship relationship in CurrentlySelectedQuote.relationships)
         {
             var name = relationship.Name;
             var parentId = relationship.ParentId;
 
-            var parentQuote = WebServices.GetQuote(parentId)[0];
+            var relatedQuote = WebServices.GetQuote(parentId)[0];
+            relatedQuote.statusPrevious = "Archive";
 
-            var currentStatus = CurrentlySelectedQuote.status;
+            if (CurrentlySelectedQuote.status != "Archive")
+            {
+                relatedQuote.status = CurrentlySelectedQuote.statusPrevious;
+            }
 
-            CurrentlySelectedQuote.status = CurrentlySelectedQuote.statusPrevious; //parentQuote.status;
+            Event _event = new Event();
+            _event.Author = currentUser;
+            _event.Name = CurrentlySelectedQuote.Trade + " Child Id (" + relatedQuote._id + ") RESTORED";
+            _event.Details = _event.Name + " to Aggregate Id (" + CurrentlySelectedQuote._id + ") status (" + CurrentlySelectedQuote.statusPrevious + ")";
 
-            CurrentlySelectedQuote.statusPrevious = currentStatus;
+            relatedQuote.events.Add(_event);
+            WebServices.UpdateQuote(relatedQuote);
             break;
-        }
-
-        Event _event = new Event();
-        _event.Author = currentUser;
-        _event.Name = "Quote Restored";
-        _event.Details = "Quote restored to current Aggregate (" + CurrentlySelectedQuote.status + ") status";
-
-        CurrentlySelectedQuote.events.Add(_event);
-
-        if(CurrentlySelectedQuote.status == "Archive")
-        {
-            CurrentlySelectedQuote.status = CurrentlySelectedQuote.statusPrevious;
         }
 
         WebServices.UpdateQuote(CurrentlySelectedQuote);
@@ -1218,6 +1221,10 @@ else
     public bool ShowCreatedColumn { get; set; }
     public bool ShowUpdatedColumn { get; set; }
     public bool ShowLastEventColumn { get; set; }
+
+    public bool ShowEventDetailsColumn { get; set; }
+    public bool ShowEventAuthorColumn { get; set; }
+
     public bool ShowFirstNameColumn { get; set; }
     public bool ShowLastNameColumn { get; set; }
     public bool ShowEmailColumn { get; set; }
@@ -1256,6 +1263,10 @@ else
     public string BidTypeColumnWidth = "auto";
     public string ActionsColumnWidth = "auto";
     public string RelationshipColumnWidth = "auto";
+
+    public string EventDetailsColumnWidth = "auto";
+    public string EventAuthorColumnWidth = "auto";
+
     public string IsQualifiedColumnWidth = "auto";
 
     public string quoteIdToRemove = "";
@@ -1635,6 +1646,9 @@ else
         ShowRelationshipColumn = false;
         ShowIsQualifiedColumn = false;
 
+        ShowEventDetailsColumn = true;
+        ShowEventAuthorColumn = true;
+
         columnWidths = WebServices.GetColumnWidths();
 
         foreach (ListItem listItem in columnWidths)
@@ -1706,6 +1720,12 @@ else
                     break;
                 case "Relationship":
                     RelationshipColumnWidth = listItem.Value;
+                    break;
+                case "Author":
+                    EventAuthorColumnWidth = listItem.Value;
+                    break;
+                case "EventDetails":
+                    EventDetailsColumnWidth = listItem.Value;
                     break;
             }
         }
@@ -2150,19 +2170,12 @@ else
             {
                 foreach (Relationship relationship in currentQuote.relationships)
                 {
-                    var relatedQuoteId = relationship.ParentId;
+                    var tmpQuote = WebServices.GetQuote(relationship.ParentId)[0];
 
-                    if (relatedQuoteId != null && relatedQuoteId != "")
-                    {
-                        var tmpVal = relatedQuoteId;
+                    tmpQuote.statusPrevious = tmpQuote.status;
+                    tmpQuote.status = "Archive";
 
-                        var tmpQuote = WebServices.GetQuote(relatedQuoteId)[0];
-
-                        tmpQuote.statusPrevious = tmpQuote.status;
-                        tmpQuote.status = "Archive";
-
-                        WebServices.UpdateQuote(tmpQuote);
-                    }
+                    WebServices.UpdateQuote(tmpQuote);
                 }
             }
 

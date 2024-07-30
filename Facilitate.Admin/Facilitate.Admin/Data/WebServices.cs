@@ -167,6 +167,16 @@ namespace Facilitate.Admin.Data
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
+            columItem.Text = "Author";
+            columItem.Value = "150";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "EventDetails";
+            columItem.Value = "auto";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
             columItem.Text = "Relationship";
             columItem.Value = "100";
             columnWidths.Add(columItem);
