@@ -1292,27 +1292,27 @@ else
         NavigationManager.NavigateTo(tmpUrl);
     }
 
-    public void RemoveQuoteProject(string quoteId)
-    {
-        quoteIdToRemove = quoteId;
+    // public void RemoveQuoteProject(string quoteId)
+    // {
+    //     quoteIdToRemove = quoteId;
 
-        IsPopupVisibleDeleteTrade = true;
+    //     IsPopupVisibleDeleteTrade = true;
 
-        var quoteToRemove = WebServices.GetQuote(quoteId)[0];
+    //     var quoteToRemove = WebServices.GetQuote(quoteId)[0];
 
-        ConfirmRemoveMessage = "Are you sure you want to REMOVE this (" + quoteToRemove.Trade + ") project?";
-    }
+    //     ConfirmRemoveMessage = "Are you sure you want to REMOVE this (" + quoteToRemove.Trade + ") project?";
+    // }
 
-    public void RestoreQuoteProject(string quoteId)
-    {
-        quoteIdToRestore = quoteId;
+    // public void RestoreQuoteProject(string quoteId)
+    // {
+    //     quoteIdToRestore = quoteId;
 
-        IsPopupVisibleRestoreTrade = true;
+    //     IsPopupVisibleRestoreTrade = true;
 
-        var quoteToRestore = WebServices.GetQuote(quoteIdToRestore)[0];
+    //     var quoteToRestore = WebServices.GetQuote(quoteIdToRestore)[0];
 
-        ConfirmRestoreMessage = "Are you sure you want to RESTORE this (" + quoteToRestore.Trade + ") project?";
-    }
+    //     ConfirmRestoreMessage = "Are you sure you want to RESTORE this (" + quoteToRestore.Trade + ") project?";
+    // }
 
     public string uploadUrl = "/api/Upload/UploadFile";
 
@@ -2144,45 +2144,48 @@ else
 
     public void ArchiveQuote()
     {
+        Note note = new Note();
+
         try
         {
+            CurrentlySelectedQuote.statusPrevious = CurrentlySelectedQuote.status;
+            CurrentlySelectedQuote.status = "Archive";
+
             var currentQuoteId = CurrentlySelectedQuote._id;
-            var currentQuote = WebServices.GetQuote(currentQuoteId)[0];
+            var aggregateQuote = WebServices.GetQuote(currentQuoteId)[0];
 
             if (NoteDetails != "" || NoteDetails != null)
             {
-                Note note = new Note();
-                note.Summary = currentQuote.Trade + " (" + currentQuote._id + ") moved to Archives";
+                note.Summary = aggregateQuote.Trade + " (" + aggregateQuote._id + ") moved to Archives";
                 note.Details = NoteDetails;
                 note.Author = currentUser;
 
-                currentQuote.notes.Add(note);
+                aggregateQuote.notes.Add(note);
             }
 
             Event _event = new Event();
-            _event.Details = currentQuote.Trade + " (" + currentQuote._id + ") moved to Archives";
+            _event.Details = aggregateQuote.Trade + " (" + aggregateQuote._id + ") moved to Archives";
             _event.Author = currentUser;
-            currentQuote.events.Add(_event);
+            aggregateQuote.events.Add(_event);
 
             Quote relatedQuote = null;
 
-            if (currentQuote.Trade == "Aggregate")
+            if (aggregateQuote.Trade == "Aggregate")
             {
-                foreach (Relationship relationship in currentQuote.relationships)
+                foreach (Relationship relationship in aggregateQuote.relationships)
                 {
-                    var tmpQuote = WebServices.GetQuote(relationship.ParentId)[0];
+                    var childQuote = WebServices.GetQuote(relationship.ParentId)[0];
 
-                    tmpQuote.statusPrevious = tmpQuote.status;
-                    tmpQuote.status = "Archive";
+                    childQuote.statusPrevious = childQuote.status;
+                    childQuote.status = "Archive";
 
-                    WebServices.UpdateQuote(tmpQuote);
+                    childQuote.notes.Add(note);
+
+                    WebServices.UpdateQuote(childQuote);
                 }
             }
 
-            currentQuote.statusPrevious = currentQuote.status;
-            currentQuote.status = "Archive";
-
-            WebServices.UpdateQuote(currentQuote);
+            WebServices.UpdateQuote(aggregateQuote);
 
             IsArchivePopupVisible = false;
             NoteDetails = "";
