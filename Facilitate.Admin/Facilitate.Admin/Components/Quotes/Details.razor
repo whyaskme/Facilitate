@@ -136,13 +136,13 @@ else
 
                 if(CurrentlySelectedQuote.status == "Archive")
                 {
-                    <div class="@currentQuoteContainerTypeCssClass  @currentQuoteColorCssClass">Archived @CurrentlySelectedQuote.Trade Project</div>
+                    <div class="@currentQuoteContainerTypeCssClass  @currentQuoteColorCssClass">Archived @CurrentlySelectedQuote.Trade Bid</div>
                 }
                 else
                 {
                     <div class="@currentQuoteContainerTypeCssClass  @currentQuoteColorCssClass">@CurrentlySelectedQuote.Trade @currentQuoteContainerType</div>
                 }
-
+                
                 <div class="row">
                     <div class="col-md-3">
                         <label>Name</label>
@@ -206,6 +206,12 @@ else
                             @{
                                 if(CurrentlySelectedQuote.Trade == "Aggregate")
                                 {
+                                        <div>
+                                            <button class="@currentActionButtonClass @restoreButtonClass" @onclick="@(() => IsRestoreButtonVisble = true)">Restore Aggregate</button>
+                                            <button class="@currentActionButtonClass @acceptBidButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Accept Bid</button>
+                                        </div>
+
+                                        <div>&nbsp;</div>
                                     <div class="col-md-1">
                                         <button class="@currentActionButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Add Bidder</button>
                                     </div>
