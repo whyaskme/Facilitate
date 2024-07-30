@@ -2854,7 +2854,8 @@ else
                                     }
                                 }
 
-                                CreateSiblings(parentQuote);
+                                CreateSiblings(parentQuote._id);
+
                                 break;
                             case "Child":
                                 currentQuoteContainerType = "Parent";
@@ -2913,9 +2914,33 @@ else
         }
     }
 
-    public void CreateSiblings(Quote parentQuote)
+    public void CreateSiblings(string parentQuoteId)
     {
-        var tmpVal = "";
+        var tmpVal = RelatedQuoteSummaryList;
+
+        Quote parentQuote = WebServices.GetQuote(parentQuoteId)[0];
+
+        foreach (Relationship relationship in parentQuote.relationships)
+        {
+            if(relationship.Type == "Child")
+            {
+                var childQuote = WebServices.GetQuote(relationship._id)[0];
+
+                QuoteSummary childQuoteSummary = new QuoteSummary();
+
+                childQuoteSummary._id = childQuote._id;
+                childQuoteSummary.Trade = childQuote.Trade;
+                childQuoteSummary.totalQuote = childQuote.totalQuote;
+                childQuoteSummary.Bidder = childQuote.Bidder;
+                childQuoteSummary.BidderType = childQuote.BidderType;
+                childQuoteSummary.BiddingExpires = childQuote.BiddingExpires;
+                childQuoteSummary.status = childQuote.status;
+
+                childQuoteSummary.relationship = "Sibling";
+
+                RelatedQuoteSummaryList.Add(childQuoteSummary);
+            }
+        }
     }
 
     public void LocalizeRelatedQuotes(List<QuoteSummary> RelatedQuoteSummaryList)
