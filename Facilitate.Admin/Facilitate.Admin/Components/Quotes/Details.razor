@@ -1583,7 +1583,7 @@ else
 
         ShowRowIndexColumn = false;
         ShowRecordIdColumn = false;
-        ShowStatusColumn = true;
+        ShowStatusColumn = false;
         ShowTradeColumn = true;
         ShowCategoryColumn = false;
         ShowCreatedColumn = true;
@@ -2688,13 +2688,15 @@ else
         _timer = null;
     }
 
-    public List<QuoteSummary> tmpRelatedQuoteSummaryList = new List<QuoteSummary>();
     public List<QuoteSummary> RelatedQuoteSummaryList = new List<QuoteSummary>();
+    public List<QuoteSummary> cleanedRelatedQuoteSummaryList = new List<QuoteSummary>();
     public List<Attachment> AttachmentList = new List<Attachment>();
     public List<Event> EventList = new List<Event>();
     public List<Note> NoteList = new List<Note>();
 
     public QuoteSummary currentParentQuoteSummary = null;
+
+    public QuoteSummary parentQuoteSummary = null;
 
     public int parentCount = 0;
 
@@ -2893,8 +2895,18 @@ else
                     {
                         if (_summary._id == CurrentlySelectedQuote._id)
                         {
+                            // parentQuoteSummary = new QuoteSummary(_summary);
+                            // cleanedRelatedQuoteSummaryList.Add(parentQuoteSummary);
+
                             // Remove current Item. Don't want this to link back to itself.
-                            RelatedQuoteSummaryList.Remove(_summary);
+                            try
+                            {
+                                RelatedQuoteSummaryList.Remove(_summary);
+                            }
+                            catch (Exception ex)
+                            {
+                                var errMsg = ex.Message;                                
+                            }
                             break;
                         }
                         else
@@ -2905,9 +2917,20 @@ else
                         }
                     }
 
-                    // Sort collections
+                    // Sort collectionsparentQuoteSummary
                     LocalizeRelatedQuotes(RelatedQuoteSummaryList);
                     RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.lastEventTimeStamp).ToList();
+
+
+                    // Process cleaned collection
+                    // if(cleanedRelatedQuoteSummaryList.Count > 0)
+                    // {
+                    //     //RelatedQuoteSummaryList.Insert(0, parentQuoteSummary);
+                    //     cleanedRelatedQuoteSummaryList.AddRange(RelatedQuoteSummaryList);
+                    // }
+
+                    // RelatedQuoteSummaryList.Clear();
+                    // RelatedQuoteSummaryList.AddRange(cleanedRelatedQuoteSummaryList);
 
                     LocalizeAttachments(AttachmentList);
                     AttachmentList = AttachmentList.OrderByDescending(x => x.DateTime).ToList();

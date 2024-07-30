@@ -34,6 +34,31 @@ namespace Facilitate.Libraries.Models
             BiddingExpires = DateTime.UtcNow;
         }
 
+        public QuoteSummary(QuoteSummary quoteSummary)
+        {
+            _id = quoteSummary._id;
+            _t = quoteSummary._t;
+
+            rowIndex = 0;
+
+            isQualified = quoteSummary.isQualified;
+            Trade = quoteSummary.Trade;
+            TradeCategory = quoteSummary.TradeCategory;
+            relationship = quoteSummary.relationship;
+            status = quoteSummary.status;
+            actions = quoteSummary.actions;
+
+            totalQuote = quoteSummary.totalQuote;
+            timestamp = quoteSummary.timestamp;
+            lastEventTimeStamp = quoteSummary.lastEventTimeStamp;
+            lastEventDetails = quoteSummary.lastEventDetails;
+            events = quoteSummary.events;
+
+            Bidder = quoteSummary.Bidder;
+            BidderType = quoteSummary.BidderType;
+            BiddingExpires = quoteSummary.BiddingExpires;
+        }
+
         public string _id { get; set; }
         public string _t { get; set; }
         public int rowIndex { get; set; }
