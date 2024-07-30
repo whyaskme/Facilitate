@@ -206,17 +206,15 @@ else
                             @{
                                 if(CurrentlySelectedQuote.Trade == "Aggregate")
                                 {
-                                    <div>
-                                        <button class="@currentActionButtonClass @restoreButtonClass" @onclick="@(() => IsRestoreButtonVisble = true)">Restore Aggregate</button>
-                                        <button class="@currentActionButtonClass @acceptBidButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Accept Bid</button>
-                                    </div>
-
-                                    <div>&nbsp;</div>
                                     <div class="col-md-1">
                                        <button class="@currentActionButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Add Bidder</button>
                                     </div>
                                     <div class="col-md-11">
                                         <h6>@RelatedQuoteSummaryList.Count() Bidders</h6>
+                                    </div>
+                                    <div>
+                                        <button class="@currentActionButtonClass @restoreButtonClass" @onclick="@(() => IsRestoreButtonVisble = true)">Restore Aggregate</button>
+                                        <button class="@currentActionButtonClass @acceptBidButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Accept Bid</button>
                                     </div>
                                 }
                                 else
@@ -1968,8 +1966,6 @@ else
             parentRelationshipEvent.Name = "Child (" + childQuote.Trade + ") quote Id (" + childQuote._id + ") LINKED to Parent";
             parentRelationshipEvent.Details = parentRelationshipEvent.Name + " Aggregate Id (" + CurrentlySelectedQuote._id + ")";
             childQuote.events.Add(parentRelationshipEvent);
-
-            // Create Sibling relationships
 
             // Save new Child Quote
             webServices.CreateQuote(childQuote);
