@@ -209,10 +209,17 @@ else
                                 else
                                 {
                                     <div class="col-md-12">
+                                        <div>
+                                            <button class="@currentActionButtonClass @restoreButtonClass" @onclick="@(() => IsRestoreButtonVisble = true)">Restore Bid</button>
+                                            <button class="@currentActionButtonClass @acceptBidButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Accept Bid</button>
+                                        </div>
+
+                                        <div>&nbsp;</div>
+
                                         <h5>Bidder</h5>
                                         <span class="">
                                             <label>Name</label>
-                                                <span class="detail-item">@CurrentlySelectedQuote.Bidder.FirstName</span><span class="detail-item">@CurrentlySelectedQuote.Bidder.LastName</span>
+                                                <span class="detail-item">@CurrentlySelectedQuote.Bidder.FirstName @CurrentlySelectedQuote.Bidder.LastName</span>
                                         </span>
                                         <span class="">
                                             <label>Ph</label>
@@ -867,6 +874,13 @@ else
     </DxGrid>
 }
 
+<DxPopup @bind-Visible="@IsRestoreButtonVisble" ShowFooter="true" HeaderText="Confirm Restoration?">
+    <FooterContentTemplate>
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="RestoreArchiveToActiveAggregate" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsRestoreButtonVisble = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
 <DxPopup @bind-Visible="@IsPopupVisibleAddTrade" ShowHeader="false" ShowFooter="true" HeaderText="Select Trade(s) to add">
     <BodyContentTemplate>
         <DxListBox Data="@TradesList"
@@ -886,7 +900,7 @@ else
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup @bind-Visible="@IsPopupVisibleDeleteTrade" ShowFooter="true" HeaderText="Confirm trade project REMOVAL?">
+<DxPopup @bind-Visible="@IsPopupVisibleDeleteTrade" ShowFooter="true" HeaderText="Confirm Deletion?">
     <BodyContentTemplate>
         @ConfirmRemoveMessage
     </BodyContentTemplate>
@@ -903,16 +917,6 @@ else
     <FooterContentTemplate>
         <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="ExportEventHistory" />
         <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleExportEvents = false)" />
-    </FooterContentTemplate>
-</DxPopup>
-
-<DxPopup @bind-Visible="@IsPopupVisibleRestoreTrade" ShowFooter="true" HeaderText="Confirm trade project RESTORATION?">
-    <BodyContentTemplate>
-        @ConfirmRestoreMessage
-    </BodyContentTemplate>
-    <FooterContentTemplate>
-        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="RestoreTrade" />
-        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleRestoreTrade = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -1163,6 +1167,7 @@ else
         quoteIdToRemove = selectedQuote._id;
 
         var quoteToRemove = WebServices.GetQuote(quoteIdToRemove)[0];
+        quoteToRemove.statusPrevious = quoteToRemove.status;
         quoteToRemove.status = "Archive";
 
         Event _event = new Event();
@@ -1543,6 +1548,9 @@ else
 
     public string currentActionButtonClass = "action-button-standalone";
 
+    public string restoreButtonClass = "restore-button-hidden";
+    public string acceptBidButtonClass = "accept-bid-button-hidden";
+
     public void SetUIStyles(string quoteContainerType)
     {
         switch (quoteContainerType.ToLower())
@@ -1583,7 +1591,7 @@ else
 
         ShowRowIndexColumn = false;
         ShowRecordIdColumn = false;
-        ShowStatusColumn = false;
+        ShowStatusColumn = true;
         ShowTradeColumn = true;
         ShowCategoryColumn = false;
         ShowCreatedColumn = true;
@@ -1602,7 +1610,7 @@ else
         ShowBidTypeColumn = true;
         ShowActionsColumn = true;
         ShowSqFtColumn = false;
-        ShowRelationshipColumn = true;
+        ShowRelationshipColumn = false;
         ShowIsQualifiedColumn = false;
 
         columnWidths = WebServices.GetColumnWidths();
@@ -1774,6 +1782,9 @@ else
     bool IsPopupVisibleHelpSendFiles { get; set; }
     bool IsPopupVisibleHelpFileAttachments { get; set; }
     bool IsPopupVisibleHelpFileNotes { get; set; }
+
+    bool IsRestoreButtonVisble { get; set; }
+    bool IsAcceptBidVisble { get; set; }
 
     #endregion
 
@@ -2711,6 +2722,9 @@ else
 
         bool hasParent = false;
 
+        IsRestoreButtonVisble = false;
+        IsAcceptBidVisble = false;
+
         DateTime lastQuoteEventTimestamp = DateTime.MinValue;
         string lastQuoteEventDetails = "";
 
@@ -2867,7 +2881,6 @@ else
                             case "Child":
                                 currentQuoteContainerType = "Parent";
                                 ValueHiliteCss = "quote-color-value-parent";
-                                ShowRelationshipColumn = false;
 
                                 // Get the parent quote for it's value
                                 var relatedQuote = WebServices.GetQuote(relationship.ParentId)[0];
@@ -2931,6 +2944,12 @@ else
 
                     // RelatedQuoteSummaryList.Clear();
                     // RelatedQuoteSummaryList.AddRange(cleanedRelatedQuoteSummaryList);
+
+                    if(CurrentlySelectedQuote.status == "Archive")
+                    {
+                        restoreButtonClass = "restore-button-visible";
+                        //acceptBidClass = false;
+                    }
 
                     LocalizeAttachments(AttachmentList);
                     AttachmentList = AttachmentList.OrderByDescending(x => x.DateTime).ToList();

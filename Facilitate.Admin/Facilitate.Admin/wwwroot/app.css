@@ -6,11 +6,20 @@ html, body {
     overflow: auto !important;
 }
 
-/*.dxbl-tabs-content {
-    border: solid 1px #ff0000 !important;
-    overflow-y: hidden !important;*/ /* Hide vertical scrollbar */
-    /*overflow-x: hidden !important;*/ /* Hide horizontal scrollbar */
-/*}*/
+.restore-button-visible
+{
+}
+
+.restore-button-hidden {
+    display: none !important;
+}
+
+.accept-bid-button-visible {
+}
+
+.accept-bid-button-hidden {
+    display: none !important;
+}
 
 .error-details {
     border: solid 1px #ff0000 !important;
