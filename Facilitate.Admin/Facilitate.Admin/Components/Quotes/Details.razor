@@ -2831,6 +2831,8 @@ else
 
                     foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
                     {
+                        //var relationshipId = relationship._id;
+
                         switch(relationship.Type)
                         {
                             case "Parent":
@@ -2861,6 +2863,11 @@ else
                                 currentQuoteContainerType = "Parent";
                                 ValueHiliteCss = "quote-color-value-parent";
                                 ShowRelationshipColumn = false;
+
+                                // Set default quote value
+                                // var relatedQuote = WebServices.GetQuote(relationship.ParentId)[0];
+
+                                // defaultQuoteValue = relatedQuote.totalQuote;
                                 break;
                         }
                     }
