@@ -206,14 +206,14 @@ else
                             @{
                                 if(CurrentlySelectedQuote.Trade == "Aggregate")
                                 {
-                                        <div>
-                                            <button class="@currentActionButtonClass @restoreButtonClass" @onclick="@(() => IsRestoreButtonVisble = true)">Restore Aggregate</button>
-                                            <button class="@currentActionButtonClass @acceptBidButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Accept Bid</button>
-                                        </div>
+                                    <div>
+                                        <button class="@currentActionButtonClass @restoreButtonClass" @onclick="@(() => IsRestoreButtonVisble = true)">Restore Aggregate</button>
+                                        <button class="@currentActionButtonClass @acceptBidButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Accept Bid</button>
+                                    </div>
 
-                                        <div>&nbsp;</div>
+                                    <div>&nbsp;</div>
                                     <div class="col-md-1">
-                                        <button class="@currentActionButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Add Bidder</button>
+                                       <button class="@currentActionButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Add Bidder</button>
                                     </div>
                                     <div class="col-md-11">
                                         <h6>@RelatedQuoteSummaryList.Count() Bidders</h6>
@@ -1130,6 +1130,11 @@ else
 
         CurrentlySelectedQuote.events.Add(_event);
 
+        if(CurrentlySelectedQuote.status == "Archive")
+        {
+            CurrentlySelectedQuote.status = CurrentlySelectedQuote.statusPrevious;
+        }
+
         WebServices.UpdateQuote(CurrentlySelectedQuote);
 
         restoreButtonClass = "restore-button-hidden";
@@ -1568,6 +1573,7 @@ else
 
     public string restoreButtonClass = "restore-button-hidden";
     public string acceptBidButtonClass = "accept-bid-button-hidden";
+    public bool IsAddButtonDisabled = true;
 
     public void SetUIStyles(string quoteContainerType)
     {
@@ -1906,8 +1912,8 @@ else
             Event createdEvent = new Event();
             createdEvent.Author = currentUser;
             createdEvent.Trade = childQuote.Trade;
-            createdEvent.Name = "Child (" + childQuote.Trade + ") quote";
-            createdEvent.Details = createdEvent.Name + " Spawned from Aggregate Id (" + CurrentlySelectedQuote._id + ")";
+            createdEvent.Name = "Child (" + childQuote.Trade + ") quote Id";
+            createdEvent.Details = createdEvent.Name + " (" + childQuote._id + ") SPAWNED from Aggregate Id (" + CurrentlySelectedQuote._id + ")";
 
             childQuote.events.Add(createdEvent);
 
@@ -1959,7 +1965,7 @@ else
             Event parentRelationshipEvent = new Event();
             parentRelationshipEvent.Author = currentUser;
             parentRelationshipEvent.Trade = childQuote.Trade;
-            parentRelationshipEvent.Name = "Child (" + childQuote.Trade + ") relationship Linked to Parent";
+            parentRelationshipEvent.Name = "Child (" + childQuote.Trade + ") quote Id (" + childQuote._id + ") LINKED to Parent";
             parentRelationshipEvent.Details = parentRelationshipEvent.Name + " Aggregate Id (" + CurrentlySelectedQuote._id + ")";
             childQuote.events.Add(parentRelationshipEvent);
 
@@ -2118,28 +2124,6 @@ else
             welcomeLetterEvent.Author = currentUser;
             CurrentlySelectedQuote.events.Add(welcomeLetterEvent);
         }
-    }
-
-    public void ArchiveQuoteOld()
-    {
-        CurrentlySelectedQuote.status = "Archive";
-
-        Note note = new Note();
-        note.Summary = CurrentlySelectedQuote.firstName + " " + CurrentlySelectedQuote.lastName + " moved to Archives";
-        note.Details = @NoteDetails;
-        note.Author = currentUser;
-
-        CurrentlySelectedQuote.notes.Add(note);
-
-        Event _event = new Event();
-        _event.Details = CurrentlySelectedQuote.firstName + " " + CurrentlySelectedQuote.lastName + " moved to Archives";
-        _event.Author = currentUser;
-        CurrentlySelectedQuote.events.Add(_event);
-
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
-
-        IsArchivePopupVisible = false;
-        NoteDetails = "";
     }
 
     public void ArchiveQuote()
@@ -2341,7 +2325,7 @@ else
                 _event = new Event();
                 _event.DateTime = DateTime.UtcNow;
                 _event.Author = currentUser;
-                _event.Name = "Aggregate project spawned";
+                _event.Name = "Aggregate project SPAWNED";
                 _event.Details = _event.Name + " from original " + originalQuoteCopy.Trade + " quote (" + originalQuoteCopy._id + ")";
 
                 parentQuote.events.Add(_event);
@@ -2963,9 +2947,13 @@ else
                     if(CurrentlySelectedQuote.status == "Archive")
                     {
                         restoreButtonClass = "restore-button-visible";
-                        //acceptBidClass = false;
-
+                        IsAddButtonDisabled = false;
+                        
                         currentQuoteContainerType = "Standalone";
+                    }
+                    else
+                    {
+                        
                     }
 
                     LocalizeAttachments(AttachmentList);

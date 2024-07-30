@@ -22,7 +22,7 @@ html, body {
 }
 
 .error-details {
-    border: solid 1px #ff0000 !important;
+    border: solid 0px #ff0000 !important;
     margin-bottom: 75px !important;
 }
 
