@@ -1136,7 +1136,7 @@ else
             break;
         }
 
-        WebServices.UpdateQuote(CurrentlySelectedQuote);
+        //WebServices.UpdateQuote(CurrentlySelectedQuote);
 
         restoreButtonClass = "restore-button-hidden";
         IsRestoreButtonVisble = false;
@@ -1643,7 +1643,7 @@ else
         ShowBidTypeColumn = true;
         ShowActionsColumn = true;
         ShowSqFtColumn = false;
-        ShowRelationshipColumn = false;
+        ShowRelationshipColumn = true;
         ShowIsQualifiedColumn = false;
 
         ShowEventDetailsColumn = true;
@@ -2144,8 +2144,6 @@ else
 
     public void ArchiveQuote()
     {
-        Note note = new Note();
-
         try
         {
             CurrentlySelectedQuote.statusPrevious = CurrentlySelectedQuote.status;
@@ -2156,14 +2154,17 @@ else
 
             if (NoteDetails != "" || NoteDetails != null)
             {
-                note.Summary = aggregateQuote.Trade + " (" + aggregateQuote._id + ") moved to Archives";
-                note.Details = NoteDetails;
-                note.Author = currentUser;
+                Note parentNote = new Note();
+                parentNote.Trade = aggregateQuote.Trade;
+                parentNote.Summary = aggregateQuote.Trade + " (" + aggregateQuote._id + ") moved to Archives";
+                parentNote.Details = NoteDetails;
+                parentNote.Author = currentUser;
 
-                aggregateQuote.notes.Add(note);
+                aggregateQuote.notes.Add(parentNote);
             }
 
             Event _event = new Event();
+            _event.Trade = aggregateQuote.Trade;
             _event.Details = aggregateQuote.Trade + " (" + aggregateQuote._id + ") moved to Archives";
             _event.Author = currentUser;
             aggregateQuote.events.Add(_event);
@@ -2179,7 +2180,13 @@ else
                     childQuote.statusPrevious = childQuote.status;
                     childQuote.status = "Archive";
 
-                    childQuote.notes.Add(note);
+                    Note childnote = new Note();
+                    childnote.Trade = childQuote.Trade;
+                    childnote.Summary = childQuote.Trade + " (" + childQuote._id + ") moved to Archives";
+                    childnote.Details = NoteDetails;
+                    childnote.Author = currentUser;
+
+                    childQuote.notes.Add(childnote);
 
                     WebServices.UpdateQuote(childQuote);
                 }

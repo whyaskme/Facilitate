@@ -78,12 +78,12 @@ namespace Facilitate.Admin.Data
 
             columItem = new ListItem();
             columItem.Text = "Trade";
-            columItem.Value = "85";
+            columItem.Value = "100";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
             columItem.Text = "Category";
-            columItem.Value = "85";
+            columItem.Value = "100";
             columnWidths.Add(columItem);
 
             columItem = new ListItem();
