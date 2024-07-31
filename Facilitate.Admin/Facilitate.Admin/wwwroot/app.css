@@ -14,6 +14,14 @@ html, body {
     display: none !important;
 }
 
+.add-bid-button-visible {
+}
+
+.add-bid-button-hidden {
+    display: none !important;
+}
+
+
 .accept-bid-button-visible {
 }
 
@@ -115,7 +123,7 @@ button {
 .quote-color-value-child {
     border: solid 0px #ff0000 !important;
     font-weight: bold !important;
-    color: #89032c !important;
+    color: #041188 !important;
 }
 
 .quote-color-standalone {

@@ -2926,12 +2926,12 @@ else
                     {
                         if (_summary._id == CurrentlySelectedQuote._id)
                         {
-                            // parentQuoteSummary = new QuoteSummary(_summary);
-                            // cleanedRelatedQuoteSummaryList.Add(parentQuoteSummary);
-
-                            // Remove current Item. Don't want this to link back to itself.
                             try
                             {
+                                parentQuoteSummary = new QuoteSummary(_summary);
+                                // cleanedRelatedQuoteSummaryList.Add(parentQuoteSummary);
+
+                                // Remove current Item. Don't want this to link back to itself.
                                 RelatedQuoteSummaryList.Remove(_summary);
                             }
                             catch (Exception ex)
@@ -2940,28 +2940,13 @@ else
                             }
                             break;
                         }
-                        else
-                        {
-                            // Set the row number for grid column display
-                            summaryIndex++;
-                            _summary.rowIndex = summaryIndex;
-                        }
                     }
 
                     // Sort collectionsparentQuoteSummary
                     LocalizeRelatedQuotes(RelatedQuoteSummaryList);
-                    RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.lastEventTimeStamp).ToList();
 
-
-                    // Process cleaned collection
-                    // if(cleanedRelatedQuoteSummaryList.Count > 0)
-                    // {
-                    //     //RelatedQuoteSummaryList.Insert(0, parentQuoteSummary);
-                    //     cleanedRelatedQuoteSummaryList.AddRange(RelatedQuoteSummaryList);
-                    // }
-
-                    // RelatedQuoteSummaryList.Clear();
-                    // RelatedQuoteSummaryList.AddRange(cleanedRelatedQuoteSummaryList);
+                    //RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.lastEventTimeStamp).ToList();
+                    RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderBy(x => x.Trade).ToList();
 
                     if(CurrentlySelectedQuote.status == "Archive")
                     {
@@ -2969,10 +2954,6 @@ else
                         IsAddButtonDisabled = false;
                         
                         currentQuoteContainerType = "Standalone";
-                    }
-                    else
-                    {
-                        
                     }
 
                     LocalizeAttachments(AttachmentList);
