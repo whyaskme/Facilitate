@@ -21,7 +21,6 @@ html, body {
     display: none !important;
 }
 
-
 .accept-bid-button-visible {
 }
 
@@ -108,79 +107,9 @@ button {
     font-size: 0.75em !important;
 }
 
-.quote-color-value-standalone {
-    border: solid 0px #ff0000 !important;
-    font-weight: bold !important;
-    color: #ff0000 !important;
-}
-
-.quote-color-value-parent {
-    border: solid 0px #ff0000 !important;
-    font-weight: bold !important;
-    color: #014b01 !important;
-}
-
-.quote-color-value-child {
-    border: solid 0px #ff0000 !important;
-    font-weight: bold !important;
-    color: #041188 !important;
-}
-
-.quote-color-standalone {
-    color: #89032c !important;
-    font-size: 1.0em !important;
-    font-weight: bold !important;
-}
-
-.quote-color-parent {
-    color: #014b01 !important;
-    font-size: 1.0em !important;
-    font-weight: bold !important;
-    border: solid 0px #ff0000 !important;
-}
-
-.quote-color-child {
-    color: #041188 !important;
-    font-size: 1.0em !important;
-    font-weight: bold !important;
-}
-
-.quote-color-sibling {
-    color: #0505cd !important;
-    font-size: 1.0em !important;
-    font-weight: bold !important;
-}
-
-.action-button-standalone {
-    border: solid 1px #000000 !important;
-    color: #ffffff !important;
-    background-color: #89032c !important;
-    width: 135px !important;
-}
-
-.action-button-parent {
-    border: solid 1px #014b01 !important;
-    color: #ffffff !important;
-    background-color: #014b01 !important;
-    width: 135px !important;
-}
-
-.action-button-child {
-    border: solid 1px #041188 !important;
-    color: #ffffff !important;
-    background-color: #041188 !important;
-    width: 135px !important;
-}
-
-.action-button-sibling {
-    border: solid 1px #041188 !important;
-    color: #ffffff !important;
-    background-color: #041188 !important;
-    width: 135px !important;
-}
-
+/*Set Standalone styles*/
 .quote-header-standalone {
-    background-color: #89032c !important;
+    background: #014b01 !important;
     border: solid 0px #000000 !important;
     border-radius: 5px !important;
     position: relative !important;
@@ -194,16 +123,33 @@ button {
     padding: 10px !important;
     margin-bottom: 20px !important;
 }
-
 .quote-title-standalone {
-    border: solid 0px #89032c !important;
+    border: solid 0px #014b01 !important;
     text-align: center !important;
     font-size: 1.35em !important;
     font-weight: bold !important;
     font-style: italic !important;
     margin-bottom: 25px !important;
 }
+.quote-color-value-standalone {
+    border: solid 0px #ff0000 !important;
+    font-weight: bold !important;
+    color: #014b01 !important;
+}
+.quote-color-standalone {
+    color: #014b01 !important;
+    font-size: 1.0em !important;
+    font-weight: bold !important;
+    border: solid 0px #ff0000 !important;
+}
+.action-button-standalone {
+    border: solid 1px #014b01 !important;
+    color: #ffffff !important;
+    background-color: #014b01 !important;
+    width: 135px !important;
+}
 
+/*Set Parent styles*/
 .quote-header-parent {
     background: #014b01 !important;
     border: solid 0px #000000 !important;
@@ -219,7 +165,6 @@ button {
     padding: 10px !important;
     margin-bottom: 20px !important;
 }
-
 .quote-title-parent {
     border: solid 0px #014b01 !important;
     text-align: center !important;
@@ -228,7 +173,25 @@ button {
     font-style: italic !important;
     margin-bottom: 25px !important;
 }
+.quote-color-value-parent {
+    border: solid 0px #ff0000 !important;
+    font-weight: bold !important;
+    color: #014b01 !important;
+}
+.quote-color-parent {
+    color: #014b01 !important;
+    font-size: 1.0em !important;
+    font-weight: bold !important;
+    border: solid 0px #ff0000 !important;
+}
+.action-button-parent {
+    border: solid 1px #014b01 !important;
+    color: #ffffff !important;
+    background-color: #014b01 !important;
+    width: 135px !important;
+}
 
+/*Set Child styles*/
 .quote-header-child {
     background: #041188 !important;
     border: solid 0px #000000 !important;
@@ -244,7 +207,6 @@ button {
     padding: 10px !important;
     margin-bottom: 20px !important;
 }
-
 .quote-title-child {
     border: solid 0px #025402 !important;
     text-align: center !important;
@@ -253,9 +215,26 @@ button {
     font-style: italic !important;
     margin-bottom: 25px !important;
 }
+.quote-color-value-child {
+    border: solid 0px #ff0000 !important;
+    font-weight: bold !important;
+    color: #041188 !important;
+}
+.quote-color-child {
+    color: #041188 !important;
+    font-size: 1.0em !important;
+    font-weight: bold !important;
+}
+.action-button-child {
+    border: solid 1px #041188 !important;
+    color: #ffffff !important;
+    background-color: #041188 !important;
+    width: 135px !important;
+}
 
-.quote-header-sibling {
-    background: #000000 !important;
+/*Set Archive styles*/
+.quote-header-archive {
+    background-color: #89032c !important;
     border: solid 0px #000000 !important;
     border-radius: 5px !important;
     position: relative !important;
@@ -269,13 +248,29 @@ button {
     padding: 10px !important;
     margin-bottom: 20px !important;
 }
-
-.quote-title-sibling {
-    border: solid 0px #025402 !important;
+.quote-title-archive {
+    border: solid 0px #89032c !important;
     text-align: center !important;
-    font-size: 2.0em !important;
+    font-size: 1.35em !important;
     font-weight: bold !important;
-    margin-bottom: 50px !important;
+    font-style: italic !important;
+    margin-bottom: 25px !important;
+}
+.quote-color-value-archive {
+    border: solid 0px #ff0000 !important;
+    font-weight: bold !important;
+    color: #89032c !important;
+}
+.quote-color-archive {
+    color: #89032c !important;
+    font-size: 1.0em !important;
+    font-weight: bold !important;
+}
+.action-button-archive {
+    border: solid 1px #000000 !important;
+    color: #ffffff !important;
+    background-color: #89032c !important;
+    width: 135px !important;
 }
 
 #AttachmentGrid,

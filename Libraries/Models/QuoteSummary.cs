@@ -19,6 +19,7 @@ namespace Facilitate.Libraries.Models
             isQualified = false;
             Trade = string.Empty;
             TradeCategory = string.Empty;
+            DateCreated = DateTime.UtcNow;
             relationship = string.Empty;
             status = string.Empty;
             actions = string.Empty;
@@ -44,6 +45,7 @@ namespace Facilitate.Libraries.Models
             isQualified = quoteSummary.isQualified;
             Trade = quoteSummary.Trade;
             TradeCategory = quoteSummary.TradeCategory;
+            DateCreated = quoteSummary.DateCreated;
             relationship = quoteSummary.relationship;
             status = quoteSummary.status;
             actions = quoteSummary.actions;
@@ -59,12 +61,15 @@ namespace Facilitate.Libraries.Models
             BiddingExpires = quoteSummary.BiddingExpires;
         }
 
+        public string Trade { get; set; }
+        public string TradeCategory { get; set; }
+        public DateTime DateCreated { get; set; }
+
         public string _id { get; set; }
         public string _t { get; set; }
         public int rowIndex { get; set; }
         public bool isQualified { get; set; }
-        public string Trade { get; set; }
-        public string TradeCategory { get; set; }
+
         public string relationship { get; set; }
         public string status { get; set; }
         public string actions { get; set; }

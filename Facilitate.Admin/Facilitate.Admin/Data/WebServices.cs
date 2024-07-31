@@ -390,6 +390,8 @@ namespace Facilitate.Admin.Data
                     _summary.Trade = relatedQuote.Trade;
                     _summary.status = relatedQuote.status;
 
+                    _summary.DateCreated = relatedQuote.timestamp.ToLocalTime();
+
                     _summary.totalQuote = relatedQuote.totalQuote;
 
                     _summary.Bidder = relatedQuote.Bidder;
@@ -400,6 +402,8 @@ namespace Facilitate.Admin.Data
                     {
                         Event lastEvent = relatedQuote.events.LastOrDefault();
                         _summary.events = relatedQuote.events;
+                        _summary.Trade = relatedQuote.Trade;
+                        _summary.TradeCategory = relatedQuote.TradeCategory;
                         _summary.lastEventDetails = lastEvent.Details;
                         _summary.lastEventTimeStamp = lastEvent.DateTime.ToLocalTime();
                     }

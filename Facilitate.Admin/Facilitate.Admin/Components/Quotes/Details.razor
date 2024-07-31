@@ -280,15 +280,13 @@ else
 
                                 <DxGridDataColumn Visible="@ShowRowIndexColumn" Width="@RowIndexColumnWidth" Caption="Row" FieldName="rowIndex" />
                                 <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="@RecordIdColumnWidth" Caption="Record Id" FieldName="_id" />
+                                <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="relationship" />
                                 <DxGridDataColumn Visible="@ShowStatusColumn" Width="@StatusColumnWidth" Caption="Status" FieldName="status" />
                                 <DxGridDataColumn Visible="@ShowTradeColumn" Width="@TradeColumnWidth" Caption="Trade" FieldName="Trade" />
                                 <DxGridDataColumn Visible="@ShowCategoryColumn" Width="@CategoryColumnWidth" Caption="Category" FieldName="TradeCategory" />
-                                <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="relationship" />
                                 <DxGridDataColumn Visible="@ShowCreatedColumn" Width="@CreatedColumnWidth" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
                                 <DxGridDataColumn Visible="@ShowUpdatedColumn" Width="@UpdatedColumnWidth" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-
                                 <DxGridDataColumn Visible="@ShowLastEventColumn" Width="@LastEventColumnWidth" Caption="Last Event" FieldName="lastEventDetails" />
- 
                                 <DxGridDataColumn Visible="@ShowSqFtColumn" Width="@SqFtColumnWidth" Caption="SqFt" FieldName="totalSquareFeet" />
                                 <DxGridDataColumn Visible="@ShowBidColumn" Width="@BidColumnWidth" Caption="Bid" DisplayFormat="C0" FieldName="totalQuote" />
                                 <DxGridDataColumn Visible="@ShowBidderColumn" Width="@BidderColumnWidth" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Bidder.FirstName + ' ' + Bidder.LastName" />
@@ -458,8 +456,6 @@ else
                     }
 
                     @{
-                        if (@CurrentlySelectedQuote.status != "New")
-                        {
                             <DxTabPage Id="Panel-Send-Files" Text="@_emailTabLabel">
 
                                 <DxUpload Name="ImageUpload"
@@ -482,63 +478,62 @@ else
 
                             <DxTabPage Id="Panel-Attach-Files" Text="Attachments">
 
-                                <div class="row">
-                                    <div class="col-md-1">
-                                        <DxUpload 
-                                            Name="UploadAttachments"
-                                            id="UploadAttachments"
-                                            SelectButtonText="Upload"
-                                            AllowMultiFileUpload="true"
-                                            UploadUrl="@GetUploadUrl(@uploadUrl)"
-                                            FileUploadError="@OnUploadError"
-                                            FileUploadStarted="@OnFileUploadStarted"
-                                            SelectedFilesChanged="@SelectedFilesChanged"
-                                            MaxFileSize="@MaxFileSize"
-                                            AllowedFileExtensions="@allowedFileExtensions"
-                                            AcceptedFileTypes="@acceptableFileTypes"
-                                            CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
-                                        </DxUpload>
-                                    </div>
-                                    <div class="col-md-10">
-                                        <span class="section-title">@AttachmentList.Count() Attachments</span>
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <DxUpload 
+                                        Name="UploadAttachments"
+                                        id="UploadAttachments"
+                                        SelectButtonText="Upload"
+                                        AllowMultiFileUpload="true"
+                                        UploadUrl="@GetUploadUrl(@uploadUrl)"
+                                        FileUploadError="@OnUploadError"
+                                        FileUploadStarted="@OnFileUploadStarted"
+                                        SelectedFilesChanged="@SelectedFilesChanged"
+                                        MaxFileSize="@MaxFileSize"
+                                        AllowedFileExtensions="@allowedFileExtensions"
+                                        AcceptedFileTypes="@acceptableFileTypes"
+                                        CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
+                                    </DxUpload>
                                 </div>
+                                <div class="col-md-10">
+                                    <span class="section-title">@AttachmentList.Count() Attachments</span>
+                                </div>
+                            </div>
 
-                                <div class="row error-details alert alert-danger @(ErrorVisible? " visible" : " invisible")">@MyError</div>
+                            <div class="row error-details alert alert-danger @(ErrorVisible? " visible" : " invisible")">@MyError</div>
 
-                                <DxGrid @ref="AttachmentGrid"
-                                    Data="@AttachmentList"
-                                    id="AttachmentGrid"
-                                    KeyFieldName="_id"
-                                    CssClass="AttachmentGrid"
-                                    PageSize="10"
-                                    PagerPosition="GridPagerPosition.Bottom"
-                                    ShowGroupPanel="false"
-                                    AutoExpandAllGroupRows="true"
-                                    ShowFilterRow="false"
-                                    PagerNavigationMode="PagerNavigationMode.InputBox"
-                                    PageSizeSelectorVisible="true"
-                                    PageSizeSelectorAllRowsItemVisible="false"
-                                    KeyboardNavigationEnabled="true"
-                                    TextWrapEnabled="false">
-                                    <Columns>
-                                        <dxg:TableView.FormatConditions>
-                                            <dxg:FormatCondition ValueRule="Equal" Value="Opportunity" FieldName="status" PredefinedFormatName="LightRedFillWithDarkRedText" />
-                                        </dxg:TableView.FormatConditions>
-                                        <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="" />
-                                        <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
-                                        <DxGridDataColumn Width="175" Caption="Date" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-                                        <DxGridDataColumn Width="100" Caption="Trade" FieldName="Trade" />
-                                        <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="relationship" />
-                                        <DxGridDataColumn Width="150" Caption="Name" FieldName="MediaName" />
-                                        <DxGridDataColumn Width="auto" Caption="Description" FieldName="MediaDescription" />
-                                        <DxGridDataColumn Width="auto" Caption="Url" FieldName="MediaUrl" />
-                                        <DxGridDataColumn Width="175" Caption="Author" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Author.FirstName + ' ' + Author.LastName" />
-                                    </Columns>
-                                </DxGrid>
+                            <DxGrid @ref="AttachmentGrid"
+                                Data="@AttachmentList"
+                                id="AttachmentGrid"
+                                KeyFieldName="_id"
+                                CssClass="AttachmentGrid"
+                                PageSize="10"
+                                PagerPosition="GridPagerPosition.Bottom"
+                                ShowGroupPanel="false"
+                                AutoExpandAllGroupRows="true"
+                                ShowFilterRow="false"
+                                PagerNavigationMode="PagerNavigationMode.InputBox"
+                                PageSizeSelectorVisible="true"
+                                PageSizeSelectorAllRowsItemVisible="false"
+                                KeyboardNavigationEnabled="true"
+                                TextWrapEnabled="false">
+                                <Columns>
+                                    <dxg:TableView.FormatConditions>
+                                        <dxg:FormatCondition ValueRule="Equal" Value="Opportunity" FieldName="status" PredefinedFormatName="LightRedFillWithDarkRedText" />
+                                    </dxg:TableView.FormatConditions>
+                                    <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="" />
+                                    <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
+                                    <DxGridDataColumn Width="175" Caption="Date" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                    <DxGridDataColumn Width="100" Caption="Trade" FieldName="Trade" />
+                                    <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="relationship" />
+                                    <DxGridDataColumn Width="150" Caption="Name" FieldName="MediaName" />
+                                    <DxGridDataColumn Width="auto" Caption="Description" FieldName="MediaDescription" />
+                                    <DxGridDataColumn Width="auto" Caption="Url" FieldName="MediaUrl" />
+                                    <DxGridDataColumn Width="175" Caption="Author" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Author.FirstName + ' ' + Author.LastName" />
+                                </Columns>
+                            </DxGrid>
 
-                            </DxTabPage>
-                        }
+                        </DxTabPage>
                     }
 
                     <DxTabPage Id="Panel-Notes" Text="Notes">
@@ -679,59 +674,59 @@ else
 
                 </DxTabs>
 
-                if (CurrentlySelectedQuote.status != "New")
-                {
-                    if (CurrentlySelectedQuote.Trade != "Aggregate")
-                    {
-                        <div class="section-header">
-                            10-Step Project Workflow
-                        </div>
+                // if (CurrentlySelectedQuote.status != "New")
+                // {
+                //     if (CurrentlySelectedQuote.Trade != "Aggregate")
+                //     {
+                //         <div class="section-header">
+                //             10-Step Project Workflow
+                //         </div>
 
-                        <DxTabs Id="tabs-Customer-Qualifications" CssClass="tabs-container">
+                //         <DxTabs Id="tabs-Customer-Qualifications" CssClass="tabs-container">
 
-                            <DxTabPage Id="Panel-Customer-Qualifications-Mission-Statement-Acknowledgment" CssClass="tab-container" Text="1) Mission Statement Acknowledgment">
-                                Mission Statement Acknowledgment...
-                            </DxTabPage>
+                //             <DxTabPage Id="Panel-Customer-Qualifications-Mission-Statement-Acknowledgment" CssClass="tab-container" Text="1) Mission Statement Acknowledgment">
+                //                 Mission Statement Acknowledgment...
+                //             </DxTabPage>
 
-                            <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Needs-Analysis" Text="2) Needs Analysis">
-                                Needs Analysis...
-                            </DxTabPage>
+                //             <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Needs-Analysis" Text="2) Needs Analysis">
+                //                 Needs Analysis...
+                //             </DxTabPage>
 
-                            <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Project-Manager-Inspection-Report" Text="3) Project Bidder Inspection Report">
-                                Project Bidder Inspection Report...
-                            </DxTabPage>
+                //             <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Project-Manager-Inspection-Report" Text="3) Project Bidder Inspection Report">
+                //                 Project Bidder Inspection Report...
+                //             </DxTabPage>
 
-                            <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Pictometry-Measurements" Text="4) Pictometry Measurements">
-                                Pictometry Measurements...
-                            </DxTabPage>
+                //             <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Pictometry-Measurements" Text="4) Pictometry Measurements">
+                //                 Pictometry Measurements...
+                //             </DxTabPage>
 
-                            <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Installer-Inspection-Report" Text="5) Installer Inspection Report">
-                                Installer Inspection Report...
-                            </DxTabPage>
+                //             <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Installer-Inspection-Report" Text="5) Installer Inspection Report">
+                //                 Installer Inspection Report...
+                //             </DxTabPage>
 
-                            <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Material-Order" Text="6) Material Order">
-                                Material Order...
-                            </DxTabPage>
+                //             <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Material-Order" Text="6) Material Order">
+                //                 Material Order...
+                //             </DxTabPage>
 
-                            <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Labor-Order" Text="7) Labor Order">
-                                Labor Order...
-                            </DxTabPage>
+                //             <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Labor-Order" Text="7) Labor Order">
+                //                 Labor Order...
+                //             </DxTabPage>
 
-                            <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Total-Project-Expense-Summary" Text="8) Total Project Expense Summary">
-                                Total Project Expense Summary...
-                            </DxTabPage>
+                //             <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Total-Project-Expense-Summary" Text="8) Total Project Expense Summary">
+                //                 Total Project Expense Summary...
+                //             </DxTabPage>
 
-                            <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Facilitate-Sample-Warranty" Text="9) Facilitate Sample Warranty">
-                                Facilitate Sample Warranty...
-                            </DxTabPage>
+                //             <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Facilitate-Sample-Warranty" Text="9) Facilitate Sample Warranty">
+                //                 Facilitate Sample Warranty...
+                //             </DxTabPage>
 
-                            <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Signed-Proposal" Text="10) Signed Proposal">
-                                Signed Proposal...
-                            </DxTabPage>
+                //             <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Signed-Proposal" Text="10) Signed Proposal">
+                //                 Signed Proposal...
+                //             </DxTabPage>
 
-                        </DxTabs>
-                    }
-                }
+                //         </DxTabs>
+                //     }
+                // }
 
                 if (@CurrentlySelectedQuote.warranties.Count > 0)
                 {
@@ -1447,8 +1442,6 @@ else
             QuoteGrid.SelectAllAsync(true);
 
             TradesList = webServices.GetTradesList(true, CurrentlySelectedQuote.Trade);
-
-            // SetUIStyles(currentQuoteContainerType);
         }
     }
 
@@ -1581,10 +1574,10 @@ else
     public string currentActionButtonClass = "action-button-standalone";
 
     public string restoreButtonClass = "restore-button-hidden";
+    public string addBidButtonClass = "add-bid-button-visible";
     public string acceptBidButtonClass = "accept-bid-button-hidden";
-    public bool IsAddButtonDisabled = true;
 
-    public void SetUIStyles(string quoteContainerType)
+    public void SetCssClasses(string quoteContainerType)
     {
         switch (quoteContainerType.ToLower())
         {
@@ -1607,6 +1600,13 @@ else
                 currentQuoteHeaderTypeCssClass = "quote-header-child";
                 currentQuoteContainerTypeCssClass = "quote-title-child";
                 currentActionButtonClass = "action-button-child";
+                break;
+
+            case "archive":
+                currentQuoteColorCssClass = "quote-color-archive";
+                currentQuoteHeaderTypeCssClass = "quote-header-archive";
+                currentQuoteContainerTypeCssClass = "quote-title-archive";
+                currentActionButtonClass = "action-button-archive";
                 break;
 
             default:
@@ -2868,8 +2868,6 @@ else
 
                     foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
                     {
-                        //var relationshipId = relationship._id;
-
                         switch(relationship.Type)
                         {
                             case "Parent":
@@ -2899,22 +2897,6 @@ else
                             case "Child":
                                 currentQuoteContainerType = "Parent";
                                 ValueHiliteCss = "quote-color-value-parent";
-
-                                // Get the parent quote for it's value
-                                var relatedQuote = WebServices.GetQuote(relationship.ParentId)[0];
-                                foreach (Relationship childRelationship in relatedQuote.relationships)
-                                {
-                                    if (childRelationship.Type == "Child")
-                                    {
-                                        var childQuote = WebServices.GetQuote(childRelationship._id)[0];
-
-                                        if (childQuote.BidderType == "Default")
-                                        {
-                                            // Set default quote value
-                                            defaultQuoteValue = childQuote.totalQuote;
-                                        }
-                                    }
-                                }
                                 break;
                         }
                     }
@@ -2945,15 +2927,17 @@ else
                     // Sort collectionsparentQuoteSummary
                     LocalizeRelatedQuotes(RelatedQuoteSummaryList);
 
-                    //RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.lastEventTimeStamp).ToList();
-                    RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderBy(x => x.Trade).ToList();
+                    RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderBy(x => x.DateCreated).ToList();
+                    //RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.Trade).ToList();
 
                     if(CurrentlySelectedQuote.status == "Archive")
                     {
                         restoreButtonClass = "restore-button-visible";
-                        IsAddButtonDisabled = false;
+                        addBidButtonClass = "add-bid-button-hidden";
+
+                        ValueHiliteCss = "quote-color-value-archive";
                         
-                        currentQuoteContainerType = "Standalone";
+                        currentQuoteContainerType = "Archive";
                     }
 
                     LocalizeAttachments(AttachmentList);
@@ -2965,7 +2949,7 @@ else
                     LocalizeNotes(NoteList);
                     NoteList = NoteList.OrderByDescending(x => x.DateTime).ToList();
 
-                    SetUIStyles(currentQuoteContainerType);
+                    SetCssClasses(currentQuoteContainerType);
 
                     InvokeAsync(() =>
                     {
