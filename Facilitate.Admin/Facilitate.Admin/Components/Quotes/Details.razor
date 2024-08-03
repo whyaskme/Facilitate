@@ -44,7 +44,7 @@
 @rendermode InteractiveServer
 @inject WebServices WebServices
 
-@inject NavigationManager NavigationManager
+@inject NavigationManager navMan
 @inject IHttpClientFactory ClientFactory
 @inject HttpClient httpClient
 
@@ -68,7 +68,7 @@
     <Authorized></Authorized>
     <NotAuthorized>
         @{
-            NavigationManager.NavigateTo("/Account/Login?returnurl=" + NavigationManager.Uri);
+            navMan.NavigateTo("/Account/Login?returnurl=" + navMan.Uri);
         }
     </NotAuthorized>
 </AuthorizeView>
@@ -1283,7 +1283,7 @@ else
     {
         var tmpUrl = "/quotes/details/" + quoteId + Referrer; //"/opportunities/";
 
-        NavigationManager.NavigateTo(tmpUrl);
+        navMan.NavigateTo(tmpUrl);
     }
 
     // public void RemoveQuoteProject(string quoteId)
@@ -1330,7 +1330,7 @@ else
 
     protected string GetUploadUrl(string url)
     {
-        var navUrl = NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
+        var navUrl = navMan.ToAbsoluteUri(url).AbsoluteUri;
 
         return navUrl;
     }
@@ -1393,7 +1393,7 @@ else
     {
         var previousPageUrl = "/quotes/" + Referrer;
 
-        NavigationManager.NavigateTo(previousPageUrl);
+        navMan.NavigateTo(previousPageUrl);
     }
 
     public string RedcordIdButtonLabel = "Show Hidden Data";
@@ -1461,7 +1461,7 @@ else
     async void OnLocationChanged(object sender, LocationChangedEventArgs args)
     {
         TimerDispose();
-        NavigationManager.LocationChanged -= OnLocationChanged;
+        navMan.LocationChanged -= OnLocationChanged;
     }
 
     public ApplicationUser currentUser = new ApplicationUser();
@@ -1555,7 +1555,7 @@ else
 
             SignInManager.SignOutAsync();
 
-            NavigationManager.NavigateTo("/Account/Lockout");
+            navMan.NavigateTo("/Account/Lockout");
         }
         catch(Exception ex)
         {
@@ -1619,7 +1619,7 @@ else
 
     protected override void OnInitialized()
     {
-        NavigationManager.LocationChanged += OnLocationChanged;
+        navMan.LocationChanged += OnLocationChanged;
 
         ShowRowIndexColumn = false;
         ShowRecordIdColumn = false;
@@ -2027,7 +2027,7 @@ else
 
         var tmpUrl = "/quotes/details/" + selectedQuoteId + "/opportunities/";
 
-        NavigationManager.NavigateTo(tmpUrl);
+        navMan.NavigateTo(tmpUrl);
     }
 
     public void DeleteChildQuote(GridRowClickEventArgs args)

@@ -13,12 +13,8 @@
 @using DevExpress.Data.Linq;
 
 @attribute [StreamRendering(true)]
-@* @rendermode InteractiveServer *@
-@inject WebServices WebServices
 
-@inject NavigationManager NavigationManager
-@inject IHttpClientFactory ClientFactory
-@inject HttpClient httpClient
+@inject WebServices WebServices
 
 @inject NavigationManager navMan
 
@@ -47,6 +43,8 @@
 </AuthorizeView>
 
 @code {
+    [CascadingParameter]
+    private HttpContext? HttpContext { get; set; }
 
     public QuoteLeaderboard LeaderboardStats;
 

@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using ServiceStack;
 using System;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.AspNetCore.Components;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 

@@ -19,7 +19,7 @@
 @rendermode InteractiveServer
 @inject WebServices WebServices
 
-@inject NavigationManager NavigationManager
+@inject NavigationManager navMan
 @inject IHttpClientFactory ClientFactory
 @inject HttpClient httpClient
 
@@ -37,7 +37,7 @@
     <Authorized></Authorized>
     <NotAuthorized>
         @{
-            NavigationManager.NavigateTo("/Account/Login?returnurl=" + NavigationManager.Uri);
+            navMan.NavigateTo("/Account/Login?returnurl=" + navMan.Uri);
         }
     </NotAuthorized>
 </AuthorizeView>
@@ -240,6 +240,8 @@ else
 </DxLoadingPanel>
 
 @code {
+    [CascadingParameter]
+    private HttpContext? HttpContext { get; set; }
 
     public string StatusType = "Complete";
 
@@ -341,7 +343,7 @@ else
     async void OnLocationChanged(object sender, LocationChangedEventArgs args)
     {
         TimerDispose();
-        NavigationManager.LocationChanged -= OnLocationChanged;
+        navMan.LocationChanged -= OnLocationChanged;
     }
 
     public ApplicationUser currentUser = new ApplicationUser();
@@ -415,7 +417,7 @@ else
 
             SignInManager.SignOutAsync();
 
-            NavigationManager.NavigateTo("/Account/Lockout");
+            navMan.NavigateTo("/Account/Lockout");
         }
         catch (Exception ex)
         {
@@ -427,7 +429,7 @@ else
 
     protected override void OnInitialized()
     {
-        NavigationManager.LocationChanged += OnLocationChanged;
+        navMan.LocationChanged += OnLocationChanged;
 
         ShowRowIndexColumn = false;
         ShowRecordIdColumn = false;
@@ -703,7 +705,7 @@ else
         var quoteId = selectedRow._id;
 
         var referrerUrl = "/completed/";
-        NavigationManager.NavigateTo("/quotes/details/" + quoteId + referrerUrl);
+        navMan.NavigateTo("/quotes/details/" + quoteId + referrerUrl);
     }
 
     public async Task<string> GetIpAddress()
