@@ -12,21 +12,26 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DevExpress.AspNetCore.Common" Version="23.2.4" />
-    <PackageReference Include="DevExpress.AspNetCore.Core" Version="23.2.4" />
-    <PackageReference Include="DevExpress.Blazor" Version="23.2.4" />
+    <PackageReference Include="DevExpress.Blazor" Version="24.1.5-pre-24210" />
+    <PackageReference Include="DevExpress.Blazor.ProjectTemplates" Version="24.1.4" />
     <PackageReference Include="DevExtreme.AspNet.Data" Version="4.0.0" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Cors" Version="5.3.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0-preview.5.24306.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0-preview.5.24306.3">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0-preview.6.24327.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0-preview.6.24327.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0-preview.4.24271.3" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.6.2" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.6.2" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.6.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0-preview.6.24358.4" />
+    <PackageReference Include="MongoDB.Bson" Version="2.28.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.28.0" />
+    <PackageReference Include="MongoDB.Driver.Core" Version="2.28.0" />
+    <PackageReference Include="MongoDB.Driver.GridFS" Version="2.28.0" />
+    <PackageReference Include="MongoDB.Libmongocrypt" Version="1.11.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.7.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.7.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.7.0" />
+    <PackageReference Include="System.Web.Http.Common" Version="4.0.20126.16343" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,7 +39,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Uploads\" />
     <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
 
