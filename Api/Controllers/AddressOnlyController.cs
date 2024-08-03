@@ -1,9 +1,11 @@
-﻿using Facilitate.Libraries.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
-
-using System.Net.Http;
+using Facilitate.Libraries.Models;
 using System.Web.Http.Cors;
+
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Facilitate.Api.Controllers
 {

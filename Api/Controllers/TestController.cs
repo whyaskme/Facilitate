@@ -1,12 +1,11 @@
-﻿using DevExpress.DocumentServices.ServiceModel.DataContracts;
-using Facilitate.Libraries.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
-
-using System.Net.Http;
-using System.Security.Cryptography;
+using Facilitate.Libraries.Models;
 using System.Web.Http.Cors;
+
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Facilitate.Api.Controllers
 {

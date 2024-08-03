@@ -1,23 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
+using Facilitate.Libraries.Models;
+using System.Web.Http.Cors;
 
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using UsingUploadEditDataGrid.Data;
-
-using Microsoft.AspNetCore.Http;
-
-using MongoDB.Bson;
-
-using System.Text.Json;
-
-using DevExpress.Blazor;
-using DevExpress.Data;
-using DevExpress.Data.Linq;
-using DevExpress.Web;
-
-using System.Net.Http;
-using System.Web.Http.Cors;
 
 namespace Facilitate.Api.Controllers
 {
