@@ -59,10 +59,10 @@
 else
 {
     <div class="quotes-leaderboard-page-header">
-        <div class="col-md-3 stat-element">
-            <span class="stat-value"><b>@LeaderboardStats.TotalQuoteCount.ToString("N0") Quotes</b></span>
-            <span class="stat-divider">|</span>
-            <span class="stat-value">@LeaderboardStats.TotalQuoteValue.ToString("C0")</span>
+        <div class="col-md-6 stat-element stat-element-master">
+            <span>@LeaderboardStats.TotalQuoteCount.ToString("N0") Quotes</span>
+            <span class="stat-value"><b>@LeaderboardStats.TotalQuoteValue.ToString("C0")</b></span>
+            @*             <span class="stat-divider">|</span> *@
         </div>
         <div class="col-md-1 stat-element">
             <a href="/quotes/opportunities">Opportunities</a>
@@ -83,7 +83,7 @@ else
             <span class="stat-value"><b>@LeaderboardStats.ArchiveCount.ToString("N0")</b></span>
         </div>
 
-        <div class="col-md-1 stat-element">
+        <div class="col-md-2 stat-element">
             <a href="/quotes/warranties">Warranties</a>
             <span class="stat-value"><b>@LeaderboardStats.WarrantyCount.ToString("N0")</b></span>
         </div>

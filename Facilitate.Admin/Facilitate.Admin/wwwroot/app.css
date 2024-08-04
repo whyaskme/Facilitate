@@ -601,24 +601,33 @@ h1.text-danger {
     }
 
 .stat-element {
-    border: solid 0px #ff0000 !important;
+    border: solid 0px #ffff00 !important;
     text-align: left !important;
     display: inline-flex !important;
     white-space: nowrap !important;
+    width: 200px !important;
+}
+
+.stat-element-master {
+/*    margin-right: 50px !important;*/
+    border-right: solid 0px #ff0000 !important;
 }
 
 .stat-value {
-    border-right: solid 0px #dad7d7 !important;
-    padding-left: 5px !important;
+    /*border-right: solid 5px #dad7d7 !important;*/
+    border: solid 0px #ff0000 !important;
+    padding-left: 10px !important;
     padding-right: 0px !important;
     font-weight: normal;
     font-style: normal;
     color: #808080 !important;
+    white-space: nowrap !important;
+    margin-right: 25px !important;
 }
 
 .stat-divider {
     border: solid 0px #ff0000 !important;
-    padding-left: 5px !important;
+    padding-left: 0px !important;
     color: #808080 !important;
 }
 
