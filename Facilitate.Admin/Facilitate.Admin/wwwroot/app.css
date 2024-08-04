@@ -6,8 +6,12 @@ html, body {
     overflow: auto !important;
 }
 
-.restore-button-visible
-{
+.homepage-image-main {
+    border: solid 0px #ff0000 !important;
+    width: 100% !important;
+}
+
+.restore-button-visible {
 }
 
 .restore-button-hidden {
