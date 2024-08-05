@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Cors;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
+
+using Microsoft.AspNetCore.Mvc;
+//using System.Web.Http.Cors;
 
 using Facilitate.Libraries.Models;
 
 namespace Facilitate.Api.Controllers
 {
-    [DisableCors]
+    //[DisableCors]
     [Route("api/[controller]")]
     [ApiController]
     public class AddressOnlyController : ControllerBase

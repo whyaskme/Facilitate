@@ -1,15 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
-using Facilitate.Libraries.Models;
-using System.Web.Http.Cors;
+﻿using MongoDB.Driver;
 
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
+//using System.Web.Http.Cors;
+
+using Facilitate.Libraries.Models;
 
 namespace Facilitate.Api.Controllers
 {
-    [DisableCors]
+    //[DisableCors]
     [Route("api/[controller]")]
     [ApiController]
     public class TestController : ControllerBase

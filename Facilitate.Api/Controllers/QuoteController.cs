@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Cors;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
+
+using Microsoft.AspNetCore.Mvc;
+//using System.Web.Http.Cors;
 
 using Facilitate.Libraries.Models;
 
 namespace Facilitate.Api.Controllers
 {
-    [DisableCors]
+    //[DisableCors]
     [Route("api/[controller]")]
     [ApiController]
     public class QuoteController : ControllerBase
@@ -48,6 +49,8 @@ namespace Facilitate.Api.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] QuoteRoofleSubmission roofleSubmission)
         {
+            Quote aggregateQuote = new Quote();
+
             author = new ApplicationUser();
             author.Id = Guid.NewGuid().ToString();
             author.FirstName = "Roofle";
@@ -94,7 +97,6 @@ namespace Facilitate.Api.Controllers
                         headerReferer = header.Value;
                 }
 
-                Quote aggregateQuote = new Quote();
                 aggregateQuote.status = "Opportunity";
 
                 aggregateQuote.Trade = utils.TitleCaseString("Aggregate");
@@ -306,7 +308,7 @@ namespace Facilitate.Api.Controllers
             {
 
             }
-            return Ok(resultMsg);
+            return Ok(aggregateQuote);
         }
 
         private void CreateSiblingRelationships(Quote aggregateQuote, List<Quote> newQuoteListQueue)
