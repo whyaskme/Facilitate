@@ -5,8 +5,6 @@ VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Facilitate.Libraries", "Facilitate.Libraries\Facilitate.Libraries.csproj", "{3F7DC359-1AF4-4FDA-9B69-2725868FF6C1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Facilitate.Api", "Facilitate.Api\Facilitate.Api.csproj", "{4C91E384-6970-4FED-823A-D1C8F10C6966}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Facilitate.Admin", "Facilitate.Admin\Facilitate.Admin.csproj", "{C4BB7D86-CAB5-424D-8B36-5AE9C380FC7D}"
 EndProject
 Global
@@ -19,10 +17,6 @@ Global
 		{3F7DC359-1AF4-4FDA-9B69-2725868FF6C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F7DC359-1AF4-4FDA-9B69-2725868FF6C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F7DC359-1AF4-4FDA-9B69-2725868FF6C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4C91E384-6970-4FED-823A-D1C8F10C6966}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4C91E384-6970-4FED-823A-D1C8F10C6966}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4C91E384-6970-4FED-823A-D1C8F10C6966}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4C91E384-6970-4FED-823A-D1C8F10C6966}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C4BB7D86-CAB5-424D-8B36-5AE9C380FC7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C4BB7D86-CAB5-424D-8B36-5AE9C380FC7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4BB7D86-CAB5-424D-8B36-5AE9C380FC7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
