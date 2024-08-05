@@ -111,6 +111,52 @@ button {
     font-size: 0.75em !important;
 }
 
+/*Set Sibling styles*/
+.quote-header-sibling {
+    background: #bfbf26 !important;
+    border: solid 0px #000000 !important;
+    border-radius: 5px !important;
+    position: relative !important;
+    margin: 0px !important;
+    text-align: center !important;
+    color: #ffff !important;
+    font-style: normal !important;
+    font-size: 1.2em !important;
+    font-weight: bold !important;
+    width: 100% !important;
+    padding: 10px !important;
+    margin-bottom: 20px !important;
+}
+
+.quote-title-sibling {
+    border: solid 0px #bfbf26 !important;
+    text-align: center !important;
+    font-size: 1.35em !important;
+    font-weight: bold !important;
+    font-style: italic !important;
+    margin-bottom: 25px !important;
+}
+
+.quote-color-value-sibling {
+    border: solid 0px #bfbf26 !important;
+    font-weight: bold !important;
+    color: #bfbf26 !important;
+}
+
+.quote-color-sibling {
+    color: #bfbf26 !important;
+    font-size: 1.0em !important;
+    font-weight: bold !important;
+    border: solid 0px #bfbf26 !important;
+}
+
+.action-button-sibling {
+    border: solid 1px #bfbf26 !important;
+    color: #ffffff !important;
+    background-color: #bfbf26 !important;
+    width: 135px !important;
+}
+
 /*Set Standalone styles*/
 .quote-header-standalone {
     background: #014b01 !important;

@@ -1580,6 +1580,13 @@ else
     {
         switch (quoteContainerType.ToLower())
         {
+            case "sibling":
+                currentQuoteColorCssClass = "quote-color-sibling";
+                currentQuoteHeaderTypeCssClass = "quote-header-sibling";
+                currentQuoteContainerTypeCssClass = "quote-title-sibling";
+                currentActionButtonClass = "action-button-sibling";
+                break;
+
             case "standalone":
                 currentQuoteColorCssClass = "quote-color-standalone";
                 currentQuoteHeaderTypeCssClass = "quote-header-standalone";
@@ -2949,6 +2956,15 @@ else
                     NoteList = NoteList.OrderByDescending(x => x.DateTime).ToList();
 
                     SetCssClasses(currentQuoteContainerType);
+
+                    foreach (QuoteSummary summary in RelatedQuoteSummaryList)
+                    {
+                        if (summary.relationship == "Sibling")
+                        {
+                            currentQuoteContainerType = "Sibling";
+                            break;
+                        }
+                    }
 
                     InvokeAsync(() =>
                     {
