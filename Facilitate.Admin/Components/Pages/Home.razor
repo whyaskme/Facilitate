@@ -13,30 +13,25 @@
 @using DevExpress.Data.Linq;
 
 @attribute [StreamRendering(true)]
-@* @rendermode InteractiveServer *@
-@inject WebServices WebServices
 
-@inject NavigationManager NavigationManager
-@inject IHttpClientFactory ClientFactory
-@inject HttpClient httpClient
+@inject WebServices WebServices
 
 @inject NavigationManager navMan
 
 <PageTitle>Welcome to Facilitate Platform Administration</PageTitle>
 
-<h3>Facilitate Platform Administration</h3>
-
 <div class="row">
     <div class="col-md-auto">
-        @* <img src="/images/backgrounds/contractors bg - youtube.jpg" class="homepage-contractor" /> *@
-        Dashboard coming soon....
+        <img src="/images/backgrounds/Dawn Thumb.jpg" class="homepage-image-main" />
     </div>
 </div>
 
-<AuthorizeView>
+<h3>Facilitate Platform Administration</h3>
+
+@* <AuthorizeView>
     <Authorized>
         @{
-            navMan.NavigateTo("/Quotes/Leads");
+            navMan.NavigateTo("/Quotes/Opportunities");
         }
     </Authorized>
     <NotAuthorized>
@@ -44,64 +39,17 @@
             navMan.NavigateTo("/Account/Login");
         }
     </NotAuthorized>
-</AuthorizeView>
-
-@* <AuthorizeView>
-    <Authorized>
-        <div class="quotes-leaderboard">
-            <span class="summary-item">
-                <span class="stat-count"><b>@leaderboardStats.TotalQuoteCount.ToString("N0") Quotes</b></span>
-                <span class="stat-count">@leaderboardStats.TotalQuoteValue.ToString("C0")</span>
-                <span class="stat-count"><span class="value-sqft-separator">&raquo;</span>@leaderboardStats.TotalQuoteSqFt.ToString("N0")sqft</span>
-            </span>
-            <span class="summary-item">
-                <a href="/quotes/leads">Leads</a>
-                <span class="stat-count"><b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
-                <span class="stat-count">@leaderboardStats.LeadValue.ToString("C0")</span>
-            </span>
-            <span class="summary-item">
-                <a href="/quotes/opportunities">Opportunities</a>
-                <span class="stat-count"><b>@leaderboardStats.OpportunityCount.ToString("N0")</b></span>
-                <span class="stat-count">@leaderboardStats.OpportunityValue.ToString("C0")</span>
-            </span>
-            <span class="summary-item">
-                <a href="/quotes/customers">Customers</a>
-                <span class="stat-count"><b>@leaderboardStats.CustomerCount.ToString("N0")</b></span>
-                <span class="stat-count">@leaderboardStats.CustomerValue.ToString("C0")</span>
-            </span>
-            <span class="summary-item">
-                <a href="/quotes/completed">Completions</a>
-                <span class="stat-count"><b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
-                <span class="stat-count">@leaderboardStats.CompletionValue.ToString("C0")</span>
-            </span>
-            <span class="summary-item">
-                <a href="/quotes/archives">Archives</a>
-                <span class="stat-count"><b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
-                <span class="stat-count">@leaderboardStats.ArchiveValue.ToString("C0")</span>
-            </span>
-            <span class="summary-item">
-                <a href="/quotes/warranties">Warranties</a>
-                <span class="stat-count"><b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
-                <span class="stat-count">@leaderboardStats.WarrantyValue.ToString("C0")</span>
-            </span>
-        </div>
-    </Authorized>
-    <NotAuthorized>
-        <div class="row">
-            <div class="col-md-4 system-warning">
-                You must be logged in to access this system
-            </div>
-        </div>
-    </NotAuthorized>
 </AuthorizeView> *@
 
 @code {
+    [CascadingParameter]
+    private HttpContext? HttpContext { get; set; }
 
-    public QuoteLeaderboard leaderboardStats;
+    public QuoteLeaderboard LeaderboardStats;
 
     protected override void OnInitialized()
     {
-        leaderboardStats = WebServices.GetLeaderBoardStats();
+        LeaderboardStats = WebServices.GetLeaderboardStats();
     }
 
 }

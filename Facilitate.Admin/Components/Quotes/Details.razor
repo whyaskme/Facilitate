@@ -2,12 +2,10 @@
 @page "/quotes/details/{QuoteId}"
 @page "/quotes/details/{QuoteId}/{Referrer}"
 
-@using Facilitate.Admin.Components.Upload
 @using Facilitate.Admin.Data;
 @using Facilitate.Libraries.Models;
 
-@using DevExpress.Blazor.Base;
-@using DevExpress.XtraEditors;
+
 
 @using DevExpress.Utils;
 
@@ -15,6 +13,7 @@
 
 @using Microsoft.AspNetCore.Http;
 @using Microsoft.AspNetCore.Http.Extensions;
+@using Microsoft.AspNetCore.Html;
 @using Microsoft.AspNetCore.Identity;
 @using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 @using Microsoft.AspNetCore.Mvc;
@@ -23,22 +22,19 @@
 
 @using System.Collections.Generic;
 @using System.ComponentModel.DataAnnotations;
-
-@using MongoDB.Bson;
-
-@using MongoDB.Driver;
-
 @using System.Text.Json;
 
+@using MongoDB.Bson;
+@using MongoDB.Driver;
+
 @using DevExpress.Blazor;
+@using DevExpress.Blazor.Base;
 @using DevExpress.Data;
 @using DevExpress.Data.Linq;
 @using DevExpress.Web;
+@using DevExpress.XtraEditors;
 
-@using Microsoft.AspNetCore.Html;
 @using UsingUploadEditDataGrid.Data;
-
-@* @implements IDisposable; *@
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
@@ -205,10 +201,10 @@ else
                             @{
                                 if(CurrentlySelectedQuote.Trade == "Aggregate")
                                 {
-                                    <div class="col-md-1">
+                                    <div class="col-md-2">
                                        <button class="@currentActionButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Add Bidder</button>
                                     </div>
-                                    <div class="col-md-11">
+                                    <div class="col-md-10">
                                         <h6>@RelatedQuoteSummaryList.Count() Bidders</h6>
                                     </div>
                                     <div>
@@ -1319,11 +1315,9 @@ else
     bool ErrorVisible { get; set; } = false;
     string MyError { get; set; }
 
-    public FileUrlStorageService _fileUrlStorageService;
-
     protected override async Task OnInitializedAsync()
     {
-        _fileUrlStorageService = new FileUrlStorageService();
+        //_fileUrlStorageService = new FileUrlStorageService();
 
         uploadUrl = "/api/Upload/UploadFile";
     }
@@ -1337,7 +1331,7 @@ else
 
     protected void OnFileUploaded(FileUploadEventArgs args, TestModel item)
     {
-        var fileUrl = _fileUrlStorageService.Get(Guid.Parse(args.FileInfo.Guid));
+        //var fileUrl = _fileUrlStorageService.Get(Guid.Parse(args.FileInfo.Guid));
     }
 
     void OnUploadError(FileUploadErrorEventArgs e)
@@ -2307,7 +2301,7 @@ else
         parentQuote.notes = new List<Note>();
         parentQuote.attachments = new List<Attachment>();
         parentQuote.events = new List<Event>();
-        parentQuote.Groups = new List<ObjectId>();
+        //parentQuote.Groups = new List<ObjectId>();
         parentQuote.products = new List<Product>();
         parentQuote.warranties = new List<Warranty>();
 
@@ -2378,7 +2372,7 @@ else
                             childQuote.notes = new List<Note>();
                             childQuote.attachments = new List<Attachment>();
                             childQuote.events = new List<Event>();
-                            childQuote.Groups = new List<ObjectId>();
+                            // childQuote.Groups = new List<ObjectId>();
                             childQuote.products = new List<Product>();
                             childQuote.warranties = new List<Warranty>();
                         }
@@ -2436,7 +2430,7 @@ else
                         childQuote.notes = new List<Note>();
                         childQuote.attachments = new List<Attachment>();
                         childQuote.events = new List<Event>();
-                        childQuote.Groups = new List<ObjectId>();
+                        //childQuote.Groups = new List<ObjectId>();
                         childQuote.products = new List<Product>();
                         childQuote.warranties = new List<Warranty>();
                         childQuote.relationships = new List<Relationship>();

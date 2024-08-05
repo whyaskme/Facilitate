@@ -12,6 +12,7 @@ using ServiceStack;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Mail;
+using System.Security.Cryptography;
 using System.Text;
 using static Facilitate.Libraries.Models.Constants.Messaging;
 
@@ -50,6 +51,138 @@ namespace Facilitate.Admin.Data
             _apiClient.BaseAddress = new Uri("https://api.facilitate.org/api");
         }
 
+        public List<ListItem> GetColumnWidths()
+        {
+            List<ListItem> columnWidths = new List<ListItem>();
+
+            ListItem columItem = new ListItem();
+            columItem.Text = "Row";
+            columItem.Value = "35";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "Record Id";
+            columItem.Value = "215";
+            columnWidths.Add(columItem);
+            
+            columItem = new ListItem();
+            columItem.Text = "Status";
+            columItem.Value = "100";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "IsQualified";
+            columItem.Value = "85";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "Trade";
+            columItem.Value = "100";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "Category";
+            columItem.Value = "100";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "Created";
+            columItem.Value = "160";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "Updated";
+            columItem.Value = "160";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "LastEventDetails";
+            columItem.Value = "auto";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "FirstName";
+            columItem.Value = "85";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "LastName";
+            columItem.Value = "100";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "Email";
+            columItem.Value = "150";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "Street";
+            columItem.Value = "auto";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "City";
+            columItem.Value = "125";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "State";
+            columItem.Value = "50";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "Zip";
+            columItem.Value = "65";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "SqFt";
+            columItem.Value = "65";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "Bid";
+            columItem.Value = "85";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "Bidder";
+            columItem.Value = "125";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "BidExpires";
+            columItem.Value = "100";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "BidType";
+            columItem.Value = "100";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "Actions";
+            columItem.Value = "100";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "Author";
+            columItem.Value = "150";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "EventDetails";
+            columItem.Value = "auto";
+            columnWidths.Add(columItem);
+
+            columItem = new ListItem();
+            columItem.Text = "Relationship";
+            columItem.Value = "100";
+            columnWidths.Add(columItem);
+
+            return columnWidths;
+    }
+
         public List<Quote> quoteList = new List<Quote>();
 
         public List<QuoteHeader> GetSummaries(string status, bool showHideTestData)
@@ -61,8 +194,11 @@ namespace Facilitate.Admin.Data
                     .Include(p => p._id)
                     .Include(p => p.email)
                     .Include(p => p.status)
-                    .Include(p => p.projectManager)
-                    .Include(p => p.applicationType)
+                    .Include(p => p.Bidder)
+                    .Include(p => p.BidderType)
+                    .Include(p => p.BiddingExpires)
+                    .Include(p => p.Trade)
+                    .Include(p => p.TradeCategory)
                     .Include(p => p.numberOfStructures)
                     .Include(p => p.numberOfIncludedStructures)
                     .Include(p => p.totalQuote)
@@ -85,8 +221,14 @@ namespace Facilitate.Admin.Data
                 }
 
                 List<QuoteHeader> quoteHeaders = _mongoDBCollection.Find(filter).Project<QuoteHeader>(fields).ToList();
+
+                var rowIndex = quoteHeaders.Count;
+
                 foreach (var quote in quoteHeaders)
                 {
+                    rowIndex--;
+
+                    //quote.rowIndex = rowIndex;
                     quote.lastUpdated = quote.lastUpdated.ToLocalTime();
                     quote.timestamp = quote.timestamp.ToLocalTime();
                 }
@@ -110,8 +252,9 @@ namespace Facilitate.Admin.Data
                     .Include(p => p._id)
                     .Include(p => p.email)
                     .Include(p => p.status)
-                    .Include(p => p.projectManager)
-                    .Include(p => p.applicationType)
+                    .Include(p => p.Bidder)
+                    .Include(p => p.Trade)
+                    .Include(p => p.TradeCategory)
                     .Include(p => p.numberOfStructures)
                     .Include(p => p.numberOfIncludedStructures)
                     .Include(p => p.totalQuote)
@@ -124,7 +267,7 @@ namespace Facilitate.Admin.Data
                     .Include(p => p.zip);
 
                 var filterBuilder = Builders<Quote>.Filter;
-                var filter = filterBuilder.Eq("status", status) & filterBuilder.Eq("applicationType", utils.TitleCaseString(tradeType));
+                var filter = filterBuilder.Eq("status", status) & filterBuilder.Eq("Trade", utils.TitleCaseString(tradeType));
 
                 if (!showHideTestData)
                 {
@@ -162,6 +305,8 @@ namespace Facilitate.Admin.Data
                     .Include(p => p.status)
                     .Include(p => p.numberOfStructures)
                     .Include(p => p.numberOfIncludedStructures)
+                    .Include(p => p.Trade)
+                    .Include(p => p.TradeCategory)
                     .Include(p => p.totalQuote)
                     .Include(p => p.totalSquareFeet)
                     .Include(p => p.timestamp)
@@ -175,7 +320,7 @@ namespace Facilitate.Admin.Data
                 var builder = Builders<Quote>.Filter;
                 var filter = Builders<Quote>.Filter.And(
                     Builders<Quote>.Filter.Where(p => p.status.Contains(status)),
-                    Builders<Quote>.Filter.Where(p => p.projectManager.Email.Contains(userId))
+                    Builders<Quote>.Filter.Where(p => p.Bidder.Email.Contains(userId))
                     );
 
                 List<Quote> quotes = _mongoDBCollection.Find(filter).Project<Quote>(fields).ToList();
@@ -203,6 +348,66 @@ namespace Facilitate.Admin.Data
                     _header.lastUpdated = quotes[i].lastUpdated.ToLocalTime();
 
                     QuoteHeaders.Add(_header);
+                }
+
+                return QuoteHeaders;
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+
+            return QuoteHeaders;
+        }
+
+        public List<QuoteSummary> GetRelatedQuoteSummaries(Quote quote)
+        {
+            List<QuoteSummary> QuoteHeaders = new List<QuoteSummary>();
+
+            try
+            {
+                foreach(var relationship in quote.relationships)
+                {
+                    var filter = Builders<Quote>.Filter.Eq(f => f._id, relationship._id);
+
+                    Quote _quote = _mongoDBCollection.Find(filter).ToList()[0];
+
+                    var rowIndex = 0;
+
+                    QuoteSummary _summary = new QuoteSummary();
+
+                    rowIndex++;
+
+                    _summary.rowIndex = rowIndex;
+
+                    var quoteId = relationship._id;
+                    var filter2 = Builders<Quote>.Filter.Eq(f => f._id, quoteId);
+                    var relatedQuote = _mongoDBCollection.Find(filter2).ToList()[0];
+
+                    _summary.relationship = relationship.Type;
+                    _summary._id = relatedQuote._id;
+                    _summary.Trade = relatedQuote.Trade;
+                    _summary.status = relatedQuote.status;
+
+                    _summary.DateCreated = relatedQuote.timestamp.ToLocalTime();
+
+                    _summary.totalQuote = relatedQuote.totalQuote;
+
+                    _summary.Bidder = relatedQuote.Bidder;
+                    _summary.BidderType = relatedQuote.BidderType;
+                    _summary.BiddingExpires = relatedQuote.BiddingExpires;
+
+                    if(relatedQuote.events.Count > 0)
+                    {
+                        Event lastEvent = relatedQuote.events.LastOrDefault();
+                        _summary.events = relatedQuote.events;
+                        _summary.Trade = relatedQuote.Trade;
+                        _summary.TradeCategory = relatedQuote.TradeCategory;
+                        _summary.lastEventDetails = lastEvent.Details;
+                        _summary.lastEventTimeStamp = lastEvent.DateTime.ToLocalTime();
+                    }
+
+                    QuoteHeaders.Add(_summary);
                 }
 
                 return QuoteHeaders;
@@ -255,9 +460,9 @@ namespace Facilitate.Admin.Data
                     {
                         Libraries.Models.Attachment currentAttachment = sortedQuotes[i].attachments[j];
 
-                        var currentDateTime = currentAttachment.Date;
+                        var currentDateTime = currentAttachment.DateTime;
 
-                        currentAttachment.Date = currentAttachment.Date.ToLocalTime();
+                        currentAttachment.DateTime = currentAttachment.DateTime.ToLocalTime();
 
                         unSortedFiles.Add(currentAttachment);
                     }
@@ -265,7 +470,7 @@ namespace Facilitate.Admin.Data
                     for (var j = 0; j < sortedQuotes[i].notes.Count; j++)
                     {
                         Note currentNote = sortedQuotes[i].notes[j];
-                        currentNote.Date = currentNote.Date.ToLocalTime();
+                        currentNote.DateTime = currentNote.DateTime.ToLocalTime();
 
                         unSortedNotes.Add(currentNote);
                     }
@@ -298,10 +503,10 @@ namespace Facilitate.Admin.Data
             List<Quote> sortedQuotes = new List<Quote>();
             try
             {
-                var tradeFilter = Builders<Quote>.Filter.Where(p => p.applicationType.Contains(utils.TitleCaseString(tradeType)));
+                var tradeFilter = Builders<Quote>.Filter.Where(p => p.Trade.Contains(utils.TitleCaseString(tradeType)));
 
                 var filterBuilder = Builders<Quote>.Filter;
-                var filter = filterBuilder.Eq("status", status) & filterBuilder.Eq("applicationType", utils.TitleCaseString(tradeType));
+                var filter = filterBuilder.Eq("status", status) & filterBuilder.Eq("Trade", utils.TitleCaseString(tradeType));
 
                 if (!showHideTestData)
                 {
@@ -336,9 +541,9 @@ namespace Facilitate.Admin.Data
                     {
                         Libraries.Models.Attachment currentAttachment = sortedQuotes[i].attachments[j];
 
-                        var currentDateTime = currentAttachment.Date;
+                        var currentDateTime = currentAttachment.DateTime;
 
-                        currentAttachment.Date = currentAttachment.Date.ToLocalTime();
+                        currentAttachment.DateTime = currentAttachment.DateTime.ToLocalTime();
 
                         unSortedFiles.Add(currentAttachment);
                     }
@@ -346,7 +551,7 @@ namespace Facilitate.Admin.Data
                     for (var j = 0; j < sortedQuotes[i].notes.Count; j++)
                     {
                         Note currentNote = sortedQuotes[i].notes[j];
-                        currentNote.Date = currentNote.Date.ToLocalTime();
+                        currentNote.DateTime = currentNote.DateTime.ToLocalTime();
 
                         unSortedNotes.Add(currentNote);
                     }
@@ -407,9 +612,9 @@ namespace Facilitate.Admin.Data
                     {
                         Libraries.Models.Attachment currentAttachment = sortedQuotes[i].attachments[j];
 
-                        var currentDateTime = currentAttachment.Date;
+                        var currentDateTime = currentAttachment.DateTime;
 
-                        currentAttachment.Date = currentAttachment.Date.ToLocalTime();
+                        currentAttachment.DateTime = currentAttachment.DateTime.ToLocalTime();
 
                         unSortedFiles.Add(currentAttachment);
                     }
@@ -417,7 +622,7 @@ namespace Facilitate.Admin.Data
                     for (var j = 0; j < sortedQuotes[i].notes.Count; j++)
                     {
                         Note currentNote = sortedQuotes[i].notes[j];
-                        currentNote.Date = currentNote.Date.ToLocalTime();
+                        currentNote.DateTime = currentNote.DateTime.ToLocalTime();
 
                         unSortedNotes.Add(currentNote);
                     }
@@ -453,7 +658,7 @@ namespace Facilitate.Admin.Data
                 var builder = Builders<Quote>.Filter;
                 var filter = Builders<Quote>.Filter.And(
                     Builders<Quote>.Filter.Where(p => p.status.Contains(status)),
-                    Builders<Quote>.Filter.Where(p => p.projectManager.Email.Contains(userId))
+                    Builders<Quote>.Filter.Where(p => p.Bidder.Email.Contains(userId))
                     );
 
                 sortedQuotes = _mongoDBCollection.Find(filter).SortByDescending(e => e.timestamp).ToList();
@@ -481,9 +686,9 @@ namespace Facilitate.Admin.Data
                     {
                         Libraries.Models.Attachment currentAttachment = sortedQuotes[i].attachments[j];
 
-                        var currentDateTime = currentAttachment.Date;
+                        var currentDateTime = currentAttachment.DateTime;
 
-                        currentAttachment.Date = currentAttachment.Date.ToLocalTime();
+                        currentAttachment.DateTime = currentAttachment.DateTime.ToLocalTime();
 
                         unSortedFiles.Add(currentAttachment);
                     }
@@ -491,7 +696,7 @@ namespace Facilitate.Admin.Data
                     for (var j = 0; j < sortedQuotes[i].notes.Count; j++)
                     {
                         Note currentNote = sortedQuotes[i].notes[j];
-                        currentNote.Date = currentNote.Date.ToLocalTime();
+                        currentNote.DateTime = currentNote.DateTime.ToLocalTime();
 
                         unSortedNotes.Add(currentNote);
                     }
@@ -519,14 +724,38 @@ namespace Facilitate.Admin.Data
             return sortedQuotes;
         }
 
-        public List<string> GetTradesList()
+        public List<ListItem> GetTradesList(bool filterActiveTrade, string activeQuoteTrade)
         {
+            List<ListItem> masterList = new List<ListItem>();
+
             try
             {
                 var filter = new BsonDocument();
-                var tradesList = _mongoDBCollection.Distinct(s => s.applicationType, new BsonDocument());
 
-                return tradesList.ToList();
+                var tradeFilter = Builders<Quote>.Filter.Where(p => p._t == "Quote");
+
+                //if (filterActiveTrade)
+                //{
+                //    var dataSourceFilter = Builders<Quote>.Filter.Not(Builders<Quote>.Filter.Eq(p => p.Trade, activeQuoteTrade));
+
+                //    tradeFilter = Builders<Quote>.Filter.And(filter, dataSourceFilter);
+                //}
+
+                var tradesList = _mongoDBCollection.Distinct(s => s.Trade, tradeFilter).ToList();
+
+                foreach (var trade in tradesList)
+                {
+                    if(!trade.Contains("Aggregate"))
+                    {
+                        ListItem tradeItem = new ListItem();
+                        tradeItem.Text = trade;
+                        tradeItem.Value = trade;
+
+                        masterList.Add(tradeItem);
+                    }
+                }
+
+                return masterList;
             }
             catch (Exception ex)
             {
@@ -536,6 +765,38 @@ namespace Facilitate.Admin.Data
             return null;
         }
 
+        public List<string> GetTradesList(string status)
+        {
+            try
+            {
+                var filter = new BsonDocument();
+
+                if (status == "All")
+                {
+                    var statusFilter = Builders<Quote>.Filter.Where(p => p._t == "Quote");
+
+                    var tradesList = _mongoDBCollection.Distinct(s => s.Trade, statusFilter);
+
+                    return tradesList.ToList();
+                }
+                else
+                {
+                    var statusFilter = Builders<Quote>.Filter.Where(p => p.status.Contains(status));
+
+                    var tradesList = _mongoDBCollection.Distinct(s => s.Trade, statusFilter);
+
+                    return tradesList.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+
+            return null;
+        }
+
+
         public List<Quote> GetQuote(string quoteId)
         {
             try
@@ -543,75 +804,13 @@ namespace Facilitate.Admin.Data
                 var builder = Builders<Quote>.Filter;
                 var filter = builder.Eq(f => f._id, quoteId);
 
-                var sortedQuotes = _mongoDBCollection.Find(filter).ToList();
-                if (sortedQuotes.Count > 0)
-                {
-                    for (var i = 0; i < sortedQuotes.Count; i++)
-                    {
-                        if (sortedQuotes[i].firstName == "")
-                        {
-                            sortedQuotes[i].firstName = "Address";
-                        }
+                var quoteList = _mongoDBCollection.Find(filter).ToList();
 
-                        if (sortedQuotes[i].lastName == "")
-                        {
-                            sortedQuotes[i].lastName = "Only";
-                        }
-
-                        unSortedFiles.Clear();
-                        unSortedNotes.Clear();
-                        unSortedEvents.Clear();
-
-                        // Convert to local time
-                        sortedQuotes[i].timestamp = sortedQuotes[i].timestamp.ToLocalTime();
-                        sortedQuotes[i].lastUpdated = sortedQuotes[i].lastUpdated.ToLocalTime();
-
-                        for (var j = 0; j < sortedQuotes[i].attachments.Count; j++)
-                        {
-                            Libraries.Models.Attachment currentAttachment = sortedQuotes[i].attachments[j];
-
-                            var currentDateTime = currentAttachment.Date;
-
-                            currentAttachment.Date = currentAttachment.Date.ToLocalTime();
-
-                            unSortedFiles.Add(currentAttachment);
-                        }
-
-                        for (var j = 0; j < sortedQuotes[i].notes.Count; j++)
-                        {
-                            Note currentNote = sortedQuotes[i].notes[j];
-                            currentNote.Date = currentNote.Date.ToLocalTime();
-
-                            unSortedNotes.Add(currentNote);
-                        }
-
-                        for (var j = 0; j < sortedQuotes[i].events.Count; j++)
-                        {
-                            Event currentEvent = sortedQuotes[i].events[j];
-                            currentEvent.DateTime = currentEvent.DateTime.ToLocalTime();
-
-                            unSortedEvents.Add(currentEvent);
-                        }
-
-                        sortedQuotes[i].attachments = SortFilesByDateDesc(unSortedFiles);
-                        sortedQuotes[i].notes = SortNotesByDateDesc(unSortedNotes);
-                        sortedQuotes[i].events = SortEventsByDateDesc(unSortedEvents);
-                    }
-
-                    return sortedQuotes;
-                }
-                else
-                {
-                    return null;
-                }
+                return quoteList;
             }
             catch (Exception ex)
             {
-                resultMsg = ex.Message;
-            }
-            finally
-            {
-
+                return null;
             }
             return null;
         }
@@ -637,6 +836,27 @@ namespace Facilitate.Admin.Data
             return resultMsg;
         }
 
+        IMongoCollection<Quote> _quoteCollection;
+
+        public bool CreateQuote(Quote newQuote)
+        {
+            try
+            {
+                _quoteCollection = _mongoDBClient.GetDatabase(_mongoDBName).GetCollection<Quote>(_mongoDBCollectionName);
+
+                _quoteCollection.InsertOne(newQuote);
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                var errMsg = ex.Message;
+                return false;
+            }
+
+            return false;
+        }
+
         [HttpPut("{quote}")]
         public Quote UpdateQuote(Quote quote)
         {
@@ -658,9 +878,28 @@ namespace Facilitate.Admin.Data
             {
 
             }
+            return quote;
+        }
 
-            //quote = SortItemsByDateDesc(quote);
+        [HttpPut("{quote}")]
+        public Quote DeleteQuote(Quote quote)
+        {
+            string quoteId = quote._id;
 
+            try
+            {
+                var filter = Builders<Quote>.Filter.Eq(x => x._id, quoteId);
+
+                var result = _mongoDBCollection.DeleteOne(filter, _cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                resultMsg = ex.Message;
+            }
+            finally
+            {
+
+            }
             return quote;
         }
 
@@ -686,7 +925,7 @@ namespace Facilitate.Admin.Data
             return 0;
         }
 
-        public QuoteLeaderboard GetLeaderBoardStats()
+        public QuoteLeaderboard GetLeaderboardStats()
         {
             QuoteLeaderboard quoteLeaderboard = new QuoteLeaderboard();
 
@@ -759,11 +998,11 @@ namespace Facilitate.Admin.Data
             return quoteLeaderboard;
         }
 
-        public QuoteLeaderboard GetLeaderBoardStats(bool showHideTestData)
+        public QuoteLeaderboard GetLeaderboardStats(string status, bool showHideTestData)
         {
             QuoteLeaderboard quoteLeaderboard = new QuoteLeaderboard();
 
-            quoteLeaderboard.Trades = GetTradesList();
+            quoteLeaderboard.Trades = GetTradesList(status);
 
             var searchResults = new List<QuoteStat>();
             var dataSourceFilter = Builders<Quote>.Filter.Not(Builders<Quote>.Filter.Eq(p => p.externalUrl, "Auto-generated WebApi"));
@@ -860,19 +1099,19 @@ namespace Facilitate.Admin.Data
             return quoteLeaderboard;
         }
 
-        public QuoteLeaderboard GetLeaderBoardStats(string tradeType, string status, bool showHideTestData)
+        public QuoteLeaderboard GetLeaderboardStats(string tradeType, string status, bool showHideTestData)
         {
             QuoteLeaderboard quoteLeaderboard = new QuoteLeaderboard();
 
-            quoteLeaderboard.Trades = GetTradesList();
+            quoteLeaderboard.Trades = GetTradesList(status);
 
             var searchResults = new List<QuoteStat>();
             var dataSourceFilter = Builders<Quote>.Filter.Not(Builders<Quote>.Filter.Eq(p => p.externalUrl, "Auto-generated WebApi"));
 
-            //var tradeFilter = Builders<Quote>.Filter.Where(p => p.applicationType.Contains(utils.TitleCaseString(tradeType)));
+            //var tradeFilter = Builders<Quote>.Filter.Where(p => p.Trade.Contains(utils.TitleCaseString(tradeType)));
 
             var filterBuilder = Builders<Quote>.Filter;
-            var filter = filterBuilder.Eq("status", status) & filterBuilder.Eq("applicationType", utils.TitleCaseString(tradeType));
+            var filter = filterBuilder.Eq("status", status) & filterBuilder.Eq("Trade", utils.TitleCaseString(tradeType));
 
             if (!showHideTestData)
             {
@@ -974,14 +1213,14 @@ namespace Facilitate.Admin.Data
             return quoteLeaderboard;
         }
 
-        public QuoteLeaderboard GetLeaderBoardStats(string userId)
+        public QuoteLeaderboard GetLeaderboardStats(string userId)
         {
             QuoteLeaderboard quoteLeaderboard = new QuoteLeaderboard();
 
             try
             {
                 var countsByQuoteStatus = _mongoDBCollection.Aggregate()
-                    .Match(x => x.projectManager.Email == userId)
+                    .Match(x => x.Bidder.Email == userId)
                           .Group(
                               x => x.status,
                               g => new QuoteStat
@@ -1068,14 +1307,14 @@ namespace Facilitate.Admin.Data
         public List<Libraries.Models.Attachment> SortFilesByDateDesc(List<Libraries.Models.Attachment> originalList)
         {
             if (originalList != null)
-                return originalList.OrderByDescending(x => x.Date).ToList();
+                return originalList.OrderByDescending(x => x.DateTime).ToList();
             else return originalList;
         }
 
         public List<Note> SortNotesByDateDesc(List<Note> originalList)
         {
             if (originalList != null)
-                return originalList.OrderByDescending(x => x.Date).ToList();
+                return originalList.OrderByDescending(x => x.DateTime).ToList();
             else return originalList;
         }
 
