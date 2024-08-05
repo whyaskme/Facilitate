@@ -19,7 +19,7 @@
 @rendermode InteractiveServer
 @inject WebServices WebServices
 
-@inject NavigationManager NavigationManager
+@inject NavigationManager navMan
 @inject IHttpClientFactory ClientFactory
 @inject HttpClient httpClient
 
@@ -37,7 +37,7 @@
     <Authorized></Authorized>
     <NotAuthorized>
         @{
-            NavigationManager.NavigateTo("/Account/Login?returnurl=" + NavigationManager.Uri);
+            navMan.NavigateTo("/Account/Login?returnurl=" + navMan.Uri);
         }
     </NotAuthorized>
 </AuthorizeView>
@@ -52,58 +52,46 @@
     }
 </script>
 
-@if (quotes == null)
+@if (QuoteHeaders == null)
 {
-    @*     <p><em>Loading...</em></p> *@
+    @*     <p><em>Loading data...</em></p> *@
 }
 else
 {
     <div class="quotes-leaderboard-page-header">
-        <div class="col-md-3 stat-element">
-            <span class="stat-value"><b>@leaderboardStats.TotalQuoteCount.ToString("N0") Quotes</b></span>
-            <span class="stat-divider">|</span>
-            <span class="stat-value">@leaderboardStats.TotalQuoteValue.ToString("C0")</span>
-            <span class="stat-divider">|</span>
-            <span class="stat-value">@leaderboardStats.TotalQuoteSqFt.ToString("N0")sqft</span>
-            <span class="stat-divider">|</span>
+        <div class="col-md-6 stat-element stat-element-master">
+            <span>@LeaderboardStats.TotalQuoteCount.ToString("N0") Quotes</span>
+            <span class="stat-value"><b>@LeaderboardStats.TotalQuoteValue.ToString("C0")</b></span>
+            @*             <span class="stat-divider">|</span> *@
         </div>
-
-        <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
-            <Authorized>
-                <div class="col-md-1 stat-element">
-                    <a href="/quotes/leads">Leads</a>
-                    <span class="stat-value"><b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
-                </div>
-            </Authorized>
-            <NotAuthorized></NotAuthorized>
-        </AuthorizeView>
-
         <div class="col-md-1 stat-element">
             <a href="/quotes/opportunities">Opportunities</a>
-            <span class="stat-value"><b>@leaderboardStats.OpportunityCount.ToString("N0")</b></span>
+            <span class="stat-value"><b>@LeaderboardStats.OpportunityCount.ToString("N0")</b></span>
         </div>
         <div class="col-md-1 stat-element">
             <a href="/quotes/customers">Customers</a>
-            <span class="stat-value"><b>@leaderboardStats.CustomerCount.ToString("N0")</b></span>
+            <span class="stat-value"><b>@LeaderboardStats.CustomerCount.ToString("N0")</b></span>
         </div>
 
         <div class="col-md-1 stat-element">
             <a href="/quotes/completed">Completions</a>
-            <span class="stat-value"><b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
+            <span class="stat-value"><b>@LeaderboardStats.CompletionCount.ToString("N0")</b></span>
         </div>
 
         <div class="col-md-1 stat-element">
             <a href="/quotes/archives">Archives</a>
-            <span class="stat-value"><b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
+            <span class="stat-value"><b>@LeaderboardStats.ArchiveCount.ToString("N0")</b></span>
         </div>
 
-        <div class="col-md-1 stat-element">
+        <div class="col-md-2 stat-element">
             <a href="/quotes/warranties">Warranties</a>
-            <span class="stat-value"><b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
+            <span class="stat-value"><b>@LeaderboardStats.WarrantyCount.ToString("N0")</b></span>
         </div>
     </div>
 
     <div class="div-filters">
+
+        <button class="action-button header-recordID-button" @onclick="ShowRecordIdColumns">@RedcordIdButtonLabel</button>
 
         @{
             if (isSystemAdmin)
@@ -123,31 +111,24 @@ else
             <div id="dropdown-customization-target-container-trades">
                 <DxButton CssClass="action-button" Id="btnTrades" Click="() => IsTradesListOpen = !IsTradesListOpen">@TradesFilterLabel</DxButton>
             </div>
-            <DxDropDown
-                @bind-IsOpen="@IsTradesListOpen"
-                MinWidth="max(20vw, 100px)"
-                PositionMode="DropDownPositionMode.Bottom"
+            <DxDropDown @bind-IsOpen="@IsTradesListOpen"
+                        MinWidth="max(20vw, 100px)"
+                        PositionMode="DropDownPositionMode.Bottom"
                         PositionTarget="#dropdown-customization-target-container-trades"
-                RestrictionTarget="#Navigation-DropDown-Customization"
-                CloseMode="DropDownCloseMode.Close"
-                PreventCloseOnPositionTargetClick="true"
-                HeaderVisible="false"
-                HeaderText="Trades"
-                FooterVisible="false"
-               >
+                        RestrictionTarget="#Navigation-DropDown-Customization"
+                        CloseMode="DropDownCloseMode.Close"
+                        PreventCloseOnPositionTargetClick="true"
+                        HeaderVisible="false"
+                        HeaderText="Trades"
+                        FooterVisible="false">
                 <BodyContentTemplate>
-                        <DxListBox Data="@TradesList"
-                                   id="ddlTradesList"
-                                   @bind-Values="@TradeTypeValues"
-                                   SelectedItemsChanged="@((IEnumerable<ListItem> values) => FilterTradeType(values))"
-                                   SelectionMode="ListBoxSelectionMode.Single">
-                        </DxListBox>
-                    <SampleEditForm/>
+                    <DxListBox Data="@TradesList"
+                               id="ddlTradesList"
+                               @bind-Values="@TradeTypeValues"
+                               SelectedItemsChanged="@((IEnumerable<ListItem> values) => FilterTradeType(values))"
+                               SelectionMode="ListBoxSelectionMode.Single">
+                    </DxListBox>
                 </BodyContentTemplate>
-                <FooterContentTemplate>
-                    <DxButton CssClass="popup-button my-1 ms-2" Text="OK" Click="@context.CloseCallback"/>
-                    <DxButton CssClass="popup-button my-1 ms-2" Text="Cancel" Click="@context.CloseCallback"/>
-                </FooterContentTemplate>
             </DxDropDown>
         </div>
 
@@ -177,8 +158,8 @@ else
                     <SampleEditForm/>
                 </BodyContentTemplate>
                 <FooterContentTemplate>
-                    <DxButton CssClass="popup-button my-1 ms-2" Text="OK" Click="@context.CloseCallback"/>
-                    <DxButton CssClass="popup-button my-1 ms-2" Text="Cancel" Click="@context.CloseCallback"/>
+                    <DxButton CssClass="@currentActionButtonClass" Text="OK" Click="@context.CloseCallback"/>
+                    <DxButton CssClass="@currentActionButtonClass" Text="Cancel" Click="@context.CloseCallback"/>
                 </FooterContentTemplate>
             </DxDropDown>
         </div>
@@ -187,15 +168,14 @@ else
 
     <div class="quote-stats-header">
         <span class="quote-stats-count">@updateStatus Completions</span>
-        <span class="quote-stats-value">@leaderboardStats.CompletionValue.ToString("C0")</span>
-        <span class="quote-stats-sqft">@leaderboardStats.CompletionSqFt.ToString("N0")sqft</span>
+        <span class="quote-stats-value">@LeaderboardStats.CompletionValue.ToString("C0")</span>
     </div>
     <div class="quote-stats-hints">
         Select row to view details. Click column headers to sort. Type and hit enter in any empty cell to search that column. If you have grouped columns below, drag and drop the column back into the grid header to restore.
     </div>
 
     <DxGrid @ref="QuoteGrid"
-            Data="@quotes"
+            Data="@QuoteHeaders"
             KeyFieldName="_id"
             PageSize="10"
             PagerPosition="GridPagerPosition.Bottom"
@@ -213,20 +193,31 @@ else
             PageSizeSelectorAllRowsItemVisible="false"
             KeyboardNavigationEnabled="true">
         <Columns>
-            <DxGridDataColumn Visible="false" Width="200" Caption="Id" FieldName="_id" />
-            <DxGridDataColumn Width="115" Caption="Trade" FieldName="applicationType" />
-            <DxGridDataColumn Width="150" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
-            <DxGridDataColumn Width="150" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
-            <DxGridDataColumn Width="100" Caption="First" FieldName="firstName" />
-            <DxGridDataColumn Width="125" Caption="Last" FieldName="lastName" />
-            <DxGridDataColumn Width="200" Caption="Email" FieldName="email" />
-            <DxGridDataColumn Width="auto" Caption="Street" FieldName="street" />
-            <DxGridDataColumn Width="125" Caption="City" FieldName="city" />
-            <DxGridDataColumn Width="50" Caption="State" FieldName="state" />
-            <DxGridDataColumn Width="65" Caption="Zip" FieldName="zip" />
-            <DxGridDataColumn Width="65" Caption="SqFt" FieldName="totalSquareFeet" />
-            <DxGridDataColumn Width="75" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" />
-            <DxGridDataColumn Width="175" Caption="Manager" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="projectManager.FirstName + ' ' + projectManager.LastName" />
+            <dxg:TableView.FormatConditions>
+                <dxg:FormatCondition ValueRule="Equal" Value="Opportunity" FieldName="status" PredefinedFormatName="LightRedFillWithDarkRedText" />
+            </dxg:TableView.FormatConditions>
+            <DxGridDataColumn Visible="@ShowRowIndexColumn" Width="@RowIndexColumnWidth" Caption="Row" FieldName="rowIndex" />
+            <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="@RecordIdColumnWidth" Caption="Record Id" FieldName="_id" />
+            <DxGridDataColumn Visible="@ShowStatusColumn" Width="@StatusColumnWidth" Caption="Status" FieldName="status" />
+            <DxGridDataColumn Visible="@ShowTradeColumn" Width="@TradeColumnWidth" Caption="Trade" FieldName="Trade" />
+            <DxGridDataColumn Visible="@ShowCategoryColumn" Width="@CategoryColumnWidth" Caption="Category" FieldName="TradeCategory" />
+            <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="relationship" />
+            <DxGridDataColumn Visible="@ShowCreatedColumn" Width="@CreatedColumnWidth" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+            <DxGridDataColumn Visible="@ShowUpdatedColumn" Width="@UpdatedColumnWidth" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+            <DxGridDataColumn Visible="@ShowFirstNameColumn" Width="@FirstNameColumnWidth" Caption="First" FieldName="firstName" />
+            <DxGridDataColumn Visible="@ShowLastNameColumn" Width="@LastNameColumnWidth" Caption="Last" FieldName="lastName" />
+            <DxGridDataColumn Visible="@ShowEmailColumn" Width="@EmailColumnWidth" Caption="Email" FieldName="email" />
+            <DxGridDataColumn Visible="@ShowStreetColumn" Width="@StreetColumnWidth" Caption="Street" FieldName="street" />
+            <DxGridDataColumn Visible="@ShowCityColumn" Width="@CityColumnWidth" Caption="City" FieldName="city" />
+            <DxGridDataColumn Visible="@ShowStateColumn" Width="@StateColumnWidth" Caption="State" FieldName="state" />
+            <DxGridDataColumn Visible="@ShowZipColumn" Width="@ZipColumnWidth" Caption="Zip" FieldName="zip" />
+            <DxGridDataColumn Visible="@ShowSqFtColumn" Width="@SqFtColumnWidth" Caption="SqFt" FieldName="totalSquareFeet" />
+            <DxGridDataColumn Visible="@ShowBidColumn" Width="@BidColumnWidth" Caption="Bid" DisplayFormat="C0" FieldName="totalQuote" />
+            <DxGridDataColumn Visible="@ShowBidderColumn" Width="@BidderColumnWidth" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Bidder.FirstName + ' ' + Bidder.LastName" />
+            <DxGridDataColumn Visible="@ShowBidExpiresColumn" Width="@BidExpiresColumnWidth" Caption="Bid Expires" FieldName="BiddingExpires" />
+            <DxGridDataColumn Visible="@ShowBidTypeColumn" Width="@BidTypeColumnWidth" Caption="Bid Type" FieldName="BidderType" />
+            <DxGridDataColumn Visible="@ShowIsQualifiedColumn" Width="@IsQualifiedColumnWidth" Caption="Qualified?" FieldName="isQualified" />
+            <DxGridCommandColumn Visible="@ShowActionsColumn" Width="@ActionsColumnWidth" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
         </Columns>
     </DxGrid>
 }
@@ -238,6 +229,73 @@ else
 </DxLoadingPanel>
 
 @code {
+    [CascadingParameter]
+    private HttpContext? HttpContext { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (!user.Identity.IsAuthenticated)
+        {
+            navMan.NavigateTo("/Account/Login?returnurl=" + navMan.Uri);
+        }
+    }
+
+    public string StatusType = "Complete";
+
+    List<ListItem> columnWidths = new List<ListItem>();
+
+    public int currentQuoteIndex = 0;
+
+    public string currentActionButtonClass = "action-button-standalone";
+
+    public bool ShowRowIndexColumn { get; set; }
+    public bool ShowRecordIdColumn { get; set; }
+    public bool ShowStatusColumn { get; set; }
+    public bool ShowTradeColumn { get; set; }
+    public bool ShowCategoryColumn { get; set; }
+    public bool ShowCreatedColumn { get; set; }
+    public bool ShowUpdatedColumn { get; set; }
+    public bool ShowFirstNameColumn { get; set; }
+    public bool ShowLastNameColumn { get; set; }
+    public bool ShowEmailColumn { get; set; }
+    public bool ShowStreetColumn { get; set; }
+    public bool ShowCityColumn { get; set; }
+    public bool ShowStateColumn { get; set; }
+    public bool ShowZipColumn { get; set; }
+    public bool ShowSqFtColumn { get; set; }
+    public bool ShowBidColumn { get; set; }
+    public bool ShowBidderColumn { get; set; }
+    public bool ShowBidExpiresColumn { get; set; }
+    public bool ShowBidTypeColumn { get; set; }
+    public bool ShowActionsColumn { get; set; }
+    public bool ShowRelationshipColumn { get; set; }
+    public bool ShowIsQualifiedColumn { get; set; }
+
+    public string RowIndexColumnWidth = "auto";
+    public string RecordIdColumnWidth = "auto";
+    public string StatusColumnWidth = "auto";
+    public string TradeColumnWidth = "auto";
+    public string CategoryColumnWidth = "auto";
+    public string CreatedColumnWidth = "auto";
+    public string UpdatedColumnWidth = "auto";
+    public string FirstNameColumnWidth = "auto";
+    public string LastNameColumnWidth = "auto";
+    public string EmailColumnWidth = "auto";
+    public string StreetColumnWidth = "auto";
+    public string CityColumnWidth = "auto";
+    public string StateColumnWidth = "auto";
+    public string ZipColumnWidth = "auto";
+    public string SqFtColumnWidth = "auto";
+    public string BidColumnWidth = "auto";
+    public string BidderColumnWidth = "auto";
+    public string BidExpiresColumnWidth = "auto";
+    public string BidTypeColumnWidth = "auto";
+    public string ActionsColumnWidth = "auto";
+    public string RelationshipColumnWidth = "auto";
+    public string IsQualifiedColumnWidth = "auto";
 
     public string LeadTypeFilterLabel { get; set; } = "Types (Complete Info)";
 
@@ -267,34 +325,42 @@ else
         }
     }
 
+    public string RedcordIdButtonLabel = "Show Hidden Data";
+    public void ShowRecordIdColumns()
+    {
+        if (ShowRecordIdColumn)
+        {
+            ShowRecordIdColumn = false;
+            RedcordIdButtonLabel = "Show Hidden Data";
+        }
+        else
+        {
+            ShowRecordIdColumn = true;
+            RedcordIdButtonLabel = "Hide Hidden Data";
+        }
+    }
+
     async void OnLocationChanged(object sender, LocationChangedEventArgs args)
     {
         TimerDispose();
-        NavigationManager.LocationChanged -= OnLocationChanged;
+        navMan.LocationChanged -= OnLocationChanged;
     }
 
     public ApplicationUser currentUser = new ApplicationUser();
     public bool isSystemAdmin = false;
     public bool isUserAdmin = false;
 
+    public Utils _utils = new Utils();
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            Utils _utils = new Utils();
-
             try
             {
                 LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
                 LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
                 LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
-
-                TradesList.Add(new ListItem() { Text = "All", Value = "All" });
-                var tradeList = WebServices.GetTradesList();
-                foreach (var trade in tradeList)
-                {
-                    TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
-                }
 
                 var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
                 var loggedInUser = authstate.User;
@@ -351,7 +417,7 @@ else
 
             SignInManager.SignOutAsync();
 
-            NavigationManager.NavigateTo("/Account/Lockout");
+            navMan.NavigateTo("/Account/Lockout");
         }
         catch (Exception ex)
         {
@@ -359,11 +425,106 @@ else
         }
     }
 
-    public QuoteLeaderboard leaderboardStats;
+    public QuoteLeaderboard LeaderboardStats;
 
     protected override void OnInitialized()
     {
-        NavigationManager.LocationChanged += OnLocationChanged;
+        navMan.LocationChanged += OnLocationChanged;
+
+        ShowRowIndexColumn = false;
+        ShowRecordIdColumn = false;
+        ShowStatusColumn = true;
+        ShowTradeColumn = true;
+        ShowCategoryColumn = true;
+        ShowCreatedColumn = true;
+        ShowUpdatedColumn = false;
+        ShowFirstNameColumn = true;
+        ShowLastNameColumn = true;
+        ShowEmailColumn = false;
+        ShowStreetColumn = true;
+        ShowCityColumn = true;
+        ShowStateColumn = true;
+        ShowZipColumn = true;
+        ShowBidColumn = true;
+        ShowBidderColumn = true;
+        ShowBidExpiresColumn = true;
+        ShowBidTypeColumn = true;
+        ShowActionsColumn = true;
+        ShowSqFtColumn = false;
+        ShowRelationshipColumn = true;
+        ShowIsQualifiedColumn = true;
+
+        columnWidths = WebServices.GetColumnWidths();
+
+        foreach (ListItem listItem in columnWidths)
+        {
+            switch (listItem.Text)
+            {
+                case "Row":
+                    RowIndexColumnWidth = listItem.Value;
+                    break;
+                case "Record Id":
+                    RecordIdColumnWidth = listItem.Value;
+                    break;
+                case "Status":
+                    StatusColumnWidth = listItem.Value;
+                    break;
+                case "Trade":
+                    TradeColumnWidth = listItem.Value;
+                    break;
+                case "Category":
+                    CategoryColumnWidth = listItem.Value;
+                    break;
+                case "Created":
+                    CreatedColumnWidth = listItem.Value;
+                    break;
+                case "Updated":
+                    UpdatedColumnWidth = listItem.Value;
+                    break;
+                case "FirstName":
+                    FirstNameColumnWidth = listItem.Value;
+                    break;
+                case "LastName":
+                    LastNameColumnWidth = listItem.Value;
+                    break;
+                case "Email":
+                    EmailColumnWidth = listItem.Value;
+                    break;
+                case "Street":
+                    StreetColumnWidth = listItem.Value;
+                    break;
+                case "City":
+                    CityColumnWidth = listItem.Value;
+                    break;
+                case "State":
+                    StateColumnWidth = listItem.Value;
+                    break;
+                case "Zip":
+                    ZipColumnWidth = listItem.Value;
+                    break;
+                case "SqFt":
+                    SqFtColumnWidth = listItem.Value;
+                    break;
+                case "Bid":
+                    BidColumnWidth = listItem.Value;
+                    break;
+                case "Bidder":
+                    BidderColumnWidth = listItem.Value;
+                    break;
+                case "BidExpires":
+                    BidExpiresColumnWidth = listItem.Value;
+                    break;
+                case "BidType":
+                    BidTypeColumnWidth = listItem.Value;
+                    break;
+                case "Actions":
+                    ActionsColumnWidth = listItem.Value;
+                    break;
+                case "Relationship":
+                    RelationshipColumnWidth = listItem.Value;
+                    break;
+            }
+        }
     }
 
     public int currentItemIndex = 0;
@@ -386,7 +547,7 @@ else
 
     #region Private Properties
 
-    private List<QuoteHeader>? quotes;
+    private List<QuoteHeader>? QuoteHeaders;
 
     IGrid QuoteGrid { get; set; }
 
@@ -500,16 +661,19 @@ else
         {
             index++;
 
-            SelectedTradeType = item.Value;
-            if (SelectedTradeType == "Roofing")
+            if (item != null)
             {
-                LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
-                LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
-                LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
-            }
-            else
-            {
-                LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
+                SelectedTradeType = item.Value;
+                if (SelectedTradeType == "Roofing")
+                {
+                    LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
+                    LeadTypeList.Add(new ListItem() { Text = "Address Only", Value = "Address Only" });
+                    LeadTypeList.Add(new ListItem() { Text = "Product Requested", Value = "Product Requested" });
+                }
+                else
+                {
+                    LeadTypeList.Add(new ListItem() { Text = "Complete Info", Value = "Complete Info" });
+                }
             }
         }
 
@@ -541,7 +705,7 @@ else
         var quoteId = selectedRow._id;
 
         var referrerUrl = "/completed/";
-        NavigationManager.NavigateTo("/quotes/details/" + quoteId + referrerUrl);
+        navMan.NavigateTo("/quotes/details/" + quoteId + referrerUrl);
     }
 
     public async Task<string> GetIpAddress()
@@ -561,9 +725,6 @@ else
 
     public virtual void PauseRefresh(bool isPaused)
     {
-        RefreshDisabled = isPaused;
-        // ArchiveLeadsDisabled = isPaused;
-
         if(isPaused)
         {
             RefreshButtonText = "Resume Refresh";
@@ -614,25 +775,61 @@ else
         {
             if (isSystemAdmin)
             {
-                if (SelectedTradeType.Contains("All"))
+                ShowBidColumn = true;
+                ShowRelationshipColumn = true;
+                ShowCategoryColumn = true;
+                ShowIsQualifiedColumn = false;
+
+                switch (SelectedTradeType)
                 {
-                    quotes = webServices.GetSummaries("Complete", ShowTestData);
-                    leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
-                }
-                else
-                {
-                    quotes = webServices.GetSummaries(SelectedTradeType, "Complete", ShowTestData);
-                    leaderboardStats = WebServices.GetLeaderBoardStats(SelectedTradeType, "Complete", ShowTestData);
+                    case "All":
+                        QuoteHeaders = webServices.GetSummaries(StatusType, ShowTestData);
+                        LeaderboardStats = WebServices.GetLeaderboardStats(StatusType, ShowTestData);
+                        break;
+                    case "Aggregate":
+                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, StatusType, ShowTestData);
+                        LeaderboardStats = WebServices.GetLeaderboardStats(StatusType, ShowTestData);
+                        ShowBidColumn = false;
+                        break;
+                    default:
+                        QuoteHeaders = webServices.GetSummaries(SelectedTradeType, StatusType, ShowTestData);
+                        LeaderboardStats = WebServices.GetLeaderboardStats(SelectedTradeType, StatusType, ShowTestData);
+                        ShowCategoryColumn = false;
+                        break;
                 }
             }
             else
             {
-                leaderboardStats = WebServices.GetLeaderBoardStats(currentUser.Email);
-                quotes = webServices.GetSummaries("Complete", currentUser.Email);
+                LeaderboardStats = WebServices.GetLeaderboardStats(currentUser.Email);
+                QuoteHeaders = webServices.GetSummaries(StatusType, currentUser.Email);
             }
 
-            updateStatus = quotes.Count().ToString("N0");
+            updateStatus = QuoteHeaders.Count().ToString("N0");
             StatusContainerClass = "container-action-buttons-show";
+
+            TradesList.Clear();
+            TradesList.Add(new ListItem() { Text = "All", Value = "All" });
+            foreach (var trade in LeaderboardStats.Trades)
+            {
+                TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
+            }
+
+            var rowIndex = QuoteHeaders.Count();
+            foreach (var quoteHeader in QuoteHeaders)
+            {
+                quoteHeader.rowIndex = rowIndex;
+
+                if (quoteHeader.Trade == "Aggregate")
+                {
+                    quoteHeader.relationship = "Parent";
+                }
+                else
+                {
+                    quoteHeader.relationship = "Child";
+                }
+
+                rowIndex--;
+            }
 
             InvokeAsync(() =>
             {

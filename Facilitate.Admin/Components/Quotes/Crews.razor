@@ -1,4 +1,4 @@
-﻿@page "/quotes/archives"
+﻿@page "/quotes/crews"
 
 @using Facilitate.Admin.Data;
 @using Facilitate.Libraries.Models;
@@ -20,8 +20,6 @@
 @inject WebServices WebServices
 
 @inject NavigationManager navMan
-@inject IHttpClientFactory ClientFactory
-@inject HttpClient httpClient
 
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserStore<ApplicationUser> UserStore
@@ -31,7 +29,7 @@
 
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
 
-<PageTitle>Archives</PageTitle>
+<PageTitle>Opportunities</PageTitle>
 
 <AuthorizeView>
     <Authorized></Authorized>
@@ -167,8 +165,8 @@ else
     </div>
 
     <div class="quote-stats-header">
-        <span class="quote-stats-count">@updateStatus Archives</span>
-        <span class="quote-stats-value">@LeaderboardStats.ArchiveValue.ToString("C0")</span>
+        <span class="quote-stats-count">@updateStatus Crews and Resources</span>
+        <span class="quote-stats-value">@LeaderboardStats.OpportunityValue.ToString("C0")</span>
     </div>
     <div class="quote-stats-hints">
         Select row to view details. Click column headers to sort. Type and hit enter in any empty cell to search that column. If you have grouped columns below, drag and drop the column back into the grid header to restore.
@@ -243,7 +241,7 @@ else
         }
     }
 
-    public string StatusType = "Archive";
+    public string StatusType = "Opportunity";
 
     List<ListItem> columnWidths = new List<ListItem>();
 
@@ -526,8 +524,6 @@ else
         }
     }
 
-    public int currentItemIndex = 0;
-
     IEnumerable<string> Values { get; set; }
     IEnumerable<string> LeadTypeValues { get; set; }
     IEnumerable<string> TradeTypeValues { get; set; }
@@ -547,6 +543,8 @@ else
     #region Private Properties
 
     private List<QuoteHeader>? QuoteHeaders;
+
+    public int currentItemIndex = 0;
 
     IGrid QuoteGrid { get; set; }
 
@@ -700,13 +698,12 @@ else
     {
         TimerDispose();
 
-        var selectedRow = (QuoteHeader) QuoteGrid.GetDataItem(args.VisibleIndex);
+        var selectedRow = (QuoteHeader)QuoteGrid.GetDataItem(args.VisibleIndex);
         var quoteId = selectedRow._id;
 
-        var referrerUrl = "/archives/";
+        var referrerUrl = "/opportunities/";
         navMan.NavigateTo("/quotes/details/" + quoteId + referrerUrl);
     }
-
     public async Task<string> GetIpAddress()
     {
         try
@@ -727,7 +724,7 @@ else
         if (isPaused)
         {
             RefreshButtonText = "Resume Refresh";
-            RefreshButtonClass = "btn-refresh-inactive";
+            RefreshButtonClass = "btn btn-outline-primary btn-refresh-inactive";
             StatusClass = "message-warning";
             RefreshStatus = " Auto refresh paused...";
 
@@ -772,13 +769,13 @@ else
 
         _timer = new Timer(new TimerCallback(_ =>
         {
-            ShowBidColumn = true;
-            ShowRelationshipColumn = true;
-            ShowCategoryColumn = true;
-            ShowIsQualifiedColumn = false;
-
             if (isSystemAdmin)
             {
+                ShowBidColumn = true;
+                ShowRelationshipColumn = true;
+                ShowCategoryColumn = true;
+                ShowIsQualifiedColumn = false;
+
                 switch (SelectedTradeType)
                 {
                     case "All":
@@ -803,15 +800,22 @@ else
                 QuoteHeaders = webServices.GetSummaries(StatusType, currentUser.Email);
             }
 
-            updateStatus = QuoteHeaders.Count().ToString("N0");
-            StatusContainerClass = "container-action-buttons-show";
+            LeaderboardStats = new QuoteLeaderboard();
+            QuoteHeaders = new List<QuoteHeader>();
 
-            TradesList.Clear();
-            TradesList.Add(new ListItem() { Text = "All", Value = "All" });
-            foreach (var trade in LeaderboardStats.Trades)
-            {
-                TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
-            }
+            // updateStatus = QuoteHeaders.Count().ToString("N0");
+            // StatusContainerClass = "container-action-buttons-show";
+
+            // TradesList.Clear();
+            // TradesList.Add(new ListItem() { Text = "All", Value = "All" });
+
+            // if (LeaderboardStats.Trades.Count > 0)
+            // {
+            //     foreach (var trade in LeaderboardStats.Trades)
+            //     {
+            //         TradesList.Add(new ListItem() { Text = _utils.TitleCaseString(trade), Value = _utils.TitleCaseString(trade) });
+            //     }
+            // }
 
             var rowIndex = QuoteHeaders.Count();
             foreach (var quoteHeader in QuoteHeaders)

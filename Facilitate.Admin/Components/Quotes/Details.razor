@@ -2,19 +2,31 @@
 @page "/quotes/details/{QuoteId}"
 @page "/quotes/details/{QuoteId}/{Referrer}"
 
+@using Facilitate.Admin.Components.Upload
 @using Facilitate.Admin.Data;
 @using Facilitate.Libraries.Models;
 
+@using DevExpress.Blazor.Base;
+@using DevExpress.XtraEditors;
+
+@using DevExpress.Utils;
+
+@using Microsoft.EntityFrameworkCore;
+
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Http.Extensions;
 @using Microsoft.AspNetCore.Identity;
 @using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 @using Microsoft.AspNetCore.Mvc;
 @using Microsoft.AspNetCore.Mvc.Rendering;
 @using Microsoft.AspNetCore.WebUtilities;
 
-@* @using Microsoft.AspNetCore.Http.Extensions; *@
-@using Microsoft.AspNetCore.Http;
+@using System.Collections.Generic;
+@using System.ComponentModel.DataAnnotations;
 
 @using MongoDB.Bson;
+
+@using MongoDB.Driver;
 
 @using System.Text.Json;
 
@@ -24,12 +36,15 @@
 @using DevExpress.Web;
 
 @using Microsoft.AspNetCore.Html;
+@using UsingUploadEditDataGrid.Data;
+
+@* @implements IDisposable; *@
 
 @attribute [StreamRendering(true)]
 @rendermode InteractiveServer
 @inject WebServices WebServices
 
-@inject NavigationManager NavigationManager
+@inject NavigationManager navMan
 @inject IHttpClientFactory ClientFactory
 @inject HttpClient httpClient
 
@@ -43,6 +58,8 @@
 
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
 
+@* @inject FileUrlStorageService _fileUrlStorageService *@
+
 @attribute [IgnoreAntiforgeryToken]
 
 <PageTitle>Leads</PageTitle>
@@ -51,7 +68,7 @@
     <Authorized></Authorized>
     <NotAuthorized>
         @{
-            NavigationManager.NavigateTo("/Account/Login?returnurl=" + NavigationManager.Uri);
+            navMan.NavigateTo("/Account/Login?returnurl=" + navMan.Uri);
         }
     </NotAuthorized>
 </AuthorizeView>
@@ -70,195 +87,226 @@
     }
 </script>
 
-@if (quotes == null)
+@if (QuotesList == null)
 {
-    @*     <p><em>Loading...</em></p> *@
+    @*     <p><em>Loading data...</em></p> *@
 }
 else
 {
-@*     <div class="quotes-leaderboard-page-header">
-        <div class="col-md-3 stat-element">
-            <span class="stat-value"><b>@leaderboardStats.TotalQuoteCount.ToString("N0") Quotes</b></span>
-            <span class="stat-divider">|</span>
-            <span class="stat-value">@leaderboardStats.TotalQuoteValue.ToString("C0")</span>
-            <span class="stat-divider">|</span>
-            <span class="stat-value">@leaderboardStats.TotalQuoteSqFt.ToString("N0")sqft</span>
-            <span class="stat-divider">|</span>
-        </div>
-        <div class="col-md-1 stat-element">
-            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
-                <Authorized>
-                    <a href="/quotes/leads">Leads</a>
-                    <span class="stat-value"><b>@leaderboardStats.LeadCount.ToString("N0")</b></span>
-                </Authorized>
-                <NotAuthorized></NotAuthorized>
-            </AuthorizeView>
-        </div>
-        <div class="col-md-1 stat-element">
-            <a href="/quotes/opportunities">Opportunities</a>
-            <span class="stat-value"><b>@leaderboardStats.OpportunityCount.ToString("N0")</b></span>
-        </div>
-        <div class="col-md-1 stat-element">
-            <a href="/quotes/customers">Customers</a>
-            <span class="stat-value"><b>@leaderboardStats.CustomerCount.ToString("N0")</b></span>
-        </div>
-        <div class="col-md-1 stat-element">
-            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
-                <Authorized>
-                    <a href="/quotes/completed">Completions</a>
-                    <span class="stat-value"><b>@leaderboardStats.CompletionCount.ToString("N0")</b></span>
-                </Authorized>
-                <NotAuthorized></NotAuthorized>
-            </AuthorizeView>
-        </div>
-        <div class="col-md-1 stat-element">
-            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
-                <Authorized>
-                    <a href="/quotes/archives">Archives</a>
-                    <span class="stat-value"><b>@leaderboardStats.ArchiveCount.ToString("N0")</b></span>
-                </Authorized>
-                <NotAuthorized></NotAuthorized>
-            </AuthorizeView>
-        </div>
-        <div class="col-md-1 stat-element">
-            <AuthorizeView Roles="System Admin,Site Admin,Group Admin">
-                <Authorized>
-                    <a href="/quotes/warranties">Warranties</a>
-                    <span class="stat-value"><b>@leaderboardStats.WarrantyCount.ToString("N0")</b></span>
-                </Authorized>
-                <NotAuthorized></NotAuthorized>
-            </AuthorizeView>
-        </div>
-    </div> *@
-
-    <div class="details-header">
-        <button class="action-button header-return-button" @onclick="ReturnPreviousPage">Return</button>
-       @selectedQuote.status Details for @selectedQuote.firstName @selectedQuote.lastName
+    <div class="@currentQuoteHeaderTypeCssClass">
+        <button class="@currentActionButtonClass button-header-left" @onclick="ReturnPreviousPage">Return</button>
+       @CurrentlySelectedQuote.status Details for @CurrentlySelectedQuote.firstName @CurrentlySelectedQuote.lastName
+        <button class="@currentActionButtonClass button-header-right" @onclick="ShowRecordIdColumns">@RedcordIdButtonLabel</button>
     </div>
 
     <DxGrid @ref="QuoteGrid"
-            Data="@quotes"
+            Data="@QuotesList"
             KeyFieldName="_id"
-            PageSize="1"
-            ShowFilterRow="false"
-            CssClass="mw-1100"
-            AutoExpandAllGroupRows="true"
-            RowClick="OnRowClick"
-            AllowSelectRowByClick="true"
-            SelectionMode="GridSelectionMode.Single"
-            @bind-SelectedDataItem="@SelectedQuoteItem"
             TextWrapEnabled="false">
         <Columns>
-            <DxGridDataColumn Width="225" Caption="Id" FieldName="_id" />
-            <DxGridDataColumn Width="auto" Caption="Trade" FieldName="applicationType" />
-            <DxGridDataColumn Width="auto" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
-            <DxGridDataColumn Width="auto" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+            <dxg:TableView.FormatConditions>
+                <dxg:FormatCondition ValueRule="Equal" Value="Opportunity" FieldName="status" PredefinedFormatName="LightRedFillWithDarkRedText" />
+            </dxg:TableView.FormatConditions>
+            <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="" />
+            <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
+            <DxGridDataColumn Visible="@ShowTradeColumn" Width="auto" Caption="Trade" FieldName="Trade" />
+            <DxGridDataColumn Width="175" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+            <DxGridDataColumn Width="175" Caption="Updated" FieldName="lastUpdated" DisplayFormat="MM/dd/yyyy hh:mm tt" />
             <DxGridDataColumn Width="auto" Caption="Street" FieldName="street" />
             <DxGridDataColumn Width="auto" Caption="City" FieldName="city" />
             <DxGridDataColumn Width="auto" Caption="State" FieldName="state" />
             <DxGridDataColumn Width="auto" Caption="Zip" FieldName="zip" />
-@*             <DxGridDataColumn Width="65" Caption="SqFt" FieldName="totalSquareFeet" />
-            <DxGridDataColumn Width="75" Caption="Quote" DisplayFormat="C0" FieldName="totalQuote" /> *@
         </Columns>
 
         <DetailRowTemplate>
             @{
-                selectedQuote = (Quote)context.DataItem;
+                CurrentlySelectedQuote = (Quote)context.DataItem;
 
-                var _emailTabLabel = "Email " + @selectedQuote.firstName + " Documents";
+                var currentIndex = 0;
 
-                roofsCount = selectedQuote.structures.Count;
-                if (roofsCount <= 1)
-                    roofsCountLabel = roofsCount.ToString() + " Roof Selected";
-                else
-                    roofsCountLabel = roofsCount.ToString() + " Roofs Selected";
+                var _emailTabLabel = "Email " + @CurrentlySelectedQuote.firstName + " Documents";
 
-                productsCount = selectedQuote.products.Count;
+                productsCount = CurrentlySelectedQuote.products.Count;
                 if (productsCount <= 1)
                     productsCountLabel = productsCount.ToString() + " Product Quoted";
                 else
                     productsCountLabel = productsCount.ToString() + " Products Quoted";
 
-                attachmentsCount = selectedQuote.attachments.Count;
-                notesCount = selectedQuote.notes.Count;
-                eventsCount = selectedQuote.events.Count;
 
+                if(CurrentlySelectedQuote.status == "Archive")
+                {
+                    <div class="@currentQuoteContainerTypeCssClass  @currentQuoteColorCssClass">Archived @CurrentlySelectedQuote.Trade Bid</div>
+                }
+                else
+                {
+                    <div class="@currentQuoteContainerTypeCssClass  @currentQuoteColorCssClass">@CurrentlySelectedQuote.Trade @currentQuoteContainerType</div>
+                }
+                
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label>Name</label>
-                        <span>@selectedQuote.firstName @selectedQuote.lastName</span>
+                        <span class="@currentQuoteColorCssClass">@CurrentlySelectedQuote.firstName @CurrentlySelectedQuote.lastName</span>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label>Address</label>
-                        <a href="https://www.google.com/maps/search/@selectedQuote.street @selectedQuote.city, @selectedQuote.state @selectedQuote.zip" target="_blank">
-                            @selectedQuote.street @selectedQuote.city, @selectedQuote.state @selectedQuote.zip
+                        <a href="https://www.google.com/maps/search/@CurrentlySelectedQuote.street @CurrentlySelectedQuote.city, @CurrentlySelectedQuote.state @CurrentlySelectedQuote.zip" target="_blank">
+                            @CurrentlySelectedQuote.street @CurrentlySelectedQuote.city, @CurrentlySelectedQuote.state @CurrentlySelectedQuote.zip
                         </a>
                     </div>
-                    <div class="col-md-4 quote-total">
-                        <span class="">@selectedQuote.totalSquareFeet.ToString("N0")</span>
-                        <span class="">sqft &raquo;</span>
-                        <span class="">@selectedQuote.totalQuote.ToString("C0")</span>
+                    <div class="col-md-3">
+                        <label>Email</label>
+                        <a href="mailto:@CurrentlySelectedQuote.email">
+                            <span>@CurrentlySelectedQuote.email</span>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Ph</label>
+                        <span>@CurrentlySelectedQuote.phone</span>
                     </div>
                 </div>
+
+                <hr />
+
                 <div class="row">
-                    <div class="col-md-4">
-                        <label>Email</label>
-                        <a href="mailto:@selectedQuote.email">
-                            <span>@selectedQuote.email</span>
-                        </a>
+
+                    <div class="col-md-3">
+                        <span class="header-total-element"><label>Quoted</label><span class="@ValueHiliteCss">@defaultQuoteValue.ToString("C0")</span></span>
                     </div>
-                    <div class="col-md-4">
-                        <label>Phone</label>
-                        <span>@selectedQuote.phone</span>
+
+                    <div class="col-md-3">
+                        <div class="header-total-element"><label>Avg Bid</label><span class="@ValueHiliteCss">@averageQuoteValue.ToString("C0")</span></div>
                     </div>
-                    <div class="col-md-4"></div>
+
+                    <div class="col-md-3">
+                        @{
+                            if (CurrentlySelectedQuote.Trade != "Aggregate")
+                            {
+                                <label class="header-total-element">Bid</label>
+                                <DxTextBox InputCssClass="header-total-element" Text="@CurrentlySelectedQuote.totalQuote.ToString("C0")" TextChanged="@((newValue) => OnTotalQuoteValueChanged(newValue))" CssClass="total-quote-value" />
+                            }
+                        }
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="header-total-element"><label>Bidding Expires</label>@CurrentlySelectedQuote.BiddingExpires</div>
+                    </div>
+
                 </div>
 
                 <div class="section-header">
-                    Project Dashboard
+                    @CurrentlySelectedQuote.Trade Dashboard
                 </div>
 
                 <DxTabs CssClass="tabs-container">
 
-                    <DxTabPage Id="Panel-Project-Manager" Text="Project Management">
+                    <DxTabPage Id="Panel-Project-Manager" Text="Relationships">
                     @{
-                        if (isSystemAdmin)
-                        {
-                            <button class="action-button" @onclick="@(() => IsAssignPopupVisible = true)">Manager Assignment</button>
-                            <br /><br />
-                        }
+                        <div class="row">
+                            @{
+                                if(CurrentlySelectedQuote.Trade == "Aggregate")
+                                {
+                                    <div class="col-md-1">
+                                       <button class="@currentActionButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Add Bidder</button>
+                                    </div>
+                                    <div class="col-md-11">
+                                        <h6>@RelatedQuoteSummaryList.Count() Bidders</h6>
+                                    </div>
+                                    <div>
+                                        <button class="@currentActionButtonClass @restoreButtonClass" @onclick="@(() => IsRestoreButtonVisble = true)">Restore Aggregate</button>
+                                        <button class="@currentActionButtonClass @acceptBidButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Accept Bid</button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-md-12">
+                                        <div>
+                                            <button class="@currentActionButtonClass @restoreButtonClass" @onclick="@(() => IsRestoreButtonVisble = true)">Restore Bid</button>
+                                            <button class="@currentActionButtonClass @acceptBidButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Accept Bid</button>
+                                        </div>
 
-                        if (selectedQuote.projectManager != null)
-                        {
-                            <div class="row">
-                                <div class="col">
-                                    <label>Project Manager</label>
-                                    <span class="detail-item">@selectedQuote.projectManager.FirstName</span><span class="detail-item">@selectedQuote.projectManager.LastName</span>
-                                </div>
+                                        <div>&nbsp;</div>
 
-                                <div class="col">
-                                    <label>Phone</label>
-                                    <span class="detail-item">@selectedQuote.projectManager.Phone</span>
-                                </div>
-                                <div class="col">
-                                    <label>Email</label>
-                                    <a href="mailto:@selectedQuote.projectManager.Email" target="_blank">
-                                        <span class="detail-item">@selectedQuote.projectManager.Email</span>
-                                    </a>
-                                </div>
-                                <div class="col">
-                                    <label>Market</label>
-                                    <a href="https://www.google.com/maps/search/@selectedQuote.projectManager.City, @selectedQuote.projectManager.State @selectedQuote.projectManager.Zip" target="_blank">
-                                        @selectedQuote.projectManager.City, @selectedQuote.projectManager.State
-                                    </a>
-                                </div>
-                            </div>
-                        }
+                                        <h5>Bidder</h5>
+                                        <span class="">
+                                            <label>Name</label>
+                                                <span class="detail-item">@CurrentlySelectedQuote.Bidder.FirstName @CurrentlySelectedQuote.Bidder.LastName</span>
+                                        </span>
+                                        <span class="">
+                                            <label>Ph</label>
+                                                <span class="detail-item">@CurrentlySelectedQuote.Bidder.Phone</span>
+                                        </span>
+                                        <span class="">
+                                            <label>Email</label>
+                                                <a href="mailto:@CurrentlySelectedQuote.Bidder.Email" target="_blank">
+                                                    <span class="detail-item">@CurrentlySelectedQuote.Bidder.Email</span>
+                                                </a>
+                                        </span>
+                                        <span class="">
+                                            <label>Market</label>
+                                            <a href="https://www.google.com/maps/search/@CurrentlySelectedQuote.Bidder.City, @CurrentlySelectedQuote.Bidder.State @CurrentlySelectedQuote.Bidder.Zip" target="_blank">
+                                                @CurrentlySelectedQuote.Bidder.City, @CurrentlySelectedQuote.Bidder.State
+                                            </a>
+                                        </span>
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                        <DxGrid @ref="RelatedQuoteGrid"
+                                id="RelatedQuoteGrid"
+                                Data="@RelatedQuoteSummaryList"
+                                KeyFieldName="_id"
+                                RowClick="ViewChildQuoteDetails"
+                                AllowSelectRowByClick="true"
+                                EditModelSaving="OnEditModelSaving"
+                                DataItemDeleting="OnDataItemDeleting"
+                                SelectionMode="GridSelectionMode.Single"
+                                @bind-SelectedDataItem="@SelectedChildQuoteItem"
+                                PageSize="10"
+                                PagerPosition="GridPagerPosition.Bottom"
+                                ShowGroupPanel="false"
+                                AutoExpandAllGroupRows="true"
+                                ShowFilterRow="false"
+                                PagerNavigationMode="PagerNavigationMode.InputBox"
+                                PageSizeSelectorVisible="true"
+                                PageSizeSelectorAllRowsItemVisible="false"
+                                KeyboardNavigationEnabled="true"
+                                TextWrapEnabled="false">
+                            <Columns>
+                                <dxg:TableView.FormatConditions>
+                                    <dxg:FormatCondition ValueRule="Equal" Value="Opportunity" FieldName="status" PredefinedFormatName="LightRedFillWithDarkRedText" />
+                                </dxg:TableView.FormatConditions>
+
+                                <DxGridDataColumn Visible="@ShowRowIndexColumn" Width="@RowIndexColumnWidth" Caption="Row" FieldName="rowIndex" />
+                                <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="@RecordIdColumnWidth" Caption="Record Id" FieldName="_id" />
+                                <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="relationship" />
+                                <DxGridDataColumn Visible="@ShowStatusColumn" Width="@StatusColumnWidth" Caption="Status" FieldName="status" />
+                                <DxGridDataColumn Visible="@ShowTradeColumn" Width="@TradeColumnWidth" Caption="Trade" FieldName="Trade" />
+                                <DxGridDataColumn Visible="@ShowCategoryColumn" Width="@CategoryColumnWidth" Caption="Category" FieldName="TradeCategory" />
+                                <DxGridDataColumn Visible="@ShowCreatedColumn" Width="@CreatedColumnWidth" Caption="Created" FieldName="timestamp" DisplayFormat="MM/dd/yyyy hh:mm tt" SortIndex="0" SortOrder="GridColumnSortOrder.Descending" AllowSort="true" />
+                                <DxGridDataColumn Visible="@ShowUpdatedColumn" Width="@UpdatedColumnWidth" Caption="Updated" FieldName="lastEventTimeStamp" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                <DxGridDataColumn Visible="@ShowLastEventColumn" Width="@LastEventColumnWidth" Caption="Last Event" FieldName="lastEventDetails" />
+                                <DxGridDataColumn Visible="@ShowSqFtColumn" Width="@SqFtColumnWidth" Caption="SqFt" FieldName="totalSquareFeet" />
+                                <DxGridDataColumn Visible="@ShowBidColumn" Width="@BidColumnWidth" Caption="Bid" DisplayFormat="C0" FieldName="totalQuote" />
+                                <DxGridDataColumn Visible="@ShowBidderColumn" Width="@BidderColumnWidth" Caption="Bidder" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Bidder.FirstName + ' ' + Bidder.LastName" />
+                                <DxGridDataColumn Visible="@ShowBidExpiresColumn" Width="@BidExpiresColumnWidth" Caption="Bid Expires" FieldName="BiddingExpires" />
+                                <DxGridDataColumn Visible="@ShowBidTypeColumn" Width="@BidTypeColumnWidth" Caption="Bid Type" FieldName="BidderType" />
+
+                                <DxGridDataColumn Visible="@ShowIsQualifiedColumn" Width="@IsQualifiedColumnWidth" Caption="Qualified?" FieldName="isQualified" />
+                                @{
+                                    if (CurrentlySelectedQuote.Trade == "Aggregate")
+                                    {
+                                        <DxGridCommandColumn Visible="@ShowActionsColumn" Width="100px" Caption="Actions" NewButtonVisible="false" EditButtonVisible="false" DeleteButtonVisible="true" />
+                                    }
+                                }
+                            </Columns>
+
+                        </DxGrid>
                     }
                     </DxTabPage>
 
                     @{
-                        if (@selectedQuote.status != "New" && @selectedQuote.status != "Opportunity")
+                        if (@CurrentlySelectedQuote.status != "New" && @CurrentlySelectedQuote.status != "Opportunity")
                         {
                             <DxTabPage Id="Panel-Project-Schedule" Text="Project Schedule">
                                 Scheduling component here...
@@ -266,245 +314,307 @@ else
                         }
                     }
 
-                    <DxTabPage Id="Panel-Project-Summary" CssClass="tab-container" Text="@roofsCountLabel">
-
-                        <div class="container">
-
-                            <div class="row item-details-container">
-                                <div class="col">
-                                    <label>Total Quote</label>
-                                    <span><b>@selectedQuote.totalQuote.ToString("C0")</b></span>
-                                </div>
-                                <div class="col">
-                                    <label>Total Sqft</label>
-                                    <span><b>@selectedQuote.totalSquareFeet.ToString("N0")</b></span>
-                                </div>
-                                <div class="col">
-                                    <label>Included Roofs</label>
-                                    <span><b>@selectedQuote.numberOfIncludedStructures.ToString("N0")</b></span>
-                                </div>
-                                <div class="col">
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                @{
-                                    currentItemIndex = 0;
-
-                                    for (var i = 0; i < @selectedQuote.structures.Count; i++)
-                                    {
-                                        currentItemIndex = i + 1;
-
-                                        <b>Roof #@currentItemIndex</b>
-                                        <div class="row item-details-container">
-                                            <div class="col">
-                                                <label>Included</label>
-                                                @{
-                                                    if(@selectedQuote.structures[i].isIncluded)
-                                                    {
-                                                        <span>Yes</span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="system-warning">No</span>
-                                                    }
-                                                }
-                                            </div>
-                                            <div class="col">
-                                                <label>Name</label>
-                                                <span>@selectedQuote.structures[i].name</span>
-                                            </div>
-                                            <div class="col">
-                                                <label>SqFt</label>
-                                                <span>@selectedQuote.structures[i].squareFeet.ToString("N0")</span>
-                                            </div>
-                                            <div class="col">
-                                                <label>Complexity</label>
-                                                <span>@selectedQuote.structures[i].roofComplexity</span>
-                                            </div>
-                                            <div class="col">
-                                                <label>Slope</label>
-                                                <span>@selectedQuote.structures[i].slope</span>
-                                            </div>
-                                        </div>
-                                    }
-                                }
-                            </div>
-                        </div>
-                    </DxTabPage>
-
-                    <DxTabPage Id="Panel-Products" Text="@productsCountLabel">
-
-                        <div class="container">
-                            @{
-                                for (var i = 0; i < @selectedQuote.products.Count; i++)
-                                {
-                                    currentItemIndex = i + 1;
-
-                                    var priceLabel = @selectedQuote.products[i].priceInfo.priceType;
-                                    if (priceLabel == "BasicFinancing")
-                                        priceLabel = "Basic";
-                                    else
-                                        priceLabel = @selectedQuote.products[i].priceInfo.priceType;
-
-                                    <b>Product #@currentItemIndex</b>
-
-                                    <div class="item-details-container">
-
-                                        <div class="row">
-                                            <div class="col">
-                                                <label>Name</label>
-                                                <span>@selectedQuote.products[i].name</span>
-                                            </div>
-                                            <div class="col">
-                                                <label>Waste Factor</label>
-                                                <span>@selectedQuote.products[i].wasteFactorMainRoof</span>
-                                            </div>
-                                            <div class="col">
-                                                <label>Price Type</label>
-                                                <span>@priceLabel</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col">
-                                                <label>Total Quote</label>
-                                                <span>@selectedQuote.products[i].priceInfo.total.ToString("C0")</span>
-                                            </div>
-                                            <div class="col">
-                                                <label>Per Square</label>
-                                                <span>@selectedQuote.products[i].priceInfo.pricePerSquare.ToString("C0")</span>
-                                            </div>
-                                            <div class="col">
-                                                <label>Monthly</label>
-                                                <span>@selectedQuote.products[i].priceInfo.monthly.ToString("C0")</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col">
-                                                <label>APR</label>
-                                                <span>@selectedQuote.products[i].priceInfo.apr%</span>
-                                            </div>
-                                            <div class="col">
-                                                <label>Months</label>
-                                                <span>@selectedQuote.products[i].priceInfo.months</span>
-                                            </div>
-                                            <div class="col">
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                }
-                            }
-                        </div>
-
-                    </DxTabPage>
-
                     @{
-                        if (@selectedQuote.status != "New")
+                        if (CurrentlySelectedQuote.Trade != "Aggregate")
                         {
-                            <DxTabPage Id="Panel-Send-Files" Text="@_emailTabLabel">
-                                <DxUpload Name="fileUpload1"
-                                          SelectButtonText="Upload"
-                                          AllowMultiFileUpload="true"
-                                          UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
-                                          SelectedFilesChanged="@SelectedFilesChanged"
-                                          MaxFileSize="15000000"
-                                          AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
-                                          AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
-                                          CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
-                                </DxUpload>
-                                <button class="action-button" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
-                            </DxTabPage>
+                            <DxTabPage Id="Panel-Project-Summary" CssClass="tab-container" Text="@tradesCountLabel">
 
-                            <DxTabPage Id="Panel-Attach-Files" Text="Attachments">
-                                <DxUpload Name="fileUpload2"
-                                          SelectButtonText="Upload"
-                                          AllowMultiFileUpload="true"
-                                          UploadUrl="@GetUploadUrl("api/Upload/Upload/")"
-                                          SelectedFilesChanged="@SelectedFilesChanged"
-                                          MaxFileSize="15000000"
-                                          AllowedFileExtensions="@(new List<string> { ".jpg", ".jpeg", ".gif", ".png", ".mpg", ".mp4" })"
-                                          AcceptedFileTypes="@(new List<string> {  "image/*", "video/*"})"
-                                          CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
-                                </DxUpload>
+                                <div class="container">
 
-                                @foreach (Attachment attachment in selectedQuote.attachments)
-                                {
-                                    if (!attachment.IsDeleted)
-                                    {
-                                        <div class="note-row">
-                                            <div>
-                                                <label>@attachmentsCount) @attachment.Date</label>
-                                            </div>
-
-                                            <span class="hyperlink-warning" @onclick="() => SelectAttachmentToDelete(selectedQuote, attachment)">Delete</span>
-
-                                            <span class="bar-spacer">|</span>
-                                            <a href="@attachment.MediaUrl" target="_blank">
-                                                <span>@attachment.MediaDescription</span>
-                                            </a>
-                                            <span class="bar-spacer">|</span>
-                                            <label>File Type</label>
-                                            <span>@FileType</span>
-                                            <span class="bar-spacer">|</span>
-                                            <label>Source</label>
-                                            <span>@attachment.Author.FirstName @attachment.Author.LastName</span>
+                                    <div class="row item-details-container">
+                                        <div class="col">
+                                            <label>Total Quote</label>
+                                            <span><b>@CurrentlySelectedQuote.totalQuote.ToString("C0")</b></span>
                                         </div>
-
-                                        attachmentsCount--;
-                                    }
-                                }
-                            </DxTabPage>
-
-                            <DxTabPage Id="Panel-Notes" Text="Notes">
-                                <button class="action-button" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
-                                @foreach (Note note in selectedQuote.notes)
-                                {
-                                    if (!note.IsDeleted)
-                                    {
-                                        <div class="note-row">
-                                            <div>
-                                                <label>@notesCount) @note.Date</label>
-                                            </div>
-
-                                            <span class="hyperlink-warning" @onclick="() => SelectNoteToDelete(selectedQuote, note)">Delete</span>
-
-                                            <span class="bar-spacer">|</span>
-                                            <span>@note.Details</span>
-
-                                            <span class="bar-spacer">|</span>
-                                            <label>Source</label>
-                                            <span>@note.Author.FirstName @note.Author.LastName</span>
+                                        <div class="col">
+                                            <label>Total Sqft</label>
+                                            <span><b>@CurrentlySelectedQuote.totalSquareFeet.ToString("N0")</b></span>
                                         </div>
-
-                                        notesCount--;
-                                    }
-                                }
-                            </DxTabPage>
-
-                            <DxTabPage Id="Panel-History" Text="History">
-                                @foreach (Event _event in selectedQuote.events)
-                                {
-                                    <div class="note-row">
-                                        <div class="">
-                                            <label>@eventsCount) @_event.DateTime</label>
+                                        <div class="col">
+                                            <label>Included Targets</label>
+                                            <span><b>@CurrentlySelectedQuote.numberOfIncludedStructures.ToString("N0")</b></span>
                                         </div>
-
-                                        <span class="bar-spacer">|</span>
-                                        <span>@_event.Details</span>
-
-                                        <span class="bar-spacer">|</span>
-                                        <label>Source</label>
-                                        <span>@_event.Author.FirstName @_event.Author.LastName</span>
+                                        <div class="col"></div>
                                     </div>
 
-                                    eventsCount--;
-                                }
+                                    <div class="row">
+                                        @{
+                                            currentItemIndex = 0;
+
+                                            for (var i = 0; i < @CurrentlySelectedQuote.structures.Count; i++)
+                                            {
+                                                currentItemIndex = i + 1;
+
+                                                <b>Roof #@currentItemIndex</b>
+                                                <div class="row item-details-container">
+                                                    <div class="col">
+                                                        <label>Included</label>
+                                                        @{
+                                                            if(@CurrentlySelectedQuote.structures[i].isIncluded)
+                                                            {
+                                                                <span>Yes</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="system-warning">No</span>
+                                                            }
+                                                        }
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>Name</label>
+                                                        <span>@CurrentlySelectedQuote.structures[i].name</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>SqFt</label>
+                                                        <span>@CurrentlySelectedQuote.structures[i].squareFeet.ToString("N0")</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>Complexity</label>
+                                                        <span>@CurrentlySelectedQuote.structures[i].roofComplexity</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>Slope</label>
+                                                        <span>@CurrentlySelectedQuote.structures[i].slope</span>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+
+                                </div>
+                            </DxTabPage>
+
+                            <DxTabPage Id="Panel-Products" Text="@productsCountLabel">
+
+                                <div class="container">
+                                    @{
+                                        for (var i = 0; i < @CurrentlySelectedQuote.products.Count; i++)
+                                        {
+                                            currentItemIndex = i + 1;
+
+                                            var priceLabel = @CurrentlySelectedQuote.products[i].priceInfo.priceType;
+                                            if (priceLabel == "BasicFinancing")
+                                                priceLabel = "Basic";
+                                            else
+                                                priceLabel = @CurrentlySelectedQuote.products[i].priceInfo.priceType;
+
+                                            <b>Product #@currentItemIndex</b>
+
+                                            <div class="item-details-container">
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label>Name</label>
+                                                        <span>@CurrentlySelectedQuote.products[i].name</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>Waste Factor</label>
+                                                        <span>@CurrentlySelectedQuote.products[i].wasteFactorMainRoof</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>Price Type</label>
+                                                        <span>@priceLabel</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label>Total Quote</label>
+                                                        <span>@CurrentlySelectedQuote.products[i].priceInfo.total.ToString("C0")</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>Per Square</label>
+                                                        <span>@CurrentlySelectedQuote.products[i].priceInfo.pricePerSquare.ToString("C0")</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>Monthly</label>
+                                                        <span>@CurrentlySelectedQuote.products[i].priceInfo.monthly.ToString("C0")</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label>APR</label>
+                                                        <span>@CurrentlySelectedQuote.products[i].priceInfo.apr%</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label>Months</label>
+                                                        <span>@CurrentlySelectedQuote.products[i].priceInfo.months</span>
+                                                    </div>
+                                                    <div class="col">
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        }
+                                    }
+                                </div>
+
                             </DxTabPage>
                         }
                     }
+
+                    @{
+                            <DxTabPage Id="Panel-Send-Files" Text="@_emailTabLabel">
+
+                                <DxUpload Name="ImageUpload"
+                                          SelectButtonText="Select Files"
+                                          AllowMultiFileUpload="true"
+                                          UploadUrl="@GetUploadUrl(@uploadUrl)"
+                                          ChunkSize="@chunkSize"
+                                          ShowFileList="true"
+                                          AllowedFileExtensions="@allowedFileExtensions"
+                                          AcceptedFileTypes="@acceptableFileTypes"
+                                          FileUploadError="@OnUploadError"
+                                          FileUploadStarted="@OnFileUploadStarted"
+                                          SelectedFilesChanged="@SelectedFilesChanged"
+                                          MaxFileSize="@MaxFileSize">
+                                </DxUpload>
+
+                                <div class="alert alert-danger @(ErrorVisible? " visible" : " invisible")">@MyError</div>
+                                <button class="@currentActionButtonClass" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
+                            </DxTabPage>
+
+                            <DxTabPage Id="Panel-Attach-Files" Text="Attachments">
+
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <DxUpload 
+                                        Name="UploadAttachments"
+                                        id="UploadAttachments"
+                                        SelectButtonText="Upload"
+                                        AllowMultiFileUpload="true"
+                                        UploadUrl="@GetUploadUrl(@uploadUrl)"
+                                        FileUploadError="@OnUploadError"
+                                        FileUploadStarted="@OnFileUploadStarted"
+                                        SelectedFilesChanged="@SelectedFilesChanged"
+                                        MaxFileSize="@MaxFileSize"
+                                        AllowedFileExtensions="@allowedFileExtensions"
+                                        AcceptedFileTypes="@acceptableFileTypes"
+                                        CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
+                                    </DxUpload>
+                                </div>
+                                <div class="col-md-10">
+                                    <span class="section-title">@AttachmentList.Count() Attachments</span>
+                                </div>
+                            </div>
+
+                            <div class="row error-details alert alert-danger @(ErrorVisible? " visible" : " invisible")">@MyError</div>
+
+                            <DxGrid @ref="AttachmentGrid"
+                                Data="@AttachmentList"
+                                id="AttachmentGrid"
+                                KeyFieldName="_id"
+                                CssClass="AttachmentGrid"
+                                PageSize="10"
+                                PagerPosition="GridPagerPosition.Bottom"
+                                ShowGroupPanel="false"
+                                AutoExpandAllGroupRows="true"
+                                ShowFilterRow="false"
+                                PagerNavigationMode="PagerNavigationMode.InputBox"
+                                PageSizeSelectorVisible="true"
+                                PageSizeSelectorAllRowsItemVisible="false"
+                                KeyboardNavigationEnabled="true"
+                                TextWrapEnabled="false">
+                                <Columns>
+                                    <dxg:TableView.FormatConditions>
+                                        <dxg:FormatCondition ValueRule="Equal" Value="Opportunity" FieldName="status" PredefinedFormatName="LightRedFillWithDarkRedText" />
+                                    </dxg:TableView.FormatConditions>
+                                    <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="" />
+                                    <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
+                                    <DxGridDataColumn Width="175" Caption="Date" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                    <DxGridDataColumn Width="100" Caption="Trade" FieldName="Trade" />
+                                    <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="relationship" />
+                                    <DxGridDataColumn Width="150" Caption="Name" FieldName="MediaName" />
+                                    <DxGridDataColumn Width="auto" Caption="Description" FieldName="MediaDescription" />
+                                    <DxGridDataColumn Width="auto" Caption="Url" FieldName="MediaUrl" />
+                                    <DxGridDataColumn Width="175" Caption="Author" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Author.FirstName + ' ' + Author.LastName" />
+                                </Columns>
+                            </DxGrid>
+
+                        </DxTabPage>
+                    }
+
+                    <DxTabPage Id="Panel-Notes" Text="Notes">
+
+                        <div class="row">
+                            <div class="col-md-1">
+                                <button class="@currentActionButtonClass" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
+                            </div>
+                            <div class="col-md-11">
+                                <h6>@NoteList.Count() Notes</h6>
+                            </div>
+                        </div>
+
+                        <DxGrid @ref="NoteGrid"
+                                id="NoteGrid"
+                                Data="@NoteList"
+                                KeyFieldName="_id"
+                                PageSize="10"
+                                PagerPosition="GridPagerPosition.Bottom"
+                                ShowGroupPanel="false"
+                                AutoExpandAllGroupRows="true"
+                                ShowFilterRow="false"
+                                PagerNavigationMode="PagerNavigationMode.InputBox"
+                                PageSizeSelectorVisible="true"
+                                PageSizeSelectorAllRowsItemVisible="false"
+                                KeyboardNavigationEnabled="true"
+                                TextWrapEnabled="false">
+                            <Columns>
+                                <dxg:TableView.FormatConditions>
+                                    <dxg:FormatCondition ValueRule="Equal" Value="Opportunity" FieldName="status" PredefinedFormatName="LightRedFillWithDarkRedText" />
+                                </dxg:TableView.FormatConditions>
+                                <DxGridDataColumn Visible="false" Width="50" Caption="Row" FieldName="" />
+                                <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="225" Caption="Record Id" FieldName="_id" />
+                                <DxGridDataColumn Width="175" Caption="Date" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                <DxGridDataColumn Width="150" Caption="Trade" FieldName="Trade" />
+                                <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="relationship" />
+                                <DxGridDataColumn Width="auto" Caption="Details" FieldName="Details" />
+                                <DxGridDataColumn Width="175" Caption="Author" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Author.FirstName + ' ' + Author.LastName" />
+                            </Columns>
+                        </DxGrid>
+                    </DxTabPage>
+
+                    <DxTabPage Id="Panel-History" Text="History">
+
+                        <div class="row">
+                            <div class="col-md-1">
+                                <button class="@currentActionButtonClass" @onclick="@(() => IsPopupVisibleExportEvents = true)">Export Events</button>
+                            </div>
+                            <div class="col-md-11">
+                                <h6>@EventList.Count() Events</h6>
+                            </div>
+                        </div>
+
+                        <DxGrid @ref="EventGrid"
+                            id="EventGrid"
+                            Data="@EventList"
+                            KeyFieldName="_id"
+                            PageSize="10"
+                            PagerPosition="GridPagerPosition.Bottom"
+                            ShowGroupPanel="false"
+                            AutoExpandAllGroupRows="true"
+                            ShowFilterRow="false"
+                            PagerNavigationMode="PagerNavigationMode.InputBox"
+                            PageSizeSelectorVisible="true"
+                            PageSizeSelectorAllRowsItemVisible="false"
+                            KeyboardNavigationEnabled="true"
+                            TextWrapEnabled="false">
+                            <Columns>
+                                <dxg:TableView.FormatConditions>
+                                    <dxg:FormatCondition ValueRule="Equal" Value="Opportunity" FieldName="status" PredefinedFormatName="LightRedFillWithDarkRedText" />
+                                </dxg:TableView.FormatConditions>
+                                <DxGridDataColumn Visible="@ShowRowIndexColumn" Width="@RowIndexColumnWidth" Caption="Row" FieldName="" />
+                                <DxGridDataColumn Visible="@ShowRecordIdColumn" Width="@RecordIdColumnWidth" Caption="Record Id" FieldName="_id" />
+                                <DxGridDataColumn Visible="@ShowCreatedColumn" Width="@CreatedColumnWidth" Caption="Date" FieldName="DateTime" DisplayFormat="MM/dd/yyyy hh:mm tt" />
+                                <DxGridDataColumn Visible="@ShowTradeColumn" Width="@TradeColumnWidth" Caption="Trade" FieldName="Trade" />
+                                <DxGridDataColumn Visible="@ShowRelationshipColumn" Width="@RelationshipColumnWidth" Caption="Relationship" FieldName="Relationship" />
+                                <DxGridDataColumn Visible="@ShowEventDetailsColumn" Width="@EventDetailsColumnWidth" Caption="Details" FieldName="Details" />
+                                <DxGridDataColumn Visible="@ShowEventAuthorColumn" Width="@EventAuthorColumnWidth" Caption="Author" FieldName="PMFullName" UnboundType="GridUnboundColumnType.String" UnboundExpression="Author.FirstName + ' ' + Author.LastName" />
+                            </Columns>
+                        </DxGrid>
+
+                    </DxTabPage>
 
                     <DxTabPage Id="Panel-Origination" Text="Origination">
                         <table id="table-origin" class="table-detail">
@@ -513,16 +623,16 @@ else
                                 <tr>
                                     <td>
                                         <label>Market</label>
-                                        <span>@selectedQuote.market</span>
+                                        <span>@CurrentlySelectedQuote.market</span>
                                     </td>
                                     <td>
                                         <label>Rep Name</label>
-                                        <span>@selectedQuote.repName</span>
+                                        <span>@CurrentlySelectedQuote.repName</span>
                                     </td>
                                     <td>
                                         <label>Rep Email</label>
-                                        <a href="mailto:@selectedQuote.repEmail">
-                                            <span>@selectedQuote.repEmail</span>
+                                        <a href="mailto:@CurrentlySelectedQuote.repEmail">
+                                            <span>@CurrentlySelectedQuote.repEmail</span>
                                         </a>
                                     </td>
                                 </tr>
@@ -530,28 +640,28 @@ else
                                 <tr>
                                     <td>
                                         <label>RecId</label>
-                                        <span>@selectedQuote._id</span>
+                                        <span>@CurrentlySelectedQuote._id</span>
                                     </td>
                                     <td>
                                         <label>Referrer</label>
-                                        <a href="@selectedQuote.externalUrl" target="_blank">
-                                            <span>@selectedQuote.externalUrl</span>
+                                        <a href="@CurrentlySelectedQuote.externalUrl" target="_blank">
+                                            <span>@CurrentlySelectedQuote.externalUrl</span>
                                         </a>
                                     </td>
                                     <td>
                                         <label>Session</label>
-                                        <span>@selectedQuote.sessionId</span>
+                                        <span>@CurrentlySelectedQuote.sessionId</span>
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td>
                                         <label>RefId</label>
-                                        <span>@selectedQuote.leadId</span>
+                                        <span>@CurrentlySelectedQuote.leadId</span>
                                     </td>
                                     <td>
                                         <label>Created</label>
-                                        <span>@selectedQuote.timestamp</span>
+                                        <span>@CurrentlySelectedQuote.timestamp</span>
                                     </td>
                                     <td>
                                     </td>
@@ -563,58 +673,61 @@ else
 
                 </DxTabs>
 
-                if (selectedQuote.status != "New")
-                {
-                    <div class="section-header">
-                        10-Step Project Workflow
-                    </div>
+                // if (CurrentlySelectedQuote.status != "New")
+                // {
+                //     if (CurrentlySelectedQuote.Trade != "Aggregate")
+                //     {
+                //         <div class="section-header">
+                //             10-Step Project Workflow
+                //         </div>
 
-                    <DxTabs Id="tabs-Customer-Qualifications" CssClass="tabs-container">
+                //         <DxTabs Id="tabs-Customer-Qualifications" CssClass="tabs-container">
 
-                        <DxTabPage Id="Panel-Customer-Qualifications-Mission-Statement-Acknowledgment" CssClass="tab-container" Text="1) Mission Statement Acknowledgment">
-                            Mission Statement Acknowledgment...
-                        </DxTabPage>
+                //             <DxTabPage Id="Panel-Customer-Qualifications-Mission-Statement-Acknowledgment" CssClass="tab-container" Text="1) Mission Statement Acknowledgment">
+                //                 Mission Statement Acknowledgment...
+                //             </DxTabPage>
 
-                        <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Needs-Analysis" Text="2) Needs Analysis">
-                            Needs Analysis...
-                        </DxTabPage>
+                //             <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Needs-Analysis" Text="2) Needs Analysis">
+                //                 Needs Analysis...
+                //             </DxTabPage>
 
-                        <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Project-Manager-Inspection-Report" Text="3) Project Manager Inspection Report">
-                            Project Manager Inspection Report...
-                        </DxTabPage>
+                //             <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Project-Manager-Inspection-Report" Text="3) Project Bidder Inspection Report">
+                //                 Project Bidder Inspection Report...
+                //             </DxTabPage>
 
-                        <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Pictometry-Measurements" Text="4) Pictometry Measurements">
-                            Pictometry Measurements...
-                        </DxTabPage>
+                //             <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Pictometry-Measurements" Text="4) Pictometry Measurements">
+                //                 Pictometry Measurements...
+                //             </DxTabPage>
 
-                        <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Installer-Inspection-Report" Text="5) Installer Inspection Report">
-                            Installer Inspection Report...
-                        </DxTabPage>
+                //             <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Installer-Inspection-Report" Text="5) Installer Inspection Report">
+                //                 Installer Inspection Report...
+                //             </DxTabPage>
 
-                        <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Material-Order" Text="6) Material Order">
-                            Material Order...
-                        </DxTabPage>
+                //             <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Material-Order" Text="6) Material Order">
+                //                 Material Order...
+                //             </DxTabPage>
 
-                        <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Labor-Order" Text="7) Labor Order">
-                            Labor Order...
-                        </DxTabPage>
+                //             <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Labor-Order" Text="7) Labor Order">
+                //                 Labor Order...
+                //             </DxTabPage>
 
-                        <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Total-Project-Expense-Summary" Text="8) Total Project Expense Summary">
-                            Total Project Expense Summary...
-                        </DxTabPage>
+                //             <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Total-Project-Expense-Summary" Text="8) Total Project Expense Summary">
+                //                 Total Project Expense Summary...
+                //             </DxTabPage>
 
-                        <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Facilitate-Sample-Warranty" Text="9) Facilitate Sample Warranty">
-                            Facilitate Sample Warranty...
-                        </DxTabPage>
+                //             <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Facilitate-Sample-Warranty" Text="9) Facilitate Sample Warranty">
+                //                 Facilitate Sample Warranty...
+                //             </DxTabPage>
 
-                        <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Signed-Proposal" Text="10) Signed Proposal">
-                            Signed Proposal...
-                        </DxTabPage>
+                //             <DxTabPage Enabled="false" Id="Panel-Customer-Qualifications-Signed-Proposal" Text="10) Signed Proposal">
+                //                 Signed Proposal...
+                //             </DxTabPage>
 
-                    </DxTabs>
-                }
+                //         </DxTabs>
+                //     }
+                // }
 
-                if (@selectedQuote.warranties.Count > 0)
+                if (@CurrentlySelectedQuote.warranties.Count > 0)
                 {
                     var claimsInitialized = false;
 
@@ -627,7 +740,7 @@ else
                             var claimCount = 0;
                             var claimLabel = "";
 
-                            foreach (Warranty warranty in @selectedQuote.warranties)
+                            foreach (Warranty warranty in @CurrentlySelectedQuote.warranties)
                             {
                                 switch (warranty._t)
                                 {
@@ -716,7 +829,7 @@ else
 
                                             <div class="row">
                                                 <div class="col" style="text-align: center !important;">
-                                                    <button class="action-button" @onclick="@(() => IsPopupVisibleCloseWarrantyClaim = true)">Close Warranty Claim</button>
+                                                    <button class="@currentActionButtonClass" @onclick="@(() => IsPopupVisibleCloseWarrantyClaim = true)">Close Warranty Claim</button>
                                                 </div>
                                             </div>
 
@@ -734,29 +847,29 @@ else
 
                 <div class="quote-detail-controls-container">
                 @{
-                    switch(selectedQuote.status)
+                    switch(CurrentlySelectedQuote.status)
                     {
                         case "New":
-                            <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
+                            <button class="@currentActionButtonClass" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
                             break;
                         case "Opportunity":
-                                <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
-                            <button class="action-button" @onclick="@(() => IsPopupVisibleMakeCustomer = true)">Make Customer</button>
+                            <button class="@currentActionButtonClass" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
+                            // <button class="@currentActionButtonClass" @onclick="@(() => IsPopupVisibleMakeCustomer = true)">Make Customer</button>
                             break;
                         case "Customer":
-                            <button class="action-button" @onclick="@(() => IsPopupVisibleCompleteCustomer = true)">Complete Customer</button>
+                            <button class="@currentActionButtonClass" @onclick="@(() => IsPopupVisibleCompleteCustomer = true)">Complete Customer</button>
                             break;
                         case "Complete":
-                            <button class="action-button" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
+                            <button class="@currentActionButtonClass" @onclick="@(() => IsArchivePopupVisible = true)">Archive</button>
                             break;
                         case "Archive":
-                            <button class="action-button" @onclick="@(() => IsPopupVisibleMakeWarrantyClaim = true)">Make Warranty Claim</button>
+                                // <button class="@currentActionButtonClass" @onclick="@(() => IsPopupVisibleMakeWarrantyClaim = true)">Make Warranty Claim</button>
                             break;
                         case "Warranty":
-                            // <button class="action-button" @onclick="@(() => IsPopupVisibleCloseWarrantyClaim = true)">Close Warranty Claim</button>
+                                // <button class="@currentActionButtonClass" @onclick="@(() => IsPopupVisibleCloseWarrantyClaim = true)">Close Warranty Claim</button>
                             break;
                     }
-                    <button class="action-button" @onclick="ReturnPreviousPage">Return</button>
+                    <button class="@currentActionButtonClass" @onclick="ReturnPreviousPage">Return</button>
                 }
                 </div>
 
@@ -766,14 +879,60 @@ else
     </DxGrid>
 }
 
+<DxPopup @bind-Visible="@IsRestoreButtonVisble" ShowFooter="true" HeaderText="Confirm Restoration?">
+    <FooterContentTemplate>
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="RestoreArchiveToActiveAggregate" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsRestoreButtonVisble = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxPopup @bind-Visible="@IsPopupVisibleAddTrade" ShowHeader="false" ShowFooter="true" HeaderText="Select Trade(s) to add">
+    <BodyContentTemplate>
+        <DxListBox Data="@TradesList"
+                   @bind-Values="@TradeValues"
+                   CssClass="popup-grid"
+                   SelectionMode="ListBoxSelectionMode.Multiple"
+                   SelectedItemsChanged="@((IEnumerable<ListItem> values) => SelectedTradesChanged(values))"
+                   ShowCheckboxes="true">
+            <Columns>
+                <DxListEditorColumn FieldName="Value" Caption="Select Trade(s) to add" />
+            </Columns>
+        </DxListBox>
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AddTrade" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleAddTrade = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxPopup @bind-Visible="@IsPopupVisibleDeleteTrade" ShowFooter="true" HeaderText="Confirm Deletion?">
+    <BodyContentTemplate>
+        @ConfirmRemoveMessage
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="DeleteTrade" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleDeleteTrade = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
+<DxPopup @bind-Visible="@IsPopupVisibleExportEvents" ShowFooter="true" HeaderText="Export Events as .csv">
+    <BodyContentTemplate>
+        Export event history data...
+    </BodyContentTemplate>
+    <FooterContentTemplate>
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="ExportEventHistory" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleExportEvents = false)" />
+    </FooterContentTemplate>
+</DxPopup>
+
 <DxPopup @bind-Visible="@IsPopupVisibleMakeWarrantyClaim" ShowFooter="true" HeaderText="Make a Warranty Claim?">
     <BodyContentTemplate>
         <p>Why are you making a Warranty Claim on this archived project?</p>
         <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="MakeWarrantyClaim" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleMakeWarrantyClaim = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="MakeWarrantyClaim" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleMakeWarrantyClaim = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -783,8 +942,8 @@ else
         <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="CloseWarrantyClaim" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleCloseWarrantyClaim = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="CloseWarrantyClaim" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleCloseWarrantyClaim = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -793,8 +952,8 @@ else
         If this is fully qualified to Complete Customer criteria, then click Save.
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="CompleteCustomer" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleCompleteCustomer = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="CompleteCustomer" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleCompleteCustomer = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -803,19 +962,19 @@ else
         If this Opportunity is fully qualified to meet Customer criteria, then click Save.
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="MakeCustomer" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleMakeCustomer = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="MakeCustomer" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleMakeCustomer = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
-<DxPopup @bind-Visible="@IsAssignPopupVisible"
+<DxPopup @bind-Visible="@IsBidderPopupVisible"
          ShowFooter="true"
-         HeaderText="Please select a Project Manager for assignment">
+         HeaderText="Please select a Bidder for assignment">
     <BodyContentTemplate>
         <DxListBox Data="@ProjectManagers"
-                   @bind-Values="@Values"
+                   @bind-Values="@QuoteValues"
                    CssClass="popup-grid"
-                   SelectedItemsChanged="@((IEnumerable<ApplicationUser> values) => SelectedProjectManagerChanged(values))"
+                   SelectedItemsChanged="@((IEnumerable<ApplicationUser> values) => AddBidderToAggregateQuote(values))"
                    SelectionMode="ListBoxSelectionMode.Single"
                    ShowCheckboxes="true">
             <Columns>
@@ -827,8 +986,8 @@ else
         </DxListBox>
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" Enabled="true" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsAssignPopupVisible = false)" />
+        <DxButton CssClass="@currentActionButtonClass" Enabled="true" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AssignLead" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsBidderPopupVisible = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -837,8 +996,8 @@ else
         Are you sure you want to delete "@selectedAttachment.MediaDescription"?
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteSelectedAttachment" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleSelectAttachmentToDelete = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteSelectedAttachment" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleSelectAttachmentToDelete = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -847,8 +1006,8 @@ else
         Are you sure you want to delete "@selectedNote.Details"?
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteSelectedNote" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleSelectNoteToDelete = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Delete" Click="DeleteSelectedNote" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleSelectNoteToDelete = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -858,8 +1017,8 @@ else
         <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AddNote" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleAddNote = false)" />
+        <DxButton SubmitFormOnClick="true" CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Save" Click="AddNote" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsPopupVisibleAddNote = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -868,8 +1027,8 @@ else
         <DxMemo @bind-Text="@NoteDetails" InputId="archive-reason" CssClass="cw-320" />
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton SubmitFormOnClick="true" CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Primary" Text="Archive" Click="ArchiveLead" />
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsArchivePopupVisible = false)" />
+        <DxButton SubmitFormOnClick="true" CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Primary" Text="Archive" Click="ArchiveQuote" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Cancel" Click="@(() => IsArchivePopupVisible = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -878,7 +1037,7 @@ else
         <p>Send Documents details...</p>
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpSendFiles = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpSendFiles = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -887,7 +1046,7 @@ else
         <p>File Attachments details...</p>
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpFileAttachments = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpFileAttachments = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -896,7 +1055,7 @@ else
         <p>File Notes details...</p>
     </BodyContentTemplate>
     <FooterContentTemplate>
-        <DxButton CssClass="popup-button my-1 ms-2" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpFileNotes = false)" />
+        <DxButton CssClass="@currentActionButtonClass" RenderStyle="ButtonRenderStyle.Secondary" Text="Close" Click="@(() => IsPopupVisibleHelpFileNotes = false)" />
     </FooterContentTemplate>
 </DxPopup>
 
@@ -906,17 +1065,372 @@ else
                 CssClass="w-100">
 </DxLoadingPanel>
 
-@code {
+@code 
+{
+    public int currentQuoteIndex = 0;
+
+    public string ValueHiliteCss = "quote-color-value-standalone";
+
+    public class DataGridViewRowPostPaintEventArgs : EventArgs;
+
+    private void dgGrid_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+    {
+        var tmpVal = "";
+
+        //var grid = sender as DataGridView;
+        //var rowIdx = (e.RowIndex + 1).ToString();
+
+        // var centerFormat = new StringFormat() 
+        // { 
+        //     // right alignment might actually make more sense for numbers
+        //     Alignment = StringAlignment.Center, 
+        //     LineAlignment = StringAlignment.Center
+        // };
+
+        // var headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
+        // e.Graphics.DrawString(rowIdx, this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
+    }
+
+    public bool hasChildren = false;
+
+    public abstract class DxInputDataEditorBase<T> : DxDataEditor<T>;
+
+    [Parameter]
+    public EventCallback<string> TextChanged { get; set; }
+
+    public void RestoreArchiveToActiveAggregate()
+    {
+        // Restore Parent
+        if (CurrentlySelectedQuote.status == "Archive")
+        {
+            CurrentlySelectedQuote.status = CurrentlySelectedQuote.statusPrevious;
+        }
+
+        // Restore Children
+        foreach(Relationship relationship in CurrentlySelectedQuote.relationships)
+        {
+            var name = relationship.Name;
+            var parentId = relationship.ParentId;
+
+            var relatedQuote = WebServices.GetQuote(parentId)[0];
+            relatedQuote.statusPrevious = "Archive";
+
+            if (CurrentlySelectedQuote.status != "Archive")
+            {
+                relatedQuote.status = CurrentlySelectedQuote.statusPrevious;
+            }
+
+            Event _event = new Event();
+            _event.Author = currentUser;
+            _event.Name = CurrentlySelectedQuote.Trade + " Child Id (" + relatedQuote._id + ") RESTORED";
+            _event.Details = _event.Name + " to Aggregate Id (" + CurrentlySelectedQuote._id + ") status (" + CurrentlySelectedQuote.statusPrevious + ")";
+
+            relatedQuote.events.Add(_event);
+            WebServices.UpdateQuote(relatedQuote);
+            break;
+        }
+
+        //WebServices.UpdateQuote(CurrentlySelectedQuote);
+
+        restoreButtonClass = "restore-button-hidden";
+        IsRestoreButtonVisble = false;
+
+        TimerRefresh();
+    }
+
+    void OnTotalQuoteValueChanged(string newValue)
+    {
+        Event _event = new Event();
+        _event.Author = currentUser;
+
+        Quote quoteToUpdate = WebServices.GetQuote(CurrentlySelectedQuote._id)[0];
+
+        double newTotal = Convert.ToDouble(newValue);
+
+        // Update value
+        quoteToUpdate.totalQuote = newTotal;
+
+        var modType = "Lowered";
+        if (newTotal > CurrentlySelectedQuote.totalQuote)
+        {
+            modType = "Raised";
+        }
+
+        _event.Trade = CurrentlySelectedQuote.Trade;
+        _event.Name = _event.Trade + " quote (" + modType + ")";
+        _event.Details = _event.Name + " from (" + CurrentlySelectedQuote.totalQuote.ToString("C0") + ") to (" + newTotal.ToString("C0") + ")";
+
+        quoteToUpdate.events.Add(_event);
+
+        WebServices.UpdateQuote(quoteToUpdate);
+
+        TimerRefresh();
+    }
+
+    public void RemoveSelectedChildItem(GridRowClickEventArgs args)
+    {
+        var selectedRow = (QuoteSummary)RelatedQuoteGrid.GetDataItem(args.VisibleIndex);
+        var selectedQuoteId = selectedRow._id;
+    }
+
+    async Task OnEditModelSaving(GridEditModelSavingEventArgs args) 
+    {
+        var selectedQuote = args.DataItem;
+    }
+
+    async Task OnDataItemDeleting(GridDataItemDeletingEventArgs args)
+    {
+        QuoteSummary selectedQuote = (QuoteSummary)args.DataItem;
+
+        quoteIdToRemove = selectedQuote._id;
+
+        var quoteToRemove = WebServices.GetQuote(quoteIdToRemove)[0];
+        quoteToRemove.statusPrevious = quoteToRemove.status;
+        quoteToRemove.status = "Archive";
+
+        Event _event = new Event();
+        _event.Author = currentUser;
+        _event.Name = quoteToRemove.Trade + " quote (" + quoteIdToRemove + ") removed from Aggregrate Parent (" + CurrentlySelectedQuote._id + ")";
+        _event.Details = _event.Name;
+
+        // Add event to child quote
+        quoteToRemove.events.Add(_event);
+
+        WebServices.UpdateQuote(quoteToRemove);
+
+        // Add event to parent quote
+        // Actually, the parent aggregate should only refkect individual child events at runtime.
+        CurrentlySelectedQuote.events.Add(_event);
+
+        WebServices.UpdateQuote(CurrentlySelectedQuote);
+    }
+
+    List<ListItem> columnWidths = new List<ListItem>();
+
+    public bool ShowRowIndexColumn { get; set; }
+    public bool ShowRecordIdColumn { get; set; }
+    public bool ShowStatusColumn { get; set; }
+    public bool ShowTradeColumn { get; set; }
+    public bool ShowCategoryColumn { get; set; }
+    public bool ShowCreatedColumn { get; set; }
+    public bool ShowUpdatedColumn { get; set; }
+    public bool ShowLastEventColumn { get; set; }
+
+    public bool ShowEventDetailsColumn { get; set; }
+    public bool ShowEventAuthorColumn { get; set; }
+
+    public bool ShowFirstNameColumn { get; set; }
+    public bool ShowLastNameColumn { get; set; }
+    public bool ShowEmailColumn { get; set; }
+    public bool ShowStreetColumn { get; set; }
+    public bool ShowCityColumn { get; set; }
+    public bool ShowStateColumn { get; set; }
+    public bool ShowZipColumn { get; set; }
+    public bool ShowSqFtColumn { get; set; }
+    public bool ShowBidColumn { get; set; }
+    public bool ShowBidderColumn { get; set; }
+    public bool ShowBidExpiresColumn { get; set; }
+    public bool ShowBidTypeColumn { get; set; }
+    public bool ShowActionsColumn { get; set; }
+    public bool ShowRelationshipColumn { get; set; }
+    public bool ShowIsQualifiedColumn { get; set; }
+
+    public string RowIndexColumnWidth = "auto";
+    public string RecordIdColumnWidth = "auto";
+    public string StatusColumnWidth = "auto";
+    public string TradeColumnWidth = "auto";
+    public string CategoryColumnWidth = "auto";
+    public string CreatedColumnWidth = "auto";
+    public string UpdatedColumnWidth = "auto";
+    public string LastEventColumnWidth = "auto";
+    public string FirstNameColumnWidth = "auto";
+    public string LastNameColumnWidth = "auto";
+    public string EmailColumnWidth = "auto";
+    public string StreetColumnWidth = "auto";
+    public string CityColumnWidth = "auto";
+    public string StateColumnWidth = "auto";
+    public string ZipColumnWidth = "auto";
+    public string SqFtColumnWidth = "auto";
+    public string BidColumnWidth = "auto";
+    public string BidderColumnWidth = "auto";
+    public string BidExpiresColumnWidth = "auto";
+    public string BidTypeColumnWidth = "auto";
+    public string ActionsColumnWidth = "auto";
+    public string RelationshipColumnWidth = "auto";
+
+    public string EventDetailsColumnWidth = "auto";
+    public string EventAuthorColumnWidth = "auto";
+
+    public string IsQualifiedColumnWidth = "auto";
+
+    public string quoteIdToRemove = "";
+    public string quoteIdToRestore = "";
+
+    public string ConfirmRemoveMessage { get; set; }
+    public string ConfirmRestoreMessage { get; set; }
+
+    [Parameter]
+    public EventCallback<IEnumerable<ListItem>> SelectedItemsChanged { get; set; }
+
+    [Parameter]
+    public string SelectedQuoteStatus { get; set; }
+
+    IEnumerable<ListItem> SelectedTradesToAdd = new List<ListItem>();
+
+    List<ListItem> TradesList = new List<ListItem>();
+
+    public void RedirectBackToPreviousPageByStatus(string quoteId)
+    {
+        var tmpUrl = "/quotes/details/" + quoteId + Referrer; //"/opportunities/";
+
+        navMan.NavigateTo(tmpUrl);
+    }
+
+    // public void RemoveQuoteProject(string quoteId)
+    // {
+    //     quoteIdToRemove = quoteId;
+
+    //     IsPopupVisibleDeleteTrade = true;
+
+    //     var quoteToRemove = WebServices.GetQuote(quoteId)[0];
+
+    //     ConfirmRemoveMessage = "Are you sure you want to REMOVE this (" + quoteToRemove.Trade + ") project?";
+    // }
+
+    // public void RestoreQuoteProject(string quoteId)
+    // {
+    //     quoteIdToRestore = quoteId;
+
+    //     IsPopupVisibleRestoreTrade = true;
+
+    //     var quoteToRestore = WebServices.GetQuote(quoteIdToRestore)[0];
+
+    //     ConfirmRestoreMessage = "Are you sure you want to RESTORE this (" + quoteToRestore.Trade + ") project?";
+    // }
+
+    public string uploadUrl = "/api/Upload/UploadFile";
+
+    public int MaxFileSize = 1000000000; // 1000MB
+    public int chunkSize = 20000;
+
+    public List<string> allowedFileExtensions = new List<string> { ".jpeg", ".jpg", ".gif", ".mpg", ".mpeg", ".mp4", ".doc", ".docx", ".pdf" };
+    public List<string> acceptableFileTypes = new List<string> { "audio/*", "doc/*", "image/*", "video/*" };
+
+    bool ErrorVisible { get; set; } = false;
+    string MyError { get; set; }
+
+    public FileUrlStorageService _fileUrlStorageService;
 
     protected override async Task OnInitializedAsync()
     {
+        _fileUrlStorageService = new FileUrlStorageService();
+
+        uploadUrl = "/api/Upload/UploadFile";
+    }
+
+    protected string GetUploadUrl(string url)
+    {
+        var navUrl = navMan.ToAbsoluteUri(url).AbsoluteUri;
+
+        return navUrl;
+    }
+
+    protected void OnFileUploaded(FileUploadEventArgs args, TestModel item)
+    {
+        var fileUrl = _fileUrlStorageService.Get(Guid.Parse(args.FileInfo.Guid));
+    }
+
+    void OnUploadError(FileUploadErrorEventArgs e)
+    {
+        MyError = e.RequestInfo.ResponseText;
+        ErrorVisible = true;
+        InvokeAsync(StateHasChanged);
+    }
+
+    void OnFileUploadStarted(FileUploadEventArgs e) 
+    {
+        var MyMessage = "Upload of the " + e.FileInfo.Name + " file was started.";
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    protected void SelectedTradesChanged(IEnumerable<ListItem> trades)
+    {
+        SelectedTradesToAdd = trades;
+    }
+
+    protected void SelectedFilesChanged(IEnumerable<UploadFileInfo> files)
+    {
+        SelectedFilesCount = files.ToList().Count;
+        InvokeAsync(StateHasChanged);
+
+        foreach (UploadFileInfo file in files)
+        {
+            var fileGuid = file.Guid;
+            var IsFileExtensionValid = allowedFileExtensions.Contains(file.Type);
+            var fileIsMaxSizeValid = file.Size < MaxFileSize; // 1000MB
+            var fileIsMinSizeValid = file.Size > 0;
+            var fileLastModified = file.LastModified;
+            var fileLoadedBtyes = file.LoadedBytes;
+            // var fileRequestData = file.RequestData;
+            // var fileRequestHeaders = file.RequestHeaders;
+            var fileName = file.Name;
+            var fileSize = file.Size;
+            var fileType = file.Type;
+
+            var tmpVal = "";
+        }
+
+        SendDocsDisabled = true;
+    }
+
+    protected void EmailFiles()
+    {
+        var tmpVal = "";
     }
 
     public void ReturnPreviousPage()
     {
         var previousPageUrl = "/quotes/" + Referrer;
 
-        NavigationManager.NavigateTo(previousPageUrl);
+        navMan.NavigateTo(previousPageUrl);
+    }
+
+    public string RedcordIdButtonLabel = "Show Hidden Data";
+    public void ShowRecordIdColumns()
+    {
+        if(ShowRecordIdColumn)
+        {
+            ShowRecordIdColumn = false;
+            RedcordIdButtonLabel = "Show Hidden Data";
+        }
+        else
+        {
+            ShowRecordIdColumn = true;
+            RedcordIdButtonLabel = "Hide Hidden Data";
+        }
+    }
+
+    [Parameter]
+    public string? Param { get; set; }
+
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        string message = "";
+
+        if (parameters.TryGetValue<string>(nameof(Param), out var value))
+        {
+            if (value is null)
+            {
+                message = "The value of 'Param' is null.";
+            }
+            else
+            {
+                message = $"The value of 'Param' is {value}.";
+            }
+        }
+
+        await base.SetParametersAsync(parameters);
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -925,12 +1439,14 @@ else
         {
             QuoteGrid.ExpandDetailRow(0);
             QuoteGrid.SelectAllAsync(true);
+
+            TradesList = webServices.GetTradesList(true, CurrentlySelectedQuote.Trade);
         }
     }
 
     bool IsPopupVisibleMakeCustomer { get; set; }
 
-    public QuoteLeaderboard leaderboardStats = new QuoteLeaderboard();
+    public QuoteLeaderboard LeaderboardStats = new QuoteLeaderboard();
 
     [Parameter]
     public string QuoteId { get; set; }
@@ -945,7 +1461,7 @@ else
     async void OnLocationChanged(object sender, LocationChangedEventArgs args)
     {
         TimerDispose();
-        NavigationManager.LocationChanged -= OnLocationChanged;
+        navMan.LocationChanged -= OnLocationChanged;
     }
 
     public ApplicationUser currentUser = new ApplicationUser();
@@ -1018,17 +1534,17 @@ else
 
     public void MakeCustomer()
     {
-        selectedQuote.status = "Customer";
+        CurrentlySelectedQuote.status = "Customer";
 
-        var projectManager = selectedQuote.projectManager;
+        var Bidder = CurrentlySelectedQuote.Bidder;
 
         Event _event = new Event();
-        _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Customer";
+        _event.Details = CurrentlySelectedQuote.firstName + " " + CurrentlySelectedQuote.lastName + " converted to Customer";
         _event.Author = currentUser;
 
-        selectedQuote.events.Add(_event);
+        CurrentlySelectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(selectedQuote);
+        WebServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsPopupVisibleMakeCustomer = false;
     }
@@ -1039,7 +1555,7 @@ else
 
             SignInManager.SignOutAsync();
 
-            NavigationManager.NavigateTo("/Account/Lockout");
+            navMan.NavigateTo("/Account/Lockout");
         }
         catch(Exception ex)
         {
@@ -1049,24 +1565,192 @@ else
 
     private readonly IClaimsProvider _claimsProvider;
 
+    public string currentQuoteContainerType = "Standalone";
+    public string currentQuoteColorCssClass = "quote-color-standalone";
+    public string currentQuoteHeaderTypeCssClass = "quote-header-standalone";
+    public string currentQuoteContainerTypeCssClass = "quote-title-standalone";
+
+    public string currentActionButtonClass = "action-button-standalone";
+
+    public string restoreButtonClass = "restore-button-hidden";
+    public string addBidButtonClass = "add-bid-button-visible";
+    public string acceptBidButtonClass = "accept-bid-button-hidden";
+
+    public void SetCssClasses(string quoteContainerType)
+    {
+        switch (quoteContainerType.ToLower())
+        {
+            case "sibling":
+                currentQuoteColorCssClass = "quote-color-sibling";
+                currentQuoteHeaderTypeCssClass = "quote-header-sibling";
+                currentQuoteContainerTypeCssClass = "quote-title-sibling";
+                currentActionButtonClass = "action-button-sibling";
+                break;
+
+            case "standalone":
+                currentQuoteColorCssClass = "quote-color-standalone";
+                currentQuoteHeaderTypeCssClass = "quote-header-standalone";
+                currentQuoteContainerTypeCssClass = "quote-title-standalone";
+                currentActionButtonClass = "action-button-standalone";
+                break;
+
+            case "parent":
+                currentQuoteColorCssClass = "quote-color-parent";
+                currentQuoteHeaderTypeCssClass = "quote-header-parent";
+                currentQuoteContainerTypeCssClass = "quote-title-parent";
+                currentActionButtonClass = "action-button-parent";
+                break;
+
+            case "child":
+                currentQuoteColorCssClass = "quote-color-child";
+                currentQuoteHeaderTypeCssClass = "quote-header-child";
+                currentQuoteContainerTypeCssClass = "quote-title-child";
+                currentActionButtonClass = "action-button-child";
+                break;
+
+            case "archive":
+                currentQuoteColorCssClass = "quote-color-archive";
+                currentQuoteHeaderTypeCssClass = "quote-header-archive";
+                currentQuoteContainerTypeCssClass = "quote-title-archive";
+                currentActionButtonClass = "action-button-archive";
+                break;
+
+            default:
+                currentQuoteColorCssClass = "quote-color-standalone";
+                currentQuoteHeaderTypeCssClass = "quote-header-standalone";
+                currentQuoteContainerTypeCssClass = "quote-title-standalone";
+                currentActionButtonClass = "action-button-standalone";
+                break;
+        }
+    }
+
     protected override void OnInitialized()
     {
-        NavigationManager.LocationChanged += OnLocationChanged;
+        navMan.LocationChanged += OnLocationChanged;
+
+        ShowRowIndexColumn = false;
+        ShowRecordIdColumn = false;
+        ShowStatusColumn = true;
+        ShowTradeColumn = true;
+        ShowCategoryColumn = false;
+        ShowCreatedColumn = true;
+        ShowUpdatedColumn = true;
+        ShowLastEventColumn = true;
+        ShowFirstNameColumn = true;
+        ShowLastNameColumn = true;
+        ShowEmailColumn = false;
+        ShowStreetColumn = true;
+        ShowCityColumn = true;
+        ShowStateColumn = true;
+        ShowZipColumn = true;
+        ShowBidColumn = true;
+        ShowBidderColumn = true;
+        ShowBidExpiresColumn = true;
+        ShowBidTypeColumn = true;
+        ShowActionsColumn = true;
+        ShowSqFtColumn = false;
+        ShowRelationshipColumn = true;
+        ShowIsQualifiedColumn = false;
+
+        ShowEventDetailsColumn = true;
+        ShowEventAuthorColumn = true;
+
+        columnWidths = WebServices.GetColumnWidths();
+
+        foreach (ListItem listItem in columnWidths)
+        {
+            switch (listItem.Text)
+            {
+                case "Row":
+                    RowIndexColumnWidth = listItem.Value;
+                    break;
+                case "Record Id":
+                    RecordIdColumnWidth = listItem.Value;
+                    break;
+                case "Status":
+                    StatusColumnWidth = listItem.Value;
+                    break;
+                case "Trade":
+                    TradeColumnWidth = listItem.Value;
+                    break;
+                case "Category":
+                    CategoryColumnWidth = listItem.Value;
+                    break;
+                case "Created":
+                    CreatedColumnWidth = listItem.Value;
+                    break;
+                case "Updated":
+                    UpdatedColumnWidth = listItem.Value;
+                    break;
+                case "LastEventDetails":
+                    LastEventColumnWidth = listItem.Value;
+                    break;
+                case "FirstName":
+                    FirstNameColumnWidth = listItem.Value;
+                    break;
+                case "LastName":
+                    LastNameColumnWidth = listItem.Value;
+                    break;
+                case "Email":
+                    EmailColumnWidth = listItem.Value;
+                    break;
+                case "Street":
+                    StreetColumnWidth = listItem.Value;
+                    break;
+                case "City":
+                    CityColumnWidth = listItem.Value;
+                    break;
+                case "State":
+                    StateColumnWidth = listItem.Value;
+                    break;
+                case "Zip":
+                    ZipColumnWidth = listItem.Value;
+                    break;
+                case "SqFt":
+                    SqFtColumnWidth = listItem.Value;
+                    break;
+                case "Bid":
+                    BidColumnWidth = listItem.Value;
+                    break;
+                case "Bidder":
+                    BidderColumnWidth = listItem.Value;
+                    break;
+                case "BidExpires":
+                    BidExpiresColumnWidth = listItem.Value;
+                    break;
+                case "BidType":
+                    BidTypeColumnWidth = listItem.Value;
+                    break;
+                case "Actions":
+                    ActionsColumnWidth = listItem.Value;
+                    break;
+                case "Relationship":
+                    RelationshipColumnWidth = listItem.Value;
+                    break;
+                case "Author":
+                    EventAuthorColumnWidth = listItem.Value;
+                    break;
+                case "EventDetails":
+                    EventDetailsColumnWidth = listItem.Value;
+                    break;
+            }
+        }
     }
 
     public int currentItemIndex = 0;
 
     public int noteCount = 0;
 
-    IEnumerable<string> Values { get; set; }
+    IEnumerable<string> QuoteValues { get; set; }
+    IEnumerable<string> TradeValues { get; set; }
 
-    public int roofsCount = 0;
+    public int tradesCount = 0;
     public int productsCount = 0;
 
-    public string roofsCountLabel = "";
+    public string tradesCountLabel = "";
     public string productsCountLabel = "";
 
-    public Quote selectedQuote { get; set; }
+    public Quote CurrentlySelectedQuote { get; set; }
     public Attachment selectedAttachment { get; set; }
     public Note selectedNote { get; set; }
 
@@ -1080,19 +1764,20 @@ else
 
     #region Private Properties
 
-    private List<Quote>? quotes;
+    private List<Quote>? QuotesList;
+    private List<Quote>? childQuotes;
 
     int SelectedFilesCount { get; set; }
 
     ObjectId SelectedFileId { get; set; }
 
     IGrid QuoteGrid { get; set; }
-
+    IGrid RelatedQuoteGrid { get; set; }
+    IGrid AttachmentGrid { get; set; }
     IGrid EventGrid { get; set; }
+    IGrid NoteGrid { get; set; }
 
     EntityInstantFeedbackSource InstantFeedbackSource { get; set; }
-
-    bool isBulkInsert = false;
 
     string FileType { get; set; } = ".pdf";
     string Author { get; set; } = "unknown";
@@ -1108,7 +1793,6 @@ else
     public Timer _timer;
 
     public string ClientIP = "";
-    public string selectedQuoteId = "";
 
     public interface IQueryable : System.Collections.IEnumerable;
 
@@ -1117,23 +1801,21 @@ else
 
     public string SubmissionUserIP { get; set; }
 
-    public int itemsToCreate = 100;
     public string updateStatus = "Fetching ";
-
-    public int attachmentsCount = 0;
-    public int notesCount = 0;
-    public int eventsCount = 0;
 
     #endregion
 
     #region Popup properties
 
-    bool IsAssignPopupVisible { get; set; }
+    bool IsBidderPopupVisible { get; set; }
 
     bool IsPopupVisibleAddFile { get; set; }
     bool IsPopupVisibleSelectAttachmentToDelete { get; set; }
 
     bool IsPopupVisibleAddNote { get; set; }
+
+    bool IsPopupVisibleExportEvents { get; set; }
+
     bool IsPopupVisibleSelectNoteToDelete { get; set; }
 
     bool IsArchivePopupVisible { get; set; }
@@ -1141,9 +1823,16 @@ else
     bool IsPopupVisibleMakeWarrantyClaim { get; set; }
     bool IsPopupVisibleCloseWarrantyClaim { get; set; }
 
+    bool IsPopupVisibleAddTrade { get; set; }
+    bool IsPopupVisibleDeleteTrade { get; set; }
+    bool IsPopupVisibleRestoreTrade { get; set; }
+
     bool IsPopupVisibleHelpSendFiles { get; set; }
     bool IsPopupVisibleHelpFileAttachments { get; set; }
     bool IsPopupVisibleHelpFileNotes { get; set; }
+
+    bool IsRestoreButtonVisble { get; set; }
+    bool IsAcceptBidVisble { get; set; }
 
     #endregion
 
@@ -1195,6 +1884,9 @@ else
     public object SelectedQuoteItem { get; set; }
 
     [Parameter]
+    public object SelectedChildQuoteItem { get; set; }
+
+    [Parameter]
     public object SelectedEventItem { get; set; }
 
     [Parameter]
@@ -1209,11 +1901,14 @@ else
     [Parameter]
     public string SelectedTradeType { get; set; } = "Roofing";
 
+    IMongoCollection<Quote> _mongoDBCollection;
+    private CancellationToken _cancellationToken;
+
     #endregion
 
     #region Methods
 
-    void SelectedProjectManagerChanged(IEnumerable<ApplicationUser> selectedProjectManager)
+    void SelectedTradesChanged(IEnumerable<ApplicationUser> selectedProjectManager)
     {
         if(selectedProjectManager.Count() > 0)
         {
@@ -1226,6 +1921,102 @@ else
         }
     }
 
+    void AddBidderToAggregateQuote(IEnumerable<ApplicationUser> selectedProjectManager)
+    {
+        if (selectedProjectManager.Count() > 0)
+        {
+            SelectedProjectManager = selectedProjectManager;
+
+            // Create Child Quote
+            Quote childQuote = new Quote();
+            childQuote.status = CurrentlySelectedQuote.status;
+            childQuote.Trade = CurrentlySelectedQuote.TradeCategory;
+            childQuote.TradeCategory = "";
+
+            Event createdEvent = new Event();
+            createdEvent.Author = currentUser;
+            createdEvent.Trade = childQuote.Trade;
+            createdEvent.Name = "Child (" + childQuote.Trade + ") quote Id";
+            createdEvent.Details = createdEvent.Name + " (" + childQuote._id + ") SPAWNED from Aggregate Id (" + CurrentlySelectedQuote._id + ")";
+
+            childQuote.events.Add(createdEvent);
+
+            childQuote.Bidder = (ApplicationUser)selectedProjectManager.ToList()[0];
+
+            switch(CurrentlySelectedQuote.relationships.Count)
+            {
+                case 1:
+                    childQuote.BidderType = "Spec";
+                    break;
+                default:
+                    childQuote.BidderType = "Open";
+                    break;
+            }
+
+            childQuote.totalQuote = 0;
+
+            childQuote.BiddingExpires = CurrentlySelectedQuote.BiddingExpires;
+
+            childQuote.ipAddress = CurrentlySelectedQuote.ipAddress;
+            childQuote.externalUrl = CurrentlySelectedQuote.externalUrl;
+
+            childQuote.mainRoofTotalSquareFeet = CurrentlySelectedQuote.mainRoofTotalSquareFeet;
+
+            childQuote.totalSquareFeet = CurrentlySelectedQuote.totalSquareFeet;
+            childQuote.totalInitialSquareFeet = CurrentlySelectedQuote.totalInitialSquareFeet;
+
+            childQuote.firstName = CurrentlySelectedQuote.firstName;
+            childQuote.lastName = CurrentlySelectedQuote.lastName;
+            childQuote.email = CurrentlySelectedQuote.email;
+            childQuote.phone = CurrentlySelectedQuote.phone;
+            childQuote.address = CurrentlySelectedQuote.address;
+            childQuote.fullAddress = CurrentlySelectedQuote.fullAddress;
+            childQuote.street = CurrentlySelectedQuote.street;
+            childQuote.city = CurrentlySelectedQuote.city;
+            childQuote.state = CurrentlySelectedQuote.state;
+            childQuote.zip = CurrentlySelectedQuote.zip;
+            childQuote.market = CurrentlySelectedQuote.market;
+
+            // Create Aggregate relationship to Child
+            var parentRelationship = new Relationship();
+            parentRelationship.Author = currentUser.FirstName + " " + currentUser.LastName;
+            parentRelationship._id = CurrentlySelectedQuote._id;
+            parentRelationship.ParentId = CurrentlySelectedQuote._id;
+            parentRelationship.Type = "Parent";
+            parentRelationship.Name = CurrentlySelectedQuote.Trade;
+            childQuote.relationships.Add(parentRelationship);
+
+            Event parentRelationshipEvent = new Event();
+            parentRelationshipEvent.Author = currentUser;
+            parentRelationshipEvent.Trade = childQuote.Trade;
+            parentRelationshipEvent.Name = "Child (" + childQuote.Trade + ") quote Id (" + childQuote._id + ") LINKED to Parent";
+            parentRelationshipEvent.Details = parentRelationshipEvent.Name + " Aggregate Id (" + CurrentlySelectedQuote._id + ")";
+            childQuote.events.Add(parentRelationshipEvent);
+
+            // Save new Child Quote
+            webServices.CreateQuote(childQuote);
+
+            // Save Child relationship to Aggregate
+            var childRelationship = new Relationship();
+            childRelationship.Author = currentUser.FirstName + " " + currentUser.LastName;
+            childRelationship._id = childQuote._id;
+            childRelationship.ParentId = CurrentlySelectedQuote._id;
+            childRelationship.Type = "Child";
+            childRelationship.Name = childQuote.Trade;
+
+            CurrentlySelectedQuote.relationships.Add(childRelationship);
+
+            childQuote = null;
+
+            // Save Parent Quote
+            webServices.UpdateQuote(CurrentlySelectedQuote);
+
+            TimerRefresh();
+
+            IsBidderPopupVisible = false;
+        }
+    }
+
     public List<ApplicationUser> SortByLastNameUsingLinq(List<ApplicationUser> originalList)
     {
         return originalList.OrderBy(x => x.LastName).ToList();
@@ -1233,6 +2024,29 @@ else
 
     void OnRowClick(GridRowClickEventArgs args)
     {
+        var selectedQuoteId = "";
+    }
+
+    void ViewChildQuoteDetails(GridRowClickEventArgs args)
+    {
+        var selectedRow = (QuoteSummary)RelatedQuoteGrid.GetDataItem(args.VisibleIndex);
+        var selectedQuoteId = selectedRow._id;
+
+        var tmpUrl = "/quotes/details/" + selectedQuoteId + "/opportunities/";
+
+        navMan.NavigateTo(tmpUrl);
+    }
+
+    public void DeleteChildQuote(GridRowClickEventArgs args)
+    {
+        var selectedRow = (QuoteSummary)RelatedQuoteGrid.GetDataItem(args.VisibleIndex);
+        var selectedQuoteId = selectedRow._id;
+    }
+
+    void OnTradeRowClick(SelectListItem args)
+    {
+        var tmpVal = "Here...";
+
     }
 
     public async Task<string> GetIpAddress()
@@ -1250,121 +2064,149 @@ else
         }
     }
 
-    protected void SelectedFilesChanged(IEnumerable<UploadFileInfo> files)
-    {
-        SelectedFilesCount = files.ToList().Count;
-        InvokeAsync(StateHasChanged);
-
-        SendDocsDisabled = false;
-    }
-
-    protected void EmailFiles()
-    {
-        var tmpVal = "";
-    }
-
-    protected string GetUploadUrl(string url)
-    {
-        var absoluteUri = NavigationManager.ToAbsoluteUri(url).AbsoluteUri;
-
-        return absoluteUri;
-    }
-
     public void AssignLead()
     {
-        var sysUser = new ApplicationUser();
-        sysUser.FirstName = "System";
-
         // Only change status when assigning the first time.
-        if (selectedQuote.status == "New")
+        if (CurrentlySelectedQuote.status == "New")
         {
-            selectedQuote.status = "Opportunity";
+            CurrentlySelectedQuote.statusPrevious = CurrentlySelectedQuote.status;
+            CurrentlySelectedQuote.status = "Opportunity";
 
-            if (selectedQuote.attachments.Count == 0)
-            {
-                // Workflow and Subsequent Document Requirements
-                Attachment workflowRequirements = new Attachment();
-                workflowRequirements.MediaDescription = "Workflow and Subsequent Document Requirements";
-                workflowRequirements.MediaUrl = "/docs/templates/misc/Workflow and Subsequent Document Requirements.pdf";
-                workflowRequirements.Author = sysUser;
-                selectedQuote.attachments.Add(workflowRequirements);
-
-                Event workflowRequirementsEvent = new Event();
-                workflowRequirementsEvent.Details = workflowRequirements.MediaDescription + " sent to " + selectedQuote.email;
-                workflowRequirementsEvent.Author = sysUser;
-                selectedQuote.events.Add(workflowRequirementsEvent);
-
-                // Facilitate Engagement Agreement
-                Attachment engagementAgreement = new Attachment();
-                engagementAgreement.MediaDescription = "Facilitate Engagement Agreement";
-                engagementAgreement.MediaUrl = "/docs/templates/agreements/Facilitate Engagement Agreement.docx";
-                engagementAgreement.Author = sysUser;
-                selectedQuote.attachments.Add(engagementAgreement);
-
-                Event engagementAgreementEvent = new Event();
-                engagementAgreementEvent.Details = engagementAgreement.MediaDescription + " sent to " + selectedQuote.email;
-                engagementAgreementEvent.Author = sysUser;
-                selectedQuote.events.Add(engagementAgreementEvent);
-
-                // Welcome Letter
-                Attachment welcomeLetter = new Attachment();
-                welcomeLetter.MediaDescription = "Welcome to Facilitate.org";
-                welcomeLetter.MediaUrl = "/docs/templates/boilerplate/Welcome to Facilitate.docx";
-                welcomeLetter.Author = sysUser;
-                selectedQuote.attachments.Add(welcomeLetter);
-
-                Event welcomeLetterEvent = new Event();
-                welcomeLetterEvent.Details = welcomeLetter.MediaDescription + " sent to " + selectedQuote.email;
-                welcomeLetterEvent.Author = sysUser;
-                selectedQuote.events.Add(welcomeLetterEvent);
-            }
+            SendWelcomePackage();
 
             Event statusChanged = new Event();
-            statusChanged.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Opportunity";
+            statusChanged.Details = CurrentlySelectedQuote.firstName + " " + CurrentlySelectedQuote.lastName + " converted to Opportunity";
             statusChanged.Author = currentUser;
-            selectedQuote.events.Add(statusChanged);
+            CurrentlySelectedQuote.events.Add(statusChanged);
         }
 
-        selectedQuote.projectManager = SelectedProjectManager.ToList()[0];
+        CurrentlySelectedQuote.Bidder = SelectedProjectManager.ToList()[0];
 
-        var projectManager = selectedQuote.projectManager;
+        var Bidder = CurrentlySelectedQuote.Bidder;
 
         // Assignment event
         Event assignmentEvent = new Event();
         assignmentEvent.Name = "Assignment";
-        assignmentEvent.Details = "Lead assigned to Project Manager (" + projectManager.FirstName + " " + projectManager.LastName + "), moved to Opportunities and emailed to: " + projectManager.Email;
+        assignmentEvent.Details = CurrentlySelectedQuote.Trade + " Project assigned to Bidder (" + Bidder.FirstName + " " + Bidder.LastName + ") and emailed to: (" + Bidder.Email + ")";
         assignmentEvent.Author = currentUser;
 
         // Email PM and Client here...
 
-        selectedQuote.events.Add(assignmentEvent);
+        CurrentlySelectedQuote.events.Add(assignmentEvent);
 
-        WebServices.UpdateQuote(selectedQuote);
+        WebServices.UpdateQuote(CurrentlySelectedQuote);
 
-        IsAssignPopupVisible = false;
+        IsBidderPopupVisible = false;
         IsAssignButtonEnabled = false;
     }
 
-    public void ArchiveLead()
+    public void SendWelcomePackage()
     {
-        selectedQuote.status = "Archive";
+        var sysUser = new ApplicationUser();
+        sysUser.FirstName = "System";
 
-        Note note = new Note();
-        note.Summary = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
-        note.Details = @NoteDetails;
-        note.Author = currentUser;
+        if (CurrentlySelectedQuote.attachments.Count == 0)
+        {
+            // Workflow and Subsequent Document Requirements
+            Attachment workflowRequirements = new Attachment();
+            workflowRequirements.MediaName = "Client Intro Package";
+            workflowRequirements.MediaDescription = "Workflow and Subsequent Document Requirements";
+            workflowRequirements.MediaUrl = "/docs/templates/misc/Workflow and Subsequent Document Requirements.pdf";
+            workflowRequirements.Author = currentUser;
+            CurrentlySelectedQuote.attachments.Add(workflowRequirements);
 
-        selectedQuote.notes.Add(note);
+            Event workflowRequirementsEvent = new Event();
+            workflowRequirementsEvent.Details = workflowRequirements.MediaDescription + " sent to " + CurrentlySelectedQuote.email;
+            workflowRequirementsEvent.Author = currentUser;
+            CurrentlySelectedQuote.events.Add(workflowRequirementsEvent);
 
-        Event _event = new Event();
-        _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " moved to Archives";
-        _event.Author = currentUser;
-        selectedQuote.events.Add(_event);
+            // Facilitate Engagement Agreement
+            Attachment engagementAgreement = new Attachment();
+            engagementAgreement.MediaName = "Client Intro Package";
+            engagementAgreement.MediaDescription = "Facilitate Engagement Agreement";
+            engagementAgreement.MediaUrl = "/docs/templates/agreements/Facilitate Engagement Agreement.docx";
+            engagementAgreement.Author = currentUser;
+            CurrentlySelectedQuote.attachments.Add(engagementAgreement);
 
-        WebServices.UpdateQuote(selectedQuote);
+            Event engagementAgreementEvent = new Event();
+            engagementAgreementEvent.Details = engagementAgreement.MediaDescription + " sent to " + CurrentlySelectedQuote.email;
+            engagementAgreementEvent.Author = currentUser;
+            CurrentlySelectedQuote.events.Add(engagementAgreementEvent);
 
-        IsArchivePopupVisible = false;
-        NoteDetails = "";
+            // Welcome Letter
+            Attachment welcomeLetter = new Attachment();
+            welcomeLetter.MediaName = "Client Intro Package";
+            welcomeLetter.MediaDescription = "Welcome to Facilitate.org";
+            welcomeLetter.MediaUrl = "/docs/templates/boilerplate/Welcome to Facilitate.docx";
+            welcomeLetter.Author = currentUser;
+            CurrentlySelectedQuote.attachments.Add(welcomeLetter);
+
+            Event welcomeLetterEvent = new Event();
+            welcomeLetterEvent.Details = welcomeLetter.MediaDescription + " sent to " + CurrentlySelectedQuote.email;
+            welcomeLetterEvent.Author = currentUser;
+            CurrentlySelectedQuote.events.Add(welcomeLetterEvent);
+        }
+    }
+
+    public void ArchiveQuote()
+    {
+        try
+        {
+            CurrentlySelectedQuote.statusPrevious = CurrentlySelectedQuote.status;
+            CurrentlySelectedQuote.status = "Archive";
+
+            var currentQuoteId = CurrentlySelectedQuote._id;
+            var aggregateQuote = WebServices.GetQuote(currentQuoteId)[0];
+
+            if (NoteDetails != "" || NoteDetails != null)
+            {
+                Note parentNote = new Note();
+                parentNote.Trade = aggregateQuote.Trade;
+                parentNote.Summary = aggregateQuote.Trade + " (" + aggregateQuote._id + ") moved to Archives";
+                parentNote.Details = NoteDetails;
+                parentNote.Author = currentUser;
+
+                aggregateQuote.notes.Add(parentNote);
+            }
+
+            Event _event = new Event();
+            _event.Trade = aggregateQuote.Trade;
+            _event.Details = aggregateQuote.Trade + " (" + aggregateQuote._id + ") moved to Archives";
+            _event.Author = currentUser;
+            aggregateQuote.events.Add(_event);
+
+            Quote relatedQuote = null;
+
+            if (aggregateQuote.Trade == "Aggregate")
+            {
+                foreach (Relationship relationship in aggregateQuote.relationships)
+                {
+                    var childQuote = WebServices.GetQuote(relationship.ParentId)[0];
+
+                    childQuote.statusPrevious = childQuote.status;
+                    childQuote.status = "Archive";
+
+                    Note childnote = new Note();
+                    childnote.Trade = childQuote.Trade;
+                    childnote.Summary = childQuote.Trade + " (" + childQuote._id + ") moved to Archives";
+                    childnote.Details = NoteDetails;
+                    childnote.Author = currentUser;
+
+                    childQuote.notes.Add(childnote);
+
+                    WebServices.UpdateQuote(childQuote);
+                }
+            }
+
+            WebServices.UpdateQuote(aggregateQuote);
+
+            IsArchivePopupVisible = false;
+            NoteDetails = "";
+        }
+        catch(Exception ex)
+        {
+            var errMsg = ex.Message;
+        }
     }
 
     public void AddNote()
@@ -1373,19 +2215,23 @@ else
         note.Summary = "Note Added";
         note.Details = @NoteDetails;
         note.Author = currentUser;
+        note.Trade = CurrentlySelectedQuote.Trade;
 
-        selectedQuote.notes.Add(note);
+        Quote quoteToUpdate = WebServices.GetQuote(CurrentlySelectedQuote._id)[0];
+
+        quoteToUpdate.notes.Add(note);
 
         Event _event = new Event();
         _event.Details = "Note (" + note.Details + ") added to Quote";
         _event.Author = currentUser;
+        _event.Trade = quoteToUpdate.Trade;
 
-        selectedQuote.events.Add(_event);
+        quoteToUpdate.events.Add(_event);
 
         IsPopupVisibleAddNote = false;
         NoteDetails = "";
 
-        WebServices.UpdateQuote(selectedQuote);
+        WebServices.UpdateQuote(quoteToUpdate);
     }
 
     public void CloseDetails()
@@ -1394,7 +2240,7 @@ else
 
     public void SelectAttachmentToDelete(Quote quote, Attachment attachment)
     {
-        selectedQuote = quote;
+        CurrentlySelectedQuote = quote;
         selectedAttachment = attachment;
 
         IsPopupVisibleSelectAttachmentToDelete = true;
@@ -1402,7 +2248,7 @@ else
 
     public void SelectNoteToDelete(Quote quote, Note note)
     {
-        selectedQuote = quote;
+        CurrentlySelectedQuote = quote;
         selectedNote = note;
 
         IsPopupVisibleSelectNoteToDelete = true;
@@ -1416,13 +2262,11 @@ else
         _event.Details = "Deleted attachment (" + selectedAttachment.MediaDescription + ") from Quote";
         _event.Author = currentUser;
 
-        selectedQuote.events.Add(_event);
+        CurrentlySelectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(selectedQuote);
+        WebServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsPopupVisibleSelectAttachmentToDelete = false;
-
-        attachmentsCount--;
     }
 
     public void DeleteSelectedNote()
@@ -1433,20 +2277,348 @@ else
         _event.Details = "Deleted note (" + selectedNote.Details + ") from Quote";
         _event.Author = currentUser;
 
-        selectedQuote.events.Add(_event);
+        CurrentlySelectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(selectedQuote);
+        WebServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsPopupVisibleSelectNoteToDelete = false;
+    }
 
-        notesCount--;
+    public bool isAggregate = false;
+    public Quote originalQuoteCopy = null;
+    public Quote parentQuote = null;
+    public List<Quote> newQuoteListQueue = new List<Quote>();
+
+    public void AddTrade()
+    {
+        var originalQuoteId = CurrentlySelectedQuote._id;
+
+        if (CurrentlySelectedQuote.Trade == "Aggregate")
+        {
+            isAggregate = true;
+        }
+
+        // Create Parent quote from a copy of original quote
+        parentQuote = new Quote(CurrentlySelectedQuote);
+
+        // Master inherits id from the original. That way email links will continue working once converted to an aggregate
+        parentQuote.Trade = "Aggregate";
+        parentQuote.totalQuote = 0;
+        parentQuote.notes = new List<Note>();
+        parentQuote.attachments = new List<Attachment>();
+        parentQuote.events = new List<Event>();
+        parentQuote.Groups = new List<ObjectId>();
+        parentQuote.products = new List<Product>();
+        parentQuote.warranties = new List<Warranty>();
+
+        // Create Parent relationship
+        var parentRelationship = new Relationship();
+        parentRelationship.Author = currentUser.Email;
+        parentRelationship._id = parentQuote._id;
+        parentRelationship.ParentId = parentQuote._id;
+        parentRelationship.Type = "Parent";
+        parentRelationship.Name = parentQuote.Trade;
+
+        // Create copy of original quote
+        originalQuoteCopy = new Quote(CurrentlySelectedQuote);
+        originalQuoteCopy._id = ObjectId.GenerateNewId().ToString();
+
+        // Delete original quote
+        CurrentlySelectedQuote.status = "Aggregate-Source";
+        WebServices.DeleteQuote(CurrentlySelectedQuote);
+
+        // Now add the new copy with originalId
+        //originalQuoteCopy._id = originalQuoteId;
+        newQuoteListQueue.Add(originalQuoteCopy);
+
+        // Create Child relationship
+        var childRelationship = new Relationship();
+        childRelationship.Author = currentUser.Email;
+        childRelationship._id = parentQuote._id;
+        childRelationship.ParentId = parentQuote._id;
+        childRelationship.Type = "Child";
+        childRelationship.Name = parentQuote.Trade;
+
+        Event _event = new Event();
+        _event.Author = currentUser;
+
+        try
+        {
+            if(!isAggregate)
+            {
+                // Add events to new Master
+                _event = new Event();
+                _event.DateTime = DateTime.UtcNow;
+                _event.Author = currentUser;
+                _event.Name = "Aggregate project SPAWNED";
+                _event.Details = _event.Name + " from original " + originalQuoteCopy.Trade + " quote (" + originalQuoteCopy._id + ")";
+
+                parentQuote.events.Add(_event);
+
+                newQuoteListQueue.Add(parentQuote);
+
+                // Create child quotes
+                foreach (var selectedTrade in SelectedTradesToAdd)
+                {
+                    Quote childQuote = new Quote(originalQuoteCopy);
+                    childQuote.Trade = selectedTrade.Value;
+
+                    childQuote.status = CurrentlySelectedQuote.status;
+
+                    // Add Parent relationship to Child
+                    if (childQuote.Trade != "Aggregate")
+                    {
+                        // Reset new child instance product properties.
+                        if (originalQuoteCopy.Trade != selectedTrade.Value)
+                        {
+                            //childQuote.Trade = "";
+                            childQuote.timestamp = DateTime.UtcNow;
+                            childQuote.lastUpdated = DateTime.UtcNow;
+                            childQuote.totalQuote = 0;
+                            childQuote.notes = new List<Note>();
+                            childQuote.attachments = new List<Attachment>();
+                            childQuote.events = new List<Event>();
+                            childQuote.Groups = new List<ObjectId>();
+                            childQuote.products = new List<Product>();
+                            childQuote.warranties = new List<Warranty>();
+                        }
+
+                        // Add events to new Master
+                        _event = new Event();
+                        _event.DateTime = DateTime.UtcNow;
+                        _event.Author = currentUser;
+                        _event.Name = childQuote.Trade + " Quote Created";
+                        _event.Details = "Child (" + childQuote.Trade + ") quote created from original " + originalQuoteCopy.Trade + " quote (" + originalQuoteCopy._id + ")";
+
+                        childQuote.events.Add(_event);
+
+                        newQuoteListQueue.Add(childQuote);
+                    }
+                }
+
+                parentQuote.relationships.Clear();
+
+                foreach (Quote currentQuote in newQuoteListQueue)
+                {
+                    // Ensure unique ids
+                    currentQuote._id = ObjectId.GenerateNewId().ToString();
+
+                    if (currentQuote.Trade != "Aggregate")
+                    {
+                        // Create Parent relationship
+                        currentQuote.relationships.Add(parentRelationship);
+
+                        // Create Child relationship
+                        childRelationship = new Relationship();
+                        childRelationship._id = currentQuote._id;
+                        childRelationship.ParentId = parentQuote._id;
+                        childRelationship.Type = "Child";
+                        childRelationship.Name = currentQuote.Trade;
+
+                        parentQuote.relationships.Add(childRelationship);
+                    }
+                }
+            }
+            else
+            {
+                newQuoteListQueue.Clear();
+
+                // Append child quotes to current Aggregate
+                foreach (var selectedTrade in SelectedTradesToAdd)
+                {
+                    Quote childQuote = new Quote(originalQuoteCopy);
+                    childQuote.Trade = selectedTrade.Value;
+
+                    // Reset new child instance product properties.
+                    if (originalQuoteCopy.Trade != selectedTrade.Value)
+                    {
+                        childQuote.totalQuote = 0;
+                        childQuote.notes = new List<Note>();
+                        childQuote.attachments = new List<Attachment>();
+                        childQuote.events = new List<Event>();
+                        childQuote.Groups = new List<ObjectId>();
+                        childQuote.products = new List<Product>();
+                        childQuote.warranties = new List<Warranty>();
+                        childQuote.relationships = new List<Relationship>();
+                    }
+
+                    // Add events to new Child
+                    _event = new Event();
+                    _event.DateTime = DateTime.UtcNow;
+                    _event.Author = currentUser;
+                    _event.Name = "Child project Created";
+                    _event.Details = "Child (" + childQuote.Trade + ") quote created from original " + originalQuoteCopy.Trade + " quote (" + originalQuoteCopy._id + ")";
+
+                    // Add this event to child
+                    childQuote.events.Add(_event);
+
+                    // Add events to new Master
+                    _event = new Event();
+                    _event.DateTime = DateTime.UtcNow;
+                    _event.Author = currentUser;
+                    _event.Name = "Child project Attached";
+                    _event.Details = "Child (" + childQuote.Trade + ") attached to Aggregate " + originalQuoteCopy.Trade + " quote (" + originalQuoteCopy._id + ")";
+
+                    parentQuote.events.Add(_event);
+
+                    // Add Parent relationship to Child
+                    if (childQuote.Trade != "Aggregate")
+                    {
+                        if(parentQuote.Trade != "Aggregate")
+                            parentQuote.relationships.Add(childRelationship);
+
+                        newQuoteListQueue.Add(childQuote);
+                    }
+                }
+
+                foreach (Quote currentQuote in newQuoteListQueue)
+                {
+                    // Ensure unique ids
+                    currentQuote._id = ObjectId.GenerateNewId().ToString();
+
+                    if (currentQuote.Trade != "Aggregate")
+                    {
+                        // Create Child relationship
+                        childRelationship = new Relationship();
+                        childRelationship._id = currentQuote._id;
+                        childRelationship.ParentId = parentQuote._id;
+                        childRelationship.Type = "Child";
+                        childRelationship.Name = currentQuote.Trade;
+
+                        parentQuote.relationships.Add(childRelationship);
+                    }
+                }
+            }
+
+            parentQuote._id = originalQuoteId;
+
+            WebServices.UpdateQuote(parentQuote);
+
+            SaveRelatedQuotes(newQuoteListQueue);
+
+            IsPopupVisibleAddTrade = false;
+
+            if(!isAggregate)
+            {
+                // Redirect to Master details page
+                RedirectBackToPreviousPageByStatus(parentQuote._id);
+            }
+            else
+            {
+                // Refresh current quote
+                TimerRefresh();
+            }
+        }
+        catch(Exception ex)
+        {
+            var errMsg = ex.Message;
+        }
+    }
+
+    public void SaveRelatedQuotes(List<Quote> newQuoteListQueue)
+    {
+        try
+        {
+            foreach (Quote currentQuote in newQuoteListQueue)
+            {
+                if (currentQuote.Trade != "Aggregate")
+                {
+                    Quote tmpQuote = new Quote(currentQuote);
+
+                    WebServices.CreateQuote(tmpQuote);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            var errMsg = ex.Message;
+        }
+    }
+
+    public void ExportEventHistory()
+    {
+        // Get this quote, set it archive and update it
+        // var quoteId = quoteIdToRemove;
+        // var quoteToRemove = WebServices.GetQuote(quoteId)[0];
+
+        // quoteToRemove.status = "Archive";
+
+        // WebServices.UpdateQuote(quoteToRemove);
+
+        // // Parse and remove all relationships including siblings
+        // var tmpQuote = CurrentlySelectedQuote;
+
+        // foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
+        // {
+        //     // Disable removed quoteId from all siblings
+        //     if (relationship._id == quoteId)
+        //         relationship.IsEnabled = false;
+        // }
+
+        // WebServices.UpdateQuote(CurrentlySelectedQuote);
+
+        // IsPopupVisibleDeleteTrade = false;
+
+    }
+
+    public void DeleteTrade()
+    {
+        // Get this quote, set it archive and update it
+        var quoteId = quoteIdToRemove;
+        var quoteToRemove = WebServices.GetQuote(quoteId)[0];
+
+        quoteToRemove.status = "Archive";
+
+        WebServices.UpdateQuote(quoteToRemove);
+
+        // Parse and remove all relationships including siblings
+        var tmpQuote = CurrentlySelectedQuote;
+
+        foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
+        {
+            // Disable removed quoteId from all siblings
+            if (relationship._id == quoteId)
+                relationship.IsEnabled = false;
+        }
+
+        WebServices.UpdateQuote(CurrentlySelectedQuote);
+
+        IsPopupVisibleDeleteTrade = false;
+
+    }
+
+    public void RestoreTrade()
+    {
+        // Get this quote, set it archive and update it
+        var quoteId = quoteIdToRestore;
+        var quoteToRestore = WebServices.GetQuote(quoteId)[0];
+
+        // What is the current aggregate Status and set this to that
+        quoteToRestore.status = CurrentlySelectedQuote.statusPrevious;
+
+        WebServices.UpdateQuote(quoteToRestore);
+
+        // Parse and remove all relationships including siblings
+        var tmpQuote = CurrentlySelectedQuote;
+
+        foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
+        {
+            // Disable removed quoteId from all siblings
+            if (relationship._id == quoteId)
+                relationship.IsEnabled = true;
+        }
+
+        WebServices.UpdateQuote(CurrentlySelectedQuote);
+
+        IsPopupVisibleRestoreTrade = false;
+
     }
 
     public void MakeWarrantyClaim()
     {
-        selectedQuote.status = "Warranty";
+        CurrentlySelectedQuote.status = "Warranty";
 
-        var projectManager = selectedQuote.projectManager;
+        var Bidder = CurrentlySelectedQuote.Bidder;
 
         Warranty warranty = new Warranty();
         warranty._t = "Claim";
@@ -1454,22 +2626,22 @@ else
         warranty.Details = @NoteDetails;
         warranty.Author = currentUser;
 
-        selectedQuote.warranties.Add(warranty);
+        CurrentlySelectedQuote.warranties.Add(warranty);
 
         Note note = new Note();
         note.Summary = "Note Added (Make Warranty Claim)";
         note.Details = @NoteDetails;
         note.Author = currentUser;
 
-        selectedQuote.notes.Add(note);
+        CurrentlySelectedQuote.notes.Add(note);
 
         Event _event = new Event();
         _event.Details = "Archive converted to Warranty Claim";
         _event.Author = currentUser;
 
-        selectedQuote.events.Add(_event);
+        CurrentlySelectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(selectedQuote);
+        WebServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsPopupVisibleMakeWarrantyClaim = false;
         NoteDetails = "";
@@ -1479,11 +2651,11 @@ else
     {
         List<Warranty> warranties = new List<Warranty>();
 
-        selectedQuote.status = "Archive";
+        CurrentlySelectedQuote.status = "Archive";
 
         try
         {
-            foreach (Warranty warranty in selectedQuote.warranties)
+            foreach (Warranty warranty in CurrentlySelectedQuote.warranties)
             {
                 if (warranty._t == "Claim")
                 {
@@ -1499,30 +2671,28 @@ else
                     _warranty.CompletionDetails = @NoteDetails;
 
                     warranties.Add(_warranty);
-
-                    //selectedQuote.warranties.Remove(warranty);
                 }
             }
 
-            selectedQuote.warranties.Clear();
+            CurrentlySelectedQuote.warranties.Clear();
 
-            selectedQuote.warranties.AddRange(warranties);
+            CurrentlySelectedQuote.warranties.AddRange(warranties);
 
-            var projectManager = selectedQuote.projectManager;
+            var Bidder = CurrentlySelectedQuote.Bidder;
 
             Note note = new Note();
             note.Summary = "Note Added (Close Warranty Claim)";
             note.Details = @NoteDetails;
 
-            selectedQuote.notes.Add(note);
+            CurrentlySelectedQuote.notes.Add(note);
 
             Event _event = new Event();
             _event.Details = "Warranty Claim moved back to Archive";
             _event.Author = currentUser;
 
-            selectedQuote.events.Add(_event);
+            CurrentlySelectedQuote.events.Add(_event);
 
-            WebServices.UpdateQuote(selectedQuote);
+            WebServices.UpdateQuote(CurrentlySelectedQuote);
 
             IsPopupVisibleCloseWarrantyClaim = false;
             NoteDetails = "";
@@ -1535,17 +2705,17 @@ else
 
     public void CompleteCustomer()
     {
-        selectedQuote.status = "Complete";
+        CurrentlySelectedQuote.status = "Complete";
 
-        var projectManager = selectedQuote.projectManager;
+        var Bidder = CurrentlySelectedQuote.Bidder;
 
         Event _event = new Event();
-        _event.Details = selectedQuote.firstName + " " + selectedQuote.lastName + " converted to Completed Customer";
+        _event.Details = CurrentlySelectedQuote.firstName + " " + CurrentlySelectedQuote.lastName + " converted to Completed Customer";
         _event.Author = currentUser;
 
-        selectedQuote.events.Add(_event);
+        CurrentlySelectedQuote.events.Add(_event);
 
-        WebServices.UpdateQuote(selectedQuote);
+        WebServices.UpdateQuote(CurrentlySelectedQuote);
 
         IsPopupVisibleCompleteCustomer = false;
     }
@@ -1556,28 +2726,331 @@ else
         _timer = null;
     }
 
+    public List<QuoteSummary> RelatedQuoteSummaryList = new List<QuoteSummary>();
+    public List<QuoteSummary> cleanedRelatedQuoteSummaryList = new List<QuoteSummary>();
+    public List<Attachment> AttachmentList = new List<Attachment>();
+    public List<Event> EventList = new List<Event>();
+    public List<Note> NoteList = new List<Note>();
+
+    public QuoteSummary currentParentQuoteSummary = null;
+
+    public QuoteSummary parentQuoteSummary = null;
+
+    public int parentCount = 0;
+
+    public double defaultQuoteValue = 0;
+    public double averageQuoteValue = 0;
+
     private async Task TimerRefresh()
     {
-        TimerDispose();
+        bool isAggregate = false;
+        double standaloneTotal = 0;
+        string authorName = "";
 
-        _timer = new Timer(new TimerCallback(_ =>
+        bool hasParent = false;
+
+        DateTime lastQuoteEventTimestamp = DateTime.MinValue;
+        string lastQuoteEventDetails = "";
+
+        try
         {
-            var ShowTestData = true;
+            TimerDispose();
 
-            leaderboardStats = WebServices.GetLeaderBoardStats(ShowTestData);
-
-            quotes = webServices.GetQuote(QuoteId);
-
-            if(quotes != null)
-                selectedQuote = quotes[0];
-
-            InvokeAsync(() =>
+            _timer = new Timer(new TimerCallback(_ =>
             {
-                StateHasChanged();
-            });
-        }), null, 1000, 1000);
+                standaloneTotal = 0;
 
-        LoadingPanelVisible = false;
+                RelatedQuoteSummaryList = new List<QuoteSummary>();
+                AttachmentList = new List<Attachment>();
+                EventList = new List<Event>();
+                NoteList = new List<Note>();
+
+                QuotesList = webServices.GetQuote(QuoteId);
+                if (QuotesList != null)
+                {
+                    CurrentlySelectedQuote = QuotesList[0];
+
+                    standaloneTotal = CurrentlySelectedQuote.totalQuote;
+
+                    // Get child quote summaries
+                    RelatedQuoteSummaryList = webServices.GetRelatedQuoteSummaries(CurrentlySelectedQuote);
+
+                    // Process attachments
+                    foreach (Attachment attachment in CurrentlySelectedQuote.attachments)
+                    {
+                        attachment.Trade = CurrentlySelectedQuote.Trade;
+                        if (attachment.MediaName == "")
+                            attachment.MediaName = "Filename?";
+                    }
+                    AttachmentList.AddRange(CurrentlySelectedQuote.attachments);
+
+                    // Process Related events
+                    foreach (Event _event in CurrentlySelectedQuote.events)
+                    {
+                        _event.Relationship = "Parent";
+                        _event.Trade = CurrentlySelectedQuote.Trade;
+                        EventList.Add(_event);
+                    }
+
+                    if (CurrentlySelectedQuote.Trade == "Aggregate")
+                    {
+                        // Process remote Child events
+                        List<Event> childEvents = new List<Event>();
+
+                        foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
+                        {
+                            var childQuote = WebServices.GetQuote(relationship._id)[0];
+
+                            foreach (Event _event in childQuote.events)
+                            {
+                                _event.Relationship = "Child";
+                                _event.Trade = childQuote.Trade;
+                                EventList.Add(_event);
+                            }
+                        }
+                    }
+
+                    // Process local Aggregate or standalone notes
+                    foreach (Note note in CurrentlySelectedQuote.notes)
+                    {
+                        note.Trade = CurrentlySelectedQuote.Trade;
+                    }
+                    NoteList.AddRange(CurrentlySelectedQuote.notes);
+
+                    if (CurrentlySelectedQuote.Trade == "Aggregate")
+                    {
+                        // Process remote Child notes
+                        List<Note> childNotes = new List<Note>();
+
+                        foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
+                        {
+                            var childQuote = WebServices.GetQuote(relationship._id)[0];
+
+                            childNotes.AddRange(childQuote.notes);
+                        }
+                        NoteList.AddRange(childNotes);
+                    }
+
+                    averageQuoteValue = 0;
+                    var quotesWithBidValue = 0;
+
+                    foreach (QuoteSummary quoteSummary in RelatedQuoteSummaryList)
+                    {
+                        if (quoteSummary.totalQuote > 0)
+                        {
+                            quotesWithBidValue++;
+
+                            averageQuoteValue += quoteSummary.totalQuote;
+                        }
+                    }
+
+                    averageQuoteValue = (averageQuoteValue / quotesWithBidValue);
+
+                    currentQuoteIndex = 0;
+
+                    if (CurrentlySelectedQuote.Trade == "Aggregate")
+                    {
+                        CurrentlySelectedQuote.totalQuote = averageQuoteValue;
+                    }
+                    else
+                    {
+                        CurrentlySelectedQuote.totalQuote = standaloneTotal;
+                    }
+
+                    foreach (QuoteSummary RelatedQuote in RelatedQuoteSummaryList)
+                    {
+                        foreach (Event _event in RelatedQuote.events)
+                        {
+                            if (_event.DateTime > lastQuoteEventTimestamp)
+                            {
+                                lastQuoteEventTimestamp = _event.DateTime.ToLocalTime();
+                                lastQuoteEventDetails = _event.Details;
+                            }
+                        }
+                    }
+
+                    CurrentlySelectedQuote.timestamp = CurrentlySelectedQuote.timestamp.ToLocalTime();
+                    CurrentlySelectedQuote.lastUpdated = CurrentlySelectedQuote.lastUpdated.ToLocalTime();
+
+                    foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
+                    {
+                        switch(relationship.Type)
+                        {
+                            case "Parent":
+                                currentQuoteContainerType = "Child";
+
+                                ValueHiliteCss = "quote-color-value-child";
+
+                                // Get the parent quote for it's value
+                                var parentQuote = WebServices.GetQuote(relationship.ParentId)[0];
+                                foreach (Relationship childRelationship in parentQuote.relationships)
+                                {
+                                    if(childRelationship.Type == "Child")
+                                    {
+                                        var childQuote = WebServices.GetQuote(childRelationship._id)[0];
+
+                                        if (childQuote.BidderType == "Default")
+                                        {
+                                            // Set default quote value
+                                            defaultQuoteValue = childQuote.totalQuote;
+                                        }
+                                    }
+                                }
+
+                                CreateSiblings(parentQuote._id);
+
+                                break;
+                            case "Child":
+                                currentQuoteContainerType = "Parent";
+                                ValueHiliteCss = "quote-color-value-parent";
+                                break;
+                        }
+                    }
+
+                    var summaryIndex = 0;
+
+                    var currentQuoteId = CurrentlySelectedQuote._id;
+                    foreach (QuoteSummary _summary in RelatedQuoteSummaryList)
+                    {
+                        if (_summary._id == CurrentlySelectedQuote._id)
+                        {
+                            try
+                            {
+                                parentQuoteSummary = new QuoteSummary(_summary);
+                                // cleanedRelatedQuoteSummaryList.Add(parentQuoteSummary);
+
+                                // Remove current Item. Don't want this to link back to itself.
+                                RelatedQuoteSummaryList.Remove(_summary);
+                            }
+                            catch (Exception ex)
+                            {
+                                var errMsg = ex.Message;                                
+                            }
+                            break;
+                        }
+                    }
+
+                    // Sort collectionsparentQuoteSummary
+                    LocalizeRelatedQuotes(RelatedQuoteSummaryList);
+
+                    RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderBy(x => x.DateCreated).ToList();
+                    //RelatedQuoteSummaryList = RelatedQuoteSummaryList.OrderByDescending(x => x.Trade).ToList();
+
+                    if(CurrentlySelectedQuote.status == "Archive")
+                    {
+                        restoreButtonClass = "restore-button-visible";
+                        addBidButtonClass = "add-bid-button-hidden";
+
+                        ValueHiliteCss = "quote-color-value-archive";
+                        
+                        currentQuoteContainerType = "Archive";
+                    }
+
+                    LocalizeAttachments(AttachmentList);
+                    AttachmentList = AttachmentList.OrderByDescending(x => x.DateTime).ToList();
+
+                    LocalizeEvents(EventList);
+                    EventList = EventList.OrderByDescending(x => x.DateTime).ToList();
+
+                    LocalizeNotes(NoteList);
+                    NoteList = NoteList.OrderByDescending(x => x.DateTime).ToList();
+
+                    SetCssClasses(currentQuoteContainerType);
+
+                    foreach (QuoteSummary summary in RelatedQuoteSummaryList)
+                    {
+                        if (summary.relationship == "Sibling")
+                        {
+                            currentQuoteContainerType = "Sibling";
+                            break;
+                        }
+                    }
+
+                    InvokeAsync(() =>
+                    {
+                        StateHasChanged();
+                    });
+                }
+            }), null, 1000, 1000);
+
+            LoadingPanelVisible = false;
+        }
+        catch(Exception ex)
+        {
+            var errMsg = ex.Message;
+        }
+    }
+
+    public void CreateSiblings(string parentQuoteId)
+    {
+        var tmpVal = RelatedQuoteSummaryList;
+
+        Quote parentQuote = WebServices.GetQuote(parentQuoteId)[0];
+
+        foreach (Relationship relationship in parentQuote.relationships)
+        {
+            if(relationship.Type == "Child")
+            {
+                var childQuote = WebServices.GetQuote(relationship._id)[0];
+
+                QuoteSummary childQuoteSummary = new QuoteSummary();
+
+                childQuoteSummary._id = childQuote._id;
+                childQuoteSummary.Trade = childQuote.Trade;
+                childQuoteSummary.totalQuote = childQuote.totalQuote;
+                childQuoteSummary.Bidder = childQuote.Bidder;
+                childQuoteSummary.BidderType = childQuote.BidderType;
+                childQuoteSummary.BiddingExpires = childQuote.BiddingExpires;
+                childQuoteSummary.status = childQuote.status;
+
+                childQuoteSummary.relationship = "Sibling";
+
+                RelatedQuoteSummaryList.Add(childQuoteSummary);
+            }
+        }
+    }
+
+    public void LocalizeRelatedQuotes(List<QuoteSummary> RelatedQuoteSummaryList)
+    {
+        foreach(var _summary in RelatedQuoteSummaryList)
+        {
+            var quoteId = _summary._id;
+            Quote currentQuote = (Quote)WebServices.GetQuote(quoteId)[0];
+
+            var quoteEvents = currentQuote.events.OrderByDescending(x => x.DateTime).ToList();
+
+            if(quoteEvents.Count > 0)
+            {
+                var lastEvent = quoteEvents.LastOrDefault();
+
+                _summary.lastEventTimeStamp = lastEvent.DateTime.ToLocalTime();
+                _summary.lastEventDetails = lastEvent.Details;
+            }
+        }
+    }
+
+    public void LocalizeAttachments(List<Attachment> AttachmentList)
+    {
+        foreach(var _attachment in AttachmentList)
+        {
+            _attachment.DateTime = _attachment.DateTime.ToLocalTime();
+        }
+    }
+
+    public void LocalizeEvents(List<Event> EventList)
+    {
+        foreach(var _event in EventList)
+        {
+            _event.DateTime = _event.DateTime.ToLocalTime();
+        }
+    }
+
+    public void LocalizeNotes(List<Note> NoteList)
+    {
+        foreach (var _note in NoteList)
+        {
+            _note.DateTime = _note.DateTime.ToLocalTime();
+        }
     }
 
     private async Task<bool> IsUserEnabled()
