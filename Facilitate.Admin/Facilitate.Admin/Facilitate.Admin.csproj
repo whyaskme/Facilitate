@@ -50,12 +50,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\Facilitate.Libraries.csproj" />
+    <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="wwwroot\images\Profiles\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\PublishProfiles\" />
-    <Folder Include="wwwroot\images\Profiles\" />
+    <ProjectReference Include="..\..\Facilitate.Libraries\Facilitate.Libraries.csproj" />
   </ItemGroup>
 
 </Project>
