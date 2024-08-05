@@ -14,8 +14,9 @@ namespace Facilitate.Libraries.Models
         {
             _id = ObjectId.GenerateNewId();
             _t = "Note";
+            Trade = string.Empty;
             IsDeleted = false;
-            Date = DateTime.UtcNow;
+            DateTime = DateTime.UtcNow;
             Summary = string.Empty;
             Details = string.Empty;
             Author = new ApplicationUser();
@@ -25,8 +26,9 @@ namespace Facilitate.Libraries.Models
 
         public ObjectId _id { get; set; }
         public string _t { get; set; }
+        public string Trade { get; set; }
         public bool IsDeleted { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime DateTime { get; set; }
         public string Summary { get; set; }
         public string Details { get; set; }
         public ApplicationUser Author { get; set; }

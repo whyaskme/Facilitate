@@ -1,9 +1,12 @@
-﻿using Facilitate.Libraries.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
 using MongoDB.Driver;
+
+using Facilitate.Libraries.Models;
 
 namespace Facilitate.Api.Controllers
 {
+    [DisableCors]
     [Route("api/[controller]")]
     [ApiController]
     public class AddressOnlyController : ControllerBase
@@ -60,7 +63,7 @@ namespace Facilitate.Api.Controllers
             quote.status = "Address Only";
 
             // Will need to figure out how to set dynamically
-            quote.applicationType = "Roofing";
+            quote.Trade = "Roofing";
 
             quote.ipAddress = headerForwardedFor;
             quote.externalUrl = headerReferer;
