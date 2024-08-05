@@ -230,6 +230,17 @@ else
     [CascadingParameter]
     private HttpContext? HttpContext { get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (!user.Identity.IsAuthenticated)
+        {
+            navMan.NavigateTo("/Account/Login?returnurl=" + navMan.Uri);
+        }
+    }
+
     public string StatusType = "Opportunity";
 
     List<ListItem> columnWidths = new List<ListItem>();
