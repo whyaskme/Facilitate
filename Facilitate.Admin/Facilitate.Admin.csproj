@@ -59,7 +59,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Facilitate.Libraries\Facilitate.Libraries.csproj" />
+    <ProjectReference Include="..\Facilitate.Libraries\Facilitate.Libraries.csproj" />
   </ItemGroup>
 
 </Project>
