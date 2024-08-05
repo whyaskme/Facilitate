@@ -34,8 +34,14 @@
     <PackageReference Include="Json.Net" Version="1.0.33" />
     <PackageReference Include="MaxMind.Db" Version="4.1.0" />
     <PackageReference Include="MaxMind.GeoIP2" Version="5.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Identity.Client" Version="4.62.0" />
     <PackageReference Include="MongoDB.Bson" Version="2.28.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.28.0" />
@@ -45,12 +51,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\Facilitate.Libraries.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="DevExpress.Blazor.v23.2">
-      <HintPath>..\..\..\..\Program Files\DevExpress 23.2\Components\Offline Packages\devexpress.blazor\23.2.4\lib\net6.0\DevExpress.Blazor.v23.2.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>
