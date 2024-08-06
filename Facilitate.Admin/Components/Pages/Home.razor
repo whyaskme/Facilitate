@@ -12,11 +12,23 @@
 @using DevExpress.Data;
 @using DevExpress.Data.Linq;
 
+@using Microsoft.AspNetCore.Identity;
+
 @attribute [StreamRendering(true)]
 
 @inject WebServices WebServices
 
 @inject NavigationManager navMan
+
+@inject UserManager<ApplicationUser> UserManager
+@inject IUserStore<ApplicationUser> UserStore
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IEmailSender<ApplicationUser> EmailSender
+@inject RoleManager<IdentityRole> roleManager
+
+@inject IJSRuntime JSRuntime
+
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
 
 <PageTitle>Welcome to Facilitate Platform Administration</PageTitle>
 
@@ -26,7 +38,7 @@
     </div>
 </div>
 
-<h3>Facilitate Platform Administration</h3>
+@* <h3>Facilitate Platform Administration</h3> *@
 
 <AuthorizeView>
     <Authorized>
@@ -36,7 +48,7 @@
     </Authorized>
     <NotAuthorized>
         @{
-            navMan.NavigateTo("/Account/Login");
+            //navMan.NavigateTo("/Account/Login");
         }
     </NotAuthorized>
 </AuthorizeView>
@@ -44,6 +56,10 @@
 @code {
     [CascadingParameter]
     private HttpContext? HttpContext { get; set; }
+
+    public ApplicationUser currentUser = new ApplicationUser();
+    public bool isSystemAdmin = false;
+    public bool isUserAdmin = false;
 
     public QuoteLeaderboard LeaderboardStats;
 
@@ -54,9 +70,28 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        // if (firstRender)
+        // {
+        //     navMan.NavigateTo("/Quotes/Opportunities");
+        // }
+
+        try
         {
-            navMan.NavigateTo("/Quotes/Opportunities");
+            var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+            var loggedInUser = authstate.User;
+            var loggedInName = loggedInUser.Identity.Name;
+
+            if (loggedInName != null && loggedInName != "")
+                currentUser = await UserManager.FindByNameAsync(loggedInName);
+
+            if (currentUser.IsEnabled)
+            {
+
+            }
+        }
+        catch(Exception ex)
+        {
+            var error = ex.Message;
         }
     }
 }

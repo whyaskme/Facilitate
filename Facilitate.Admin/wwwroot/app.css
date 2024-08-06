@@ -67,19 +67,20 @@ html, body {
     color: #808080 !important;
 }
 
-.dxuc-select-button {
+/*.dxuc-select-button {
     border: solid 1px #000000 !important;
     color: #ffffff !important;
     background-color: #000000 !important;
     width: 125px !important;
     position: relative !important;
     top: -30px !important;
-}
+}*/
 
+.dxbl-btn,
 button {
     color: #000000 !important;
     background-color: #eee !important;
-    border: solid 1px #c0c0c0 !important;
+    border: solid 0px #ff0000 !important;
     border-radius: 5px !important;
     margin-right: 3px !important;
     padding: 2px !important;
@@ -98,15 +99,11 @@ button {
     }
 
 .button-header-left {
-    border: solid 1px #ff0000 !important;
-    background-color: #ffff00 !important;
     float: left !important;
     font-size: 0.75em !important;
 }
 
 .button-header-right {
-    border: solid 1px #ffffff !important;
-    background-color: #ffff00 !important;
     float: right !important;
     font-size: 0.75em !important;
 }
@@ -240,6 +237,13 @@ button {
     background-color: #014b01 !important;
     width: 135px !important;
 }
+
+/*.dxbl-upload-select-btn {
+    border: solid 1px #014b01 !important;
+    color: #ffffff !important;
+    background-color: #014b01 !important;
+    width: 135px !important;
+}*/
 
 /*Set Child styles*/
 .quote-header-child {

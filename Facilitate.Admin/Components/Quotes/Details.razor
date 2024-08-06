@@ -41,14 +41,14 @@
 @inject WebServices WebServices
 
 @inject NavigationManager navMan
-@inject IHttpClientFactory ClientFactory
-@inject HttpClient httpClient
-
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserStore<ApplicationUser> UserStore
 @inject SignInManager<ApplicationUser> SignInManager
 @inject IEmailSender<ApplicationUser> EmailSender
 @inject RoleManager<IdentityRole> roleManager
+
+@* @inject IHttpClientFactory ClientFactory
+@inject HttpClient httpClient *@
 
 @inject IJSRuntime JSRuntime
 
@@ -465,7 +465,8 @@ else
                                               FileUploadError="@OnUploadError"
                                               FileUploadStarted="@OnFileUploadStarted"
                                               SelectedFilesChanged="@SelectedFilesChanged"
-                                              MaxFileSize="@MaxFileSize">
+                                              MaxFileSize="@MaxFileSize"
+                                          CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
                                     </DxUpload>
                                     <div class="alert alert-danger @(ErrorVisible? " visible" : " invisible")">@MyError</div>
                                 </div>
@@ -491,7 +492,8 @@ else
                                         MaxFileSize="@MaxFileSize"
                                         AllowedFileExtensions="@allowedFileExtensions"
                                         AcceptedFileTypes="@acceptableFileTypes"
-                                        CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")">
+                                        CssClass="@(SelectedFilesCount > 0 ? "w-100" : "add-item-button")"
+                                        >
                                     </DxUpload>
                                 </div>
                                 <div class="col-md-10">
