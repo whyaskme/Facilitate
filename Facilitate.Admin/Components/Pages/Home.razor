@@ -28,10 +28,10 @@
 
 <h3>Facilitate Platform Administration</h3>
 
-@* <AuthorizeView>
+<AuthorizeView>
     <Authorized>
         @{
-            navMan.NavigateTo("/Quotes/Opportunities");
+            //navMan.NavigateTo("/Quotes/Opportunities");
         }
     </Authorized>
     <NotAuthorized>
@@ -39,7 +39,7 @@
             navMan.NavigateTo("/Account/Login");
         }
     </NotAuthorized>
-</AuthorizeView> *@
+</AuthorizeView>
 
 @code {
     [CascadingParameter]
@@ -52,4 +52,11 @@
         LeaderboardStats = WebServices.GetLeaderboardStats();
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            navMan.NavigateTo("/Quotes/Opportunities");
+        }
+    }
 }

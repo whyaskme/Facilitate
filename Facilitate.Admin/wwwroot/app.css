@@ -859,7 +859,7 @@ h6 {
 }
 
 .tab-detail-label {
-    border: solid 0px #ff0000 !important;
+    border: solid 1px #ff0000 !important;
     position: relative !important;
     top: 0px !important;
     left: -115px !important;

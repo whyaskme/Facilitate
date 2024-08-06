@@ -205,7 +205,7 @@ else
                                        <button class="@currentActionButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Add Bidder</button>
                                     </div>
                                     <div class="col-md-10">
-                                            <h6 class="tab-detail-label">@RelatedQuoteSummaryList.Count() Bidders</h6>
+                                        <h6 class="tab-detail-label">@RelatedQuoteSummaryList.Count() Bidders</h6>
                                     </div>
                                     <div>
                                         <button class="@currentActionButtonClass @restoreButtonClass" @onclick="@(() => IsRestoreButtonVisble = true)">Restore Aggregate</button>
@@ -453,28 +453,32 @@ else
                     @{
                             <DxTabPage Id="Panel-Send-Files" Text="@_emailTabLabel">
 
-                                <DxUpload Name="ImageUpload"
-                                          SelectButtonText="Select Files"
-                                          AllowMultiFileUpload="true"
-                                          UploadUrl="@GetUploadUrl(@uploadUrl)"
-                                          ChunkSize="@chunkSize"
-                                          ShowFileList="true"
-                                          AllowedFileExtensions="@allowedFileExtensions"
-                                          AcceptedFileTypes="@acceptableFileTypes"
-                                          FileUploadError="@OnUploadError"
-                                          FileUploadStarted="@OnFileUploadStarted"
-                                          SelectedFilesChanged="@SelectedFilesChanged"
-                                          MaxFileSize="@MaxFileSize">
-                                </DxUpload>
+                                <div class="col-md-2">
+                                    <DxUpload Name="ImageUpload"
+                                              SelectButtonText="Select Files"
+                                              AllowMultiFileUpload="true"
+                                              UploadUrl="@GetUploadUrl(@uploadUrl)"
+                                              ChunkSize="@chunkSize"
+                                              ShowFileList="true"
+                                              AllowedFileExtensions="@allowedFileExtensions"
+                                              AcceptedFileTypes="@acceptableFileTypes"
+                                              FileUploadError="@OnUploadError"
+                                              FileUploadStarted="@OnFileUploadStarted"
+                                              SelectedFilesChanged="@SelectedFilesChanged"
+                                              MaxFileSize="@MaxFileSize">
+                                    </DxUpload>
+                                    <div class="alert alert-danger @(ErrorVisible? " visible" : " invisible")">@MyError</div>
+                                </div>
+                                <div class="col-md-10">
+                                    <button class="@currentActionButtonClass" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
+                                </div>
 
-                                <div class="alert alert-danger @(ErrorVisible? " visible" : " invisible")">@MyError</div>
-                                <button class="@currentActionButtonClass" disabled="@SendDocsDisabled" @onclick="@EmailFiles">Send Docs</button>
                             </DxTabPage>
 
                             <DxTabPage Id="Panel-Attach-Files" Text="Attachments">
 
                             <div class="row">
-                                <div class="col-md-1">
+                                <div class="col-md-2">
                                     <DxUpload 
                                         Name="UploadAttachments"
                                         id="UploadAttachments"
@@ -491,7 +495,7 @@ else
                                     </DxUpload>
                                 </div>
                                 <div class="col-md-10">
-                                    <span class="section-title">@AttachmentList.Count() Attachments</span>
+                                    <h6 class="tab-detail-label">@AttachmentList.Count() Attachments</h6>
                                 </div>
                             </div>
 
