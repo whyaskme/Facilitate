@@ -2814,8 +2814,10 @@ else
                     foreach (Note note in CurrentlySelectedQuote.notes)
                     {
                         note.Trade = CurrentlySelectedQuote.Trade;
+
+                        NoteList.Add(note);
                     }
-                    NoteList.AddRange(CurrentlySelectedQuote.notes);
+                    // NoteList.AddRange(CurrentlySelectedQuote.notes);
 
                     if (CurrentlySelectedQuote.Trade == "Aggregate")
                     {
