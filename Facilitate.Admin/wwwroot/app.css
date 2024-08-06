@@ -363,6 +363,19 @@ button {
     left: 5px !important;
 }
 
+.btn-lg {   
+    margin-bottom: 25px !important;
+}
+
+.dxbl-text-edit-input {
+    /*    background-color: #ffff00 !important;*/
+    width: 50px !important;
+}
+
+.dxbl-text-edit-input:focus {
+    background-color: #fff !important;
+}
+
 .total-quote-value {
     border: solid 1px #c0c0c0 !important;
     border-radius: 5px !important;
@@ -840,14 +853,20 @@ h6 {
     font-size: 1.0em !important;
     padding: 0px !important;
     position: relative !important;
-    top: 3px !important;
-    left: -50px !important;
+    top: 0px !important;
+    left: 0px !important;
     margin-bottom: 15px !important;
 }
 
+.tab-detail-label {
+    border: solid 0px #ff0000 !important;
+    position: relative !important;
+    top: 0px !important;
+    left: -115px !important;
+}
+
 #NoteGrid,
-#EventGrid 
-{
+#EventGrid {
     position: relative !important;
     top: 10px !important;
     left: 0px !important;
@@ -1243,14 +1262,6 @@ label {
     background-color: #045e20 !important;
     color: #fff !important;
     margin-right: 25px !important;
-}
-
-/*.dxbl-text-edit-input {
-    background-color: #ffff00 !important;
-}*/
-
-.dxbl-text-edit-input:focus {
-    background-color: #fff !important;
 }
 
 .summary-item {

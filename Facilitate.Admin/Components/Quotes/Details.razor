@@ -205,7 +205,7 @@ else
                                        <button class="@currentActionButtonClass" @onclick="@(() => IsBidderPopupVisible = true)">Add Bidder</button>
                                     </div>
                                     <div class="col-md-10">
-                                        <h6>@RelatedQuoteSummaryList.Count() Bidders</h6>
+                                            <h6 class="tab-detail-label">@RelatedQuoteSummaryList.Count() Bidders</h6>
                                     </div>
                                     <div>
                                         <button class="@currentActionButtonClass @restoreButtonClass" @onclick="@(() => IsRestoreButtonVisble = true)">Restore Aggregate</button>
@@ -534,11 +534,11 @@ else
                     <DxTabPage Id="Panel-Notes" Text="Notes">
 
                         <div class="row">
-                            <div class="col-md-1">
+                            <div class="col-md-2">
                                 <button class="@currentActionButtonClass" @onclick="@(() => IsPopupVisibleAddNote = true)">Add Note</button>
                             </div>
-                            <div class="col-md-11">
-                                <h6>@NoteList.Count() Notes</h6>
+                            <div class="col-md-10">
+                                <h6 class="tab-detail-label">@NoteList.Count() Notes</h6>
                             </div>
                         </div>
 
@@ -574,11 +574,11 @@ else
                     <DxTabPage Id="Panel-History" Text="History">
 
                         <div class="row">
-                            <div class="col-md-1">
+                            <div class="col-md-2">
                                 <button class="@currentActionButtonClass" @onclick="@(() => IsPopupVisibleExportEvents = true)">Export Events</button>
                             </div>
-                            <div class="col-md-11">
-                                <h6>@EventList.Count() Events</h6>
+                            <div class="col-md-10">
+                                <h6 class="tab-detail-label">@EventList.Count() Events</h6>
                             </div>
                         </div>
 
@@ -1559,12 +1559,12 @@ else
 
     private readonly IClaimsProvider _claimsProvider;
 
-    public string currentQuoteContainerType = "Standalone";
-    public string currentQuoteColorCssClass = "quote-color-standalone";
-    public string currentQuoteHeaderTypeCssClass = "quote-header-standalone";
-    public string currentQuoteContainerTypeCssClass = "quote-title-standalone";
+    public string currentQuoteContainerType = "Parent";
+    public string currentQuoteColorCssClass = "quote-color-parent";
+    public string currentQuoteHeaderTypeCssClass = "quote-header-parent";
+    public string currentQuoteContainerTypeCssClass = "quote-title-parent";
 
-    public string currentActionButtonClass = "action-button-standalone";
+    public string currentActionButtonClass = "action-button-child";
 
     public string restoreButtonClass = "restore-button-hidden";
     public string addBidButtonClass = "add-bid-button-visible";
@@ -1581,12 +1581,12 @@ else
                 currentActionButtonClass = "action-button-sibling";
                 break;
 
-            case "standalone":
-                currentQuoteColorCssClass = "quote-color-standalone";
-                currentQuoteHeaderTypeCssClass = "quote-header-standalone";
-                currentQuoteContainerTypeCssClass = "quote-title-standalone";
-                currentActionButtonClass = "action-button-standalone";
-                break;
+            // case "standalone":
+            //     currentQuoteColorCssClass = "quote-color-standalone";
+            //     currentQuoteHeaderTypeCssClass = "quote-header-standalone";
+            //     currentQuoteContainerTypeCssClass = "quote-title-standalone";
+            //     currentActionButtonClass = "action-button-standalone";
+            //     break;
 
             case "parent":
                 currentQuoteColorCssClass = "quote-color-parent";
@@ -2868,6 +2868,14 @@ else
 
                     foreach (Relationship relationship in CurrentlySelectedQuote.relationships)
                     {
+                        var childQuote = WebServices.GetQuote(relationship._id)[0];
+                        if (childQuote.BidderType == "Default")
+                        {
+                            // Set default quote value
+                            defaultQuoteValue = childQuote.totalQuote;
+                            break;
+                        }
+
                         switch(relationship.Type)
                         {
                             case "Parent":
@@ -2881,12 +2889,11 @@ else
                                 {
                                     if(childRelationship.Type == "Child")
                                     {
-                                        var childQuote = WebServices.GetQuote(childRelationship._id)[0];
-
-                                        if (childQuote.BidderType == "Default")
+                                        var childQuote2 = WebServices.GetQuote(childRelationship._id)[0];
+                                        if (childQuote2.BidderType == "Default")
                                         {
                                             // Set default quote value
-                                            defaultQuoteValue = childQuote.totalQuote;
+                                            defaultQuoteValue = childQuote2.totalQuote;
                                         }
                                     }
                                 }
@@ -2955,7 +2962,7 @@ else
                     {
                         if (summary.relationship == "Sibling")
                         {
-                            currentQuoteContainerType = "Sibling";
+                            //currentQuoteContainerType = "Sibling";
                             break;
                         }
                     }
