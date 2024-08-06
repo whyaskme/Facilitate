@@ -16,6 +16,7 @@ namespace Facilitate.Libraries.Models
             _t = "Note";
             Trade = string.Empty;
             IsDeleted = false;
+            Relationship = string.Empty;
             DateTime = DateTime.UtcNow;
             Summary = string.Empty;
             Details = string.Empty;
@@ -28,6 +29,7 @@ namespace Facilitate.Libraries.Models
         public string _t { get; set; }
         public string Trade { get; set; }
         public bool IsDeleted { get; set; }
+        public string Relationship { get; set; }
         public DateTime DateTime { get; set; }
         public string Summary { get; set; }
         public string Details { get; set; }
